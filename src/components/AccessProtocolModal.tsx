@@ -157,6 +157,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   'Supports creators directly—highest revenue share',
                 ],
                 cta: 'Gumroad',
+                href: 'https://vostokmethod.gumroad.com/l/vostokmethod',
                 color: '#7CFF73',
               },
               {
@@ -169,6 +170,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   'Secure digital delivery',
                 ],
                 cta: 'Lemon Squeezy',
+                href: 'https://vostok.lemonsqueezy.com/checkout/buy/216d8b44-36c9-4967-8e39-c9da543f5006',
                 color: '#C4FF88',
               },
               {
@@ -182,6 +184,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   'Least supportive to creators',
                 ],
                 cta: 'Amazon Books',
+                disabled: true,
                 color: '#FFCA5F',
               },
               {
@@ -195,6 +198,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   'Most restricted version',
                 ],
                 cta: 'Apple Books Edition',
+                disabled: true,
                 color: '#FF7A6B',
               },
             ].map((card) => (
@@ -210,13 +214,28 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                     ))}
                   </ul>
                 </div>
-                <button
-                  type="button"
-                  className="mt-5 w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110"
-                  style={{ backgroundColor: card.color }}
-                >
-                  {card.cta}
-                </button>
+                {card.href ? (
+                  <a
+                    href={card.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-5 w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110 text-center"
+                    style={{ backgroundColor: card.color }}
+                  >
+                    {card.cta}
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    disabled={card.disabled}
+                    className={`mt-5 w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition ${
+                      card.disabled ? 'cursor-not-allowed opacity-50' : 'hover:brightness-110'
+                    }`}
+                    style={{ backgroundColor: card.color }}
+                  >
+                    {card.cta}
+                  </button>
+                )}
               </div>
             ))}
           </div>

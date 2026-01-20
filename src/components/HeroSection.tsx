@@ -309,7 +309,7 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
               >
-                Access the Protocol
+                Access The Method
               </button>
               <button
                 type="button"
