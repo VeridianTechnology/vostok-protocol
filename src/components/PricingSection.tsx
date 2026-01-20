@@ -6,7 +6,7 @@ type PricingSectionProps = {
 
 const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
   return (
-    <section id="pricing" className="py-24 px-4 md:px-8">
+    <section id="pricing" className="py-20 md:py-24 px-4 md:px-8">
       <div className="container mx-auto max-w-2xl">
         <div className="glass-card rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
           {/* Glow effect */}

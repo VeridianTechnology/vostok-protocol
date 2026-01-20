@@ -77,7 +77,7 @@ const PremiseSection = () => {
   }, [messageIndex]);
 
   return (
-    <section className="py-24 px-4 md:px-8">
+    <section className="py-20 md:py-24 px-4 md:px-8">
       <div className="container mx-auto max-w-4xl">
         <div className="divider-neon mb-16" />
         

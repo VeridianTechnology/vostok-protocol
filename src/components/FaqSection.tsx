@@ -201,7 +201,7 @@ const FaqSection = () => {
   }, [visibleIndices, openIndex]);
 
   return (
-    <section className="py-24 px-4 md:px-8">
+    <section className="py-20 md:py-24 px-4 md:px-8">
       <div className="container mx-auto max-w-3xl">
         <div className="text-center mb-16 space-y-4">
           <p className="font-mono text-sm text-vostok-neon tracking-widest uppercase">
