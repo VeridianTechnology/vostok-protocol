@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import PdfModal from './PdfModal';
+import { getCachedVideoDecision, shouldLoadVideo } from '../utils/videoGate';
 
 type CaretStyle = CSSProperties & {
   '--caret-delay'?: string;
@@ -116,15 +117,18 @@ const getDisplayDuration = ({ primary, secondary }: HeroStatement) => {
 };
 
 const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
+  const cachedVideoDecision = getCachedVideoDecision();
   const [statementIndex, setStatementIndex] = useState(0);
   const [showSecondLine, setShowSecondLine] = useState(false);
   const [isButtonShining, setIsButtonShining] = useState(false);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
-  const [showHeroVideo, setShowHeroVideo] = useState(true);
+  const [isHeroVideoAllowed, setIsHeroVideoAllowed] = useState<boolean | null>(cachedVideoDecision);
+  const [showHeroVideo, setShowHeroVideo] = useState(cachedVideoDecision !== false);
   const [isHeroVideoVisible, setIsHeroVideoVisible] = useState(false);
   const [isHeroVideoFadingOut, setIsHeroVideoFadingOut] = useState(false);
-  const [showHeroImage, setShowHeroImage] = useState(false);
-  const [isHeroImageVisible, setIsHeroImageVisible] = useState(false);
+  const [showHeroImage, setShowHeroImage] = useState(cachedVideoDecision === false);
+  const [isHeroImageVisible, setIsHeroImageVisible] = useState(cachedVideoDecision === false);
+  const [skipHeroImageFade, setSkipHeroImageFade] = useState(cachedVideoDecision === false);
   const [isHeroMuted, setIsHeroMuted] = useState(true);
   const heroVideoRef = useRef<HTMLVideoElement | null>(null);
   const heroTransitionTimeouts = useRef<number[]>([]);
@@ -194,16 +198,60 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
   }, []);
 
   useEffect(() => {
-    const playTimeout = setTimeout(() => {
-      setIsHeroVideoVisible(true);
-      heroVideoRef.current?.play().catch(() => undefined);
-    }, 2000);
+    let isMounted = true;
+
+    const runGate = async () => {
+      const allowed = await shouldLoadVideo();
+      if (!isMounted) {
+        return;
+      }
+
+      setIsHeroVideoAllowed(allowed);
+      if (!allowed) {
+        clearHeroTransitionTimeouts();
+        setShowHeroVideo(false);
+        setShowHeroImage(true);
+        setIsHeroImageVisible(true);
+        setSkipHeroImageFade(true);
+      } else {
+        setSkipHeroImageFade(false);
+        setShowHeroVideo(true);
+      }
+    };
+
+    runGate();
 
     return () => {
-      clearTimeout(playTimeout);
+      isMounted = false;
       clearHeroTransitionTimeouts();
     };
   }, []);
+
+  useEffect(() => {
+    if (!isHeroVideoAllowed || !showHeroVideo) {
+      return;
+    }
+
+    const video = heroVideoRef.current;
+    if (!video) {
+      return;
+    }
+
+    if (!video.src) {
+      const src = video.dataset.src;
+      if (src) {
+        video.src = src;
+        video.load();
+      }
+    }
+
+    const playTimeout = window.setTimeout(() => {
+      setIsHeroVideoVisible(true);
+      video.play().catch(() => undefined);
+    }, 2000);
+
+    return () => clearTimeout(playTimeout);
+  }, [isHeroVideoAllowed, showHeroVideo]);
 
   useEffect(() => {
     if (heroVideoRef.current) {
@@ -212,7 +260,7 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
   }, [isHeroMuted]);
 
   useEffect(() => {
-    if (!showHeroImage) {
+    if (!showHeroImage || skipHeroImageFade) {
       return;
     }
 
@@ -313,7 +361,13 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
               </button>
               <button
                 type="button"
-                onClick={() => setIsPdfOpen(true)}
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+                    window.open('/Vostok_Sampler.pdf', '_blank', 'noopener,noreferrer');
+                    return;
+                  }
+                  setIsPdfOpen(true);
+                }}
                 className="btn-ghost text-center"
               >
                 See What's Inside
@@ -351,7 +405,7 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
                       className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ${
                         isHeroVideoVisible && !isHeroVideoFadingOut ? 'opacity-100' : 'opacity-0'
                       }`}
-                      src="/main_website_video_compressed.mp4"
+                      data-src="/main_website_video_compressed.mp4"
                       playsInline
                       onEnded={() => {
                         scheduleHeroImageTransition(0);
@@ -370,9 +424,9 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
                   <img
                     src="/vostok4.png"
                     alt="The Vostok Method"
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ${
-                      isHeroImageVisible ? 'opacity-100' : 'opacity-0'
-                    }`}
+                    className={`absolute inset-0 w-full h-full object-cover ${
+                      skipHeroImageFade ? 'opacity-100' : 'transition-opacity duration-[2000ms]'
+                    } ${isHeroImageVisible || skipHeroImageFade ? 'opacity-100' : 'opacity-0'}`}
                   />
                 )}
               </div>

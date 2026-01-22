@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { getCachedVideoDecision, shouldLoadVideo } from '../utils/videoGate';
 
 type AccessProtocolModalProps = {
   isOpen: boolean;
@@ -12,6 +13,8 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
   const [isVideoFading, setIsVideoFading] = useState(false);
   const [showPoster, setShowPoster] = useState(false);
   const [posterVisible, setPosterVisible] = useState(false);
+  const [skipPosterFade, setSkipPosterFade] = useState(false);
+  const [isVideoAllowed, setIsVideoAllowed] = useState<boolean | null>(getCachedVideoDecision());
 
   useEffect(() => {
     if (!isOpen || typeof document === 'undefined') {
@@ -39,10 +42,19 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
       return;
     }
 
+    const cachedDecision = getCachedVideoDecision();
+    setIsVideoAllowed(cachedDecision);
     setIsMuted(true);
     setIsVideoFading(false);
-    setShowPoster(false);
-    setPosterVisible(false);
+    if (cachedDecision === false) {
+      setShowPoster(true);
+      setPosterVisible(true);
+      setSkipPosterFade(true);
+    } else {
+      setShowPoster(false);
+      setPosterVisible(false);
+      setSkipPosterFade(false);
+    }
   }, [isOpen]);
 
   useEffect(() => {
@@ -61,13 +73,66 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
       return;
     }
 
+    if (skipPosterFade) {
+      setPosterVisible(true);
+      return;
+    }
+
     setPosterVisible(false);
     const raf = requestAnimationFrame(() => {
       setPosterVisible(true);
     });
 
     return () => cancelAnimationFrame(raf);
-  }, [showPoster]);
+  }, [showPoster, skipPosterFade]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    let isMounted = true;
+    const runGate = async () => {
+      const allowed = await shouldLoadVideo();
+      if (!isMounted) {
+        return;
+      }
+
+      setIsVideoAllowed(allowed);
+      if (!allowed) {
+        setShowPoster(true);
+        setPosterVisible(true);
+        setSkipPosterFade(true);
+      } else {
+        setShowPoster(false);
+        setPosterVisible(false);
+        setSkipPosterFade(false);
+      }
+    };
+
+    runGate();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !isVideoAllowed || showPoster || !videoRef.current) {
+      return;
+    }
+
+    const video = videoRef.current;
+    if (!video.src) {
+      const src = video.dataset.src;
+      if (src) {
+        video.src = src;
+        video.load();
+      }
+    }
+
+    video.play().catch(() => undefined);
+  }, [isOpen, isVideoAllowed, showPoster]);
 
   if (!isOpen) {
     return null;
@@ -102,8 +167,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                       className={`h-full w-auto transition-opacity duration-[2000ms] ${
                         isVideoFading ? 'opacity-0' : 'opacity-100'
                       }`}
-                      src="/compressed-buyvideo.mp4"
-                      autoPlay
+                      data-src="/compressed-buyvideo.mp4"
                       playsInline
                       onLoadedMetadata={() => {
                         if (videoRef.current) {
@@ -135,9 +199,9 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   <img
                     src="/vostok4.png"
                     alt="The Vostok Method"
-                    className={`h-full w-auto transition-opacity duration-1000 ${
-                      posterVisible ? 'opacity-100' : 'opacity-0'
-                    }`}
+                    className={`h-full w-auto ${
+                      skipPosterFade ? 'opacity-100' : 'transition-opacity duration-1000'
+                    } ${posterVisible || skipPosterFade ? 'opacity-100' : 'opacity-0'}`}
                   />
                   </div>
                   <div className="protocol-video-scanlines" aria-hidden="true" />
