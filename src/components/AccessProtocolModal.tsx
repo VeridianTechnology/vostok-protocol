@@ -248,7 +248,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   'Least supportive to creators',
                 ],
                 cta: 'Amazon Books',
-                disabled: true,
+                href: 'https://www.amazon.com/dp/B0GJ68C73Q',
                 color: '#FFCA5F',
               },
               {
