@@ -6,7 +6,7 @@ type PricingSectionProps = {
 
 const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
   return (
-    <section id="pricing" className="py-20 md:py-24 px-4 md:px-8">
+    <section id="pricing" className="py-10 md:py-14 px-4 md:px-8">
       <div className="container mx-auto max-w-2xl">
         <div className="glass-card rounded-2xl p-8 md:p-12 text-center relative overflow-hidden">
           {/* Glow effect */}
@@ -25,14 +25,10 @@ const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
               <p className="text-xl text-vostok-text font-semibold">
                 The Vostok Method
               </p>
-              <p className="text-vostok-muted">
+              <p className="hidden text-vostok-muted" aria-hidden="true">
                 Complete 276-page PDF Protocol
               </p>
             </div>
-            
-            <p className="text-vostok-muted max-w-md mx-auto">
-              No gimmicks. No cosmetic procedures required. Just structured protocols and consistency.
-            </p>
             
             <div className="space-y-4">
               <button

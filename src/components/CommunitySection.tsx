@@ -5,7 +5,7 @@ const CommunitySection = () => {
   const [showLock, setShowLock] = useState(false);
 
   return (
-    <section className="py-20 md:py-24 px-4 md:px-8">
+    <section className="hidden py-10 md:py-14 px-4 md:px-8" aria-hidden="true">
       <div className="container mx-auto max-w-3xl">
         <div className="glass-card rounded-2xl p-8 md:p-12 text-center space-y-8 border-2 border-vostok-neon/40">
           <div className="w-20 h-20 rounded-2xl bg-vostok-mid/50 flex items-center justify-center mx-auto border border-vostok-neon/30">

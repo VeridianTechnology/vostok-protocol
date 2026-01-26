@@ -11,7 +11,7 @@ const items = [
 
 const IncludedSection = () => {
   return (
-    <section className="py-20 md:py-24 px-4 md:px-8">
+    <section className="hidden py-10 md:py-14 px-4 md:px-8" aria-hidden="true">
       <div className="container mx-auto max-w-4xl">
         <div className="glass-card rounded-2xl p-8 md:p-12">
           <div className="text-center mb-12 space-y-4">

@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { getCachedVideoDecision, shouldLoadVideo } from '../utils/videoGate';
 
 type AccessProtocolModalProps = {
   isOpen: boolean;
@@ -8,14 +7,6 @@ type AccessProtocolModalProps = {
 };
 
 const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const [isVideoFading, setIsVideoFading] = useState(false);
-  const [showPoster, setShowPoster] = useState(false);
-  const [posterVisible, setPosterVisible] = useState(false);
-  const [skipPosterFade, setSkipPosterFade] = useState(false);
-  const [isVideoAllowed, setIsVideoAllowed] = useState<boolean | null>(getCachedVideoDecision());
-
   useEffect(() => {
     if (!isOpen || typeof document === 'undefined') {
       return;
@@ -36,103 +27,6 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
       document.body.style.overflow = originalOverflow;
     };
   }, [isOpen, onClose]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    const cachedDecision = getCachedVideoDecision();
-    setIsVideoAllowed(cachedDecision);
-    setIsMuted(true);
-    setIsVideoFading(false);
-    if (cachedDecision === false) {
-      setShowPoster(true);
-      setPosterVisible(true);
-      setSkipPosterFade(true);
-    } else {
-      setShowPoster(false);
-      setPosterVisible(false);
-      setSkipPosterFade(false);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen || !videoRef.current) {
-      return;
-    }
-
-    videoRef.current.muted = isMuted;
-    if (!isMuted) {
-      videoRef.current.volume = 0.7;
-    }
-  }, [isMuted, isOpen]);
-
-  useEffect(() => {
-    if (!showPoster) {
-      return;
-    }
-
-    if (skipPosterFade) {
-      setPosterVisible(true);
-      return;
-    }
-
-    setPosterVisible(false);
-    const raf = requestAnimationFrame(() => {
-      setPosterVisible(true);
-    });
-
-    return () => cancelAnimationFrame(raf);
-  }, [showPoster, skipPosterFade]);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    let isMounted = true;
-    const runGate = async () => {
-      const allowed = await shouldLoadVideo();
-      if (!isMounted) {
-        return;
-      }
-
-      setIsVideoAllowed(allowed);
-      if (!allowed) {
-        setShowPoster(true);
-        setPosterVisible(true);
-        setSkipPosterFade(true);
-      } else {
-        setShowPoster(false);
-        setPosterVisible(false);
-        setSkipPosterFade(false);
-      }
-    };
-
-    runGate();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen || !isVideoAllowed || showPoster || !videoRef.current) {
-      return;
-    }
-
-    const video = videoRef.current;
-    if (!video.src) {
-      const src = video.dataset.src;
-      if (src) {
-        video.src = src;
-        video.load();
-      }
-    }
-
-    video.play().catch(() => undefined);
-  }, [isOpen, isVideoAllowed, showPoster]);
 
   if (!isOpen) {
     return null;
@@ -155,61 +49,9 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
         >
           X
         </button>
-        <div className="protocol-scroll h-full w-full flex flex-col gap-6 p-6 sm:p-10 overflow-y-auto">
-          <div className="flex-none flex items-center justify-center">
-            <div className="relative w-full rounded-2xl border border-vostok-neon/25 bg-black shadow-inner flex items-center justify-center overflow-hidden">
-              {!showPoster ? (
-                <>
-                  <div className="protocol-video-frame">
-                    <div className="protocol-video-inner">
-                    <video
-                      ref={videoRef}
-                      className={`h-full w-auto transition-opacity duration-[2000ms] ${
-                        isVideoFading ? 'opacity-0' : 'opacity-100'
-                      }`}
-                      data-src="/compressed-buyvideo.mp4"
-                      playsInline
-                      onLoadedMetadata={() => {
-                        if (videoRef.current) {
-                          videoRef.current.volume = 0.7;
-                        }
-                      }}
-                      onEnded={() => {
-                        setIsVideoFading(true);
-                        window.setTimeout(() => {
-                          setShowPoster(true);
-                          setIsVideoFading(false);
-                        }, 2000);
-                      }}
-                    />
-                    </div>
-                    <div className="protocol-video-scanlines" aria-hidden="true" />
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsMuted((prev) => !prev)}
-                    className="absolute top-3 left-3 rounded-full border border-vostok-neon/40 bg-black/70 px-3 py-1 text-xs font-mono text-vostok-neon hover:bg-black/90 transition"
-                  >
-                    {isMuted ? 'AUDIO OFF' : 'AUDIO ON'}
-                  </button>
-                </>
-              ) : (
-                <div className="protocol-video-frame">
-                  <div className="protocol-video-inner">
-                  <img
-                    src="/vostok4.png"
-                    alt="The Vostok Method"
-                    className={`h-full w-auto ${
-                      skipPosterFade ? 'opacity-100' : 'transition-opacity duration-1000'
-                    } ${posterVisible || skipPosterFade ? 'opacity-100' : 'opacity-0'}`}
-                  />
-                  </div>
-                  <div className="protocol-video-scanlines" aria-hidden="true" />
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="flex-[1] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="protocol-scroll h-full w-full flex flex-col gap-4 p-5 sm:p-8 overflow-y-auto">
+          <div className="w-full max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center">
             {[
               {
                 title: '1. Creator Direct (Gumroad) — Recommended',
@@ -268,11 +110,11 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
             ].map((card) => (
               <div
                 key={card.title}
-                className="flex flex-col justify-between rounded-2xl border border-vostok-neon/25 bg-black/60 p-5 shadow-lg"
+                className="flex w-full max-w-[240px] min-h-[360px] flex-col justify-between rounded-2xl border border-vostok-neon/25 bg-black/60 p-4 pt-5 shadow-lg"
               >
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold text-vostok-neon">{card.title}</h3>
-                  <ul className="space-y-2 text-sm text-vostok-muted list-disc list-inside">
+                <div className="space-y-3">
+                  <h3 className="text-base font-semibold text-vostok-neon">{card.title}</h3>
+                  <ul className="space-y-1 text-xs text-vostok-muted list-disc list-inside">
                     {card.bullets.map((bullet) => (
                       <li key={bullet}>{bullet}</li>
                     ))}
@@ -283,7 +125,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                     href={card.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-5 w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition hover:brightness-110 text-center"
+                    className="mt-4 w-full rounded-full px-5 py-3 text-sm font-semibold text-black transition hover:brightness-110 text-center"
                     style={{ backgroundColor: card.color }}
                   >
                     {card.cta}
@@ -292,7 +134,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                   <button
                     type="button"
                     disabled={card.disabled}
-                    className={`mt-5 w-full rounded-full px-6 py-3 text-sm font-semibold text-black transition ${
+                    className={`mt-4 w-full rounded-full px-5 py-3 text-sm font-semibold text-black transition ${
                       card.disabled ? 'cursor-not-allowed opacity-50' : 'hover:brightness-110'
                     }`}
                     style={{ backgroundColor: card.color }}
@@ -302,6 +144,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
                 )}
               </div>
             ))}
+            </div>
           </div>
         </div>
       </div>

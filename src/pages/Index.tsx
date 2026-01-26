@@ -9,7 +9,6 @@ import ModulesSection from '@/components/ModulesSection';
 import TestimonialsSection from '@/components/TestimonialsSection';
 import PricingSection from '@/components/PricingSection';
 import CommunitySection from '@/components/CommunitySection';
-import FaqSection from '@/components/FaqSection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
@@ -19,7 +18,6 @@ const Index = () => {
     <HudBackground>
       <HeroSection
         onOpenProtocol={() => setIsProtocolOpen(true)}
-        isProtocolOpen={isProtocolOpen}
       />
       <PremiseSection />
       <LearnSection />
@@ -28,7 +26,6 @@ const Index = () => {
       <TestimonialsSection />
       <PricingSection onOpenProtocol={() => setIsProtocolOpen(true)} />
       <CommunitySection />
-      <FaqSection />
       <Footer />
       <AccessProtocolModal isOpen={isProtocolOpen} onClose={() => setIsProtocolOpen(false)} />
     </HudBackground>

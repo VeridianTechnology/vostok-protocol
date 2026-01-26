@@ -1,15 +1,5 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import PdfModal from './PdfModal';
-import { getCachedVideoDecision, shouldLoadVideo } from '../utils/videoGate';
-
-type CaretStyle = CSSProperties & {
-  '--caret-delay'?: string;
-};
-
-const statusText = 'PROTOCOL ACTIVE';
-const caretStepSeconds = 10;
-const statusLetters = statusText.replace(/\s+/g, '');
-const caretCycleSeconds = statusLetters.length * caretStepSeconds;
 
 type HeroStatement = {
   primary: string;
@@ -18,13 +8,13 @@ type HeroStatement = {
 
 type HeroSectionProps = {
   onOpenProtocol: () => void;
-  isProtocolOpen: boolean;
 };
 
 const heroStatements: HeroStatement[] = [
   {
-    primary: 'The face outranks everything.',
-    secondary: 'Height, money, status—secondary variables.',
+    primary: 'The #1 LooksMaxxing Guide - Worldwide',
+    secondary:
+      'Over 120+ exercises, 30+ massages, Dozens of explanations for the full sculpting and reshaping of the face.',
   },
   {
     primary: 'Your face is the primary stat.',
@@ -104,75 +94,11 @@ const heroStatements: HeroStatement[] = [
   },
 ];
 
-const secondLineDelay = 2200;
-const minDisplayDuration = 6000;
-const maxDisplayDuration = 10000;
-const heroVideoFadeDurationMs = 2000;
-const heroVideoClickDelayMs = 3000;
-
-const getDisplayDuration = ({ primary, secondary }: HeroStatement) => {
-  const totalLength = primary.length + secondary.length;
-  const normalized = Math.min(totalLength / 140, 1);
-  return Math.round(minDisplayDuration + (maxDisplayDuration - minDisplayDuration) * normalized);
-};
-
-const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
-  const cachedVideoDecision = getCachedVideoDecision();
-  const [statementIndex, setStatementIndex] = useState(0);
-  const [showSecondLine, setShowSecondLine] = useState(false);
+const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
+  const statementIndex = 0;
+  const [showSecondLine] = useState(true);
   const [isButtonShining, setIsButtonShining] = useState(false);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
-  const [isHeroVideoAllowed, setIsHeroVideoAllowed] = useState<boolean | null>(cachedVideoDecision);
-  const [showHeroVideo, setShowHeroVideo] = useState(cachedVideoDecision !== false);
-  const [isHeroVideoVisible, setIsHeroVideoVisible] = useState(false);
-  const [isHeroVideoFadingOut, setIsHeroVideoFadingOut] = useState(false);
-  const [showHeroImage, setShowHeroImage] = useState(cachedVideoDecision === false);
-  const [isHeroImageVisible, setIsHeroImageVisible] = useState(cachedVideoDecision === false);
-  const [skipHeroImageFade, setSkipHeroImageFade] = useState(cachedVideoDecision === false);
-  const [isHeroMuted, setIsHeroMuted] = useState(true);
-  const heroVideoRef = useRef<HTMLVideoElement | null>(null);
-  const heroTransitionTimeouts = useRef<number[]>([]);
-
-  const clearHeroTransitionTimeouts = () => {
-    heroTransitionTimeouts.current.forEach((timeoutId) => {
-      window.clearTimeout(timeoutId);
-    });
-    heroTransitionTimeouts.current = [];
-  };
-
-  const scheduleHeroImageTransition = (delayMs: number) => {
-    if (!showHeroVideo || isHeroVideoFadingOut || showHeroImage) {
-      return;
-    }
-
-    clearHeroTransitionTimeouts();
-
-    const startTimeout = window.setTimeout(() => {
-      setIsHeroVideoFadingOut(true);
-      const finishTimeout = window.setTimeout(() => {
-        setShowHeroVideo(false);
-        setShowHeroImage(true);
-        setIsHeroVideoFadingOut(false);
-      }, heroVideoFadeDurationMs);
-      heroTransitionTimeouts.current.push(finishTimeout);
-    }, delayMs);
-
-    heroTransitionTimeouts.current.push(startTimeout);
-  };
-
-  useEffect(() => {
-    setShowSecondLine(false);
-    const revealTimeout = setTimeout(() => setShowSecondLine(true), secondLineDelay);
-    const rotationTimeout = setTimeout(
-      () => setStatementIndex((prev) => (prev + 1) % heroStatements.length),
-      getDisplayDuration(heroStatements[statementIndex])
-    );
-
-    return () => {
-      clearTimeout(revealTimeout);
-      clearTimeout(rotationTimeout);
-    };
-  }, [statementIndex]);
 
   useEffect(() => {
     let activationTimeout: ReturnType<typeof setTimeout>;
@@ -197,139 +123,13 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
     };
   }, []);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    const runGate = async () => {
-      const allowed = await shouldLoadVideo();
-      if (!isMounted) {
-        return;
-      }
-
-      setIsHeroVideoAllowed(allowed);
-      if (!allowed) {
-        clearHeroTransitionTimeouts();
-        setShowHeroVideo(false);
-        setShowHeroImage(true);
-        setIsHeroImageVisible(true);
-        setSkipHeroImageFade(true);
-      } else {
-        setSkipHeroImageFade(false);
-        setShowHeroVideo(true);
-      }
-    };
-
-    runGate();
-
-    return () => {
-      isMounted = false;
-      clearHeroTransitionTimeouts();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!isHeroVideoAllowed || !showHeroVideo) {
-      return;
-    }
-
-    const video = heroVideoRef.current;
-    if (!video) {
-      return;
-    }
-
-    if (!video.src) {
-      const src = video.dataset.src;
-      if (src) {
-        video.src = src;
-        video.load();
-      }
-    }
-
-    const playTimeout = window.setTimeout(() => {
-      setIsHeroVideoVisible(true);
-      video.play().catch(() => undefined);
-    }, 2000);
-
-    return () => clearTimeout(playTimeout);
-  }, [isHeroVideoAllowed, showHeroVideo]);
-
-  useEffect(() => {
-    if (heroVideoRef.current) {
-      heroVideoRef.current.muted = isHeroMuted;
-    }
-  }, [isHeroMuted]);
-
-  useEffect(() => {
-    if (!showHeroImage || skipHeroImageFade) {
-      return;
-    }
-
-    setIsHeroImageVisible(false);
-    const raf = requestAnimationFrame(() => {
-      setIsHeroImageVisible(true);
-    });
-
-    return () => cancelAnimationFrame(raf);
-  }, [showHeroImage]);
-
-  const handleHeroFrameClick = () => {
-    if (!showHeroVideo) {
-      return;
-    }
-
-    const video = heroVideoRef.current;
-    if (video && !video.paused) {
-      video.pause();
-    }
-
-    scheduleHeroImageTransition(heroVideoClickDelayMs);
-  };
-
-  useEffect(() => {
-    if (isProtocolOpen) {
-      handleHeroFrameClick();
-    }
-  }, [isProtocolOpen]);
-
   return (
-    <section className="min-h-screen flex items-center py-20 px-4 md:px-8">
+    <section className="min-h-screen flex items-center py-10 md:py-14 px-4 md:px-8">
       <div className="container mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Content */}
-          <div className="space-y-8 animate-fade-in-up">
-            <div className="space-y-2">
-              <p
-                className="font-mono text-sm text-vostok-neon tracking-widest uppercase flex items-center gap-1"
-                style={{ '--caret-cycle': `${caretCycleSeconds}s` } as CSSProperties}
-              >
-                <span>[</span>
-                {(() => {
-                  let caretIndex = -1;
-                  return statusText.split('').map((char, index) => {
-                    if (char === ' ') {
-                      return (
-                        <span key={`space-${index}`} className="px-1">
-                          &nbsp;
-                        </span>
-                      );
-                    }
-                    caretIndex += 1;
-                    return (
-                      <span
-                        key={`caret-${index}-${char}`}
-                        className="caret-letter"
-                        style={{ '--caret-delay': `${caretIndex * caretStepSeconds}s` } as CaretStyle}
-                      >
-                        {char}
-                      </span>
-                    );
-                  });
-                })()}
-                <span>]</span>
-              </p>
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight">
+          <div className="space-y-10 md:space-y-12 animate-fade-in-up">
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
               <span className="text-glow text-vostok-neon">The Vostok</span>
               <br />
               <span>Method</span>
@@ -348,11 +148,10 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-4 pt-10">
               <button
                 type="button"
                 onClick={() => {
-                  handleHeroFrameClick();
                   onOpenProtocol();
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
@@ -374,14 +173,6 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
               </button>
             </div>
             
-            <div className="flex items-center gap-6 pt-4 text-sm text-vostok-muted font-mono">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 bg-vostok-neon rounded-full animate-pulse" />
-                276 Pages
-              </span>
-              <span>•</span>
-              <span>Instant Access</span>
-            </div>
           </div>
           
           {/* Right: Hero Image */}
@@ -392,43 +183,11 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
             {/* Image container with HUD overlay */}
             <div className="relative glass-card rounded-2xl overflow-hidden">
               <div className="relative w-full aspect-[3/4] bg-black">
-                {showHeroVideo && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleHeroFrameClick}
-                      className="absolute inset-0 z-10 cursor-pointer bg-transparent"
-                      aria-label="Pause video and show poster"
-                    />
-                    <video
-                      ref={heroVideoRef}
-                      className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[2000ms] ${
-                        isHeroVideoVisible && !isHeroVideoFadingOut ? 'opacity-100' : 'opacity-0'
-                      }`}
-                      data-src="/main_website_video_compressed.mp4"
-                      playsInline
-                      onEnded={() => {
-                        scheduleHeroImageTransition(0);
-                      }}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setIsHeroMuted((prev) => !prev)}
-                      className="absolute top-3 right-3 z-20 rounded-full border border-vostok-neon/40 bg-black/70 px-3 py-1 text-xs font-mono text-vostok-neon hover:bg-black/90 transition"
-                    >
-                      {isHeroMuted ? 'AUDIO OFF' : 'AUDIO ON'}
-                    </button>
-                  </>
-                )}
-                {showHeroImage && (
-                  <img
-                    src="/vostok4.png"
-                    alt="The Vostok Method"
-                    className={`absolute inset-0 w-full h-full object-cover ${
-                      skipHeroImageFade ? 'opacity-100' : 'transition-opacity duration-[2000ms]'
-                    } ${isHeroImageVisible || skipHeroImageFade ? 'opacity-100' : 'opacity-0'}`}
-                  />
-                )}
+                <img
+                  src="/vostok4.png"
+                  alt="The Vostok Method"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
               </div>
               
               {/* HUD overlay lines */}
@@ -440,9 +199,7 @@ const HeroSection = ({ onOpenProtocol, isProtocolOpen }: HeroSectionProps) => {
                 <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-vostok-neon/50" />
                 
                 {/* Scan line */}
-                {showHeroImage && (
-                  <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-vostok-neon/60 to-transparent top-1/3" />
-                )}
+                <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-vostok-neon/60 to-transparent top-1/3" />
                 
                 {/* Data readout */}
                 <div className="absolute bottom-6 left-6 font-mono text-xs text-vostok-neon/70">

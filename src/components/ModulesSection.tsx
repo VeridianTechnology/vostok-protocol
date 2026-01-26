@@ -19,7 +19,7 @@ const ModulesSection = () => {
   const [tappedIndex, setTappedIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-20 md:py-24 px-4 md:px-8 overflow-hidden">
+    <section className="py-10 md:py-14 px-4 md:px-8 overflow-hidden">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4">
           <p className="font-mono text-sm text-vostok-neon tracking-widest uppercase">
