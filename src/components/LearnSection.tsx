@@ -26,9 +26,9 @@ const features = [
     image: '/Examples/skull.jpg',
   },
   {
-    title: 'Seductive & Cute Ears',
+    title: 'Quiet Irresistibility',
     description:
-      'Develop with secret techniques - a way to deage yourself through your ears and develop a perfect point and look to your ears',
+      'Learn discreet techniques that refine micro-features and enhance your entire presence. These are trade secrets you won’t find anywhere else.',
     image: '/Examples/ears.jpg',
   },
   {
