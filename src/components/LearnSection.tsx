@@ -76,10 +76,10 @@ const LearnSection = () => {
                   <div className="learn-card-back">
                     <div className="learn-card-back-content">
                       <div className="learn-card-back-text">
-                        <h3 className="text-lg font-semibold text-vostok-neon">
+                        <h3 className="text-base sm:text-lg font-semibold text-vostok-neon">
                           {feature.title}
                         </h3>
-                        <p className="text-sm text-vostok-muted leading-relaxed">
+                        <p className="text-xs sm:text-sm text-vostok-muted leading-relaxed">
                           {feature.description}
                         </p>
                       </div>
