@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { track } from '@vercel/analytics';
 import PdfModal from './PdfModal';
 
@@ -11,7 +11,7 @@ const heroStatements: HeroStatement[] = [
   {
     primary: 'The #1 LooksMaxxing Guide - Worldwide',
     secondary:
-      'The full facial mastery system—no gaps, no fluff, all transformation.',
+      '11 chapters, 150+ techniques: exercises, massages, and structural corrections for every facial muscle.',
   },
   {
     primary: 'Your face is the primary stat.',
@@ -93,38 +93,14 @@ const heroStatements: HeroStatement[] = [
 
 const HeroSection = () => {
   const statementIndex = 0;
-  const [isButtonShining, setIsButtonShining] = useState(false);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
 
-  useEffect(() => {
-    let activationTimeout: ReturnType<typeof setTimeout>;
-    let shineTimeout: ReturnType<typeof setTimeout>;
-
-    const scheduleShine = () => {
-      const delay = 30000 + Math.random() * 15000;
-      activationTimeout = setTimeout(() => {
-        setIsButtonShining(true);
-        shineTimeout = setTimeout(() => {
-          setIsButtonShining(false);
-          scheduleShine();
-        }, 6000);
-      }, delay);
-    };
-
-    scheduleShine();
-
-    return () => {
-      clearTimeout(activationTimeout);
-      clearTimeout(shineTimeout);
-    };
-  }, []);
-
   return (
-    <section className="min-h-screen flex items-center py-10 md:py-14 px-4 md:px-8">
+    <section className="md:min-h-screen flex items-start md:items-center py-6 md:py-14 px-4 md:px-8">
       <div className="container mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Content */}
-          <div className="space-y-10 md:space-y-12">
+          <div className="space-y-6 md:space-y-12">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
               <span className="text-vostok-text">The Vostok</span>
               <br />
@@ -140,20 +116,20 @@ const HeroSection = () => {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4 pt-10">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-10">
               <a
                 href="https://amoxcenturion.gumroad.com/l/vostokmethod"
                 onClick={() => {
-                  track('cta_click', { cta: 'break_looks_ceiling', section: 'hero' });
+                  track('sales_page click', { cta: 'break_looks_ceiling', section: 'hero' });
                 }}
-                className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
+                className="btn-neon text-center hidden md:inline-flex"
               >
                 Break the Looks Ceiling
               </a>
               <button
                 type="button"
                 onClick={() => {
-                  track('cta_click', { cta: 'see_whats_inside', section: 'hero' });
+                  track('sales_page click', { cta: 'see_whats_inside', section: 'hero' });
                   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
                     window.open('/Vostok_Sampler.pdf', '_blank', 'noopener,noreferrer');
                     return;
@@ -169,7 +145,7 @@ const HeroSection = () => {
           </div>
           
           {/* Right: Hero Image */}
-          <div className="relative animate-fade-in-up animation-delay-200">
+          <div className="relative animate-fade-in-up animation-delay-200 hidden sm:block">
             {/* Glow behind image */}
             <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
             

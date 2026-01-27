@@ -14,7 +14,7 @@ const Lite = () => {
           </p>
         </div>
 
-        <div className="w-full overflow-hidden rounded-2xl border border-vostok-neon/20 bg-black/40">
+        <div className="w-full overflow-hidden rounded-2xl border border-vostok-neon/20 bg-black/40 hidden sm:block">
           <img
             src="/main_simple.jpg"
             alt="The Vostok Method"

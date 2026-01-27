@@ -50,8 +50,8 @@ const AnalyticsEvents = () => {
       return;
     }
 
-    const thresholds = [25, 50, 75, 90];
-    const firedThresholds = new Set<number>();
+    const threshold = 50;
+    let firedScrollDepth = false;
     let ticking = false;
     let rafId: number | null = null;
 
@@ -69,12 +69,10 @@ const AnalyticsEvents = () => {
           return;
         }
         const percent = Math.round((scrollTop / scrollHeight) * 100);
-        thresholds.forEach((threshold) => {
-          if (percent >= threshold && !firedThresholds.has(threshold)) {
-            firedThresholds.add(threshold);
-            track("scroll_depth", { percent: threshold });
-          }
-        });
+        if (percent >= threshold && !firedScrollDepth) {
+          firedScrollDepth = true;
+          track("scroll_depth", { percent: threshold });
+        }
       });
     };
 
