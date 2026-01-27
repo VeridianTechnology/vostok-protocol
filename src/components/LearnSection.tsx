@@ -4,32 +4,32 @@ const features = [
   {
     title: 'Jaw & Neck Foundation',
     description: 'Strengthen the structural base that defines your entire facial silhouette.',
-    image: '/Examples/jaw.png',
+    image: '/Examples/jaw.jpg',
   },
   {
     title: 'Cheeks & Midface Tone',
     description: 'Refine volume, lift, and symmetry across the central face.',
-    image: '/Examples/cheeks.png',
+    image: '/Examples/cheeks.jpg',
   },
   {
     title: 'Eyes & Expression',
     description: 'Train the orbital muscles that shape intensity and presence.',
-    image: '/Examples/eyes.png',
+    image: '/Examples/eyes.jpg',
   },
   {
     title: 'Skin & Lifestyle',
     description: 'Daily systems that keep definition visible and consistent.',
-    image: '/Examples/skull.png',
+    image: '/Examples/skull.jpg',
   },
   {
     title: 'De-Puffing & Habits',
     description: 'Rebalance fullness and structure for a more defined profile.',
-    image: '/Examples/ears.png',
+    image: '/Examples/ears.jpg',
   },
   {
     title: 'Consistency Framework',
     description: 'Structure your sessions for compounding, predictable progress.',
-    image: '/Examples/face.png',
+    image: '/Examples/face.jpg',
   },
 ];
 
@@ -41,9 +41,6 @@ const LearnSection = () => {
     <section id="learn" className="py-10 md:py-14 px-4 md:px-8">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-10 space-y-2">
-          <p className="font-mono text-sm text-vostok-neon tracking-widest uppercase">
-            [ PROTOCOL MODULES ]
-          </p>
           <h2 className="text-4xl md:text-5xl font-bold text-vostok-text">
             What You'll Learn
           </h2>

@@ -39,7 +39,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-3 sm:px-6">
       <div className="absolute inset-0 bg-black/85" onClick={onClose} aria-hidden="true" />
-      <div className="relative w-[98vw] h-[92vh] sm:w-[95vw] sm:h-[90vh] max-w-[96vw] bg-black border border-vostok-neon/30 shadow-2xl rounded-xl overflow-hidden">
+      <div className="relative w-[98vw] h-[92vh] sm:w-[95vw] sm:h-[90vh] max-w-[96vw] bg-vostok-bg border border-vostok-neon/30 shadow-2xl rounded-xl overflow-hidden">
         <button
           type="button"
           onClick={onClose}
@@ -49,9 +49,9 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
         >
           X
         </button>
-        <div className="protocol-scroll h-full w-full flex flex-col gap-4 p-5 sm:p-8 overflow-y-auto">
+        <div className="protocol-scroll h-full w-full flex flex-col items-center justify-center gap-4 p-5 sm:p-8 overflow-y-auto">
           <div className="w-full max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 place-items-center justify-items-center">
             {[
               {
                 title: '1. Creator Direct (Gumroad) — Recommended',

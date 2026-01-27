@@ -1,11 +1,9 @@
 import { ReactNode } from 'react';
 
 const matrixStreams = [
-  { left: '8%', delay: '0s', duration: '26s', text: '1010VOSTOK0101' },
-  { left: '24%', delay: '6s', duration: '28s', text: 'PROTOCOLACTIVE' },
-  { left: '48%', delay: '3s', duration: '24s', text: 'FORMPRESENCE' },
-  { left: '72%', delay: '10s', duration: '30s', text: 'STRUCTURE001' },
-  { left: '88%', delay: '14s', duration: '26s', text: 'JAWNECKTONE' },
+  { left: '12%', delay: '0s', duration: '26s', text: '1010VOSTOK0101' },
+  { left: '48%', delay: '4s', duration: '28s', text: 'FORMPRESENCE' },
+  { left: '82%', delay: '9s', duration: '30s', text: 'STRUCTURE001' },
 ];
 
 interface HudBackgroundProps {
@@ -21,15 +19,12 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
       {/* Floating HUD rectangles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         {/* Large floating boxes */}
-        <div className="absolute top-[10%] left-[5%] w-48 h-32 hud-box rotate-12 animate-float opacity-30" />
-        <div className="absolute top-[30%] right-[8%] w-64 h-20 hud-box -rotate-6 animate-float-slow opacity-20" />
-        <div className="absolute top-[60%] left-[15%] w-40 h-40 hud-box rotate-3 animate-float opacity-25" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-[75%] right-[20%] w-56 h-24 hud-box -rotate-12 animate-float-slow opacity-20" style={{ animationDelay: '4s' }} />
-        <div className="absolute top-[45%] left-[60%] w-32 h-48 hud-box rotate-6 animate-float opacity-15" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-[12%] left-[6%] w-48 h-32 hud-box rotate-12 animate-float opacity-30" />
+        <div className="absolute top-[38%] right-[10%] w-64 h-20 hud-box -rotate-6 animate-float-slow opacity-20" />
+        <div className="absolute top-[60%] left-[18%] w-40 h-40 hud-box rotate-3 animate-float opacity-25" style={{ animationDelay: '2s' }} />
         
         {/* Small accent boxes */}
         <div className="absolute top-[20%] left-[40%] w-16 h-16 hud-box rotate-45 animate-pulse-glow" />
-        <div className="absolute top-[80%] left-[70%] w-20 h-12 hud-box -rotate-12 animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
         
         {/* Code strings / data streams */}
         <div className="absolute top-[15%] right-[30%] font-mono text-xs text-vostok-neon/10 rotate-90 whitespace-nowrap">

@@ -4,7 +4,7 @@ const Footer = () => {
       <div className="container mx-auto max-w-7xl">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="text-center md:text-left">
-            <h3 className="text-4xl md:text-5xl font-bold text-vostok-neon text-glow">
+            <h3 className="text-4xl md:text-5xl font-bold text-vostok-text">
               The Vostok Method
             </h3>
           </div>

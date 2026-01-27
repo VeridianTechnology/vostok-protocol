@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 type PdfModalProps = {
@@ -8,8 +8,11 @@ type PdfModalProps = {
 };
 
 const PdfModal = ({ isOpen, onClose, pdfSrc }: PdfModalProps) => {
+  const [isPdfLoaded, setIsPdfLoaded] = useState(false);
+
   useEffect(() => {
     if (!isOpen || typeof document === 'undefined') {
+      setIsPdfLoaded(false);
       return;
     }
 
@@ -57,12 +60,23 @@ const PdfModal = ({ isOpen, onClose, pdfSrc }: PdfModalProps) => {
           X
         </button>
         <div className="pdf-frame w-full h-full">
-          <iframe
-            title="The Vostok Method Sampler"
-            src={`${pdfSrc}#toolbar=0&navpanes=0&scrollbar=0`}
-            className="pdf-embed"
-            loading="lazy"
-          />
+          {isPdfLoaded ? (
+            <iframe
+              title="The Vostok Method Sampler"
+              src={`${pdfSrc}#toolbar=0&navpanes=0&scrollbar=0`}
+              className="pdf-embed"
+            />
+          ) : (
+            <div className="w-full h-full flex flex-col items-center justify-center gap-6 bg-black/80 px-6 text-center">
+              <button
+                type="button"
+                onClick={() => setIsPdfLoaded(true)}
+                className="btn-neon text-center"
+              >
+                Open Sample (PDF)
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>,

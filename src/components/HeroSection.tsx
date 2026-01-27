@@ -96,7 +96,6 @@ const heroStatements: HeroStatement[] = [
 
 const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
   const statementIndex = 0;
-  const [showSecondLine] = useState(true);
   const [isButtonShining, setIsButtonShining] = useState(false);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
 
@@ -128,9 +127,9 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
       <div className="container mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Content */}
-          <div className="space-y-10 md:space-y-12 animate-fade-in-up">
+          <div className="space-y-10 md:space-y-12">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
-              <span className="text-glow text-vostok-neon">The Vostok</span>
+              <span className="text-vostok-text">The Vostok</span>
               <br />
               <span>Method</span>
             </h1>
@@ -139,11 +138,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
                 {heroStatements[statementIndex].primary}
               </p>
-              <p
-                className={`text-xl md:text-2xl text-vostok-neon font-semibold secondary-line ${
-                  showSecondLine ? 'secondary-line-visible' : ''
-                }`}
-              >
+              <p className="text-xl md:text-2xl text-vostok-neon font-semibold">
                 {heroStatements[statementIndex].secondary}
               </p>
             </div>
@@ -156,7 +151,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
               >
-                Access The Method
+                Change Your Life
               </button>
               <button
                 type="button"
@@ -178,13 +173,13 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
           {/* Right: Hero Image */}
           <div className="relative animate-fade-in-up animation-delay-200">
             {/* Glow behind image */}
-            <div className="absolute inset-0 bg-vostok-neon/20 blur-3xl rounded-full scale-75" />
+            <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
             
             {/* Image container with HUD overlay */}
             <div className="relative glass-card rounded-2xl overflow-hidden">
               <div className="relative w-full aspect-[3/4] bg-black">
                 <img
-                  src="/vostok4.png"
+                  src="/main_simple.jpg"
                   alt="The Vostok Method"
                   className="absolute inset-0 w-full h-full object-cover"
                 />

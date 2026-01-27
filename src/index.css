@@ -116,7 +116,6 @@
     opacity: 0;
     animation: red-glow-burst 60s linear infinite;
     pointer-events: none;
-    filter: blur(2px);
     z-index: 5;
   }
   
@@ -470,8 +469,7 @@
   
   /* Glassmorphism card */
   .glass-card {
-    background: rgba(11, 31, 11, 0.7);
-    backdrop-filter: blur(12px);
+    background: rgba(11, 31, 11, 0.82);
     border: 1px solid var(--vostok-glow);
     box-shadow: var(--glow-sm), inset 0 1px 0 rgba(126, 243, 129, 0.1);
   }
@@ -679,6 +677,31 @@
     font-size: 0.8rem;
     animation: matrix-fall 20s linear infinite;
     text-shadow: 0 0 12px rgba(126, 243, 129, 0.4);
+  }
+}
+
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-float-slow,
+  .animate-pulse-glow,
+  .animate-fade-in-up,
+  .matrix-stream,
+  .red-glow-pulse,
+  .btn-shine-active::after,
+  .caret-letter::after {
+    animation: none !important;
+  }
+
+  .matrix-stream {
+    display: none;
+  }
+
+  .blur-3xl {
+    filter: none !important;
+  }
+
+  .glass-card {
+    backdrop-filter: none;
   }
 }
   .electric-line.secondary-wave {

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 
 const modules = [
-  { number: '01', title: 'Anti Tech Neck', backTitle: 'Neck', image: '/Mini_Sections/01.png' },
-  { number: '02', title: 'The Jaw', backTitle: 'Jaw', image: '/Mini_Sections/02.png' },
-  { number: '03', title: 'The Lips', backTitle: 'Lips', image: '/Mini_Sections/03.png' },
-  { number: '04', title: 'The Eyes', backTitle: 'Eyes', image: '/Mini_Sections/04.png' },
-  { number: '05', title: 'The Cheeks', backTitle: 'Cheeks', image: '/Mini_Sections/05.png' },
-  { number: '06', title: 'Forehead', backTitle: 'Scalp', image: '/Mini_Sections/06.png' },
-  { number: '07', title: 'Nose Modification', backTitle: 'Nose', image: '/Mini_Sections/07.png' },
-  { number: '08', title: 'The Tongue', backTitle: 'Tongue', image: '/Mini_Sections/08.png' },
-  { number: '09', title: 'The Ears', backTitle: 'Ears', image: '/Mini_Sections/09.png' },
-  { number: '10', title: 'The Neck', backTitle: 'Neck', image: '/Mini_Sections/10.png' },
-  { number: '11', title: 'Maintence', backTitle: 'Life', image: '/Mini_Sections/11.png' },
+  { number: '01', title: 'Anti Tech Neck', backTitle: 'Neck', image: '/Mini_Sections/01.jpg' },
+  { number: '02', title: 'The Jaw', backTitle: 'Jaw', image: '/Mini_Sections/02.jpg' },
+  { number: '03', title: 'The Lips', backTitle: 'Lips', image: '/Mini_Sections/03.jpg' },
+  { number: '04', title: 'The Eyes', backTitle: 'Eyes', image: '/Mini_Sections/04.jpg' },
+  { number: '05', title: 'The Cheeks', backTitle: 'Cheeks', image: '/Mini_Sections/05.jpg' },
+  { number: '06', title: 'Forehead', backTitle: 'Scalp', image: '/Mini_Sections/06.jpg' },
+  { number: '07', title: 'Nose Modification', backTitle: 'Nose', image: '/Mini_Sections/07.jpg' },
+  { number: '08', title: 'The Tongue', backTitle: 'Tongue', image: '/Mini_Sections/08.jpg' },
+  { number: '09', title: 'The Ears', backTitle: 'Ears', image: '/Mini_Sections/09.jpg' },
+  { number: '10', title: 'The Neck', backTitle: 'Neck', image: '/Mini_Sections/10.jpg' },
+  { number: '11', title: 'Maintence', backTitle: 'Life', image: '/Mini_Sections/11.jpg' },
 ];
 
 const ModulesSection = () => {
@@ -22,9 +22,6 @@ const ModulesSection = () => {
     <section className="py-10 md:py-14 px-4 md:px-8 overflow-hidden">
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-16 space-y-4">
-          <p className="font-mono text-sm text-vostok-neon tracking-widest uppercase">
-            [ CHAPTER OVERVIEW ]
-          </p>
           <h2 className="text-4xl md:text-5xl font-bold text-vostok-text">
             Protocol Structure
           </h2>

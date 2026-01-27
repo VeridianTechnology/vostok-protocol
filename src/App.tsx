@@ -25,3 +25,5 @@ const App = () => (
 );
 
 export default App;
+
+import { SpeedInsights } from '@vercel/speed-insights/react';
