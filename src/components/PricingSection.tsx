@@ -33,11 +33,11 @@ const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
                 onClick={onOpenProtocol}
                 className="btn-neon w-full text-center text-xl py-5"
               >
-                Change Your Life
+                Break the Looks Ceiling
               </button>
               
               <p className="font-mono text-sm text-vostok-muted">
-                Read the Most Life-Changing Book
+                Everything you need to transform
               </p>
             </div>
           </div>

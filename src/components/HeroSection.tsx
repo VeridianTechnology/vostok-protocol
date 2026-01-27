@@ -14,7 +14,7 @@ const heroStatements: HeroStatement[] = [
   {
     primary: 'The #1 LooksMaxxing Guide - Worldwide',
     secondary:
-      'Over 120+ exercises, 30+ massages, Dozens of explanations for the full sculpting and reshaping of the face.',
+      'The full facial mastery system—no gaps, no fluff, all transformation.',
   },
   {
     primary: 'Your face is the primary stat.',
@@ -134,7 +134,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
               <span>Method</span>
             </h1>
             
-            <div className="space-y-2 max-w-3xl">
+            <div className="space-y-4 max-w-3xl">
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
                 {heroStatements[statementIndex].primary}
               </p>
@@ -151,7 +151,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
               >
-                Change Your Life
+                Break the Looks Ceiling
               </button>
               <button
                 type="button"

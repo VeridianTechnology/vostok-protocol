@@ -1,5 +1,5 @@
 const premiseStatement =
-  'You already know how important looks are - this guide, is the definitive guide on how to go up three points, a 6 to a 9, a 4 to a 7 and so on.';
+  'You know the truth: looks set your rank. This protocol is how 6s become 9s and 4s become 7s.';
 
 const PremiseSection = () => {
   return (

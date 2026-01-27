@@ -2,33 +2,39 @@ import { useState } from 'react';
 
 const features = [
   {
-    title: 'Jaw & Neck Foundation',
-    description: 'Strengthen the structural base that defines your entire facial silhouette.',
+    title: 'A Perfect Jaw',
+    description:
+      'Rebuild your jaw into the main focal point of your face: cleaner lines, sharper angles, and a silhouette that’s genuinely jaw-dropping.',
     image: '/Examples/jaw.jpg',
   },
   {
-    title: 'Cheeks & Midface Tone',
-    description: 'Refine volume, lift, and symmetry across the central face.',
+    title: 'High Set Cheekbones',
+    description:
+      'Shape the kind of cheekbones makeup can’t fake — built through controlled tension work, massages, and midface reshaping drills.',
     image: '/Examples/cheeks.jpg',
   },
   {
-    title: 'Eyes & Expression',
-    description: 'Train the orbital muscles that shape intensity and presence.',
+    title: 'Hunter Eyes',
+    description:
+      'Train the muscles around your eyes for a focused, seductive stare — the aesthetic that makes people freeze, notice, and respond.',
     image: '/Examples/eyes.jpg',
   },
   {
-    title: 'Skin & Lifestyle',
-    description: 'Daily systems that keep definition visible and consistent.',
+    title: 'An Elegant Neck',
+    description:
+      'Rebuild your neck foundation with specialized exercises that enhance symmetry, posture, and the overall elegance of your silhouette.',
     image: '/Examples/skull.jpg',
   },
   {
-    title: 'De-Puffing & Habits',
-    description: 'Rebalance fullness and structure for a more defined profile.',
+    title: 'Seductive & Cute Ears',
+    description:
+      'Develop with secret techniques - a way to deage yourself through your ears and develop a perfect point and look to your ears',
     image: '/Examples/ears.jpg',
   },
   {
-    title: 'Consistency Framework',
-    description: 'Structure your sessions for compounding, predictable progress.',
+    title: 'Restructure Your Nose',
+    description:
+      'Non-surgical nose refinement — correct asymmetries, tension patterns, and cartilage drift through advanced manual techniques.',
     image: '/Examples/face.jpg',
   },
 ];
@@ -42,7 +48,7 @@ const LearnSection = () => {
       <div className="container mx-auto max-w-7xl">
         <div className="text-center mb-10 space-y-2">
           <h2 className="text-4xl md:text-5xl font-bold text-vostok-text">
-            What You'll Learn
+            The Next Evolution of Your Face
           </h2>
         </div>
         
@@ -62,21 +68,18 @@ const LearnSection = () => {
               >
                 <div className="learn-card-inner rounded-xl p-7">
                   <div className="learn-card-front space-y-3">
-                    <h3 className="text-xl font-semibold text-vostok-text">
+                    <h3 className="text-lg font-semibold text-vostok-text">
                       {feature.title}
                     </h3>
                     <div className="learn-card-accent" />
-                    <p className="text-vostok-muted leading-relaxed">
-                      {feature.description}
-                    </p>
                   </div>
                   <div className="learn-card-back">
                     <div className="learn-card-back-content">
                       <div className="learn-card-back-text">
-                        <h3 className="text-xl font-semibold text-vostok-neon">
+                        <h3 className="text-lg font-semibold text-vostok-neon">
                           {feature.title}
                         </h3>
-                        <p className="text-vostok-muted leading-relaxed">
+                        <p className="text-sm text-vostok-muted leading-relaxed">
                           {feature.description}
                         </p>
                       </div>
