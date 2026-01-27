@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import AccessProtocolModal from '@/components/AccessProtocolModal';
 import HudBackground from '@/components/HudBackground';
 import HeroSection from '@/components/HeroSection';
 import PremiseSection from '@/components/PremiseSection';
@@ -12,22 +10,17 @@ import CommunitySection from '@/components/CommunitySection';
 import Footer from '@/components/Footer';
 
 const Index = () => {
-  const [isProtocolOpen, setIsProtocolOpen] = useState(false);
-
   return (
     <HudBackground>
-      <HeroSection
-        onOpenProtocol={() => setIsProtocolOpen(true)}
-      />
+      <HeroSection />
       <PremiseSection />
       <LearnSection />
       <IncludedSection />
       <ModulesSection />
       <TestimonialsSection />
-      <PricingSection onOpenProtocol={() => setIsProtocolOpen(true)} />
+      <PricingSection />
       <CommunitySection />
       <Footer />
-      <AccessProtocolModal isOpen={isProtocolOpen} onClose={() => setIsProtocolOpen(false)} />
     </HudBackground>
   );
 };

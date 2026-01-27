@@ -7,10 +7,6 @@ type HeroStatement = {
   secondary: string;
 };
 
-type HeroSectionProps = {
-  onOpenProtocol: () => void;
-};
-
 const heroStatements: HeroStatement[] = [
   {
     primary: 'The #1 LooksMaxxing Guide - Worldwide',
@@ -95,7 +91,7 @@ const heroStatements: HeroStatement[] = [
   },
 ];
 
-const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
+const HeroSection = () => {
   const statementIndex = 0;
   const [isButtonShining, setIsButtonShining] = useState(false);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
@@ -145,16 +141,15 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 pt-10">
-              <button
-                type="button"
+              <a
+                href="https://amoxcenturion.gumroad.com/l/vostokmethod"
                 onClick={() => {
                   track('cta_click', { cta: 'break_looks_ceiling', section: 'hero' });
-                  onOpenProtocol();
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
               >
                 Break the Looks Ceiling
-              </button>
+              </a>
               <button
                 type="button"
                 onClick={() => {

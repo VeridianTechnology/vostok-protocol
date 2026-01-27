@@ -1,10 +1,6 @@
 import { Zap } from 'lucide-react';
 
-type PricingSectionProps = {
-  onOpenProtocol: () => void;
-};
-
-const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
+const PricingSection = () => {
   return (
     <section id="pricing" className="py-10 md:py-14 px-4 md:px-8">
       <div className="container mx-auto max-w-2xl">
@@ -28,13 +24,12 @@ const PricingSection = ({ onOpenProtocol }: PricingSectionProps) => {
             </div>
             
             <div className="space-y-4">
-              <button
-                type="button"
-                onClick={onOpenProtocol}
+              <a
+                href="https://amoxcenturion.gumroad.com/l/vostokmethod"
                 className="btn-neon w-full text-center text-xl py-5"
               >
                 Break the Looks Ceiling
-              </button>
+              </a>
               
               <p className="font-mono text-sm text-vostok-muted">
                 Everything you need to transform
