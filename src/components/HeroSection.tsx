@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { track } from '@vercel/analytics';
 import PdfModal from './PdfModal';
 
 type HeroStatement = {
@@ -147,6 +148,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
               <button
                 type="button"
                 onClick={() => {
+                  track('cta_click', { cta: 'break_looks_ceiling', section: 'hero' });
                   onOpenProtocol();
                 }}
                 className={`btn-neon text-center btn-shine ${isButtonShining ? 'btn-shine-active' : ''}`}
@@ -156,6 +158,7 @@ const HeroSection = ({ onOpenProtocol }: HeroSectionProps) => {
               <button
                 type="button"
                 onClick={() => {
+                  track('cta_click', { cta: 'see_whats_inside', section: 'hero' });
                   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
                     window.open('/Vostok_Sampler.pdf', '_blank', 'noopener,noreferrer');
                     return;

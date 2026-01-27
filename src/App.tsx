@@ -1,5 +1,6 @@
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Analytics } from "@vercel/analytics/react";
+import { track } from "@vercel/analytics";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -39,6 +40,112 @@ const AnalyticsGate = () => {
       <SpeedInsights />
     </>
   );
+};
+
+const AnalyticsEvents = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/lite") {
+      return;
+    }
+
+    const thresholds = [25, 50, 75, 90];
+    const firedThresholds = new Set<number>();
+    let ticking = false;
+    let rafId: number | null = null;
+
+    const onScroll = () => {
+      if (ticking) {
+        return;
+      }
+      ticking = true;
+      rafId = window.requestAnimationFrame(() => {
+        ticking = false;
+        const doc = document.documentElement;
+        const scrollTop = window.scrollY || doc.scrollTop;
+        const scrollHeight = doc.scrollHeight - window.innerHeight;
+        if (scrollHeight <= 0) {
+          return;
+        }
+        const percent = Math.round((scrollTop / scrollHeight) * 100);
+        thresholds.forEach((threshold) => {
+          if (percent >= threshold && !firedThresholds.has(threshold)) {
+            firedThresholds.add(threshold);
+            track("scroll_depth", { percent: threshold });
+          }
+        });
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    let engagedTimer: number | null = null;
+    let visibleStartedAt: number | null = null;
+    let accumulatedMs = 0;
+    let engagedFired = false;
+
+    const fireEngaged = () => {
+      if (engagedFired) {
+        return;
+      }
+      engagedFired = true;
+      track("engaged_30s", { page: window.location.pathname });
+    };
+
+    const scheduleEngaged = () => {
+      if (engagedFired) {
+        return;
+      }
+      const remaining = 30000 - accumulatedMs;
+      if (remaining <= 0) {
+        fireEngaged();
+        return;
+      }
+      if (engagedTimer !== null) {
+        window.clearTimeout(engagedTimer);
+      }
+      engagedTimer = window.setTimeout(fireEngaged, remaining);
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        visibleStartedAt = performance.now();
+        scheduleEngaged();
+        return;
+      }
+
+      if (visibleStartedAt !== null) {
+        accumulatedMs += performance.now() - visibleStartedAt;
+        visibleStartedAt = null;
+      }
+      if (engagedTimer !== null) {
+        window.clearTimeout(engagedTimer);
+        engagedTimer = null;
+      }
+    };
+
+    if (document.visibilityState === "visible") {
+      visibleStartedAt = performance.now();
+      scheduleEngaged();
+    }
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+      if (engagedTimer !== null) {
+        window.clearTimeout(engagedTimer);
+      }
+    };
+  }, [location.pathname]);
+
+  return null;
 };
 
 const ThirdPartyScripts = () => {
@@ -113,6 +220,7 @@ const App = () => (
   <TooltipProvider>
     <BrowserRouter>
       <AppRoutes />
+      <AnalyticsEvents />
       <ThirdPartyScripts />
       <AnalyticsGate />
     </BrowserRouter>
