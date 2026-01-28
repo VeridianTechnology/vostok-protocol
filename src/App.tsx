@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import Index from "./pages/Index";
 import Lite from "./pages/Lite";
 import NotFound from "./pages/NotFound";
+import SeeMyFace from "./pages/SeeMyFace";
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -22,6 +23,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/lite" element={<Lite />} />
+      <Route path="/see-my-face" element={<SeeMyFace />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

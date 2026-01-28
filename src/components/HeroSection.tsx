@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics';
+import { Link } from 'react-router-dom';
 import PdfModal from './PdfModal';
 
 type HeroStatement = {
@@ -117,15 +118,15 @@ const HeroSection = () => {
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-10">
-              <a
-                href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+              <Link
+                to="/see-my-face"
                 onClick={() => {
-                  track('sales_page click', { cta: 'break_looks_ceiling', section: 'hero' });
+                  track('sales_page click', { cta: 'see_my_face', section: 'hero' });
                 }}
-                className="btn-neon text-center hidden md:inline-flex"
+                className="btn-neon text-center"
               >
-                Break the Looks Ceiling
-              </a>
+                See My Face
+              </Link>
               <button
                 type="button"
                 onClick={() => {
