@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { track } from '@vercel/analytics';
 import { Link } from 'react-router-dom';
 import PdfModal from './PdfModal';
+import HeroVideo from './HeroVideo';
 
 type HeroStatement = {
   primary: string;
@@ -153,11 +154,7 @@ const HeroSection = () => {
             {/* Image container with HUD overlay */}
             <div className="relative glass-card rounded-2xl overflow-hidden">
               <div className="relative w-full aspect-[3/4] bg-black">
-                <img
-                  src="/main_simple.jpg"
-                  alt="The Vostok Method"
-                  className="absolute inset-0 w-full h-full object-cover"
-                />
+                <HeroVideo />
               </div>
               
               {/* HUD overlay lines */}
@@ -167,9 +164,6 @@ const HeroSection = () => {
                 <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-vostok-neon/50" />
                 <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-vostok-neon/50" />
                 <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-vostok-neon/50" />
-                
-                {/* Scan line */}
-                <div className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-vostok-neon/60 to-transparent top-1/3" />
                 
                 {/* Data readout */}
                 <div className="absolute bottom-6 left-6 font-mono text-xs text-vostok-neon/70">
