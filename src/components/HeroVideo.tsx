@@ -4,7 +4,7 @@ import "./HeroVideo.css";
 const VIDEO_SRC = "/videos/main_video_ultra_compressed.webm";
 const POSTER_SRC = "/preload.jpg";
 const FALLBACK_SRC = "/main_simple.jpg";
-const FADE_OUT_AT_SECONDS = 12;
+const FADE_OUT_AT_SECONDS = 0;
 
 const HeroVideo = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
