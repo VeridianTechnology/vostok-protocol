@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { track } from '@vercel/analytics';
 import { Link } from 'react-router-dom';
+import { Download } from 'lucide-react';
 import PdfModal from './PdfModal';
 import HeroVideo from './HeroVideo';
+import { trackRedditEvent } from '@/utils/redditTracking';
 
 type HeroStatement = {
   primary: string;
@@ -11,85 +13,8 @@ type HeroStatement = {
 
 const heroStatements: HeroStatement[] = [
   {
-    primary: 'The #1 LooksMaxxing Guide - Worldwide',
-    secondary:
-      '11 chapters, 150+ techniques: exercises, massages, and structural corrections for every facial muscle.',
-  },
-  {
-    primary: 'Your face is the primary stat.',
-    secondary: 'All other traits scale from it.',
-  },
-  {
-    primary: 'Height matters. The face decides.',
-    secondary: 'The hierarchy is visual.',
-  },
-  {
-    primary: 'People rank before they listen.',
-    secondary: 'The face assigns the rank.',
-  },
-  {
-    primary: 'The halo effect is not bias.',
-    secondary: 'It’s the system working as designed.',
-  },
-  {
-    primary: 'Your face is read in milliseconds.',
-    secondary: 'The verdict is instant.',
-  },
-  {
-    primary: 'Clothes decorate. Faces command.',
-    secondary: 'Confuse them at your own cost.',
-  },
-  {
-    primary: 'The world responds to structure.',
-    secondary: 'Soft signals get soft treatment.',
-  },
-  {
-    primary: 'Your face carries authority—or it doesn’t.',
-    secondary: 'Words arrive afterward.',
-  },
-  {
-    primary: 'You don’t rise socially.',
-    secondary: 'You are visually placed.',
-  },
-  {
-    primary: 'The face is the gatekeeper.',
-    secondary: 'Everything passes through it.',
-  },
-  {
-    primary: 'The mirror is not cosmetic.',
-    secondary: 'It’s diagnostic.',
-  },
-  {
-    primary: 'Genetics set limits.',
-    secondary: 'Training determines proximity.',
-  },
-  {
-    primary: 'The gym trains the body.',
-    secondary: 'This trains the face.',
-  },
-  {
-    primary: 'Facial structure is not static.',
-    secondary: 'It responds to load.',
-  },
-  {
-    primary: 'Soft environments create soft faces.',
-    secondary: 'This is corrective pressure.',
-  },
-  {
-    primary: 'People don’t reward effort.',
-    secondary: 'They reward appearance of ease.',
-  },
-  {
-    primary: 'A trained face reduces friction.',
-    secondary: 'Socially. Professionally. Romantically.',
-  },
-  {
-    primary: 'This is not self-expression.',
-    secondary: 'This is self-engineering.',
-  },
-  {
-    primary: 'The protocol is not motivation.',
-    secondary: 'It’s applied reality.',
+    primary: 'Change Your Structure. Change How the World Treats You.',
+    secondary: '',
   },
 ];
 
@@ -102,15 +27,12 @@ const HeroSection = () => {
       <div className="container mx-auto max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left: Content */}
-          <div className="space-y-6 md:space-y-12">
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
-              <span className="text-vostok-text">The Vostok</span>
-              <br />
-              <span>Method</span>
-            </h1>
-
+          <div className="space-y-6 md:space-y-12 text-center lg:text-left">
             {/* Mobile: video directly under the title */}
             <div className="relative lg:hidden animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
+              <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-neon/70">
+                Watch: How I rebuilt my face in 100 hours
+              </p>
               <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
               <div className="relative glass-card rounded-2xl overflow-hidden">
                 <div className="relative w-full aspect-[3/4] bg-black">
@@ -127,17 +49,36 @@ const HeroSection = () => {
                 </div>
               </div>
             </div>
-            
+
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
+              Transform Your Face.
+              <br />
+              Transform Your Life.
+            </h1>
+
             <div className="space-y-4 max-w-3xl">
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
                 {heroStatements[statementIndex].primary}
               </p>
-              <p className="text-xl md:text-2xl text-vostok-neon font-semibold">
-                {heroStatements[statementIndex].secondary}
-              </p>
+              {heroStatements[statementIndex].secondary ? (
+                <p className="text-xl md:text-2xl text-vostok-neon font-semibold">
+                  {heroStatements[statementIndex].secondary}
+                </p>
+              ) : null}
             </div>
             
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-10">
+              <a
+                href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+                onClick={() => {
+                  track('sales_page click', { cta: 'get_the_method', section: 'hero' });
+                  trackRedditEvent('BreakTheLooksCeiling');
+                }}
+                className="btn-green text-center inline-flex items-center justify-center gap-2"
+              >
+                Get The Method
+                <Download className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
+              </a>
               <Link
                 to="/see-my-face"
                 onClick={() => {
@@ -145,12 +86,13 @@ const HeroSection = () => {
                 }}
                 className="btn-neon text-center"
               >
-                See My Face
+                See My Before/After
               </Link>
               <button
                 type="button"
                 onClick={() => {
                   track('sales_page click', { cta: 'see_whats_inside', section: 'hero' });
+                  trackRedditEvent('SeeWhatsInside');
                   if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
                     window.open('/Vostok_Sampler.pdf', '_blank', 'noopener,noreferrer');
                     return;
@@ -159,7 +101,7 @@ const HeroSection = () => {
                 }}
                 className="btn-ghost text-center"
               >
-                See What's Inside
+                Free Sample
               </button>
             </div>
             
@@ -167,6 +109,9 @@ const HeroSection = () => {
           
           {/* Right: Hero Image */}
           <div className="relative hidden lg:block animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-sm sm:max-w-none">
+            <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-neon/70">
+              Watch: How I rebuilt my face in 100 hours
+            </p>
             {/* Glow behind image */}
             <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
             

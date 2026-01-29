@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Download } from "lucide-react";
 
 const slides = [
   {
@@ -102,9 +103,10 @@ const SeeMyFace = () => {
         <div className="mt-2 flex justify-center pb-2 md:mt-8 md:pb-0">
           <a
             href="https://amoxcenturion.gumroad.com/l/vostokmethod"
-            className="btn-neon text-center"
+            className="btn-neon text-center inline-flex items-center justify-center gap-2"
           >
-            Buy the Method
+            Get The Method
+            <Download className="h-4 w-4" aria-hidden="true" />
           </a>
         </div>
       </div>
