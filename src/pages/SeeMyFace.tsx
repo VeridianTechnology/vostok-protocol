@@ -105,6 +105,8 @@ const SeeMyFace = () => {
         <div className="mt-2 flex justify-center pb-2 md:mt-8 md:pb-0">
           <a
             href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+            target="_blank"
+            rel="noreferrer"
             className="btn-neon text-center inline-flex items-center justify-center gap-2"
           >
             Get The Method

@@ -24,6 +24,8 @@ const PricingSection = () => {
             </p>
             <a
               href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+              target="_blank"
+              rel="noreferrer"
               onClick={() => {
                 trackRedditEvent('BreakTheLooksCeiling');
               }}

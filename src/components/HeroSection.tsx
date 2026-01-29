@@ -166,6 +166,8 @@ const HeroSection = () => {
               <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-3 md:pt-4">
                 <a
                   href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+                  target="_blank"
+                  rel="noreferrer"
                   onClick={() => {
                     track('sales_page click', { cta: 'get_the_method', section: 'hero' });
                     trackRedditEvent('BreakTheLooksCeiling');

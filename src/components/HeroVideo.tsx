@@ -21,6 +21,7 @@ const HeroVideo = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [hasTriggeredPlay, setHasTriggeredPlay] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -100,13 +101,17 @@ const HeroVideo = () => {
   }, [isMuted]);
 
   const showFallback = false;
-  const showPoster = !isVideoVisible || (isMobile && !hasInteracted);
+  const showPoster =
+    loadFailed || (!hasTriggeredPlay && (!isVideoVisible || (isMobile && !hasInteracted)));
   const showVideo = shouldLoadVideo && isInView && !loadFailed;
   const showPlayIcon =
     isMobile && !isPlaying && !showFallback && (!shouldLoadVideo || !isVideoVisible);
   const revealVideo = isVideoVisible && !showFallback;
 
   const handleTogglePlay = async () => {
+    if (!hasTriggeredPlay) {
+      setHasTriggeredPlay(true);
+    }
     if (!hasInteracted) {
       setHasInteracted(true);
     }
