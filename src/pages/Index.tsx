@@ -1,15 +1,17 @@
-import { useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import HudBackground from '@/components/HudBackground';
 import HeroSection from '@/components/HeroSection';
-import PremiseSection from '@/components/PremiseSection';
-import LearnSection from '@/components/LearnSection';
-import IncludedSection from '@/components/IncludedSection';
-import ModulesSection from '@/components/ModulesSection';
-import TestimonialsSection from '@/components/TestimonialsSection';
-import PricingSection from '@/components/PricingSection';
-import CommunitySection from '@/components/CommunitySection';
-import Footer from '@/components/Footer';
+import LazySection from '@/components/LazySection';
 import { trackRedditEventOnce } from '@/utils/redditTracking';
+
+const PremiseSection = lazy(() => import('@/components/PremiseSection'));
+const LearnSection = lazy(() => import('@/components/LearnSection'));
+const IncludedSection = lazy(() => import('@/components/IncludedSection'));
+const ModulesSection = lazy(() => import('@/components/ModulesSection'));
+const TestimonialsSection = lazy(() => import('@/components/TestimonialsSection'));
+const PricingSection = lazy(() => import('@/components/PricingSection'));
+const CommunitySection = lazy(() => import('@/components/CommunitySection'));
+const Footer = lazy(() => import('@/components/Footer'));
 
 const Index = () => {
   useEffect(() => {
@@ -104,14 +106,46 @@ const Index = () => {
   return (
     <HudBackground>
       <HeroSection />
-      <PremiseSection />
-      <LearnSection />
-      <IncludedSection />
-      <ModulesSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <CommunitySection />
-      <Footer />
+      <LazySection>
+        <Suspense fallback={null}>
+          <PremiseSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <LearnSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <IncludedSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <ModulesSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <TestimonialsSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <PricingSection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <CommunitySection />
+        </Suspense>
+      </LazySection>
+      <LazySection>
+        <Suspense fallback={null}>
+          <Footer />
+        </Suspense>
+      </LazySection>
     </HudBackground>
   );
 };

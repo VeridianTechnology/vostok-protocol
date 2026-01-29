@@ -73,6 +73,7 @@ const ModulesSection = () => {
                           alt={module.backTitle}
                           className="w-[110px] h-[110px] rounded-md border border-vostok-neon/25 object-cover block"
                           loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     </div>

@@ -19,7 +19,8 @@ const Lite = () => {
             src="/main_simple.jpg"
             alt="The Vostok Method"
             className="h-auto w-full object-cover"
-            loading="eager"
+            loading="lazy"
+            decoding="async"
             width={770}
             height={1100}
           />

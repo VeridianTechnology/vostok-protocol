@@ -84,7 +84,12 @@ const LearnSection = () => {
                         </p>
                       </div>
                       <div className="learn-card-thumb">
-                        <img src={feature.image} alt={feature.title} loading="lazy" />
+                        <img
+                          src={feature.image}
+                          alt={feature.title}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </div>
                     </div>
                   </div>

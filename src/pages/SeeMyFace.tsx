@@ -67,6 +67,8 @@ const SeeMyFace = () => {
               src={activeSlide.image}
               alt={activeSlide.alt}
               className={`h-full w-full object-cover ${activeIndex === 1 ? "scale-[1.3]" : ""}`}
+              loading="lazy"
+              decoding="async"
             />
             <div className="absolute inset-x-0 bottom-0 h-[20.32%] bg-black/75 md:hidden" />
             <div className="absolute inset-x-0 bottom-0 flex h-[20.32%] items-start px-4 pt-2 text-center md:hidden">
