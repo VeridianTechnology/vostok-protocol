@@ -4,62 +4,51 @@ import "./HeroVideo.css";
 const VIDEO_SRC = "/videos/main_video_ultra_compressed.webm";
 const POSTER_SRC = "/preload.jpg";
 const FALLBACK_SRC = "/main_simple.jpg";
-const SPEED_THRESHOLD_MBPS = 1.5;
+const FADE_OUT_AT_SECONDS = 12;
 
 const HeroVideo = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [canLoadVideo, setCanLoadVideo] = useState<boolean | null>(null);
-  const [isMobile, setIsMobile] = useState(false);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+  const [loadFailed, setLoadFailed] = useState(false);
   const [isVideoReady, setIsVideoReady] = useState(false);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isVideoEnded, setIsVideoEnded] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [hasStartedOnce, setHasStartedOnce] = useState(false);
 
-  // Detect coarse pointers to treat them as mobile (no autoplay).
   useEffect(() => {
-    setIsMobile(window.matchMedia("(pointer: coarse)").matches);
+    const onLoad = () => setShouldLoadVideo(true);
+    if (document.readyState === "complete") {
+      setShouldLoadVideo(true);
+      return;
+    }
+    window.addEventListener("load", onLoad);
+    return () => window.removeEventListener("load", onLoad);
   }, []);
 
-  // Lightweight throughput check to decide whether to load the video at all.
   useEffect(() => {
-    let cancelled = false;
+    if (!shouldLoadVideo || !videoRef.current || loadFailed) {
+      return;
+    }
 
-    const supportsWebm = () => {
-      const el = document.createElement("video");
-      return el.canPlayType("video/webm") !== "";
-    };
+    const video = videoRef.current;
+    if (!video.src) {
+      video.src = VIDEO_SRC;
+      video.load();
+    }
 
-    const runSpeedTest = async () => {
-      if (!supportsWebm()) {
-        if (!cancelled) {
-          setCanLoadVideo(false);
-        }
-        return;
-      }
-
+    const attemptPlay = async () => {
       try {
-        const start = performance.now();
-        const res = await fetch(`/ping.txt?ts=${Date.now()}`, { cache: "no-store" });
-        const blob = await res.blob();
-        const end = performance.now();
-        const seconds = Math.max(0.001, (end - start) / 1000);
-        const mbps = (blob.size * 8) / seconds / 1_000_000;
-        if (!cancelled) {
-          setCanLoadVideo(mbps >= SPEED_THRESHOLD_MBPS);
-        }
+        video.muted = true;
+        await video.play();
       } catch {
-        if (!cancelled) {
-          setCanLoadVideo(false);
-        }
+        // Autoplay can fail; keep the preload image visible.
       }
     };
 
-    runSpeedTest();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    attemptPlay();
+  }, [shouldLoadVideo, loadFailed]);
 
   // Keep the media element muted state in sync with UI.
   useEffect(() => {
@@ -68,20 +57,15 @@ const HeroVideo = () => {
     }
   }, [isMuted]);
 
-  const showVideo = canLoadVideo === true;
-  const showFallback = canLoadVideo === false || isVideoEnded;
-  const showPoster = !showFallback && !hasStartedOnce;
-  const showPlayIcon = showVideo && !isPlaying && !showFallback;
-  const revealVideo = isVideoReady && !showFallback && (!isMobile || hasStartedOnce);
+  const showFallback = isVideoEnded;
+  const showPoster = !showFallback && !isVideoVisible;
+  const showVideo = shouldLoadVideo && !loadFailed;
+  const showPlayIcon = showVideo && !isPlaying && !showFallback && isVideoReady;
+  const revealVideo = isVideoVisible && !showFallback;
 
   const handleTogglePlay = async () => {
-    if (!videoRef.current || !showVideo) {
+    if (!videoRef.current || !showVideo || isVideoEnded) {
       return;
-    }
-
-    if (isVideoEnded) {
-      videoRef.current.currentTime = 0;
-      setIsVideoEnded(false);
     }
 
     try {
@@ -103,6 +87,7 @@ const HeroVideo = () => {
   const handlePlay = () => {
     setIsPlaying(true);
     setHasStartedOnce(true);
+    setIsVideoVisible(true);
   };
 
   const handlePause = () => {
@@ -115,7 +100,7 @@ const HeroVideo = () => {
   };
 
   return (
-    <div className="hero-video" onClick={handleTogglePlay}>
+    <div className="hero-video">
       <img
         src={FALLBACK_SRC}
         alt="The Vostok Method book cover"
@@ -126,17 +111,27 @@ const HeroVideo = () => {
         <video
           ref={videoRef}
           className={`hero-video__layer hero-video__media ${revealVideo ? "is-visible" : ""}`}
-          src={VIDEO_SRC}
-          autoPlay={!isMobile}
+          autoPlay
           muted={isMuted}
           playsInline
-          preload="metadata"
+          loop
+          preload="none"
           onLoadedData={() => setIsVideoReady(true)}
           onCanPlay={() => setIsVideoReady(true)}
           onPlay={handlePlay}
           onPause={handlePause}
           onEnded={handleEnded}
-          onError={() => setCanLoadVideo(false)}
+          onTimeUpdate={(event) => {
+            if (FADE_OUT_AT_SECONDS <= 0 || isVideoEnded) {
+              return;
+            }
+            const current = event.currentTarget.currentTime;
+            if (current >= FADE_OUT_AT_SECONDS) {
+              event.currentTarget.pause();
+              setIsVideoEnded(true);
+            }
+          }}
+          onError={() => setLoadFailed(true)}
         />
       )}
 
@@ -155,36 +150,52 @@ const HeroVideo = () => {
         </div>
       )}
 
-      {showVideo && (
-        <button
-          type="button"
-          className="hero-video__audio"
-          onClick={handleAudioToggle}
-          aria-label={isMuted ? "Unmute video" : "Mute video"}
-        >
-          <svg viewBox="0 0 64 64" aria-hidden="true" role="img">
-            <path
-              d="M14 26h10l12-10v32L24 38H14z"
-              fill="currentColor"
-            />
-            {isMuted ? (
-              <path
-                d="M44 24l14 16m0-16L44 40"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path
-                d="M44 24c6 4 6 12 0 16m6-22c10 7 10 22 0 30"
-                stroke="currentColor"
-                strokeWidth="4"
-                strokeLinecap="round"
-                fill="none"
-              />
-            )}
-          </svg>
-        </button>
+      {showVideo && !showFallback && (
+        <div className="hero-video__controls">
+          <button
+            type="button"
+            className="hero-video__toggle"
+            onClick={handleTogglePlay}
+            aria-label={isPlaying ? "Pause video" : "Play video"}
+          >
+            <svg viewBox="0 0 64 64" aria-hidden="true" role="img">
+              {isPlaying ? (
+                <>
+                  <rect x="20" y="18" width="8" height="28" fill="currentColor" />
+                  <rect x="36" y="18" width="8" height="28" fill="currentColor" />
+                </>
+              ) : (
+                <polygon points="24,18 46,32 24,46" fill="currentColor" />
+              )}
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="hero-video__audio"
+            onClick={handleAudioToggle}
+            aria-label={isMuted ? "Unmute video" : "Mute video"}
+          >
+            <svg viewBox="0 0 64 64" aria-hidden="true" role="img">
+              <path d="M14 26h10l12-10v32L24 38H14z" fill="currentColor" />
+              {isMuted ? (
+                <path
+                  d="M44 24l14 16m0-16L44 40"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+              ) : (
+                <path
+                  d="M44 24c6 4 6 12 0 16m6-22c10 7 10 22 0 30"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              )}
+            </svg>
+          </button>
+        </div>
       )}
     </div>
   );

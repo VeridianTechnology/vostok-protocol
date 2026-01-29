@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { Link } from 'react-router-dom';
 import { Download } from 'lucide-react';
@@ -6,21 +6,41 @@ import PdfModal from './PdfModal';
 import HeroVideo from './HeroVideo';
 import { trackRedditEvent } from '@/utils/redditTracking';
 
-type HeroStatement = {
-  primary: string;
-  secondary: string;
-};
-
-const heroStatements: HeroStatement[] = [
-  {
-    primary: 'Change Your Structure. Change How the World Treats You.',
-    secondary: '',
-  },
+const heroStatements = [
+  'Transform Your Face and Watch Your Entire Social World Shift Around You.',
+  'Reshape Your Facial Structure and Instantly Change How People Respond.',
+  'Build a Face That Commands Attention, Attraction, and Quiet Respect Everywhere You Go.',
+  'Rebuild Your Features and Unlock a Level of Confidence You Didn’t Know You Had.',
+  'Change Your Facial Architecture and the World Will Treat You Differently.',
+  'Upgrade Your Structure and Presence — Before You Even Say a Word.',
+  'Forge a More Defined, Attractive Face and Feel the Social Gravity Increase.',
+  'Reconstruct Your Features With Precision and Transform Your Identity Completely.',
+  'Improve Your Facial Symmetry, Tone, and Presence — People Notice Immediately.',
+  'Shape Your Face Into Its Strongest Form and Watch New Opportunities Open.',
+  'Strengthen Your Features and Experience the Boost in Confidence and Connection.',
+  'Create a Face That Turns Heads and Makes People Pay Attention.',
+  'Enhance Your Structure and Build the Version of Yourself You Know You Can Be.',
+  'Transform the Way You Look and Transform the Way People React to You.',
+  'Elevate Your Facial Presence and Feel Social Interactions Become Effortless.',
+  'Build Unshakable Confidence By Reshaping the Foundation of Your Face.',
+  'Craft a More Dynamic, Attractive Face and Feel the Energy of Every Room Shift.',
+  'Unlock the Secret to a More Defined, Masculine, and Noticeable Facial Structure.',
+  'Improve Your Features and Feel the World Treat You With More Warmth and Respect.',
+  'Redesign Your Face and Redesign Your Life — The Change Begins With Structure.',
 ];
 
 const HeroSection = () => {
-  const statementIndex = 0;
+  const [statementIndex, setStatementIndex] = useState(0);
   const [isPdfOpen, setIsPdfOpen] = useState(false);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * heroStatements.length);
+    setStatementIndex(randomIndex);
+    const id = window.setInterval(() => {
+      setStatementIndex((prev) => (prev + 1) % heroStatements.length);
+    }, 10000);
+    return () => window.clearInterval(id);
+  }, []);
 
   return (
     <section className="md:min-h-screen flex items-start md:items-center py-6 md:py-14 px-4 md:px-8">
@@ -56,18 +76,17 @@ const HeroSection = () => {
               Transform Your Life.
             </h1>
 
-            <div className="space-y-4 max-w-3xl">
+            <div className="mx-auto h-px w-20 bg-vostok-neon/70 md:mx-0 md:w-28" />
+
+            <div className="space-y-3 md:space-y-2 max-w-3xl">
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
-                {heroStatements[statementIndex].primary}
+                <span key={statementIndex} className="hero-rotating-line">
+                  {heroStatements[statementIndex]}
+                </span>
               </p>
-              {heroStatements[statementIndex].secondary ? (
-                <p className="text-xl md:text-2xl text-vostok-neon font-semibold">
-                  {heroStatements[statementIndex].secondary}
-                </p>
-              ) : null}
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-10">
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-6 md:pt-6">
               <a
                 href="https://amoxcenturion.gumroad.com/l/vostokmethod"
                 onClick={() => {

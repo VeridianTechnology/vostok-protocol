@@ -27,7 +27,7 @@ const PricingSection = () => {
               onClick={() => {
                 trackRedditEvent('BreakTheLooksCeiling');
               }}
-              className="btn-green mt-12 md:mt-14 w-full text-center text-xl py-5 inline-flex items-center justify-center gap-2"
+              className="btn-green mt-6 md:mt-8 w-full text-center text-xl py-5 inline-flex items-center justify-center gap-2"
             >
               Get The Method
               <Download className="h-4 w-4" aria-hidden="true" />

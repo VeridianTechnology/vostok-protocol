@@ -40,9 +40,6 @@
 }
 
 .hero-video__audio {
-  position: absolute;
-  right: 12px;
-  bottom: 12px;
   width: 44px;
   height: 44px;
   border-radius: 999px;
@@ -53,6 +50,33 @@
   align-items: center;
   justify-content: center;
   padding: 0;
+}
+
+.hero-video__controls {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.hero-video__toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(100, 255, 70, 0.6);
+  background: rgba(0, 0, 0, 0.6);
+  color: rgba(100, 255, 70, 0.9);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.hero-video__toggle svg {
+  width: 22px;
+  height: 22px;
 }
 
 .hero-video__audio svg {
@@ -66,10 +90,20 @@
     height: 48px;
   }
 
+  .hero-video__controls {
+    right: 10px;
+    bottom: 10px;
+    gap: 6px;
+  }
+
+  .hero-video__toggle,
   .hero-video__audio {
     width: 38px;
     height: 38px;
-    right: 10px;
-    bottom: 10px;
+  }
+
+  .hero-video__toggle svg {
+    width: 18px;
+    height: 18px;
   }
 }
