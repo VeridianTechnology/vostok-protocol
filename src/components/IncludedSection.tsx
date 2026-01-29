@@ -11,10 +11,10 @@ const items = [
 
 const IncludedSection = () => {
   return (
-    <section className="hidden py-10 md:py-14 px-4 md:px-8" aria-hidden="true">
-      <div className="container mx-auto max-w-4xl">
-        <div className="glass-card rounded-2xl p-8 md:p-12">
-          <div className="text-center mb-12 space-y-4">
+    <section className="hidden section" aria-hidden="true">
+      <div className="section-inner">
+        <div className="card-shell">
+          <div className="section-header">
             <p className="font-mono text-sm text-vostok-neon tracking-widest uppercase">
               [ PACKAGE CONTENTS ]
             </p>
@@ -23,7 +23,7 @@ const IncludedSection = () => {
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="card-grid md:grid-cols-2">
             {items.map((item, index) => (
               <div 
                 key={item}

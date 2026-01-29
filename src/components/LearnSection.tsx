@@ -44,15 +44,15 @@ const LearnSection = () => {
   const [tappedIndex, setTappedIndex] = useState<number | null>(null);
 
   return (
-    <section id="learn" className="py-10 md:py-14 px-4 md:px-8">
-      <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-10 space-y-2">
+    <section id="learn" className="section">
+      <div className="section-inner">
+        <div className="section-header">
           <h2 className="text-4xl md:text-5xl font-bold text-vostok-text">
             The Next Evolution of Your Face
           </h2>
         </div>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="card-grid md:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => {
             const isFlipped = hoveredIndex === index || tappedIndex === index;
             return (

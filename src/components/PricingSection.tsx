@@ -14,7 +14,7 @@ const PricingSection = () => {
             </div>
 
             <div className="-mt-2 md:-mt-4 space-y-2">
-              <div className="text-[#EDEDED] text-6xl md:text-7xl font-semibold tracking-tight">
+              <div className="text-[#EDEDED] text-5xl md:text-7xl font-semibold tracking-tight">
                 $29.99
               </div>
               <div className="mx-auto h-px w-24 bg-[#EDEDED]/70" />
