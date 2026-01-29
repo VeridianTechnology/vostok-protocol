@@ -119,7 +119,7 @@ const HeroVideo = () => {
       setShouldLoadVideo(true);
     }
 
-    if (isMobile && !isPlaying) {
+    if (!isPlaying) {
       setIsLoading(true);
     }
 
@@ -134,6 +134,7 @@ const HeroVideo = () => {
         await videoRef.current.play();
       }
     } catch {
+      setIsLoading(false);
       // Ignore autoplay/play errors; user can retry via tap/click.
     }
   };
@@ -152,6 +153,7 @@ const HeroVideo = () => {
 
   const handlePause = () => {
     setIsPlaying(false);
+    setIsLoading(false);
   };
 
   const handleEnded = () => {
@@ -194,9 +196,18 @@ const HeroVideo = () => {
               setDuration(videoRef.current.duration || 0);
             }
           }}
-          onCanPlay={() => setIsVideoReady(true)}
+          onCanPlay={() => {
+            setIsVideoReady(true);
+            setIsLoading(false);
+          }}
           onPlay={handlePlay}
+          onPlaying={() => setIsLoading(false)}
           onPause={handlePause}
+          onWaiting={() => {
+            if (hasInteracted) {
+              setIsLoading(true);
+            }
+          }}
           onEnded={handleEnded}
           onTimeUpdate={(event) => {
             const current = event.currentTarget.currentTime;
@@ -230,7 +241,7 @@ const HeroVideo = () => {
         </div>
       )}
 
-      {isMobile && isLoading && !isPlaying && !showFallback && (
+      {isLoading && !isPlaying && !showFallback && (
         <div className="hero-video__loading" aria-live="polite">
           Loading…
         </div>
