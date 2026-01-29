@@ -30,9 +30,17 @@ const PremiseSection = () => {
                 WATCH: What the Vostok Method Actually Does — and Why It Works
               </p>
               <div className="relative w-full aspect-[9/16] bg-[#0E0E0E] rounded-2xl overflow-hidden">
+                <img
+                  src="/preload.jpg"
+                  alt="Video preview"
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
                 <video
                   ref={videoRef}
-                  className="h-full w-full object-cover"
+                  className="relative z-10 h-full w-full object-cover"
+                  poster="/preload.jpg"
                   preload="metadata"
                   playsInline
                   onClick={handleTogglePlayback}
@@ -55,7 +63,7 @@ const PremiseSection = () => {
                   <button
                     type="button"
                     aria-label="Play video"
-                    className="absolute inset-0 flex items-center justify-center text-white"
+                    className="absolute inset-0 z-20 flex items-center justify-center text-white"
                     onClick={handleTogglePlayback}
                   >
                     <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">

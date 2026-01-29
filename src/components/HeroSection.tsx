@@ -29,10 +29,14 @@ const heroStatements = [
 
 const HeroSection = () => {
   const [statementIndex, setStatementIndex] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
+  );
   const [isPdfOpen, setIsPdfOpen] = useState(false);
   const proofVideoRef = useRef<HTMLVideoElement | null>(null);
   const [isProofMuted, setIsProofMuted] = useState(true);
   const [isProofPlaying, setIsProofPlaying] = useState(true);
+  const [isProofEnded, setIsProofEnded] = useState(false);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * heroStatements.length);
@@ -43,8 +47,29 @@ const HeroSection = () => {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+    const mediaQuery = window.matchMedia('(min-width: 1024px)');
+    const handleChange = () => setIsDesktop(mediaQuery.matches);
+    handleChange();
+    if ('addEventListener' in mediaQuery) {
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+    mediaQuery.addListener(handleChange);
+    return () => mediaQuery.removeListener(handleChange);
+  }, []);
+
   const handleProofToggle = () => {
     if (!proofVideoRef.current) {
+      return;
+    }
+    if (isProofEnded) {
+      proofVideoRef.current.currentTime = 0;
+      setIsProofEnded(false);
+      proofVideoRef.current.play();
       return;
     }
     if (proofVideoRef.current.paused) {
@@ -67,53 +92,66 @@ const HeroSection = () => {
                 Transform Your Life.
               </h1>
 
-              <div className="relative lg:hidden animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
-                <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
-                  WATCH: My Real Before/After — No Filters
-                </p>
-                <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
-                <div className="relative glass-card rounded-2xl overflow-hidden">
-                <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
-                    <video
-                      ref={proofVideoRef}
-                      className="h-full w-full object-cover"
-                      src="/videos/proof.webm"
-                      autoPlay
-                      muted={isProofMuted}
-                      loop
-                      playsInline
-                      preload="metadata"
-                      onClick={handleProofToggle}
-                      onPlay={() => setIsProofPlaying(true)}
-                      onPause={() => setIsProofPlaying(false)}
-                      onEnded={() => setIsProofPlaying(false)}
-                    />
-                    {!isProofPlaying && (
+              {!isDesktop && (
+                <div className="relative animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
+                  <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
+                    WATCH: My Real Before/After — No Filters
+                  </p>
+                  <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
+                  <div className="relative glass-card rounded-2xl overflow-hidden">
+                    <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
+                      <video
+                        ref={proofVideoRef}
+                        className="h-full w-full object-cover"
+                        src="/videos/proof.webm"
+                        autoPlay
+                        muted={isProofMuted}
+                        playsInline
+                        preload="metadata"
+                        onClick={handleProofToggle}
+                        onPlay={() => {
+                          setIsProofPlaying(true);
+                          setIsProofEnded(false);
+                        }}
+                        onPause={() => setIsProofPlaying(false)}
+                        onEnded={() => {
+                          setIsProofPlaying(false);
+                          setIsProofEnded(true);
+                        }}
+                      />
+                      <div
+                        aria-hidden="true"
+                        className={`pointer-events-none absolute inset-0 bg-black transition-opacity duration-500 ${
+                          isProofEnded ? 'opacity-70' : 'opacity-0'
+                        }`}
+                      />
+                      {!isProofPlaying && (
+                        <button
+                          type="button"
+                          aria-label="Play video"
+                          className="absolute inset-0 flex items-center justify-center text-white"
+                          onClick={handleProofToggle}
+                        >
+                          <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
+                            <Pause className="h-6 w-6" />
+                          </span>
+                        </button>
+                      )}
                       <button
                         type="button"
-                        aria-label="Play video"
-                        className="absolute inset-0 flex items-center justify-center text-white"
-                        onClick={handleProofToggle}
+                        aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
+                        className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          setIsProofMuted((prev) => !prev);
+                        }}
                       >
-                        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
-                          <Pause className="h-6 w-6" />
-                        </span>
+                        {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                       </button>
-                    )}
-                    <button
-                      type="button"
-                      aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
-                      className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setIsProofMuted((prev) => !prev);
-                    }}
-                  >
-                    {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                  </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              )}
 
               <div className="mx-auto h-px w-20 bg-[#EDEDED]/70 md:mx-0 md:w-28" />
 
@@ -157,53 +195,66 @@ const HeroSection = () => {
             </div>
             
             {/* Right: Proof Video */}
-            <div className="relative hidden lg:block animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-[25.75rem]">
-              <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
-                WATCH: My Real Before/After — No Filters
-              </p>
-              <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
-              <div className="relative glass-card rounded-2xl overflow-hidden">
-                <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
-                  <video
-                    ref={proofVideoRef}
-                    className="h-full w-full object-cover"
-                    src="/videos/proof.webm"
-                    autoPlay
-                    muted={isProofMuted}
-                    loop
-                    playsInline
-                    preload="metadata"
-                    onClick={handleProofToggle}
-                    onPlay={() => setIsProofPlaying(true)}
-                    onPause={() => setIsProofPlaying(false)}
-                    onEnded={() => setIsProofPlaying(false)}
-                  />
-                  {!isProofPlaying && (
+            {isDesktop && (
+              <div className="relative animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-[25.75rem]">
+                <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
+                  WATCH: My Real Before/After — No Filters
+                </p>
+                <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
+                <div className="relative glass-card rounded-2xl overflow-hidden">
+                  <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
+                      <video
+                        ref={proofVideoRef}
+                        className="h-full w-full object-cover"
+                        src="/videos/proof.webm"
+                        autoPlay
+                        muted={isProofMuted}
+                        playsInline
+                        preload="metadata"
+                        onClick={handleProofToggle}
+                        onPlay={() => {
+                          setIsProofPlaying(true);
+                          setIsProofEnded(false);
+                        }}
+                        onPause={() => setIsProofPlaying(false)}
+                        onEnded={() => {
+                          setIsProofPlaying(false);
+                          setIsProofEnded(true);
+                        }}
+                      />
+                      <div
+                        aria-hidden="true"
+                        className={`pointer-events-none absolute inset-0 bg-black transition-opacity duration-500 ${
+                          isProofEnded ? 'opacity-70' : 'opacity-0'
+                        }`}
+                      />
+                    {!isProofPlaying && (
+                      <button
+                        type="button"
+                        aria-label="Play video"
+                        className="absolute inset-0 flex items-center justify-center text-white"
+                        onClick={handleProofToggle}
+                      >
+                        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
+                          <Pause className="h-6 w-6" />
+                        </span>
+                      </button>
+                    )}
                     <button
                       type="button"
-                      aria-label="Play video"
-                      className="absolute inset-0 flex items-center justify-center text-white"
-                      onClick={handleProofToggle}
+                      aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
+                      className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setIsProofMuted((prev) => !prev);
+                      }}
                     >
-                      <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
-                        <Pause className="h-6 w-6" />
-                      </span>
+                      {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
-                    className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setIsProofMuted((prev) => !prev);
-                    }}
-                  >
-                    {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                  </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <PdfModal
               isOpen={isPdfOpen}

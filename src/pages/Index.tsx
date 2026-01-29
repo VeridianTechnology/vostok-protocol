@@ -105,37 +105,37 @@ const Index = () => {
   return (
     <HudBackground>
       <HeroSection />
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <PremiseSection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <LearnSection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <IncludedSection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <TestimonialsSection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <PricingSection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <CommunitySection />
         </Suspense>
       </LazySection>
-      <LazySection>
+      <LazySection rootMargin="0px">
         <Suspense fallback={null}>
           <Footer />
         </Suspense>
