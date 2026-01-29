@@ -108,6 +108,25 @@ const HeroSection = () => {
               <br />
               <span>Method</span>
             </h1>
+
+            {/* Mobile: video directly under the title */}
+            <div className="relative lg:hidden animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
+              <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
+              <div className="relative glass-card rounded-2xl overflow-hidden">
+                <div className="relative w-full aspect-[3/4] bg-black">
+                  <HeroVideo />
+                </div>
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-4 left-4 w-12 h-12 border-l-2 border-t-2 border-vostok-neon/50" />
+                  <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-vostok-neon/50" />
+                  <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-vostok-neon/50" />
+                  <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-vostok-neon/50" />
+                  <div className="absolute bottom-6 left-6 font-mono text-xs text-vostok-neon/70">
+                    SUBJECT::BASELINE_ACTIVE
+                  </div>
+                </div>
+              </div>
+            </div>
             
             <div className="space-y-4 max-w-3xl">
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
@@ -147,7 +166,7 @@ const HeroSection = () => {
           </div>
           
           {/* Right: Hero Image */}
-          <div className="relative animate-fade-in-up animation-delay-200 hidden sm:block">
+          <div className="relative hidden lg:block animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-sm sm:max-w-none">
             {/* Glow behind image */}
             <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
             

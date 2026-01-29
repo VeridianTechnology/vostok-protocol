@@ -5,13 +5,19 @@ const slides = [
     image: "/before.jpg",
     alt: "Before the Vostok Method",
     overlay:
-      "This was me five years younger, without using the Vostok Method. I am 28 in this photo. I lacked confidence and was in Ukraine (before the war), could not get a girlfriend my for life despite having half a million dollars LIQUID in my pocket -- from crypto. I am now dating multiple women.",
+      "Five years ago. Age 28. Low confidence, little romantic success. Then I rebuilt my face — and my entire life shifted.",
   },
   {
     image: "/me.JPG",
     alt: "My face today",
     overlay:
-      "No makeup. No special lighting. No skin cream. Partying every night. Lifetime smoker. I put 100 hours into my face and while it is far from perfect -- it is exceptional. You can have it too. Buy the method and practice it religiously.",
+      "No makeup. No filters. No tricks. Just disciplined facial work — about 100 hours — and the difference is undeniable. I’m not special. I trained my face. You can too.",
+  },
+  {
+    image: "/lastnight.jpg",
+    alt: "Last night",
+    overlay:
+      "When your face changes, your life follows. My girlfriend took this quick, blurry photo on 1/29/26, but it captures how different I feel now. Not bragging — just proof that confidence is earned, and you can earn it too.",
   },
 ];
 
@@ -61,13 +67,13 @@ const SeeMyFace = () => {
               alt={activeSlide.alt}
               className={`h-full w-full object-cover ${activeIndex === 1 ? "scale-[1.3]" : ""}`}
             />
-            <div className="absolute inset-x-0 bottom-0 h-[24%] bg-black/75 md:hidden" />
-            <div className="absolute inset-x-0 bottom-0 flex h-[24%] items-end px-4 pb-3 text-center md:hidden">
+            <div className="absolute inset-x-0 bottom-0 h-[20.32%] bg-black/75 md:hidden" />
+            <div className="absolute inset-x-0 bottom-0 flex h-[20.32%] items-start px-4 pt-2 text-center md:hidden">
               <p className="mx-auto text-[8px] leading-relaxed text-vostok-neon">
                 {activeSlide.overlay}
               </p>
             </div>
-            <div className="absolute inset-x-0 bottom-0 hidden h-[16%] bg-black/75 md:block" />
+            <div className="absolute inset-x-0 bottom-0 hidden h-[10.88%] bg-black/75 md:block" />
             <div className="absolute inset-x-0 bottom-0 hidden h-[23%] items-end px-6 pb-4 text-center md:flex md:px-10 md:pb-6">
               <p
                 className={`mx-auto text-sm leading-relaxed text-vostok-neon md:text-base ${
