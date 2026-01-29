@@ -21,11 +21,7 @@ const ModulesSection = () => {
   return (
     <section className="py-10 md:py-14 px-4 md:px-8 overflow-hidden">
       <div className="container mx-auto max-w-7xl">
-        <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-vostok-text">
-            The Facial Architecture Framework
-          </h2>
-        </div>
+        
         
         {/* Horizontal scrolling modules */}
         <div className="relative">

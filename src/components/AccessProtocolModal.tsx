@@ -38,7 +38,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-3 sm:px-6">
-      <div className="absolute inset-0 bg-black/85" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-[#0E0E0E]/85" onClick={onClose} aria-hidden="true" />
       <div className="relative w-[98vw] h-[92vh] sm:w-[95vw] sm:h-[90vh] max-w-[96vw] bg-vostok-bg border border-vostok-neon/30 shadow-2xl rounded-xl overflow-hidden">
         <button
           type="button"
@@ -110,7 +110,7 @@ const AccessProtocolModal = ({ isOpen, onClose }: AccessProtocolModalProps) => {
             ].map((card) => (
               <div
                 key={card.title}
-                className="flex w-full max-w-[240px] min-h-[360px] flex-col justify-between rounded-2xl border border-vostok-neon/25 bg-black/60 p-4 pt-5 shadow-lg"
+                className="flex w-full max-w-[240px] min-h-[360px] flex-col justify-between rounded-2xl border border-vostok-neon/25 bg-[#0E0E0E]/60 p-4 pt-5 shadow-lg"
               >
                 <div className="space-y-3">
                   <h3 className="text-base font-semibold text-vostok-neon">{card.title}</h3>

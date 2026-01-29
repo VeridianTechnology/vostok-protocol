@@ -14,10 +14,10 @@ const PricingSection = () => {
             </div>
 
             <div className="-mt-2 md:-mt-4 space-y-2">
-              <div className="text-vostok-neon text-6xl md:text-7xl font-semibold tracking-tight">
+              <div className="text-[#EDEDED] text-6xl md:text-7xl font-semibold tracking-tight">
                 $29.99
               </div>
-              <div className="mx-auto h-px w-24 bg-vostok-neon/70" />
+              <div className="mx-auto h-px w-24 bg-[#EDEDED]/70" />
             </div>
             <p className="pt-4 md:pt-6 text-lg md:text-xl text-vostok-text">
               The exact method that turned my face from average to magnetic in 100 hours.

@@ -7,7 +7,6 @@ import { trackRedditEventOnce } from '@/utils/redditTracking';
 const PremiseSection = lazy(() => import('@/components/PremiseSection'));
 const LearnSection = lazy(() => import('@/components/LearnSection'));
 const IncludedSection = lazy(() => import('@/components/IncludedSection'));
-const ModulesSection = lazy(() => import('@/components/ModulesSection'));
 const TestimonialsSection = lazy(() => import('@/components/TestimonialsSection'));
 const PricingSection = lazy(() => import('@/components/PricingSection'));
 const CommunitySection = lazy(() => import('@/components/CommunitySection'));
@@ -119,11 +118,6 @@ const Index = () => {
       <LazySection>
         <Suspense fallback={null}>
           <IncludedSection />
-        </Suspense>
-      </LazySection>
-      <LazySection>
-        <Suspense fallback={null}>
-          <ModulesSection />
         </Suspense>
       </LazySection>
       <LazySection>

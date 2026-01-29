@@ -68,7 +68,7 @@ const LearnSection = () => {
               >
                 <div className="learn-card-inner rounded-xl p-5 md:p-7">
                   <div className="learn-card-front space-y-2 md:space-y-3">
-                    <h3 className="text-base sm:text-lg font-semibold text-vostok-text">
+                    <h3 className="text-base sm:text-lg font-semibold text-[#EDEDED]">
                       {feature.title}
                     </h3>
                     <div className="learn-card-accent" />
@@ -76,7 +76,7 @@ const LearnSection = () => {
                   <div className="learn-card-back">
                     <div className="learn-card-back-content">
                       <div className="learn-card-back-text space-y-0 md:space-y-2">
-                        <h3 className="text-sm sm:text-base font-semibold text-vostok-neon">
+                        <h3 className="text-sm sm:text-base font-semibold text-[#EDEDED]">
                           {feature.title}
                         </h3>
                         <p className="text-xs text-vostok-muted leading-relaxed">

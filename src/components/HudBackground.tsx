@@ -13,8 +13,8 @@ interface HudBackgroundProps {
 const HudBackground = ({ children }: HudBackgroundProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden scanlines">
-      {/* Base gradient */}
-      <div className="fixed inset-0 bg-gradient-to-br from-vostok-bg via-vostok-deep to-vostok-bg" />
+      {/* Base background */}
+      <div className="fixed inset-0 bg-[#0E0E0E]" />
       
       {/* Floating HUD rectangles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -54,7 +54,7 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
       </div>
       
       {/* Gradient overlay for depth */}
-      <div className="fixed inset-0 bg-gradient-to-t from-vostok-bg/50 via-transparent to-vostok-bg/30 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-t from-[#0E0E0E]/60 via-transparent to-[#0E0E0E]/30 pointer-events-none" />
       
       {/* Content */}
       <div className="relative z-10">

@@ -50,12 +50,12 @@ const HeroSection = () => {
           <div className="space-y-6 md:space-y-12 text-center lg:text-left">
             {/* Mobile: video directly under the title */}
             <div className="relative lg:hidden animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
-              <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-neon/70">
+              <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
                 Watch: How I rebuilt my face in 100 hours
               </p>
               <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
               <div className="relative glass-card rounded-2xl overflow-hidden">
-                <div className="relative w-full aspect-[3/4] bg-black">
+                <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
                   <HeroVideo />
                 </div>
                 <div className="absolute inset-0 pointer-events-none">
@@ -63,9 +63,6 @@ const HeroSection = () => {
                   <div className="absolute top-4 right-4 w-12 h-12 border-r-2 border-t-2 border-vostok-neon/50" />
                   <div className="absolute bottom-4 left-4 w-12 h-12 border-l-2 border-b-2 border-vostok-neon/50" />
                   <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-vostok-neon/50" />
-                  <div className="absolute bottom-6 left-6 font-mono text-xs text-vostok-neon/70">
-                    SUBJECT::BASELINE_ACTIVE
-                  </div>
                 </div>
               </div>
             </div>
@@ -76,7 +73,7 @@ const HeroSection = () => {
               Transform Your Life.
             </h1>
 
-            <div className="mx-auto h-px w-20 bg-vostok-neon/70 md:mx-0 md:w-28" />
+            <div className="mx-auto h-px w-20 bg-[#EDEDED]/70 md:mx-0 md:w-28" />
 
             <div className="space-y-3 md:space-y-2 max-w-3xl">
               <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight">
@@ -103,9 +100,9 @@ const HeroSection = () => {
                 onClick={() => {
                   track('sales_page click', { cta: 'see_my_face', section: 'hero' });
                 }}
-                className="btn-neon text-center"
+                className="btn-ghost text-center"
               >
-                See My Before/After
+                Before/After Photos
               </Link>
               <button
                 type="button"
@@ -118,7 +115,7 @@ const HeroSection = () => {
                   }
                   setIsPdfOpen(true);
                 }}
-                className="btn-ghost text-center"
+                className="btn-link text-center"
               >
                 Free Sample
               </button>
@@ -127,8 +124,8 @@ const HeroSection = () => {
           </div>
           
           {/* Right: Hero Image */}
-          <div className="relative hidden lg:block animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-sm sm:max-w-none">
-            <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-neon/70">
+          <div className="relative hidden lg:block animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-sm">
+            <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
               Watch: How I rebuilt my face in 100 hours
             </p>
             {/* Glow behind image */}
@@ -136,7 +133,7 @@ const HeroSection = () => {
             
             {/* Image container with HUD overlay */}
             <div className="relative glass-card rounded-2xl overflow-hidden">
-              <div className="relative w-full aspect-[3/4] bg-black">
+              <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
                 <HeroVideo />
               </div>
               
@@ -149,9 +146,6 @@ const HeroSection = () => {
                 <div className="absolute bottom-4 right-4 w-12 h-12 border-r-2 border-b-2 border-vostok-neon/50" />
                 
                 {/* Data readout */}
-                <div className="absolute bottom-6 left-6 font-mono text-xs text-vostok-neon/70">
-                  SUBJECT::BASELINE_ACTIVE
-                </div>
               </div>
             </div>
           </div>
@@ -163,7 +157,7 @@ const HeroSection = () => {
           />
         </div>
       </div>
-      <div className="red-glow-pulse" />
+      
     </section>
   );
 };

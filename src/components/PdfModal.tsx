@@ -42,8 +42,8 @@ const PdfModal = ({ isOpen, onClose, pdfSrc }: PdfModalProps) => {
 
   return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center px-4">
-      <div className="absolute inset-0 bg-black/80" onClick={onClose} aria-hidden="true" />
-      <div className="relative w-[98vw] h-[90vh] sm:w-[95vw] sm:h-[85vh] max-w-[95vw] bg-black border border-vostok-neon/30 shadow-2xl rounded-xl overflow-hidden">
+      <div className="absolute inset-0 bg-[#0E0E0E]/80" onClick={onClose} aria-hidden="true" />
+      <div className="relative w-[98vw] h-[90vh] sm:w-[95vw] sm:h-[85vh] max-w-[95vw] bg-[#0E0E0E] border border-vostok-neon/30 shadow-2xl rounded-xl overflow-hidden">
         <div
           className="absolute left-4 z-10 px-4 py-2 bg-vostok-bg/90 border border-vostok-neon/30 text-vostok-neon font-mono text-xs tracking-[0.3em] uppercase rounded-full shadow-lg"
           style={{ top: '1vh' }}
@@ -67,7 +67,7 @@ const PdfModal = ({ isOpen, onClose, pdfSrc }: PdfModalProps) => {
               className="pdf-embed"
             />
           ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-6 bg-black/80 px-6 text-center">
+            <div className="w-full h-full flex flex-col items-center justify-center gap-6 bg-[#0E0E0E]/80 px-6 text-center">
               <button
                 type="button"
                 onClick={() => setIsPdfLoaded(true)}

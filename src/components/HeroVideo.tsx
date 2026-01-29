@@ -4,7 +4,7 @@ import "./HeroVideo.css";
 const VIDEO_SRC = "/videos/main_video_ultra_compressed_copy_562x968.webm";
 const MOBILE_VIDEO_SRC = "/videos/main_video_mobile_copy_562x968.webm";
 const POSTER_SRC = "/preload.jpg";
-const FALLBACK_SRC = "/main_simple-562x968.webp";
+const FALLBACK_SRC = "";
 const FADE_OUT_AT_SECONDS = 0;
 
 const HeroVideo = () => {
@@ -99,8 +99,8 @@ const HeroVideo = () => {
     }
   }, [isMuted]);
 
-  const showFallback = isVideoEnded;
-  const showPoster = !showFallback && (!isVideoVisible || (isMobile && !hasInteracted));
+  const showFallback = false;
+  const showPoster = !isVideoVisible || (isMobile && !hasInteracted);
   const showVideo = shouldLoadVideo && isInView && !loadFailed;
   const showPlayIcon =
     isMobile && !isPlaying && !showFallback && (!shouldLoadVideo || !isVideoVisible);
@@ -165,18 +165,20 @@ const HeroVideo = () => {
 
   return (
     <div className="hero-video" ref={containerRef} onClick={handleTogglePlay}>
-      <img
-        src={FALLBACK_SRC}
-        alt="The Vostok Method book cover"
-        loading="lazy"
-        decoding="async"
-        className={`hero-video__layer hero-video__fallback ${showFallback ? "is-visible" : ""}`}
-      />
+      {FALLBACK_SRC ? (
+        <img
+          src={FALLBACK_SRC}
+          alt="The Vostok Method book cover"
+          loading="lazy"
+          decoding="async"
+          className={`hero-video__layer hero-video__fallback ${showFallback ? "is-visible" : ""}`}
+        />
+      ) : null}
 
       {showVideo && (
         <video
           ref={videoRef}
-          className={`hero-video__layer hero-video__media ${revealVideo ? "is-visible" : ""}`}
+          className={`hero-video__layer hero-video__media ${revealVideo ? "is-visible" : ""} ${isVideoEnded ? "is-ended" : ""}`}
           autoPlay
           muted={isMuted}
           playsInline

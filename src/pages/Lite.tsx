@@ -14,11 +14,11 @@ const Lite = () => {
           </p>
         </div>
 
-        <div className="w-full overflow-hidden rounded-2xl border border-vostok-neon/20 bg-black/40 hidden sm:block">
+        <div className="w-full overflow-hidden rounded-2xl border border-vostok-neon/20 bg-[#0E0E0E]/40 hidden sm:block aspect-[9/16]">
           <img
             src="/main_simple-562x968.webp"
             alt="The Vostok Method"
-            className="h-auto w-full object-cover"
+            className="h-full w-full object-cover"
             loading="lazy"
             decoding="async"
             width={562}
