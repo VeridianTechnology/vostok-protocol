@@ -9,7 +9,7 @@ const modules = [
   { number: '06', title: 'Forehead', backTitle: 'Scalp', image: '/Mini_Sections/06.jpg' },
   { number: '07', title: 'Nose Modification', backTitle: 'Nose', image: '/Mini_Sections/07.jpg' },
   { number: '08', title: 'The Tongue', backTitle: 'Tongue', image: '/Mini_Sections/08.jpg' },
-  { number: '09', title: 'The Ears', backTitle: 'Ears', image: '/Mini_Sections/09.jpg' },
+  { number: '09', title: 'The Ears', backTitle: 'Ears', image: '/Mini_Sections/09-108.webp' },
   { number: '10', title: 'The Neck', backTitle: 'Neck', image: '/Mini_Sections/10.jpg' },
   { number: '11', title: 'Maintence', backTitle: 'Life', image: '/Mini_Sections/11.jpg' },
 ];

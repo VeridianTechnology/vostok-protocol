@@ -16,13 +16,13 @@ const Lite = () => {
 
         <div className="w-full overflow-hidden rounded-2xl border border-vostok-neon/20 bg-black/40 hidden sm:block">
           <img
-            src="/main_simple.jpg"
+            src="/main_simple-562x968.webp"
             alt="The Vostok Method"
             className="h-auto w-full object-cover"
             loading="lazy"
             decoding="async"
-            width={770}
-            height={1100}
+            width={562}
+            height={968}
           />
         </div>
 
