@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { ChevronDown, Download, Pause, Volume2, VolumeX } from 'lucide-react';
-import PdfModal from './PdfModal';
 import { trackRedditEvent } from '@/utils/redditTracking';
 
 const heroStatements = [
@@ -27,16 +26,27 @@ const heroStatements = [
   'When your bone posture improves, everything improves.',
 ];
 
+const bookPages = Array.from({ length: 10 }, (_, index) => {
+  const pageNumber = index + 1;
+  return {
+    left: `/Sections/${pageNumber}.jpg`,
+    right: `/Sections/${pageNumber}_page-0001.jpg`,
+  };
+});
+
 const HeroSection = () => {
   const [statementIndex, setStatementIndex] = useState(0);
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== 'undefined' && window.matchMedia('(min-width: 1024px)').matches
   );
-  const [isPdfOpen, setIsPdfOpen] = useState(false);
   const proofVideoRef = useRef<HTMLVideoElement | null>(null);
   const [isProofMuted, setIsProofMuted] = useState(true);
   const [isProofPlaying, setIsProofPlaying] = useState(true);
   const [isProofEnded, setIsProofEnded] = useState(false);
+  const totalBookPages = bookPages.length * 2;
+  const [bookPageIndex, setBookPageIndex] = useState(0);
+  const [isBookFlipping, setIsBookFlipping] = useState(false);
+  const [bookFlipDirection, setBookFlipDirection] = useState<'next' | 'prev' | null>(null);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * heroStatements.length);
@@ -79,22 +89,55 @@ const HeroSection = () => {
     }
   };
 
+  const handleBookFlip = (direction: 'next' | 'prev') => {
+    if (isBookFlipping) {
+      return;
+    }
+    if (direction === 'next' && bookPageIndex + 2 >= totalBookPages) {
+      return;
+    }
+    if (direction === 'prev' && bookPageIndex - 2 < 0) {
+      return;
+    }
+    setBookFlipDirection(direction);
+    setIsBookFlipping(true);
+    window.setTimeout(() => {
+      setBookPageIndex((prev) => prev + (direction === 'next' ? 2 : -2));
+      setIsBookFlipping(false);
+      setBookFlipDirection(null);
+    }, 450);
+  };
+
+  const leftPage = bookPageIndex;
+  const rightPage = bookPageIndex + 1;
+  const nextLeftPage = bookPageIndex + 2;
+  const prevRightPage = bookPageIndex - 1;
+  const getBookPageImage = (pageIndex: number) => {
+    const spreadIndex = Math.floor(pageIndex / 2);
+    if (spreadIndex < 0 || spreadIndex >= bookPages.length) {
+      return null;
+    }
+    return pageIndex % 2 === 0 ? bookPages[spreadIndex].left : bookPages[spreadIndex].right;
+  };
+  const leftPageImage = getBookPageImage(leftPage);
+  const rightPageImage = getBookPageImage(rightPage);
+  const nextLeftPageImage = getBookPageImage(nextLeftPage);
+  const prevRightPageImage = getBookPageImage(prevRightPage);
+
   return (
     <>
-      <section className="section md:min-h-screen flex items-start md:items-center">
+      <section className="section section-tight-mobile md:min-h-screen flex items-start md:items-center">
         <div className="section-inner">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             {/* Left: Content */}
             <div className="space-y-4 md:space-y-6 text-center lg:text-left">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
-                Transform Your Face.
-                <br />
-                Transform Your Life.
+                A Complete System for Rebuilding the Face
               </h1>
 
               {!isDesktop && (
                 <div className="relative animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
-                  <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
+                  <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-text">
                     WATCH: My Real Before/After — No Filters
                   </p>
                   <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
@@ -153,7 +196,7 @@ const HeroSection = () => {
                 </div>
               )}
 
-              <div className="mx-auto h-px w-20 bg-[#EDEDED]/70 md:mx-0 md:w-28" />
+              <div className="mx-auto h-px w-20 bg-[#F7F9FB]/70 md:mx-0 md:w-28" />
 
               <div className="space-y-3 md:space-y-2 max-w-3xl">
                 <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight min-h-[3.5rem] md:min-h-[4.5rem] flex items-center justify-center lg:justify-start">
@@ -177,21 +220,6 @@ const HeroSection = () => {
                   Get The Method
                   <Download className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
                 </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    track('sales_page click', { cta: 'see_whats_inside', section: 'hero' });
-                    trackRedditEvent('SeeWhatsInside');
-                    if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
-                      window.open('/Vostok_Sampler.pdf', '_blank', 'noopener,noreferrer');
-                      return;
-                    }
-                    setIsPdfOpen(true);
-                  }}
-                  className="btn-link text-center"
-                >
-                  Free Sample
-                </button>
               </div>
               
             </div>
@@ -199,7 +227,7 @@ const HeroSection = () => {
             {/* Right: Proof Video */}
             {isDesktop && (
               <div className="relative animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-[25.75rem]">
-                <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
+                <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-text">
                   WATCH: My Real Before/After — No Filters
                 </p>
                 <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
@@ -258,11 +286,6 @@ const HeroSection = () => {
               </div>
             )}
 
-            <PdfModal
-              isOpen={isPdfOpen}
-              onClose={() => setIsPdfOpen(false)}
-              pdfSrc="/Vostok_Sampler.pdf"
-            />
           </div>
           <div className="mt-6 hidden md:flex items-center justify-center">
             <a
@@ -275,6 +298,261 @@ const HeroSection = () => {
           </div>
         </div>
         
+      </section>
+      <section className="section section-tight-mobile">
+        <div className="section-inner">
+          <div className="book-shell">
+            <div className="book-title">This Book will fundamentally change your life, like no other, find out way...</div>
+            {isDesktop ? (
+              <div className="book-spread">
+                <button
+                  type="button"
+                  className="book-page book-page-left"
+                  onClick={() => handleBookFlip('prev')}
+                  disabled={bookPageIndex === 0 || isBookFlipping}
+                  aria-label="Flip to previous page"
+                  aria-disabled={bookPageIndex === 0 || isBookFlipping}
+                >
+                  <div className="book-page-inner">
+                    {leftPageImage ? (
+                      <img
+                        src={leftPageImage}
+                        alt={`Preview page ${leftPage + 1}`}
+                        className="book-page-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="book-page-label">No preview</div>
+                    )}
+                    <div className="book-page-number">Page {leftPage + 1}</div>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className="book-page book-page-right"
+                  onClick={() => handleBookFlip('next')}
+                  disabled={bookPageIndex + 2 >= totalBookPages || isBookFlipping}
+                  aria-label="Flip to next page"
+                  aria-disabled={bookPageIndex + 2 >= totalBookPages || isBookFlipping}
+                >
+                  <div className="book-page-inner">
+                    {rightPageImage ? (
+                      <img
+                        src={rightPageImage}
+                        alt={`Preview page ${rightPage + 1}`}
+                        className="book-page-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="book-page-label">No preview</div>
+                    )}
+                    <div className="book-page-number">Page {rightPage + 1}</div>
+                  </div>
+                </button>
+
+                {isBookFlipping && bookFlipDirection === 'next' && (
+                  <div className="book-flip-layer book-flip-next" aria-hidden="true">
+                    <div className="book-flip-face book-flip-front">
+                      <div className="book-page-inner">
+                        {rightPageImage ? (
+                          <img
+                            src={rightPageImage}
+                            alt={`Preview page ${rightPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {rightPage + 1}</div>
+                      </div>
+                    </div>
+                    <div className="book-flip-face book-flip-back">
+                      <div className="book-page-inner">
+                        {nextLeftPageImage ? (
+                          <img
+                            src={nextLeftPageImage}
+                            alt={`Preview page ${nextLeftPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {nextLeftPage + 1}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isBookFlipping && bookFlipDirection === 'prev' && (
+                  <div className="book-flip-layer book-flip-prev" aria-hidden="true">
+                    <div className="book-flip-face book-flip-front">
+                      <div className="book-page-inner">
+                        {leftPageImage ? (
+                          <img
+                            src={leftPageImage}
+                            alt={`Preview page ${leftPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {leftPage + 1}</div>
+                      </div>
+                    </div>
+                    <div className="book-flip-face book-flip-back">
+                      <div className="book-page-inner">
+                        {prevRightPageImage ? (
+                          <img
+                            src={prevRightPageImage}
+                            alt={`Preview page ${prevRightPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {prevRightPage + 1}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="book-spread-mobile">
+                <button
+                  type="button"
+                  className="book-page book-page-stack book-page-top"
+                  onClick={() => handleBookFlip('prev')}
+                  disabled={bookPageIndex === 0 || isBookFlipping}
+                  aria-label="Flip to previous page"
+                  aria-disabled={bookPageIndex === 0 || isBookFlipping}
+                >
+                  <div className="book-page-inner">
+                    {leftPageImage ? (
+                      <img
+                        src={leftPageImage}
+                        alt={`Preview page ${leftPage + 1}`}
+                        className="book-page-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="book-page-label">No preview</div>
+                    )}
+                    <div className="book-page-number">Page {leftPage + 1}</div>
+                  </div>
+                </button>
+                <button
+                  type="button"
+                  className="book-page book-page-stack book-page-bottom"
+                  onClick={() => handleBookFlip('next')}
+                  disabled={bookPageIndex + 2 >= totalBookPages || isBookFlipping}
+                  aria-label="Flip to next page"
+                  aria-disabled={bookPageIndex + 2 >= totalBookPages || isBookFlipping}
+                >
+                  <div className="book-page-inner">
+                    {rightPageImage ? (
+                      <img
+                        src={rightPageImage}
+                        alt={`Preview page ${rightPage + 1}`}
+                        className="book-page-image"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="book-page-label">No preview</div>
+                    )}
+                    <div className="book-page-number">Page {rightPage + 1}</div>
+                  </div>
+                </button>
+
+                {isBookFlipping && bookFlipDirection === 'next' && (
+                  <div className="book-flip-layer-mobile book-flip-next-mobile" aria-hidden="true">
+                    <div className="book-flip-face-mobile book-flip-front-mobile">
+                      <div className="book-page-inner">
+                        {rightPageImage ? (
+                          <img
+                            src={rightPageImage}
+                            alt={`Preview page ${rightPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {rightPage + 1}</div>
+                      </div>
+                    </div>
+                    <div className="book-flip-face-mobile book-flip-back-mobile">
+                      <div className="book-page-inner">
+                        {nextLeftPageImage ? (
+                          <img
+                            src={nextLeftPageImage}
+                            alt={`Preview page ${nextLeftPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {nextLeftPage + 1}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {isBookFlipping && bookFlipDirection === 'prev' && (
+                  <div className="book-flip-layer-mobile book-flip-prev-mobile" aria-hidden="true">
+                    <div className="book-flip-face-mobile book-flip-front-mobile">
+                      <div className="book-page-inner">
+                        {leftPageImage ? (
+                          <img
+                            src={leftPageImage}
+                            alt={`Preview page ${leftPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {leftPage + 1}</div>
+                      </div>
+                    </div>
+                    <div className="book-flip-face-mobile book-flip-back-mobile">
+                      <div className="book-page-inner">
+                        {prevRightPageImage ? (
+                          <img
+                            src={prevRightPageImage}
+                            alt={`Preview page ${prevRightPage + 1}`}
+                            className="book-page-image"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <div className="book-page-label">No preview</div>
+                        )}
+                        <div className="book-page-number">Page {prevRightPage + 1}</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+            <div className="book-hint">Click right to advance, left to go back.</div>
+          </div>
+        </div>
       </section>
     </>
   );

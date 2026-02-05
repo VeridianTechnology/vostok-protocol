@@ -14,10 +14,15 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden scanlines">
       {/* Base background */}
-      <div className="fixed inset-0 bg-[#0E0E0E]" />
+      <div className="fixed inset-0 bg-[#07040D]" />
       
       {/* Floating HUD rectangles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        {/* Floating center image */}
+        <div className="fixed inset-0 flex items-center justify-center pointer-events-none">
+          <img src="/float/float4-alpha.png" alt="" className="floating-center-logo" />
+        </div>
+
         {/* Large floating boxes */}
         <div className="absolute top-[12%] left-[6%] w-48 h-32 hud-box rotate-12 animate-float opacity-30" />
         <div className="absolute top-[38%] right-[10%] w-64 h-20 hud-box -rotate-6 animate-float-slow opacity-20" />
@@ -54,7 +59,7 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
       </div>
       
       {/* Gradient overlay for depth */}
-      <div className="fixed inset-0 bg-gradient-to-t from-[#0E0E0E]/60 via-transparent to-[#0E0E0E]/30 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-t from-[#07040D]/60 via-transparent to-[#07040D]/30 pointer-events-none" />
       
       {/* Content */}
       <div className="relative z-10">

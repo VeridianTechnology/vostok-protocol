@@ -19,16 +19,16 @@ const PremiseSection = () => {
   };
 
   return (
-    <section id="premise" className="section">
+    <section id="premise" className="section section-tight-mobile">
       <div className="section-inner">
-        <div className="divider-neon mb-10 bg-[#EDEDED]/60" />
+        <div className="divider-neon mb-10 bg-[#F7F9FB]/60" />
         
-        <div className="card-shell card-shell-clear">
-          <div className="flex flex-col md:flex-row items-start gap-6 md:gap-12">
+        <div className="card-shell card-shell-dark fixed-opacity-card mx-auto max-w-5xl">
+          <div className="mb-8 text-center text-3xl md:text-4xl font-semibold text-vostok-text text-glow text-glow-white">
+            The Crazy Thing... This Actually Works, I'm proof...
+          </div>
+          <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
             <div className="w-full max-w-sm md:w-[30rem] md:max-w-none md:flex-none">
-              <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-[#EDEDED]">
-                WATCH: What the Vostok Method Actually Does — and Why It Works
-              </p>
               <div className="relative w-full aspect-[9/16] bg-[#0E0E0E] rounded-2xl overflow-hidden">
                 <img
                   src="/preload.jpg"
@@ -73,32 +73,37 @@ const PremiseSection = () => {
                 )}
               </div>
             </div>
-            <p className="hidden md:block text-xl md:text-2xl lg:text-3xl text-white font-semibold text-glow text-glow-white leading-relaxed text-left mt-0 self-start md:pt-[2.2rem]">
-              I got into looksmaxxing for a simple reason: my dating pool was shrinking.
-              <br />
-              I was over 30, and “game” wasn’t fixing the problem.
-              <br />
-              <br />
-              Then I learned the uncomfortable truth: your face is the fastest shortcut in dating — and in every social room you walk into.
-              <br />
-              Not because it turns you into a different person…
-              <br />
-              but because it improves every interaction in ways you don’t notice until it’s already working.
-              <br />
-              <br />
-              The real secret is this: the face is modifiable.
-              <br />
-              And I’m living proof.
-              <br />
-              <br />
-              This video explains the mindset, the logic, and why the Vostok Method exists:
-              <br />
-              hundreds of hours of experimentation and expertise, boiled down into one PDF — step-by-step — so you can follow it without guessing.
-            </p>
+            <div className="premise-split-line" aria-hidden="true" />
+            <div className="block text-xs md:text-sm lg:text-lg text-vostok-text font-semibold text-glow text-glow-white leading-relaxed text-center md:text-left mt-0 self-start pt-3 md:pt-4">
+              <p>
+                I got into looksmaxxing for a simple reason: my dating pool was shrinking.
+                <br />
+                I was over 30, and “game” wasn’t fixing the problem.
+                <br />
+                <br />
+                Then I learned the uncomfortable truth: your face is the fastest shortcut in dating — and in every social room you walk into.
+                <br />
+                Not because it turns you into a different person…
+                <br />
+                but because it improves every interaction in ways you don’t notice until it’s already working.
+                <br />
+                <br />
+                Here’s why it works: the face is muscle.
+                <br />
+                Where the muscle goes, the bone will follow.
+                <br />
+                Your skull and face are more movable than you’ve been told — and that makes the face surprisingly easy to change.
+                <br />
+                <br />
+                This video breaks down the mindset, the logic, and why the Vostok Method exists:
+                <br />
+                hundreds of hours of experimentation and expertise, boiled down into one PDF — step-by-step — so you can follow it without guessing.
+              </p>
+            </div>
           </div>
         </div>
         
-        <div className="divider-neon mt-10 bg-[#EDEDED]/60" />
+        <div className="divider-neon mt-10 bg-[#F7F9FB]/60" />
       </div>
     </section>
   );
