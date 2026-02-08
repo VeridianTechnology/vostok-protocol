@@ -11,10 +11,10 @@ const Footer = () => {
             />
             <div>
               <div className="text-3xl md:text-4xl font-semibold text-vostok-text text-glow text-glow-white">
-                The Vostok Method
+                Vostok
               </div>
               <div className="text-sm md:text-base italic text-vostok-text text-glow text-glow-white">
-                A Complete System for Rebuilding the Face
+                Get Hot
               </div>
             </div>
           </div>

@@ -3,7 +3,7 @@ import "./HeroVideo.css";
 
 const VIDEO_SRC = "/videos/main_video_ultra_compressed_copy_562x968.webm";
 const MOBILE_VIDEO_SRC = "/videos/main_video_mobile_copy_562x968.webm";
-const POSTER_SRC = "/preload.jpg";
+const POSTER_SRC = "/coverjp.jpg";
 const FALLBACK_SRC = "";
 const FADE_OUT_AT_SECONDS = 0;
 
