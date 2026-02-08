@@ -132,7 +132,7 @@ const HeroSection = () => {
             {/* Left: Content */}
             <div className="space-y-4 md:space-y-6 text-center lg:text-left">
               <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
-                A Complete System for Rebuilding the Face
+                Get Hot
               </h1>
 
               {!isDesktop && (
