@@ -34,7 +34,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgba(168, 198, 255, 0.85);
+  color: rgba(119, 118, 118, 0.85);
   pointer-events: none;
   opacity: 1;
   transition: opacity 0.4s ease;
@@ -59,8 +59,8 @@
   font-size: 12px;
   letter-spacing: 0.28em;
   text-transform: uppercase;
-  color: rgba(168, 198, 255, 0.9);
-  background: rgba(0, 0, 0, 0.25);
+  color: rgba(119, 118, 118, 0.9);
+  background: rgba(35, 59, 80, 0.25);
   animation: hero-loading-flash 0.9s ease-in-out infinite;
   pointer-events: none;
 }
@@ -79,9 +79,9 @@
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(168, 198, 255, 0.6);
-  background: rgba(0, 0, 0, 0.6);
-  color: rgba(168, 198, 255, 0.9);
+  border: 1px solid rgba(119, 118, 118, 0.6);
+  background: rgba(35, 59, 80, 0.6);
+  color: rgba(119, 118, 118, 0.9);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -112,7 +112,7 @@
   width: 100%;
   appearance: none;
   height: 3px;
-  background: rgba(168, 198, 255, 0.35);
+  background: rgba(119, 118, 118, 0.35);
   border-radius: 999px;
   outline: none;
 }
@@ -122,16 +122,16 @@
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: rgba(168, 198, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: rgba(119, 118, 118, 0.95);
+  border: 1px solid rgba(35, 59, 80, 0.4);
 }
 
 .hero-video__scrub input[type="range"]::-moz-range-thumb {
   width: 14px;
   height: 14px;
   border-radius: 999px;
-  background: rgba(168, 198, 255, 0.95);
-  border: 1px solid rgba(0, 0, 0, 0.4);
+  background: rgba(119, 118, 118, 0.95);
+  border: 1px solid rgba(35, 59, 80, 0.4);
 }
 
 @media (max-width: 640px) {

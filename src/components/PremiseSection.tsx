@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { Pause, Volume2, VolumeX } from 'lucide-react';
 import { shouldLoadVideo as shouldLoadFullVideo } from '@/utils/videoGate';
 
-const FULL_VIDEO_SRC = '/full.webm';
-const YOUTUBE_URL = 'https://youtube.com/shorts/8NyVss60n7g?feature=share';
-const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/8NyVss60n7g?feature=share';
-const POSTER_SRC = '/coverjp.jpg';
+const FULL_VIDEO_SRC = '/videos/ExplanationCompress.mp4';
+const YOUTUBE_URL = 'https://youtube.com/shorts/MGgiaRUrJCw?feature=share';
+const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/MGgiaRUrJCw?feature=share';
+const POSTER_SRC = '/logo.jpeg';
 
 const PremiseSection = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -60,7 +60,7 @@ const PremiseSection = () => {
           </div>
           <div className="flex flex-col md:flex-row items-start gap-6 md:gap-10">
             <div className="w-full max-w-sm md:w-[30rem] md:max-w-none md:flex-none">
-              <div className="relative w-full aspect-[9/16] bg-[#0E0E0E] rounded-none md:rounded-2xl overflow-hidden">
+                      <div className="relative w-full aspect-[9/16] bg-[#233b50] rounded-none md:rounded-2xl overflow-hidden">
                 <img
                   src={POSTER_SRC}
                   alt="Video preview"
@@ -84,7 +84,7 @@ const PremiseSection = () => {
                       onPause={() => setIsPlaying(false)}
                       onEnded={() => setIsPlaying(false)}
                     >
-                      <source src={FULL_VIDEO_SRC} type="video/webm" />
+                      <source src={FULL_VIDEO_SRC} type="video/mp4" />
                     </video>
                     {!isPlaying && (
                       <button
@@ -93,7 +93,7 @@ const PremiseSection = () => {
                         className="absolute inset-0 z-20 flex items-center justify-center text-white"
                         onClick={handleTogglePlayback}
                       >
-                        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
+                        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-[#233b50]/70">
                           <Pause className="h-6 w-6" />
                         </span>
                       </button>
@@ -101,7 +101,7 @@ const PremiseSection = () => {
                     <button
                       type="button"
                       aria-label={isMuted ? 'Unmute video' : 'Mute video'}
-                      className="absolute right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
+                      className="absolute right-3 top-3 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#233b50]/70 text-white transition hover:bg-[#233b50]/80"
                       onClick={(event) => {
                         event.stopPropagation();
                         setIsMuted((prev) => !prev);
@@ -127,7 +127,7 @@ const PremiseSection = () => {
                     href={YOUTUBE_URL}
                     target="_blank"
                     rel="noreferrer"
-                    className="absolute bottom-3 right-3 z-20 rounded-full bg-black/70 px-3 py-1 text-xs text-white"
+                    className="absolute bottom-3 right-3 z-20 rounded-full bg-[#233b50]/70 px-3 py-1 text-xs text-white"
                   >
                     Watch on YouTube
                   </a>

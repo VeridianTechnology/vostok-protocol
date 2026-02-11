@@ -5,9 +5,9 @@ const Footer = () => {
         <div className="flex flex-col items-start justify-start gap-4">
           <div className="flex items-center gap-4">
             <img
-              src="/float/float3.jpg"
+              src="/logo-removebg-preview.png"
               alt="Vostok Method logo"
-              className="h-40 w-40 rounded-md"
+              className="h-40 w-40"
             />
             <div>
               <div className="text-3xl md:text-4xl font-semibold text-vostok-text text-glow text-glow-white">

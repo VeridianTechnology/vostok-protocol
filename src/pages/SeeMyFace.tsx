@@ -57,12 +57,12 @@ const SeeMyFace = () => {
                 setAutoEnabled(false);
                 setActiveIndex((prev) => Math.max(0, prev - 1));
               }}
-              className="absolute left-0 z-10 -translate-x-1/2 rounded-full border border-vostok-neon/60 bg-[#0E0E0E]/60 p-1.5 text-vostok-neon"
+              className="absolute left-0 z-10 -translate-x-1/2 rounded-full border border-vostok-neon/60 bg-[#233b50]/60 p-1.5 text-vostok-neon"
             >
               <span className="block text-base leading-none">←</span>
             </button>
           )}
-          <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-vostok-neon/30 bg-[#0E0E0E]/60 shadow-[0_0_60px_rgba(89,255,162,0.18)]">
+          <div className="relative w-full max-w-3xl overflow-hidden rounded-2xl border border-vostok-neon/30 bg-[#233b50]/60 shadow-[0_0_60px_rgba(89,255,162,0.18)]">
             <img
               src={activeSlide.image}
               alt={activeSlide.alt}
@@ -70,13 +70,13 @@ const SeeMyFace = () => {
               loading="lazy"
               decoding="async"
             />
-            <div className="absolute inset-x-0 bottom-0 h-[20.32%] bg-[#0E0E0E]/75 md:hidden" />
+            <div className="absolute inset-x-0 bottom-0 h-[20.32%] bg-[#233b50]/75 md:hidden" />
             <div className="absolute inset-x-0 bottom-0 flex h-[20.32%] items-start px-4 pt-2 text-center md:hidden">
               <p className="mx-auto text-[8px] leading-relaxed text-vostok-neon">
                 {activeSlide.overlay}
               </p>
             </div>
-            <div className="absolute inset-x-0 bottom-0 hidden h-[10.88%] bg-[#0E0E0E]/75 md:block" />
+            <div className="absolute inset-x-0 bottom-0 hidden h-[10.88%] bg-[#233b50]/75 md:block" />
             <div className="absolute inset-x-0 bottom-0 hidden h-[23%] items-end px-6 pb-4 text-center md:flex md:px-10 md:pb-6">
               <p
                 className={`mx-auto text-sm leading-relaxed text-vostok-neon md:text-base ${
@@ -95,7 +95,7 @@ const SeeMyFace = () => {
                 setAutoEnabled(false);
                 setActiveIndex((prev) => Math.min(slides.length - 1, prev + 1));
               }}
-              className="absolute right-0 z-10 translate-x-1/2 rounded-full border border-vostok-neon/60 bg-[#0E0E0E]/60 p-1.5 text-vostok-neon"
+              className="absolute right-0 z-10 translate-x-1/2 rounded-full border border-vostok-neon/60 bg-[#233b50]/60 p-1.5 text-vostok-neon"
             >
               <span className="block text-base leading-none">→</span>
             </button>

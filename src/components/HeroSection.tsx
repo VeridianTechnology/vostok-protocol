@@ -2,6 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { track } from '@vercel/analytics';
 import { ChevronDown, Download, Pause, Volume2, VolumeX } from 'lucide-react';
 import { trackRedditEvent } from '@/utils/redditTracking';
+import { shouldLoadVideo as shouldLoadFullVideo } from '@/utils/videoGate';
+
+const HERO_VIDEO_SRC = '/main_video.mp4';
+const HERO_YOUTUBE_URL = 'https://www.youtube.com/watch?v=xeK0BKnvj7g';
+const HERO_YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/xeK0BKnvj7g?rel=0';
 
 const heroStatements = [
   'Transform your structure, transform your destiny.',
@@ -43,6 +48,7 @@ const HeroSection = () => {
   const [isProofMuted, setIsProofMuted] = useState(true);
   const [isProofPlaying, setIsProofPlaying] = useState(true);
   const [isProofEnded, setIsProofEnded] = useState(false);
+  const [canLoadVideo, setCanLoadVideo] = useState<boolean | null>(null);
   const totalBookPages = bookPages.length * 2;
   const [bookPageIndex, setBookPageIndex] = useState(0);
   const [isBookFlipping, setIsBookFlipping] = useState(false);
@@ -55,6 +61,20 @@ const HeroSection = () => {
       setStatementIndex((prev) => (prev + 1) % heroStatements.length);
     }, 10000);
     return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const checkSpeed = async () => {
+      const allowed = await shouldLoadFullVideo();
+      if (active) {
+        setCanLoadVideo(allowed);
+      }
+    };
+    checkSpeed();
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -127,174 +147,139 @@ const HeroSection = () => {
   return (
     <>
       <section className="section section-tight-mobile md:min-h-screen flex items-start md:items-center">
-        <div className="section-inner">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Left: Content */}
-            <div className="space-y-4 md:space-y-6 text-center lg:text-left">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-vostok-text leading-tight -mt-2 md:-mt-4">
-                Get Hot
+        <div className="w-full px-[2%] md:px-[4%]">
+          <div className="relative animate-fade-in-up animation-delay-200 mt-2 w-full">
+            <div className="mb-3 flex items-center justify-between px-2 md:hidden">
+              <img
+                src="/logo-removebg-preview.png"
+                alt="Vostok Method logo"
+                className="h-12 w-12 object-contain"
+              />
+              <h1 className="text-2xl font-bold text-vostok-text leading-tight">
+                Vostok - Get Hot
               </h1>
-
-              {!isDesktop && (
-                <div className="relative animate-fade-in-up animation-delay-200 mt-4 mx-auto w-full max-w-sm">
-                  <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-text">
-                    WATCH: My Real Before/After — No Filters
-                  </p>
-                  <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
-                  <div className="relative glass-card rounded-2xl overflow-hidden">
-                    <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
-                      <video
-                        ref={proofVideoRef}
-                        className="h-full w-full object-cover"
-                        src="/videos/proof.webm"
-                        autoPlay
-                        muted={isProofMuted}
-                        playsInline
-                        preload="metadata"
-                        onClick={handleProofToggle}
-                        onPlay={() => {
-                          setIsProofPlaying(true);
-                          setIsProofEnded(false);
-                        }}
-                        onPause={() => setIsProofPlaying(false)}
-                        onEnded={() => {
-                          setIsProofPlaying(false);
-                          setIsProofEnded(true);
-                        }}
-                      />
-                      <div
-                        aria-hidden="true"
-                        className={`pointer-events-none absolute inset-0 bg-black transition-opacity duration-500 ${
-                          isProofEnded ? 'opacity-70' : 'opacity-0'
-                        }`}
-                      />
-                      {!isProofPlaying && (
-                        <button
-                          type="button"
-                          aria-label="Play video"
-                          className="absolute inset-0 flex items-center justify-center text-white"
-                          onClick={handleProofToggle}
-                        >
-                          <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
-                            <Pause className="h-6 w-6" />
-                          </span>
-                        </button>
-                      )}
-                      <button
-                        type="button"
-                        aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
-                        className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setIsProofMuted((prev) => !prev);
-                        }}
-                      >
-                        {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                      </button>
+            </div>
+            <div className="relative glass-card rounded-3xl overflow-hidden">
+              <div className="relative w-full aspect-video bg-[#233b50]">
+                {canLoadVideo === true && (
+                  <video
+                    ref={proofVideoRef}
+                    className="h-full w-full object-contain md:object-cover hero-video-fade"
+                    autoPlay
+                    muted={isProofMuted}
+                    playsInline
+                    preload="metadata"
+                    onClick={handleProofToggle}
+                    onPlay={() => {
+                      setIsProofPlaying(true);
+                      setIsProofEnded(false);
+                    }}
+                    onPause={() => setIsProofPlaying(false)}
+                    onEnded={() => {
+                      setIsProofPlaying(false);
+                      setIsProofEnded(true);
+                    }}
+                  >
+                    <source src={HERO_VIDEO_SRC} type="video/mp4" />
+                  </video>
+                )}
+                {canLoadVideo === false && (
+                  <iframe
+                    className="absolute inset-0 z-0 h-full w-full hero-video-fade"
+                    src={HERO_YOUTUBE_EMBED_URL}
+                    title="Get Hot hero video"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                )}
+                <div
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-0 bg-[#233b50] transition-opacity duration-500 ${
+                    isProofEnded ? 'opacity-70' : 'opacity-0'
+                  }`}
+                />
+                {canLoadVideo === true && !isProofPlaying && (
+                  <button
+                    type="button"
+                    aria-label="Play video"
+                    className="absolute inset-0 z-10 flex items-center justify-center text-white"
+                    onClick={handleProofToggle}
+                  >
+                    <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#233b50]/70">
+                      <Pause className="h-7 w-7" />
+                    </span>
+                  </button>
+                )}
+                {canLoadVideo === true && (
+                  <button
+                    type="button"
+                    aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
+                    className="absolute bottom-4 right-4 z-20 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[#233b50]/70 text-white transition hover:bg-[#233b50]/80"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setIsProofMuted((prev) => !prev);
+                    }}
+                  >
+                    {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                  </button>
+                )}
+                {canLoadVideo === false && (
+                  <a
+                    href={HERO_YOUTUBE_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="absolute bottom-4 right-4 z-10 rounded-full bg-[#233b50]/70 px-3 py-1 text-xs text-white"
+                  >
+                    Watch on YouTube
+                  </a>
+                )}
+                <div className="absolute inset-0 z-10 pointer-events-none">
+                  <div className="absolute bottom-5 left-5 md:bottom-7 md:left-7 max-w-[70%] text-left hidden md:block">
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-vostok-text leading-tight">
+                      Get Hot
+                    </h1>
+                    <div className="mt-3 h-px w-20 bg-[#F7F9FB]/70 md:w-28" />
+                    <div className="mt-3">
+                      <p className="text-sm md:text-lg text-vostok-muted font-semibold tracking-tight min-h-[2rem] md:min-h-[2.5rem] flex items-center">
+                        <span key={statementIndex} className="hero-rotating-line">
+                          {heroStatements[statementIndex]}
+                        </span>
+                      </p>
                     </div>
                   </div>
-                </div>
-              )}
-
-              <div className="mx-auto h-px w-20 bg-[#F7F9FB]/70 md:mx-0 md:w-28" />
-
-              <div className="space-y-3 md:space-y-2 max-w-3xl">
-                <p className="text-xl md:text-2xl text-vostok-muted font-semibold tracking-tight min-h-[3.5rem] md:min-h-[4.5rem] flex items-center justify-center lg:justify-start">
-                  <span key={statementIndex} className="hero-rotating-line">
-                    {heroStatements[statementIndex]}
-                  </span>
-                </p>
-              </div>
-            
-              <div className="flex flex-col sm:flex-row gap-3 md:gap-4 pt-3 md:pt-4">
-                <a
-                  href="https://amoxcenturion.gumroad.com/l/vostokmethod"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => {
-                    track('sales_page click', { cta: 'get_the_method', section: 'hero' });
-                    trackRedditEvent('BreakTheLooksCeiling');
-                  }}
-                  className="btn-green text-center inline-flex items-center justify-center gap-2"
-                >
-                  Get The Method
-                  <Download className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
-                </a>
-              </div>
-              
-            </div>
-            
-            {/* Right: Proof Video */}
-            {isDesktop && (
-              <div className="relative animate-fade-in-up animation-delay-200 mt-10 sm:mt-0 mx-auto w-full max-w-[25.75rem]">
-                <p className="mb-3 text-center font-mono text-xs uppercase tracking-[0.2em] text-vostok-text">
-                  WATCH: My Real Before/After — No Filters
-                </p>
-                <div className="absolute inset-0 bg-vostok-neon/20 rounded-full scale-75" />
-                <div className="relative glass-card rounded-2xl overflow-hidden">
-                  <div className="relative w-full aspect-[9/16] bg-[#0E0E0E]">
-                      <video
-                        ref={proofVideoRef}
-                        className="h-full w-full object-cover"
-                        src="/videos/proof.webm"
-                        autoPlay
-                        muted={isProofMuted}
-                        playsInline
-                        preload="metadata"
-                        onClick={handleProofToggle}
-                        onPlay={() => {
-                          setIsProofPlaying(true);
-                          setIsProofEnded(false);
-                        }}
-                        onPause={() => setIsProofPlaying(false)}
-                        onEnded={() => {
-                          setIsProofPlaying(false);
-                          setIsProofEnded(true);
-                        }}
-                      />
-                      <div
-                        aria-hidden="true"
-                        className={`pointer-events-none absolute inset-0 bg-black transition-opacity duration-500 ${
-                          isProofEnded ? 'opacity-70' : 'opacity-0'
-                        }`}
-                      />
-                    {!isProofPlaying && (
-                      <button
-                        type="button"
-                        aria-label="Play video"
-                        className="absolute inset-0 flex items-center justify-center text-white"
-                        onClick={handleProofToggle}
-                      >
-                        <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-black/70">
-                          <Pause className="h-6 w-6" />
-                        </span>
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      aria-label={isProofMuted ? 'Unmute video' : 'Mute video'}
-                      className="absolute bottom-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black/80"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setIsProofMuted((prev) => !prev);
+                  <img
+                    src="/logo-removebg-preview.png"
+                    alt="Vostok Method logo"
+                    className="absolute left-4 top-4 object-contain hidden md:block"
+                    style={{ width: '120px', height: '120px' }}
+                  />
+                  <div className="absolute bottom-4 right-16 md:right-20 pointer-events-auto hidden md:block">
+                    <a
+                      href="https://amoxcenturion.gumroad.com/l/vostokmethod"
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() => {
+                        track('sales_page click', { cta: 'get_the_method', section: 'hero' });
+                        trackRedditEvent('BreakTheLooksCeiling');
                       }}
+                      className="btn-green text-center inline-flex items-center justify-center gap-2 bg-[#233B50] text-[#777676]"
                     >
-                      {isProofMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-                    </button>
+                      Get The Method
+                      <Download className="h-4 w-4 md:h-6 md:w-6" aria-hidden="true" />
+                    </a>
+                  </div>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 pointer-events-auto">
+                    <a
+                      href="#premise"
+                      aria-label="Scroll to next section"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 text-white/90 text-glow-white transition hover:border-white/70 hover:text-white"
+                    >
+                      <ChevronDown className="h-5 w-5" aria-hidden="true" />
+                    </a>
                   </div>
                 </div>
               </div>
-            )}
-
-          </div>
-          <div className="mt-6 hidden md:flex items-center justify-center">
-            <a
-              href="#premise"
-              aria-label="Scroll to next section"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/40 text-white/90 text-glow-white transition hover:border-white/70 hover:text-white"
-            >
-              <ChevronDown className="h-5 w-5" aria-hidden="true" />
-            </a>
+            </div>
           </div>
         </div>
         

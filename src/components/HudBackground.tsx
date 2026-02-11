@@ -4,6 +4,7 @@ const matrixStreams = [
   { left: '12%', delay: '0s', duration: '26s', text: '1010VOSTOK0101' },
   { left: '48%', delay: '4s', duration: '28s', text: 'FORMPRESENCE' },
   { left: '82%', delay: '9s', duration: '30s', text: 'STRUCTURE001' },
+  { left: '92%', delay: '6s', duration: '27s', text: 'FRAMECONTROL' },
 ];
 
 interface HudBackgroundProps {
@@ -14,7 +15,7 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
   return (
     <div className="relative min-h-screen overflow-hidden scanlines">
       {/* Base background */}
-      <div className="fixed inset-0 bg-[#07040D]" />
+      <div className="fixed inset-0 bg-[#233b50]" />
       
       {/* Floating HUD rectangles */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -59,7 +60,7 @@ const HudBackground = ({ children }: HudBackgroundProps) => {
       </div>
       
       {/* Gradient overlay for depth */}
-      <div className="fixed inset-0 bg-gradient-to-t from-[#07040D]/60 via-transparent to-[#07040D]/30 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-t from-[#233b50]/60 via-transparent to-[#233b50]/30 pointer-events-none" />
       
       {/* Content */}
       <div className="relative z-10">
