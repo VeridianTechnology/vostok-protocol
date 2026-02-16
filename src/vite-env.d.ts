@@ -8,6 +8,7 @@ interface TikTokQueue {
 declare global {
   interface Window {
     ttq?: TikTokQueue;
+    snaptr?: (method: "track", eventName: string, payload?: Record<string, unknown>) => void;
   }
 }
 

@@ -4,6 +4,7 @@ import HeroSection from '@/components/HeroSection';
 import LazySection from '@/components/LazySection';
 import { trackRedditEventOnce } from '@/utils/redditTracking';
 import { trackTiktokEventOnce } from '@/utils/tiktokTracking';
+import { trackSnapEventOnce } from '@/utils/snapTracking';
 
 const PremiseSection = lazy(() => import('@/components/PremiseSection'));
 const LearnSection = lazy(() => import('@/components/LearnSection'));
@@ -43,6 +44,7 @@ const Index = () => {
         });
         if (percent >= 100) {
           trackTiktokEventOnce('ScrollDepth100', 'tiktok_scroll_100');
+          trackSnapEventOnce('ScrollDepth100', 'snap_scroll_100');
         }
       });
     };

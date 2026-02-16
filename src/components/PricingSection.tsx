@@ -1,6 +1,7 @@
 import { Download } from 'lucide-react';
 import { trackRedditEvent } from '@/utils/redditTracking';
 import { trackTiktokEvent } from '@/utils/tiktokTracking';
+import { trackSnapEvent } from '@/utils/snapTracking';
 
 const PricingSection = () => {
   return (
@@ -30,6 +31,7 @@ const PricingSection = () => {
               onClick={() => {
                 trackRedditEvent('BreakTheLooksCeiling');
                 trackTiktokEvent('ClickGetMethodBottom', { payload: { section: 'pricing' } });
+                trackSnapEvent('ClickGetMethodBottom', { payload: { section: 'pricing' } });
               }}
               className="btn-green mt-6 md:mt-8 w-full text-center text-xl py-5 inline-flex items-center justify-center gap-2"
             >

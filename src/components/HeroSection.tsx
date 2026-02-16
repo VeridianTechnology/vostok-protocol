@@ -3,6 +3,7 @@ import { track } from '@vercel/analytics';
 import { ChevronDown, Download, Pause, Volume2, VolumeX } from 'lucide-react';
 import { trackRedditEvent } from '@/utils/redditTracking';
 import { trackTiktokEvent } from '@/utils/tiktokTracking';
+import { trackSnapEvent } from '@/utils/snapTracking';
 import { shouldLoadVideo as shouldLoadFullVideo } from '@/utils/videoGate';
 
 const HERO_VIDEO_SRC = '/main_video.mp4';
@@ -263,6 +264,7 @@ const HeroSection = () => {
                         track('sales_page click', { cta: 'get_the_method', section: 'hero' });
                         trackRedditEvent('BreakTheLooksCeiling');
                         trackTiktokEvent('ClickGetMethodTop', { payload: { section: 'hero' } });
+                        trackSnapEvent('ClickGetMethodTop', { payload: { section: 'hero' } });
                       }}
                       className="btn-green text-center inline-flex items-center justify-center gap-2 bg-[#233B50] text-[#777676]"
                     >
