@@ -1,5 +1,6 @@
 import { Download } from 'lucide-react';
 import { trackRedditEvent } from '@/utils/redditTracking';
+import { trackTiktokEvent } from '@/utils/tiktokTracking';
 
 const PricingSection = () => {
   return (
@@ -28,6 +29,7 @@ const PricingSection = () => {
               rel="noreferrer"
               onClick={() => {
                 trackRedditEvent('BreakTheLooksCeiling');
+                trackTiktokEvent('ClickGetMethodBottom', { payload: { section: 'pricing' } });
               }}
               className="btn-green mt-6 md:mt-8 w-full text-center text-xl py-5 inline-flex items-center justify-center gap-2"
             >
