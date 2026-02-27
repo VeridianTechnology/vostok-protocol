@@ -74,7 +74,7 @@ const SpecComparison = () => {
       </div>
 
       <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
-        <div className="book-shell w-full max-w-none rounded-2xl border border-white/10 px-1 py-2">
+        <div className="book-shell w-full max-w-none rounded-2xl border border-white/10 px-1 py-2 md:px-14">
           <div className="book-spread grid">
             <button
               type="button"
