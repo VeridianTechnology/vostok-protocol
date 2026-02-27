@@ -47,7 +47,7 @@ const HeroSection = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
-          className="grid h-full w-full grid-cols-1 md:grid-cols-2"
+          className="grid h-full w-full grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1"
         >
           <div className="relative">
             <img

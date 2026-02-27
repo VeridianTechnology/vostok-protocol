@@ -103,11 +103,11 @@ const CTAFooter = () => {
       {/* Footer bar */}
       <div className="relative z-10 mt-10 pt-4 md:mt-12 md:pt-4">
         <div className="divider-line mb-8" />
-        <div className="relative flex items-center justify-between gap-3 max-w-5xl mx-auto text-[10px] tracking-wider text-steel/40 uppercase md:justify-center">
+        <div className="relative flex w-full items-center justify-between gap-3 text-[10px] tracking-wider text-steel/40 uppercase md:justify-center">
           <img
             src="/logo.png"
             alt="The Timeless Face logo"
-            className="h-8 w-auto md:fixed md:left-10 md:bottom-14 md:h-24"
+            className="h-8 w-auto md:absolute md:left-[5vw] md:top-2 md:h-24"
             loading="lazy"
           />
           <div className="flex flex-col items-end text-right md:items-center md:text-center">
