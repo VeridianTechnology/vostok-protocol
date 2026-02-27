@@ -1,22 +1,27 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CTAFooter = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
+  const popupRef = useRef<Window | null>(null);
 
   useEffect(() => {
     if (!isRedirecting) {
       return;
     }
 
-    setCountdown(3);
     const interval = window.setInterval(() => {
       setCountdown((current) => (current > 1 ? current - 1 : 1));
     }, 1000);
     const timeout = window.setTimeout(() => {
-      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+      if (popupRef.current && !popupRef.current.closed) {
+        popupRef.current.location.href = gumroadUrl;
+        popupRef.current.focus();
+      } else {
+        window.location.href = gumroadUrl;
+      }
       setIsRedirecting(false);
     }, 3000);
 
@@ -66,7 +71,11 @@ const CTAFooter = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="button"
-            onClick={() => setIsRedirecting(true)}
+            onClick={() => {
+              popupRef.current = window.open("about:blank", "_blank", "noopener,noreferrer");
+              setCountdown(3);
+              setIsRedirecting(true);
+            }}
             className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.2em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-glow transition-all duration-500"
           >
             <svg

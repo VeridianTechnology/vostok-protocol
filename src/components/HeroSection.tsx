@@ -53,7 +53,7 @@ const HeroSection = () => {
             <img
               src={currentView.left}
               alt="Before transformation"
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain md:object-cover"
               loading="eager"
             />
             <div
@@ -64,7 +64,7 @@ const HeroSection = () => {
             <img
               src={currentView.right}
               alt="After transformation"
-              className={`h-full w-full object-cover ${rightImageFocus} ${
+              className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
                 activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
               }`}
               loading="eager"
