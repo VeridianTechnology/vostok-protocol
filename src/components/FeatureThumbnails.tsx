@@ -1,0 +1,253 @@
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+
+const features = [
+  {
+    image: "/images/structure/icons/2.jpg",
+    label: "Cheeks",
+    value: "47%",
+    spec: "More Refined, Structured Cheeks",
+    detailTitle: "Cheeks",
+    detailText:
+      "Cheek projection improves by 12-18% with consistent, targeted work. That's the difference between a face that falls flat and one that catches light correctly. The angle break becomes cleaner, giving you that defined midface structure that signals health and high status. Your jawline tightens alongside it, reaching a 38-41 degree slope that creates a sharp, chiseled edge from every angle. This isn't subtle—this is structural remodeling that changes how light moves across your face.\n\nHarmony Index Movement: 0.68 → 0.83",
+    step: 2,
+  },
+  {
+    image: "/images/structure/icons/3.jpg",
+    label: "Forehead",
+    value: "45%",
+    spec: "Less Wrinkles, More Angles",
+    detailTitle: "Forehead",
+    detailText:
+      "Your forehead curvature stabilizes by 10-14%, smoothing out the brow arc and reducing frontal plane deviation. This is the difference between a tired face and a commanding one. A stable, well-supported forehead doesn't just sit there—it frames everything beneath it, giving you that open, alert look that signals wisdom and calm authority. The lines soften. The angles sharpen. Your face finally looks finished.\n\nHarmony Index Movement: 0.71 → 0.84",
+    step: 3,
+  },
+  {
+    image: "/images/structure/icons/4.jpg",
+    label: "Nose",
+    value: "48%",
+    spec: "Bilateral Harmony Score",
+    detailTitle: "Nose",
+    detailText:
+      "Bridge alignment can reach a 0.82-0.86 harmony index with dedicated work. That means a steadier ridge taper, more balanced transitions, and a nose that actually integrates with the rest of your face instead of sitting on it like an afterthought. The nose is your central anchor—when it's aligned, everything else falls into place. This is about restoring the midline, creating symmetry where life and gravity stole it.\n\nHarmony Index Movement: 0.69 → 0.84",
+    step: 4,
+  },
+  {
+    image: "/images/structure/icons/5.jpg",
+    label: "Jaw",
+    value: "46%",
+    spec: "Edge Contour Balance",
+    detailTitle: "Jaw",
+    detailText:
+      "Mandibular edge definition tightens by 9-12% with proper technique. That's a crisp angle break, a cleaner lower-third slope, and the kind of jawline that makes people trust you instantly. The jaw is your signature. A weak one whispers uncertainty. A defined one broadcasts power. This work rebuilds that foundation, giving you the sharp profile that separates leaders from followers.\n\nHarmony Index Movement: 0.72 → 0.85",
+    step: 5,
+  },
+  {
+    image: "/images/structure/icons/6.jpg",
+    label: "Eyes",
+    value: "43%",
+    spec: "Orbital Alignment Score",
+    detailTitle: "Eyes",
+    detailText:
+      "Orbital symmetry improves to a 0.83 balance score with consistent practice. That means reduced tilt variance, a steadier upper lid plane, and eyes that actually hold attention. The eyes are the first thing people read. When they're balanced, bright, and fierce, they signal focus, health, and trustworthiness. This work restores that primal gaze—the kind that makes people feel seen.\n\nHarmony Index Movement: 0.70 → 0.83",
+    step: 6,
+  },
+  {
+    image: "/images/structure/icons/7.jpg",
+    label: "Ears",
+    value: "31%",
+    spec: "Lateral Symmetry Index",
+    detailTitle: "Ears",
+    detailText:
+      "Lateral alignment gains 6-9% with targeted work, creating a tighter helix curve and a more consistent profile offset. The ears are the hidden engines of the face—when they're strong and well-positioned, they pull everything back into place. This isn't about ear shape. It's about structural lift. Strong ears anchor the cheeks, tighten the jaw, and give your entire profile that collected, finished look.\n\nHarmony Index Movement: 0.74 → 0.82",
+    step: 7,
+  },
+];
+
+const FeatureThumbnails = () => {
+  const [structureStep, setStructureStep] = useState(1);
+  const structureImage = `/images/structure/${structureStep}.jpg`;
+  const intervalRef = useRef<number | null>(null);
+  const advanceStep = () => {
+    setStructureStep((currentStep) => (currentStep >= 7 ? 1 : currentStep + 1));
+  };
+
+  const resetAutoAdvance = () => {
+    if (intervalRef.current) {
+      window.clearInterval(intervalRef.current);
+    }
+    intervalRef.current = window.setInterval(advanceStep, 20000);
+  };
+
+  useEffect(() => {
+    resetAutoAdvance();
+    return () => {
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
+  const isActiveUnlocked = structureStep >= activeFeature.step;
+  const defaultDetailTitle = "The Harmony Index Explained";
+  const defaultDetailText =
+    "Throughout this chapter (and the book), you'll see references to a harmony index. This is a 0.00 to 1.00 scale that measures how well a feature integrates with your overall facial structure.\n\n0.80 and above: Optimal integration. The feature works with your face, not against it.\n\n0.70 to 0.79: Functional but not refined. The feature exists but doesn't contribute to harmony.\n\nBelow 0.70: Structural drag. The feature actively detracts from your overall balance.\n\nYour goal isn't perfection—it's progress. Every decimal point you move is visible. Every percentage gain is real.\n\nNow, let's look at your starting line.";
+  const detailTitle = structureStep === 1 ? defaultDetailTitle : activeFeature.detailTitle;
+  const detailText = structureStep === 1 ? defaultDetailText : activeFeature.detailText;
+
+
+  return (
+    <section className="relative py-12 px-6 md:py-24">
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute left-10 top-10 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute bottom-10 right-0 h-64 w-64 rounded-full bg-chrome/10 blur-3xl" />
+      </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
+          <div className="w-full lg:flex-[1.25]">
+            <div className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent p-2 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+                className="relative z-10 text-center mb-3 md:mb-6"
+              >
+                <p className="text-chrome tracking-[0.35em] uppercase text-xs mb-4 font-light">
+                  An Unrefined Face Cannot Compete with a Structured Face
+                </p>
+                <h2 className="text-3xl md:text-6xl font-light text-foreground tracking-tight">
+                  <span className="font-semibold">Customize Your Face</span>
+                </h2>
+              </motion.div>
+
+              <motion.div
+                key={structureStep}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5 }}
+                className="relative z-10 mx-auto max-w-3xl mt-0"
+              >
+                <div className="relative overflow-hidden rounded-2xl border border-white/15 p-0.5 md:p-1">
+                  <div className="relative overflow-hidden rounded-[0.9rem]">
+                    <img
+                      src={structureImage}
+                      alt="Structured face progression"
+                      className="h-[26rem] w-full object-contain md:h-[48rem]"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className="w-full -mt-8 lg:mt-0 lg:flex-[0.95]">
+            <div className="relative flex flex-col rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent p-6 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8 lg:h-full lg:justify-between">
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/15 via-transparent to-transparent opacity-70 pointer-events-none" />
+              <div className="relative z-10 mb-3 md:mb-6 flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-chrome">
+                <span>Performance Suite</span>
+                <span className="h-px w-10 bg-chrome/40" />
+                <span className="hidden md:inline">Trim Level S</span>
+              </div>
+
+              <h3 className="relative z-10 mb-3 md:mb-5 text-center text-sm md:text-base uppercase tracking-[0.35em] text-neutral-300">
+                Vostok Facial Modification
+              </h3>
+
+              <div className="relative z-10 grid grid-cols-3 gap-5 justify-items-center lg:mb-8">
+                {features.map((feature, index) => {
+                  const isUnlocked = structureStep >= feature.step;
+                  return (
+                    <motion.div
+                      key={feature.label}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.6, delay: index * 0.2 }}
+                      className={`flex flex-col items-center text-center rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all duration-500 group cursor-pointer ${
+                        isUnlocked ? "hover:-translate-y-1" : "opacity-50 grayscale"
+                      }`}
+                      onClick={() => {
+                        advanceStep();
+                        resetAutoAdvance();
+                      }}
+                    >
+                      {/* Circular thumbnail */}
+                      <div
+                        className={`relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 border border-chrome/20 shadow-card transition-shadow duration-500 ${
+                          isUnlocked ? "group-hover:shadow-glow" : ""
+                        }`}
+                      >
+                        <span className="absolute right-1 top-1 z-10 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9px] tracking-[0.2em] text-neutral-200">
+                          {String(feature.step - 1).padStart(2, "0")}
+                        </span>
+                        <img
+                          src={feature.image}
+                          alt={feature.label}
+                          className={`w-full h-full object-cover transition-all duration-700 ${
+                            isUnlocked ? "grayscale group-hover:grayscale-0" : "grayscale"
+                          }`}
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 rounded-full border border-chrome/10" />
+                      </div>
+
+                      {/* Value */}
+                      <span className="text-lg md:text-xl font-light text-foreground tracking-tight mb-1">
+                        {feature.value}
+                      </span>
+
+                      {/* Label */}
+                      <span className="text-[10px] tracking-[0.25em] uppercase text-chrome">
+                        {feature.label}
+                      </span>
+                      <span
+                        className={`h-0.5 w-8 rounded-full transition-opacity duration-300 ${
+                          isUnlocked
+                            ? "bg-white/70 opacity-100"
+                            : "bg-transparent opacity-0"
+                        }`}
+                      />
+
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              <motion.div
+                key={structureStep}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.2 }}
+                className={`relative z-10 mt-4 mb-6 rounded-2xl border border-white/10 bg-black/40 px-4 pb-3 pt-4 md:mt-0 md:px-5 md:pb-4 md:pt-8 ${
+                  isActiveUnlocked ? "" : "opacity-55 grayscale"
+                }`}
+              >
+                <p className="text-[12px] uppercase tracking-[0.3em] text-neutral-400 mb-2">
+                  Operator Notes
+                </p>
+                <h3 className="text-base md:text-lg font-light text-neutral-200 mb-2">
+                  {detailTitle}
+                </h3>
+                {detailText.split("\n\n").map((paragraph) => (
+                  <p
+                    key={paragraph}
+                    className="text-sm md:text-base text-neutral-400 leading-relaxed mb-3 last:mb-0"
+                  >
+                    {paragraph}
+                  </p>
+                ))}
+              </motion.div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default FeatureThumbnails;

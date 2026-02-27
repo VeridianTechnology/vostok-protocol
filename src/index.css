@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import "../book.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 7%;
+    --foreground: 0 0% 92%;
+
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 92%;
+
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 92%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 5%;
+
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 85%;
+
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 38 30% 55%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 40%;
+
+    --radius: 0.25rem;
+
+    /* Custom tokens */
+    --silver: 0 0% 78%;
+    --platinum: 0 0% 88%;
+    --chrome: 220 5% 65%;
+    --steel: 220 3% 40%;
+    --obsidian: 0 0% 3%;
+    --warm-highlight: 38 40% 60%;
+
+    --gradient-silver: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 8%) 50%, hsl(0 0% 6%) 100%);
+    --gradient-chrome: linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%);
+    --gradient-glossy: linear-gradient(180deg, hsl(0 0% 16%) 0%, hsl(0 0% 4%) 100%);
+    --gradient-spec-card: linear-gradient(160deg, hsl(0 0% 13%) 0%, hsl(0 0% 8%) 100%);
+
+    --shadow-luxury: 0 20px 60px -15px hsla(0, 0%, 0%, 0.6);
+    --shadow-card: 0 4px 30px -5px hsla(0, 0%, 0%, 0.4);
+    --shadow-glow: 0 0 40px hsla(38, 40%, 60%, 0.08);
+
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Space Grotesk', system-ui, sans-serif;
+    --font-quote: 'Cormorant Garamond', 'Times New Roman', serif;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer utilities {
+  .gradient-silver {
+    background: var(--gradient-silver);
+  }
+  .gradient-chrome {
+    background: var(--gradient-chrome);
+  }
+  .gradient-glossy {
+    background: var(--gradient-glossy);
+  }
+  .gradient-spec-card {
+    background: var(--gradient-spec-card);
+  }
+  .shadow-luxury {
+    box-shadow: var(--shadow-luxury);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .text-silver {
+    color: hsl(var(--silver));
+  }
+  .text-platinum {
+    color: hsl(var(--platinum));
+  }
+  .text-chrome {
+    color: hsl(var(--chrome));
+  }
+  .text-steel {
+    color: hsl(var(--steel));
+  }
+  .text-warm {
+    color: hsl(var(--warm-highlight));
+  }
+  .border-chrome {
+    border-color: hsl(var(--chrome) / 0.2);
+  }
+  .divider-line {
+    @apply w-full h-px;
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--chrome) / 0.3) 50%, transparent 100%);
+  }
+  .font-quote {
+    font-family: var(--font-quote);
+  }
+  .quote-panel {
+    background:
+      linear-gradient(180deg, hsl(0 0% 20% / 0.75) 0%, hsl(0 0% 6% / 0.9) 100%),
+      linear-gradient(135deg, hsl(0 0% 100% / 0.18) 0%, hsl(0 0% 100% / 0) 60%);
+    border: 1px solid hsl(0 0% 100% / 0.14);
+    box-shadow:
+      0 24px 60px -30px hsl(0 0% 0% / 0.8),
+      inset 0 1px 0 hsl(0 0% 100% / 0.3),
+      inset 0 -20px 40px hsl(0 0% 0% / 0.35);
+  }
+}
