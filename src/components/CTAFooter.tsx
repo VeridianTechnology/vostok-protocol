@@ -92,16 +92,16 @@ const CTAFooter = () => {
       </div>
 
       {/* Footer bar */}
-      <div className="relative z-10 mt-12 pt-6 md:mt-24 md:pt-8">
+      <div className="relative z-10 mt-10 pt-4 md:mt-12 md:pt-4">
         <div className="divider-line mb-8" />
-        <div className="flex items-center justify-between gap-3 max-w-5xl mx-auto text-[10px] tracking-wider text-steel/40 uppercase">
+        <div className="relative flex items-center justify-between gap-3 max-w-5xl mx-auto text-[10px] tracking-wider text-steel/40 uppercase md:justify-center">
           <img
             src="/logo.png"
             alt="The Timeless Face logo"
-            className="h-8 w-auto md:h-28"
+            className="h-8 w-auto md:fixed md:left-10 md:bottom-14 md:h-24"
             loading="lazy"
           />
-          <div className="flex-1 flex flex-col items-end text-right md:items-center md:text-center">
+          <div className="flex flex-col items-end text-right md:items-center md:text-center">
             <span>© 2026 The Timeless Face</span>
             <span>Engineered for Excellence</span>
           </div>
