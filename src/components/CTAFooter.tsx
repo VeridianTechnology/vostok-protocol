@@ -1,6 +1,31 @@
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const CTAFooter = () => {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
+
+  useEffect(() => {
+    if (!isRedirecting) {
+      return;
+    }
+
+    setCountdown(3);
+    const interval = window.setInterval(() => {
+      setCountdown((current) => (current > 1 ? current - 1 : 1));
+    }, 1000);
+    const timeout = window.setTimeout(() => {
+      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+      setIsRedirecting(false);
+    }, 3000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [isRedirecting, gumroadUrl]);
+
   return (
     <section className="py-10 px-6 relative md:py-32">
       <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-background to-background" />
@@ -37,16 +62,28 @@ const CTAFooter = () => {
           </div>
 
           {/* CTA Button */}
-          <motion.a
+          <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            href="https://vostok67.gumroad.com/l/vostokmethod?wanted=true"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block gradient-glossy text-foreground font-medium tracking-[0.2em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-glow transition-all duration-500 cursor-pointer"
+            type="button"
+            onClick={() => setIsRedirecting(true)}
+            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.2em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-glow transition-all duration-500"
           >
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+              <rect x="4" y="10" width="16" height="10" rx="2" />
+            </svg>
             Buy Now
-          </motion.a>
+          </motion.button>
 
           <p className="text-steel/50 text-[10px] tracking-wider mt-4 md:mt-6 uppercase">
             30-day precision guarantee
@@ -57,11 +94,31 @@ const CTAFooter = () => {
       {/* Footer bar */}
       <div className="relative z-10 mt-12 pt-6 md:mt-24 md:pt-8">
         <div className="divider-line mb-8" />
-        <div className="flex flex-col md:flex-row items-center justify-between max-w-5xl mx-auto text-[10px] tracking-wider text-steel/40 uppercase">
-          <span>© 2026 The Timeless Face</span>
-          <span>Engineered for Excellence</span>
+        <div className="flex items-center justify-between gap-3 max-w-5xl mx-auto text-[10px] tracking-wider text-steel/40 uppercase">
+          <img
+            src="/logo.png"
+            alt="The Timeless Face logo"
+            className="h-8 w-auto md:h-28"
+            loading="lazy"
+          />
+          <div className="flex-1 flex flex-col items-end text-right md:items-center md:text-center">
+            <span>© 2026 The Timeless Face</span>
+            <span>Engineered for Excellence</span>
+          </div>
         </div>
       </div>
+
+      {isRedirecting && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">
+              Taking you to the secure checkout Gumroad, a third party checkout for Ebooks.
+            </p>
+            <h3 className="mt-4 text-xl font-light text-foreground">Redirecting</h3>
+            <p className="mt-2 text-sm text-steel">Counting down {countdown}...</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

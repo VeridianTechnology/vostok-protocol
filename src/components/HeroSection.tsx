@@ -35,6 +35,8 @@ const HeroSection = () => {
 
   const currentSet = imageSets[activeSuite];
   const currentView = isAfter ? currentSet.side : currentSet.front;
+  const rightImageFocus =
+    activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
 
   return (
     <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-6 md:pt-0 md:pb-0 md:items-center">
@@ -62,7 +64,7 @@ const HeroSection = () => {
             <img
               src={currentView.right}
               alt="After transformation"
-              className={`h-full w-full object-cover ${
+              className={`h-full w-full object-cover ${rightImageFocus} ${
                 activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
               }`}
               loading="eager"
