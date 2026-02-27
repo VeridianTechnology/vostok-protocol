@@ -37,7 +37,7 @@ const HeroSection = () => {
   const currentView = isAfter ? currentSet.side : currentSet.front;
 
   return (
-    <section className="relative min-h-screen flex items-start justify-center overflow-hidden pt-10 md:pt-0 md:items-center">
+    <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-6 md:pt-0 md:pb-0 md:items-center">
       {/* Background image */}
       <div className="absolute inset-0">
         <motion.div
@@ -198,19 +198,6 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="w-px h-12 bg-gradient-to-b from-chrome/50 to-transparent"
-        />
-      </motion.div>
     </section>
   );
 };

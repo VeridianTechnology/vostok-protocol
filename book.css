@@ -177,7 +177,7 @@
     }
 
     .book-spread::after {
-      display: none;
+      display: none !important;
     }
 
     .book-page {
