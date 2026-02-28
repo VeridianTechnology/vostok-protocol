@@ -98,7 +98,7 @@ const FeatureThumbnails = () => {
 
 
   return (
-    <section className="relative py-12 px-6 md:py-24">
+    <section className="relative py-8 px-6 md:py-24">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-10 top-10 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-10 right-0 h-64 w-64 rounded-full bg-chrome/10 blur-3xl" />
@@ -130,7 +130,7 @@ const FeatureThumbnails = () => {
                 transition={{ duration: 1.5 }}
                 className="relative z-10 mx-auto max-w-3xl mt-0"
               >
-                <div className="relative overflow-hidden rounded-2xl border border-white/15 p-0.5 md:p-1">
+                <div className="relative overflow-hidden rounded-2xl border border-transparent p-0 md:border-white/15 md:p-1">
                   <div className="relative overflow-hidden rounded-[0.9rem]">
                     <img
                       src={structureImage}

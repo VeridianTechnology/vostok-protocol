@@ -39,9 +39,18 @@ const HeroSection = () => {
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
 
   return (
-    <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-6 md:pt-0 md:pb-0 md:items-center">
+    <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center">
       {/* Background image */}
       <div className="absolute inset-0">
+        <motion.div
+          key={`pane-${activeSuite}-${isAfter ? "side" : "front"}`}
+          initial={{ x: "0%" }}
+          animate={{ x: "-102vw" }}
+          transition={{ duration: 0.7, ease: "easeInOut" }}
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[2vw] md:block z-20"
+        >
+          <div className="h-full w-full bg-white/12 backdrop-blur-sm shadow-[0_0_60px_rgba(255,255,255,0.2)]" />
+        </motion.div>
         <motion.div
           key={`${activeSuite}-${isAfter ? "side" : "front"}`}
           initial={{ opacity: 0 }}
@@ -53,11 +62,18 @@ const HeroSection = () => {
             <img
               src={currentView.left}
               alt="Before transformation"
-              className="h-full w-full object-contain md:object-cover"
+              className={`h-full w-full object-contain md:object-cover ${
+                currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
+              }`}
               loading="eager"
             />
-            <div
-              className="absolute inset-0 bg-black/40"
+            <div className="absolute inset-0 bg-black/40 md:hidden" />
+            <motion.div
+              key={`shade-left-${activeSuite}-${isAfter ? "side" : "front"}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.35 }}
+              className="absolute inset-0 hidden bg-black/40 md:block"
             />
           </div>
           <div className="relative">
@@ -69,8 +85,13 @@ const HeroSection = () => {
               }`}
               loading="eager"
             />
-            <div
-              className="absolute inset-0 bg-black/10"
+            <div className="absolute inset-0 bg-black/10 md:hidden" />
+            <motion.div
+              key={`shade-right-${activeSuite}-${isAfter ? "side" : "front"}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.35 }}
+              className="absolute inset-0 hidden bg-black/10 md:block"
             />
           </div>
         </motion.div>
@@ -200,6 +221,31 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
+      <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
+        <button
+          type="button"
+          onClick={() => {
+            document.getElementById("vostok-process")?.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="mt-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-chrome/30 bg-black/50 text-chrome transition-colors duration-300 hover:border-chrome/60 hover:text-foreground"
+          aria-label="Scroll to The Vostok Process"
+        >
+          <svg
+            aria-hidden="true"
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M12 5v14" />
+            <path d="m19 12-7 7-7-7" />
+          </svg>
+        </button>
+      </div>
+      <span className="absolute bottom-4 right-6 z-20 text-steel text-xl">*</span>
     </section>
   );
 };

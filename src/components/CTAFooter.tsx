@@ -1,14 +1,22 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const CTAFooter = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
+  const [isDesktop, setIsDesktop] = useState(false);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
-  const popupRef = useRef<Window | null>(null);
 
   useEffect(() => {
-    if (!isRedirecting) {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const updateMatch = () => setIsDesktop(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    if (!isRedirecting || !isDesktop) {
       return;
     }
 
@@ -16,12 +24,7 @@ const CTAFooter = () => {
       setCountdown((current) => (current > 1 ? current - 1 : 1));
     }, 1000);
     const timeout = window.setTimeout(() => {
-      if (popupRef.current && !popupRef.current.closed) {
-        popupRef.current.location.href = gumroadUrl;
-        popupRef.current.focus();
-      } else {
-        window.location.href = gumroadUrl;
-      }
+      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
       setIsRedirecting(false);
     }, 3000);
 
@@ -72,9 +75,12 @@ const CTAFooter = () => {
             whileTap={{ scale: 0.98 }}
             type="button"
             onClick={() => {
-              popupRef.current = window.open("about:blank", "_blank", "noopener,noreferrer");
-              setCountdown(3);
-              setIsRedirecting(true);
+              if (isDesktop) {
+                setCountdown(3);
+                setIsRedirecting(true);
+              } else {
+                window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+              }
             }}
             className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.2em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-glow transition-all duration-500"
           >
@@ -103,21 +109,24 @@ const CTAFooter = () => {
       {/* Footer bar */}
       <div className="relative z-10 mt-10 pt-4 md:mt-12 md:pt-4">
         <div className="divider-line mb-8" />
-        <div className="relative flex w-full items-center justify-between gap-3 text-[10px] tracking-wider text-steel/40 uppercase md:justify-center">
+        <div className="relative flex w-full flex-col items-start gap-3 text-[10px] tracking-wider text-steel/40 uppercase md:items-center md:justify-center md:gap-2">
           <img
             src="/logo.png"
             alt="The Timeless Face logo"
-            className="h-8 w-auto md:absolute md:left-[5vw] md:top-2 md:h-24"
+            className="h-6 w-auto max-w-none self-start md:absolute md:left-[5vw] md:top-2 md:h-24"
             loading="lazy"
           />
           <div className="flex flex-col items-end text-right md:items-center md:text-center">
             <span>© 2026 The Timeless Face</span>
             <span>Engineered for Excellence</span>
           </div>
+          <span className="text-[9px] normal-case tracking-normal text-steel/50 md:mt-2">
+            * All Images are generated with AI but come from an accurate and truthful source
+          </span>
         </div>
       </div>
 
-      {isRedirecting && (
+      {isRedirecting && isDesktop && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
           <div className="w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
             <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">

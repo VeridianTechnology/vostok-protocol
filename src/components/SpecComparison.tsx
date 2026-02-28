@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useRef, useState } from "react";
 
 const SpecComparison = () => {
@@ -46,24 +46,15 @@ const SpecComparison = () => {
   };
 
   return (
-    <section className="pb-12 px-6 gradient-chrome md:pb-24 md:pt-0">
+    <section className="pb-12 px-6 pt-8 gradient-chrome md:pb-24 md:pt-20">
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-6 md:mb-16"
+          className="text-center mb-4 md:mb-16"
         >
-          <span className="relative left-1/2 right-1/2 mb-4 block w-screen -translate-x-1/2 md:mb-10">
-            <span className="quote-panel block w-full rounded-none px-6 py-8 text-center md:rounded-2xl md:py-16">
-              <p className="font-quote text-[1.35rem] leading-relaxed text-foreground md:text-[2rem] md:leading-relaxed">
-                <span className="text-chrome">You weren&apos;t born with your final face.</span>
-                <br />
-                <span className="text-foreground">You just stopped building it.</span>
-              </p>
-            </span>
-          </span>
           <p className="text-chrome tracking-[0.4em] uppercase text-xs mb-4 font-light">
             Vostok Protocol
           </p>
@@ -83,16 +74,19 @@ const SpecComparison = () => {
               style={{ height: "100%" }}
             >
               <div className="book-page-inner">
-                <motion.img
-                  key={activePair.left}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6 }}
-                  src={activePair.left}
-                  alt={`Chapter page ${spreadIndex + 1}`}
-                  className="book-page-image"
-                  loading="lazy"
-                />
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activePair.left}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.45 }}
+                    src={activePair.left}
+                    alt={`Chapter page ${spreadIndex + 1}`}
+                    className="book-page-image"
+                    loading="lazy"
+                  />
+                </AnimatePresence>
               </div>
             </button>
             <button
@@ -102,16 +96,19 @@ const SpecComparison = () => {
               style={{ height: "100%" }}
             >
               <div className="book-page-inner">
-                <motion.img
-                  key={activePair.right}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6 }}
-                  src={activePair.right}
-                  alt={`Chapter page ${spreadIndex + 1}`}
-                  className="book-page-image"
-                  loading="lazy"
-                />
+                <AnimatePresence mode="wait">
+                  <motion.img
+                    key={activePair.right}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.45 }}
+                    src={activePair.right}
+                    alt={`Chapter page ${spreadIndex + 1}`}
+                    className="book-page-image"
+                    loading="lazy"
+                  />
+                </AnimatePresence>
               </div>
             </button>
             {flipDirection && (
