@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
@@ -120,12 +120,53 @@ const stages = [
 const VostokProcess = () => {
   const [activeStage, setActiveStage] = useState<StageKey>("before");
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
+  const activeStageRef = useRef(activeStage);
+  const activeImageRef = useRef(activeImage);
+  const rotationTimerRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
+  const iconSequence = useMemo(
+    () =>
+      stages.flatMap((stage) =>
+        stage.icons.map((icon) => ({ stageKey: stage.key as StageKey, icon }))
+      ),
+    []
+  );
 
   const selectStage = (stageKey: StageKey, image: string) => {
+    if (rotationTimerRef.current) {
+      window.clearInterval(rotationTimerRef.current);
+      rotationTimerRef.current = null;
+    }
     setActiveStage(stageKey);
     setActiveImage(image);
   };
+
+  useEffect(() => {
+    activeStageRef.current = activeStage;
+    activeImageRef.current = activeImage;
+  }, [activeStage, activeImage]);
+
+  useEffect(() => {
+    if (rotationTimerRef.current) {
+      window.clearInterval(rotationTimerRef.current);
+    }
+    rotationTimerRef.current = window.setInterval(() => {
+      const currentIndex = iconSequence.findIndex(
+        (entry) =>
+          entry.stageKey === activeStageRef.current && entry.icon === activeImageRef.current
+      );
+      const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % iconSequence.length;
+      const next = iconSequence[nextIndex];
+      setActiveStage(next.stageKey);
+      setActiveImage(next.icon);
+    }, 35000);
+
+    return () => {
+      if (rotationTimerRef.current) {
+        window.clearInterval(rotationTimerRef.current);
+      }
+    };
+  }, [iconSequence]);
 
   return (
     <section
@@ -159,10 +200,10 @@ const VostokProcess = () => {
                       key={icon}
                       type="button"
                       onClick={() => selectStage(stage.key as StageKey, icon)}
-                      className={`h-20 w-20 overflow-hidden rounded border transition-colors ${
+                      className={`h-20 w-20 overflow-hidden rounded border transition-all ${
                         activeStage === stage.key && activeImage === icon
                           ? "border-chrome/60"
-                          : "border-white/10 hover:border-white/30"
+                          : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
                       }`}
                     >
                       <img

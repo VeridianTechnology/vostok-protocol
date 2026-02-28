@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const HeroSection = () => {
   const [isAfter, setIsAfter] = useState(false);
   const [activeSuite, setActiveSuite] = useState<"precision" | "adaptive" | "sculpted">(
     "precision"
   );
+  const suiteTimerRef = useRef<number | null>(null);
+  const swipeDuration = 0.5;
   const showBefore = () => {
     if (isAfter) {
       setIsAfter(false);
@@ -37,22 +39,54 @@ const HeroSection = () => {
   const currentView = isAfter ? currentSet.side : currentSet.front;
   const rightImageFocus =
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
+  const transitionKey = `${activeSuite}-${isAfter ? "side" : "front"}`;
+  const suiteOrder: Array<"precision" | "adaptive" | "sculpted"> = [
+    "precision",
+    "adaptive",
+    "sculpted",
+  ];
+
+  const resetSuiteTimer = () => {
+    if (suiteTimerRef.current) {
+      window.clearInterval(suiteTimerRef.current);
+    }
+    suiteTimerRef.current = window.setInterval(() => {
+      setActiveSuite((current) => {
+        const currentIndex = suiteOrder.indexOf(current);
+        return suiteOrder[(currentIndex + 1) % suiteOrder.length];
+      });
+    }, 30000);
+  };
+
+  useEffect(() => {
+    resetSuiteTimer();
+    return () => {
+      if (suiteTimerRef.current) {
+        window.clearInterval(suiteTimerRef.current);
+      }
+    };
+  }, []);
+
+  const handleSuiteChange = (suite: "precision" | "adaptive" | "sculpted") => {
+    setActiveSuite(suite);
+    resetSuiteTimer();
+  };
 
   return (
     <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center">
       {/* Background image */}
       <div className="absolute inset-0">
         <motion.div
-          key={`pane-${activeSuite}-${isAfter ? "side" : "front"}`}
+          key={`pane-${transitionKey}`}
           initial={{ x: "0%" }}
           animate={{ x: "-102vw" }}
-          transition={{ duration: 0.7, ease: "easeInOut" }}
-          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[2vw] md:block z-20"
+          transition={{ duration: swipeDuration, ease: "easeInOut" }}
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-[1.5vw] md:block z-20"
         >
-          <div className="h-full w-full bg-white/12 backdrop-blur-sm shadow-[0_0_60px_rgba(255,255,255,0.2)]" />
+          <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </motion.div>
         <motion.div
-          key={`${activeSuite}-${isAfter ? "side" : "front"}`}
+          key={transitionKey}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5 }}
@@ -67,12 +101,18 @@ const HeroSection = () => {
               }`}
               loading="eager"
             />
-            <div className="absolute inset-0 bg-black/40 md:hidden" />
             <motion.div
-              key={`shade-left-${activeSuite}-${isAfter ? "side" : "front"}`}
+              key={`shade-left-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 1.35 }}
+              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              className="absolute inset-0 bg-black/40 md:hidden"
+            />
+            <motion.div
+              key={`shade-left-${transitionKey}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: swipeDuration, ease: "easeInOut" }}
               className="absolute inset-0 hidden bg-black/40 md:block"
             />
           </div>
@@ -85,12 +125,18 @@ const HeroSection = () => {
               }`}
               loading="eager"
             />
-            <div className="absolute inset-0 bg-black/10 md:hidden" />
             <motion.div
-              key={`shade-right-${activeSuite}-${isAfter ? "side" : "front"}`}
+              key={`shade-right-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 1.35 }}
+              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              className="absolute inset-0 bg-black/10 md:hidden"
+            />
+            <motion.div
+              key={`shade-right-${transitionKey}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: swipeDuration, ease: "easeInOut" }}
               className="absolute inset-0 hidden bg-black/10 md:block"
             />
           </div>
@@ -160,7 +206,7 @@ const HeroSection = () => {
           >
             <button
               type="button"
-              onClick={() => setActiveSuite("precision")}
+              onClick={() => handleSuiteChange("precision")}
               className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
                 activeSuite === "precision"
                   ? "border-white/20 bg-white/15 text-foreground"
@@ -171,7 +217,7 @@ const HeroSection = () => {
             </button>
             <button
               type="button"
-              onClick={() => setActiveSuite("adaptive")}
+              onClick={() => handleSuiteChange("adaptive")}
               className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
                 activeSuite === "adaptive"
                   ? "border-white/20 bg-white/15 text-foreground"
@@ -182,7 +228,7 @@ const HeroSection = () => {
             </button>
             <button
               type="button"
-              onClick={() => setActiveSuite("sculpted")}
+              onClick={() => handleSuiteChange("sculpted")}
               className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
                 activeSuite === "sculpted"
                   ? "border-white/20 bg-white/15 text-foreground"

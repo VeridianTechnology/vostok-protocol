@@ -107,22 +107,26 @@ const CTAFooter = () => {
       </div>
 
       {/* Footer bar */}
-      <div className="relative z-10 mt-10 pt-4 md:mt-12 md:pt-4">
-        <div className="divider-line mb-8" />
-        <div className="relative flex w-full flex-col items-start gap-3 text-[10px] tracking-wider text-steel/40 uppercase md:items-center md:justify-center md:gap-2">
-          <img
-            src="/logo.png"
-            alt="The Timeless Face logo"
-            className="h-6 w-auto max-w-none self-start md:absolute md:left-[5vw] md:top-2 md:h-24"
-            loading="lazy"
-          />
-          <div className="flex flex-col items-end text-right md:items-center md:text-center">
-            <span>© 2026 The Timeless Face</span>
-            <span>Engineered for Excellence</span>
+      <div className="relative z-10 mt-10 pt-4 md:mt-3 md:pt-0 md:h-[8vh]">
+        <div className="divider-line mb-6 md:mb-2" />
+        <div className="relative w-full text-[10px] tracking-wider text-steel/40 uppercase">
+          <div className="flex w-full items-center justify-between gap-3 md:justify-center md:gap-2">
+            <img
+              src="/logo.png"
+              alt="The Timeless Face logo"
+              className="h-6 w-auto max-w-none md:absolute md:left-[5vw] md:top-2 md:h-20"
+              loading="lazy"
+            />
+            <div className="flex flex-col items-end text-right md:items-center md:text-center">
+              <span>© 2026 The Timeless Face</span>
+              <span>Engineered for Excellence</span>
+            </div>
           </div>
-          <span className="text-[9px] normal-case tracking-normal text-steel/50 md:mt-2">
-            * All Images are generated with AI but come from an accurate and truthful source
-          </span>
+          <div className="mt-3 flex w-full justify-center text-center md:mt-2">
+            <span className="text-[9px] normal-case tracking-normal text-steel/50">
+              * All Images are generated with AI but come from an accurate and truthful source
+            </span>
+          </div>
         </div>
       </div>
 

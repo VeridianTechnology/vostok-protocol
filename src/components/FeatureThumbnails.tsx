@@ -67,11 +67,18 @@ const features = [
 const FeatureThumbnails = () => {
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
+  const [isAngleView, setIsAngleView] = useState(false);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
+  const angleImage =
+    structureStep > 1 ? `/images/structure/45/${structureStep - 1}.jpg` : "";
   const hasHighlight = structureStep > 1;
-  const activeImage = isHighlightOn && hasHighlight ? highlightImage : structureImage;
+  const activeImage = isAngleView && structureStep > 1
+    ? angleImage
+    : isHighlightOn && hasHighlight
+    ? highlightImage
+    : structureImage;
   const intervalRef = useRef<number | null>(null);
   const advanceStep = () => {
     setStructureStep((currentStep) => (currentStep >= 7 ? 1 : currentStep + 1));
@@ -97,7 +104,10 @@ const FeatureThumbnails = () => {
     if (structureStep === 1 && isHighlightOn) {
       setIsHighlightOn(false);
     }
-  }, [structureStep, isHighlightOn]);
+    if (structureStep === 1 && isAngleView) {
+      setIsAngleView(false);
+    }
+  }, [structureStep, isHighlightOn, isAngleView]);
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
   const isActiveUnlocked = structureStep >= activeFeature.step;
@@ -149,7 +159,53 @@ const FeatureThumbnails = () => {
                       className="h-[26rem] w-full object-contain md:h-[48rem]"
                       loading="lazy"
                     />
-                    {hasHighlight && (
+                    {structureStep > 1 && (
+                      <>
+                        {!isAngleView && (
+                          <button
+                            type="button"
+                            onClick={() => setIsAngleView(true)}
+                            aria-label="Show 45 degree view"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 via-white/10 to-black/40 p-3 text-white shadow-[0_8px_16px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:right-5 md:p-4"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              className="h-4 w-4 md:h-5 md:w-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="m9 6 6 6-6 6" />
+                            </svg>
+                          </button>
+                        )}
+                        {isAngleView && (
+                          <button
+                            type="button"
+                            onClick={() => setIsAngleView(false)}
+                            aria-label="Return to original view"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 via-white/10 to-black/40 p-3 text-white shadow-[0_8px_16px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:left-5 md:p-4"
+                          >
+                            <svg
+                              aria-hidden="true"
+                              className="h-4 w-4 md:h-5 md:w-5"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.6"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="m15 6-6 6 6 6" />
+                            </svg>
+                          </button>
+                        )}
+                      </>
+                    )}
+                    {hasHighlight && !isAngleView && (
                       <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3">
                         <button
                           type="button"
