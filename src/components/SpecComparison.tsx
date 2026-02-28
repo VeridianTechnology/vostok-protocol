@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef, useState } from "react";
 
 const SpecComparison = () => {
@@ -74,19 +74,18 @@ const SpecComparison = () => {
               style={{ height: "100%" }}
             >
               <div className="book-page-inner">
-                <AnimatePresence mode="wait">
+                <div className="relative w-full flex-1">
                   <motion.img
                     key={activePair.left}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.45 }}
+                    transition={{ duration: 0.7 }}
                     src={activePair.left}
                     alt={`Chapter page ${spreadIndex + 1}`}
-                    className="book-page-image"
+                    className="book-page-image absolute inset-0"
                     loading="lazy"
                   />
-                </AnimatePresence>
+                </div>
               </div>
             </button>
             <button
@@ -96,19 +95,18 @@ const SpecComparison = () => {
               style={{ height: "100%" }}
             >
               <div className="book-page-inner">
-                <AnimatePresence mode="wait">
+                <div className="relative w-full flex-1">
                   <motion.img
                     key={activePair.right}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.45 }}
+                    transition={{ duration: 0.7 }}
                     src={activePair.right}
                     alt={`Chapter page ${spreadIndex + 1}`}
-                    className="book-page-image"
+                    className="book-page-image absolute inset-0"
                     loading="lazy"
                   />
-                </AnimatePresence>
+                </div>
               </div>
             </button>
             {flipDirection && (
