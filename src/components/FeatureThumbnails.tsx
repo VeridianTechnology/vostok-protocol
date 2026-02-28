@@ -66,7 +66,12 @@ const features = [
 
 const FeatureThumbnails = () => {
   const [structureStep, setStructureStep] = useState(1);
+  const [isHighlightOn, setIsHighlightOn] = useState(false);
   const structureImage = `/images/structure/${structureStep}.jpg`;
+  const highlightImage =
+    structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
+  const hasHighlight = structureStep > 1;
+  const activeImage = isHighlightOn && hasHighlight ? highlightImage : structureImage;
   const intervalRef = useRef<number | null>(null);
   const advanceStep = () => {
     setStructureStep((currentStep) => (currentStep >= 7 ? 1 : currentStep + 1));
@@ -87,6 +92,12 @@ const FeatureThumbnails = () => {
       }
     };
   }, []);
+  
+  useEffect(() => {
+    if (structureStep === 1 && isHighlightOn) {
+      setIsHighlightOn(false);
+    }
+  }, [structureStep, isHighlightOn]);
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
   const isActiveUnlocked = structureStep >= activeFeature.step;
@@ -133,11 +144,37 @@ const FeatureThumbnails = () => {
                 <div className="relative overflow-hidden rounded-2xl border border-transparent p-0 md:border-white/15 md:p-1">
                   <div className="relative overflow-hidden rounded-[0.9rem]">
                     <img
-                      src={structureImage}
+                      src={activeImage}
                       alt="Structured face progression"
                       className="h-[26rem] w-full object-contain md:h-[48rem]"
                       loading="lazy"
                     />
+                    {hasHighlight && (
+                      <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setIsHighlightOn(false)}
+                          className={`rounded-full border px-4 pt-2 pb-3 pl-5 text-[10px] uppercase tracking-[0.25em] transition-colors md:px-8 md:pt-3 md:pb-4 md:pl-10 md:text-xs ${
+                            !isHighlightOn
+                              ? "border-white/60 bg-white/20 text-white"
+                              : "border-white/20 bg-black/50 text-white/70 hover:text-white"
+                          }`}
+                        >
+                          Highlight Off
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsHighlightOn(true)}
+                          className={`rounded-full border px-4 pt-2 pb-3 pr-5 text-[10px] uppercase tracking-[0.25em] transition-colors md:px-8 md:pt-3 md:pb-4 md:pr-10 md:text-xs ${
+                            isHighlightOn
+                              ? "border-white/60 bg-white/20 text-white"
+                              : "border-white/20 bg-black/50 text-white/70 hover:text-white"
+                          }`}
+                        >
+                          Highlight On
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
