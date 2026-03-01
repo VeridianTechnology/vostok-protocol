@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-const HeroSection = () => {
+type HeroSectionProps = {
+  hideWatchPrompt?: boolean;
+};
+
+const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const [isAfter, setIsAfter] = useState(false);
   const [activeSuite, setActiveSuite] = useState<"precision" | "adaptive" | "sculpted">(
     "precision"
@@ -346,33 +350,35 @@ const HeroSection = () => {
         </span>
       </button>
 
-      <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
-        <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70">
-          Watch the Explanation
-        </p>
-        <button
-          type="button"
-          onClick={() => {
-            document.getElementById("hero-video")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          className="mt-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-chrome/30 bg-black/50 text-chrome transition-colors duration-300 hover:border-chrome/60 hover:text-foreground"
-          aria-label="Scroll to video section"
-        >
-          <svg
-            aria-hidden="true"
-            className="h-4 w-4"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      {!hideWatchPrompt && (
+        <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
+          <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70">
+            Watch the Explanation
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              document.getElementById("hero-video")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className="mt-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-chrome/30 bg-black/50 text-chrome transition-colors duration-300 hover:border-chrome/60 hover:text-foreground"
+            aria-label="Scroll to video section"
           >
-            <path d="M12 5v14" />
-            <path d="m19 12-7 7-7-7" />
-          </svg>
-        </button>
-      </div>
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 5v14" />
+              <path d="m19 12-7 7-7-7" />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {isRedirecting && isDesktop && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">

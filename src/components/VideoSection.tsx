@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 
-const VideoSection = () => {
+type VideoSectionProps = {
+  onClosed?: () => void;
+};
+
+const VideoSection = ({ onClosed }: VideoSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
@@ -74,7 +78,10 @@ const VideoSection = () => {
           onCanPlay={() => setIsReady(true)}
           onPlay={() => setIsPlaying(true)}
           onPause={() => setIsPlaying(false)}
-          onEnded={() => setIsClosed(true)}
+          onEnded={() => {
+            setIsClosed(true);
+            onClosed?.();
+          }}
         />
 
         {isReady && !isPlaying && (
