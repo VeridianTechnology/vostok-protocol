@@ -10,6 +10,8 @@ const HeroSection = () => {
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
   const suiteTimerRef = useRef<number | null>(null);
+  const redirectIntervalRef = useRef<number | null>(null);
+  const redirectTimeoutRef = useRef<number | null>(null);
   const swipeDuration = 0.5;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const showBefore = () => {
@@ -91,12 +93,33 @@ const HeroSection = () => {
       window.open(gumroadUrl, "_blank", "noopener,noreferrer");
       setIsRedirecting(false);
     }, 3000);
+    redirectIntervalRef.current = interval;
+    redirectTimeoutRef.current = timeout;
 
     return () => {
-      window.clearInterval(interval);
-      window.clearTimeout(timeout);
+      if (redirectIntervalRef.current) {
+        window.clearInterval(redirectIntervalRef.current);
+        redirectIntervalRef.current = null;
+      }
+      if (redirectTimeoutRef.current) {
+        window.clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = null;
+      }
     };
   }, [isRedirecting, gumroadUrl, isDesktop]);
+
+  const closeRedirect = () => {
+    if (redirectIntervalRef.current) {
+      window.clearInterval(redirectIntervalRef.current);
+      redirectIntervalRef.current = null;
+    }
+    if (redirectTimeoutRef.current) {
+      window.clearTimeout(redirectTimeoutRef.current);
+      redirectTimeoutRef.current = null;
+    }
+    setCountdown(3);
+    setIsRedirecting(false);
+  };
 
   const handleSuiteChange = (suite: "precision" | "adaptive" | "sculpted") => {
     setActiveSuite(suite);
@@ -324,13 +347,16 @@ const HeroSection = () => {
       </button>
 
       <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
+        <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70">
+          Watch the Explanation
+        </p>
         <button
           type="button"
           onClick={() => {
-            document.getElementById("vostok-process")?.scrollIntoView({ behavior: "smooth" });
+            document.getElementById("hero-video")?.scrollIntoView({ behavior: "smooth" });
           }}
           className="mt-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-chrome/30 bg-black/50 text-chrome transition-colors duration-300 hover:border-chrome/60 hover:text-foreground"
-          aria-label="Scroll to The Vostok Process"
+          aria-label="Scroll to video section"
         >
           <svg
             aria-hidden="true"
@@ -350,7 +376,27 @@ const HeroSection = () => {
 
       {isRedirecting && isDesktop && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+          <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+            <button
+              type="button"
+              onClick={closeRedirect}
+              aria-label="Close redirect"
+              className="absolute right-4 top-4 text-foreground/70 transition-colors duration-300 hover:text-foreground"
+            >
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
             <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">
               Taking you to the secure checkout Gumroad, a third party checkout for Ebooks.
             </p>
@@ -359,7 +405,6 @@ const HeroSection = () => {
           </div>
         </div>
       )}
-      <span className="absolute bottom-4 right-6 z-20 text-steel text-xl">*</span>
     </section>
   );
 };

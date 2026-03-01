@@ -1,11 +1,13 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const CTAFooter = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
+  const redirectIntervalRef = useRef<number | null>(null);
+  const redirectTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -27,12 +29,33 @@ const CTAFooter = () => {
       window.open(gumroadUrl, "_blank", "noopener,noreferrer");
       setIsRedirecting(false);
     }, 3000);
+    redirectIntervalRef.current = interval;
+    redirectTimeoutRef.current = timeout;
 
     return () => {
-      window.clearInterval(interval);
-      window.clearTimeout(timeout);
+      if (redirectIntervalRef.current) {
+        window.clearInterval(redirectIntervalRef.current);
+        redirectIntervalRef.current = null;
+      }
+      if (redirectTimeoutRef.current) {
+        window.clearTimeout(redirectTimeoutRef.current);
+        redirectTimeoutRef.current = null;
+      }
     };
   }, [isRedirecting, gumroadUrl]);
+
+  const closeRedirect = () => {
+    if (redirectIntervalRef.current) {
+      window.clearInterval(redirectIntervalRef.current);
+      redirectIntervalRef.current = null;
+    }
+    if (redirectTimeoutRef.current) {
+      window.clearTimeout(redirectTimeoutRef.current);
+      redirectTimeoutRef.current = null;
+    }
+    setCountdown(3);
+    setIsRedirecting(false);
+  };
 
   return (
     <section id="purchase" className="py-10 px-6 relative md:py-32">
@@ -127,7 +150,27 @@ const CTAFooter = () => {
 
       {isRedirecting && isDesktop && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
-          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+          <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+            <button
+              type="button"
+              onClick={closeRedirect}
+              aria-label="Close redirect"
+              className="absolute right-4 top-4 text-foreground/70 transition-colors duration-300 hover:text-foreground"
+            >
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
             <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">
               Taking you to the secure checkout Gumroad, a third party checkout for Ebooks.
             </p>
