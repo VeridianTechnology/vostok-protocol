@@ -6,8 +6,12 @@ const HeroSection = () => {
   const [activeSuite, setActiveSuite] = useState<"precision" | "adaptive" | "sculpted">(
     "precision"
   );
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+  const [isDesktop, setIsDesktop] = useState(false);
   const suiteTimerRef = useRef<number | null>(null);
   const swipeDuration = 0.5;
+  const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const showBefore = () => {
     if (isAfter) {
       setIsAfter(false);
@@ -66,6 +70,33 @@ const HeroSection = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const updateMatch = () => setIsDesktop(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    if (!isRedirecting || !isDesktop) {
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setCountdown((current) => (current > 1 ? current - 1 : 1));
+    }, 1000);
+    const timeout = window.setTimeout(() => {
+      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+      setIsRedirecting(false);
+    }, 3000);
+
+    return () => {
+      window.clearInterval(interval);
+      window.clearTimeout(timeout);
+    };
+  }, [isRedirecting, gumroadUrl, isDesktop]);
 
   const handleSuiteChange = (suite: "precision" | "adaptive" | "sculpted") => {
     setActiveSuite(suite);
@@ -177,7 +208,7 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-10 text-3xl md:text-5xl lg:text-6xl font-light tracking-tight text-foreground mb-5 md:mb-6"
+            className="relative z-10 text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-5 md:mb-6"
           >
             Your Face can be Engineered, Not Inherited
           </motion.h1>
@@ -267,6 +298,31 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
+      <button
+        type="button"
+        onClick={() => {
+          if (isDesktop) {
+            setCountdown(3);
+            setIsRedirecting(true);
+          } else {
+            window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+          }
+        }}
+        className="group fixed bottom-[20%] right-4 z-30 flex h-24 w-8 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/60 text-chrome shadow-card transition-colors duration-300 hover:border-white/40 hover:text-foreground md:bottom-auto md:right-5 md:top-1/2 md:h-44 md:w-12 md:-translate-y-1/2"
+        aria-label="Buy now"
+      >
+        <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10 opacity-70" />
+        <span className="relative flex h-full w-full items-center justify-center overflow-hidden">
+          <span className="buy-scroll flex flex-col items-center text-[11px] font-light uppercase tracking-[0.45em] md:text-sm">
+            <span className="flex flex-col items-center leading-none">
+              <span>B</span>
+              <span>U</span>
+              <span>Y</span>
+            </span>
+          </span>
+        </span>
+      </button>
+
       <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
         <button
           type="button"
@@ -291,6 +347,18 @@ const HeroSection = () => {
           </svg>
         </button>
       </div>
+
+      {isRedirecting && isDesktop && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">
+              Taking you to the secure checkout Gumroad, a third party checkout for Ebooks.
+            </p>
+            <h3 className="mt-4 text-xl font-light text-foreground">Redirecting</h3>
+            <p className="mt-2 text-sm text-steel">Counting down {countdown}...</p>
+          </div>
+        </div>
+      )}
       <span className="absolute bottom-4 right-6 z-20 text-steel text-xl">*</span>
     </section>
   );

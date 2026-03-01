@@ -85,6 +85,10 @@
 }
 
 @layer utilities {
+  .buy-scroll {
+    animation: none;
+  }
+
   .gradient-silver {
     background: var(--gradient-silver);
   }

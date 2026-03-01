@@ -35,7 +35,7 @@ const CTAFooter = () => {
   }, [isRedirecting, gumroadUrl]);
 
   return (
-    <section className="py-10 px-6 relative md:py-32">
+    <section id="purchase" className="py-10 px-6 relative md:py-32">
       <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-background to-background" />
 
       <div className="relative z-10 max-w-3xl mx-auto text-center">
@@ -121,11 +121,6 @@ const CTAFooter = () => {
               <span>© 2026 The Timeless Face</span>
               <span>Engineered for Excellence</span>
             </div>
-          </div>
-          <div className="mt-3 flex w-full justify-center text-center md:mt-2">
-            <span className="text-[9px] normal-case tracking-normal text-steel/50">
-              * All Images are generated with AI but come from an accurate and truthful source
-            </span>
           </div>
         </div>
       </div>
