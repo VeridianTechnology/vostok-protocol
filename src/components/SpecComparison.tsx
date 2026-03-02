@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { toMobileImage } from "@/lib/utils";
+import { getImageVariants } from "@/lib/utils";
 
 const SpecComparison = () => {
   const [spreadIndex, setSpreadIndex] = useState(0);
@@ -20,6 +20,8 @@ const SpecComparison = () => {
     { left: "/Sections/11.jpg", right: "/Sections/11_page-0001.jpg" },
   ];
   const activePair = chapterPairs[spreadIndex];
+  const leftVariants = getImageVariants(activePair.left);
+  const rightVariants = getImageVariants(activePair.right);
 
   const goPrev = () => {
     if (spreadIndex === 0) {
@@ -76,18 +78,45 @@ const SpecComparison = () => {
             >
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
-                  <motion.img
-                    key={activePair.left}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7 }}
-                    src={activePair.left}
-                    srcSet={`${toMobileImage(activePair.left)} 640w, ${activePair.left} 1280w`}
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                    alt={`Chapter page ${spreadIndex + 1}`}
-                    className="book-page-image absolute inset-0"
-                    loading="lazy"
-                  />
+                  {leftVariants ? (
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcSet={`${leftVariants.avif.mobile} 640w, ${leftVariants.avif.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={`${leftVariants.webp.mobile} 640w, ${leftVariants.webp.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                      />
+                      <motion.img
+                        key={activePair.left}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        src={leftVariants.desktop}
+                        srcSet={`${leftVariants.mobile} 640w, ${leftVariants.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        alt={`Chapter page ${spreadIndex + 1}`}
+                        className="book-page-image absolute inset-0"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                  ) : (
+                    <motion.img
+                      key={activePair.left}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.7 }}
+                      src={activePair.left}
+                      alt={`Chapter page ${spreadIndex + 1}`}
+                      className="book-page-image absolute inset-0"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
                 </div>
               </div>
             </button>
@@ -99,18 +128,45 @@ const SpecComparison = () => {
             >
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
-                  <motion.img
-                    key={activePair.right}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.7 }}
-                    src={activePair.right}
-                    srcSet={`${toMobileImage(activePair.right)} 640w, ${activePair.right} 1280w`}
-                    sizes="(max-width: 640px) 100vw, 50vw"
-                    alt={`Chapter page ${spreadIndex + 1}`}
-                    className="book-page-image absolute inset-0"
-                    loading="lazy"
-                  />
+                  {rightVariants ? (
+                    <picture>
+                      <source
+                        type="image/avif"
+                        srcSet={`${rightVariants.avif.mobile} 640w, ${rightVariants.avif.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                      />
+                      <source
+                        type="image/webp"
+                        srcSet={`${rightVariants.webp.mobile} 640w, ${rightVariants.webp.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                      />
+                      <motion.img
+                        key={activePair.right}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.7 }}
+                        src={rightVariants.desktop}
+                        srcSet={`${rightVariants.mobile} 640w, ${rightVariants.desktop} 1600w`}
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        alt={`Chapter page ${spreadIndex + 1}`}
+                        className="book-page-image absolute inset-0"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                  ) : (
+                    <motion.img
+                      key={activePair.right}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.7 }}
+                      src={activePair.right}
+                      alt={`Chapter page ${spreadIndex + 1}`}
+                      className="book-page-image absolute inset-0"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  )}
                 </div>
               </div>
             </button>

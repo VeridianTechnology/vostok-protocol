@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { toMobileImage } from "@/lib/utils";
+import { getImageVariants } from "@/lib/utils";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
@@ -125,6 +125,7 @@ const VostokProcess = () => {
   const activeImageRef = useRef(activeImage);
   const rotationTimerRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
+  const activeVariants = getImageVariants(activeImage);
   const iconSequence = useMemo(
     () =>
       stages.flatMap((stage) =>
@@ -180,14 +181,37 @@ const VostokProcess = () => {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
           <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white/10 md:aspect-auto md:h-full">
-            <img
-              src={activeImage}
-              srcSet={`${toMobileImage(activeImage)} 640w, ${activeImage} 1280w`}
-              sizes="(max-width: 640px) 100vw, 60vw"
-              alt={`${currentStage.title} comparison`}
-              className="h-full w-full object-cover"
-              loading="lazy"
-            />
+            {activeVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${activeVariants.avif.mobile} 640w, ${activeVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${activeVariants.webp.mobile} 640w, ${activeVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                />
+                <img
+                  src={activeVariants.desktop}
+                  srcSet={`${activeVariants.mobile} 640w, ${activeVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                  alt={`${currentStage.title} comparison`}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={activeImage}
+                alt={`${currentStage.title} comparison`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            )}
           </div>
         </div>
         <div className="md:w-2/5">
@@ -198,27 +222,53 @@ const VostokProcess = () => {
                   {stage.title}
                 </p>
                 <div className="mt-3 grid grid-cols-2 justify-items-center gap-3">
-                  {stage.icons.map((icon) => (
-                    <button
-                      key={icon}
-                      type="button"
-                      onClick={() => selectStage(stage.key as StageKey, icon)}
-                      className={`h-20 w-20 overflow-hidden rounded border transition-all ${
-                        activeStage === stage.key && activeImage === icon
-                          ? "border-chrome/60"
-                          : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
-                      }`}
-                    >
-                      <img
-                        src={icon}
-                        srcSet={`${toMobileImage(icon)} 160w, ${icon} 320w`}
-                        sizes="80px"
-                        alt={`${stage.title} option`}
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                      />
-                    </button>
-                  ))}
+                  {stage.icons.map((icon) => {
+                    const iconVariants = getImageVariants(icon);
+                    return (
+                      <button
+                        key={icon}
+                        type="button"
+                        onClick={() => selectStage(stage.key as StageKey, icon)}
+                        className={`h-20 w-20 overflow-hidden rounded border transition-all ${
+                          activeStage === stage.key && activeImage === icon
+                            ? "border-chrome/60"
+                            : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
+                        }`}
+                      >
+                        {iconVariants ? (
+                          <picture>
+                            <source
+                              type="image/avif"
+                              srcSet={`${iconVariants.avif.mobile} 640w, ${iconVariants.avif.desktop} 1600w`}
+                              sizes="80px"
+                            />
+                            <source
+                              type="image/webp"
+                              srcSet={`${iconVariants.webp.mobile} 640w, ${iconVariants.webp.desktop} 1600w`}
+                              sizes="80px"
+                            />
+                            <img
+                              src={iconVariants.desktop}
+                              srcSet={`${iconVariants.mobile} 640w, ${iconVariants.desktop} 1600w`}
+                              sizes="80px"
+                              alt={`${stage.title} option`}
+                              className="h-full w-full object-cover"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </picture>
+                        ) : (
+                          <img
+                            src={icon}
+                            alt={`${stage.title} option`}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             ))}

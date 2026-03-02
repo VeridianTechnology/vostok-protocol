@@ -141,6 +141,7 @@ const CTAFooter = () => {
               alt="The Timeless Face logo"
               className="h-6 w-auto max-w-none md:absolute md:left-[5vw] md:top-2 md:h-20"
               loading="lazy"
+              decoding="async"
             />
             <div className="flex flex-col items-end text-right md:items-center md:text-center">
               <span>© 2026 The Timeless Face</span>

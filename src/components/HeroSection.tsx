@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
-import { toMobileImage } from "@/lib/utils";
+import { getImageVariants } from "@/lib/utils";
 
 type HeroSectionProps = {
   hideWatchPrompt?: boolean;
@@ -57,6 +57,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
     "adaptive",
     "sculpted",
   ];
+  const leftVariants = getImageVariants(currentView.left);
+  const rightVariants = getImageVariants(currentView.right);
 
   const resetSuiteTimer = () => {
     if (suiteTimerRef.current) {
@@ -153,16 +155,41 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           className="grid h-full w-full grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1"
         >
           <div className="relative">
-            <img
-              src={currentView.left}
-              srcSet={`${toMobileImage(currentView.left)} 640w, ${currentView.left} 1280w`}
-              sizes="(max-width: 640px) 100vw, 50vw"
-              alt="Before transformation"
-              className={`h-full w-full object-contain md:object-cover ${
-                currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
-              }`}
-              loading="eager"
-            />
+            {leftVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${leftVariants.avif.mobile} 640w, ${leftVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${leftVariants.webp.mobile} 640w, ${leftVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+                <img
+                  src={leftVariants.desktop}
+                  srcSet={`${leftVariants.mobile} 640w, ${leftVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  alt="Before transformation"
+                  className={`h-full w-full object-contain md:object-cover ${
+                    currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
+                  }`}
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={currentView.left}
+                alt="Before transformation"
+                className={`h-full w-full object-contain md:object-cover ${
+                  currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
+                }`}
+                loading="eager"
+                decoding="async"
+              />
+            )}
             <motion.div
               key={`shade-left-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}
@@ -179,16 +206,41 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             />
           </div>
           <div className="relative">
-            <img
-              src={currentView.right}
-              srcSet={`${toMobileImage(currentView.right)} 640w, ${currentView.right} 1280w`}
-              sizes="(max-width: 640px) 100vw, 50vw"
-              alt="After transformation"
-              className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
-                activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
-              }`}
-              loading="eager"
-            />
+            {rightVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${rightVariants.avif.mobile} 640w, ${rightVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${rightVariants.webp.mobile} 640w, ${rightVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+                <img
+                  src={rightVariants.desktop}
+                  srcSet={`${rightVariants.mobile} 640w, ${rightVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  alt="After transformation"
+                  className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
+                    activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
+                  }`}
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={currentView.right}
+                alt="After transformation"
+                className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
+                  activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
+                }`}
+                loading="eager"
+                decoding="async"
+              />
+            )}
             <motion.div
               key={`shade-right-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}

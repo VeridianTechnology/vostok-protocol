@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { toMobileImage } from "@/lib/utils";
+import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
@@ -23,6 +23,7 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
       ];
   const videoKey = isMobile ? "mobile" : "desktop";
   const posterImage = "/1.jpg";
+  const posterVariants = getImageVariants(posterImage);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -82,7 +83,7 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
           key={videoKey}
           ref={videoRef}
           className="relative z-10 h-[42vh] w-full object-contain py-1 md:h-[78vh] md:py-6"
-          poster={posterImage}
+          poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls
           controlsList="nodownload noplaybackrate"
@@ -110,13 +111,35 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
             aria-label="Play video"
             className="absolute inset-0 z-20 flex items-center justify-center"
           >
-            <img
-              src={posterImage}
-              srcSet={`${toMobileImage(posterImage)} 640w, ${posterImage} 1280w`}
-              sizes="100vw"
-              alt="Video preview"
-              className="h-full w-full object-cover"
-            />
+            {posterVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${posterVariants.avif.mobile} 640w, ${posterVariants.avif.desktop} 1600w`}
+                  sizes="100vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${posterVariants.webp.mobile} 640w, ${posterVariants.webp.desktop} 1600w`}
+                  sizes="100vw"
+                />
+                <img
+                  src={posterVariants.desktop}
+                  srcSet={`${posterVariants.mobile} 640w, ${posterVariants.desktop} 1600w`}
+                  sizes="100vw"
+                  alt="Video preview"
+                  className="h-full w-full object-cover"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={posterImage}
+                alt="Video preview"
+                className="h-full w-full object-cover"
+                decoding="async"
+              />
+            )}
             <div className="absolute inset-0 bg-black/30" />
             <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-foreground transition-opacity duration-300 hover:border-white/60 hover:bg-black/60">
               <svg

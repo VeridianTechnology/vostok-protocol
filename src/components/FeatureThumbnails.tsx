@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { toMobileImage } from "@/lib/utils";
+import { getImageVariants } from "@/lib/utils";
 
 const features = [
   {
@@ -111,6 +111,7 @@ const FeatureThumbnails = () => {
   }, [structureStep, isHighlightOn, isAngleView]);
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
+  const activeVariants = getImageVariants(activeImage);
   const isActiveUnlocked = structureStep >= activeFeature.step;
   const defaultDetailTitle = "The Harmony Index Explained";
   const defaultDetailText =
@@ -154,14 +155,37 @@ const FeatureThumbnails = () => {
               >
                 <div className="relative overflow-hidden rounded-2xl border border-transparent p-0 md:border-white/15 md:p-1">
                   <div className="relative overflow-hidden rounded-[0.9rem]">
-                    <img
-                      src={activeImage}
-                      srcSet={`${toMobileImage(activeImage)} 640w, ${activeImage} 1280w`}
-                      sizes="(max-width: 640px) 100vw, 60vw"
-                      alt="Structured face progression"
-                      className="h-[26rem] w-full object-contain md:h-[48rem]"
-                      loading="lazy"
-                    />
+                    {activeVariants ? (
+                      <picture>
+                        <source
+                          type="image/avif"
+                          srcSet={`${activeVariants.avif.mobile} 640w, ${activeVariants.avif.desktop} 1600w`}
+                          sizes="(max-width: 640px) 100vw, 60vw"
+                        />
+                        <source
+                          type="image/webp"
+                          srcSet={`${activeVariants.webp.mobile} 640w, ${activeVariants.webp.desktop} 1600w`}
+                          sizes="(max-width: 640px) 100vw, 60vw"
+                        />
+                        <img
+                          src={activeVariants.desktop}
+                          srcSet={`${activeVariants.mobile} 640w, ${activeVariants.desktop} 1600w`}
+                          sizes="(max-width: 640px) 100vw, 60vw"
+                          alt="Structured face progression"
+                          className="h-[26rem] w-full object-contain md:h-[48rem]"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
+                    ) : (
+                      <img
+                        src={activeImage}
+                        alt="Structured face progression"
+                        className="h-[26rem] w-full object-contain md:h-[48rem]"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    )}
                     {structureStep > 1 && (
                       <>
                         {!isAngleView && (
@@ -256,6 +280,7 @@ const FeatureThumbnails = () => {
               <div className="relative z-10 grid grid-cols-3 gap-5 justify-items-center lg:mb-8">
                 {features.map((feature, index) => {
                   const isUnlocked = structureStep >= feature.step;
+                  const featureVariants = getImageVariants(feature.image);
                   return (
                     <motion.div
                       key={feature.label}
@@ -280,16 +305,41 @@ const FeatureThumbnails = () => {
                         <span className="absolute right-1 top-1 z-10 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9px] tracking-[0.2em] text-neutral-200">
                           {String(feature.step - 1).padStart(2, "0")}
                         </span>
-                        <img
-                          src={feature.image}
-                          srcSet={`${toMobileImage(feature.image)} 160w, ${feature.image} 320w`}
-                          sizes="80px"
-                          alt={feature.label}
-                          className={`w-full h-full object-cover transition-all duration-700 ${
-                            isUnlocked ? "grayscale group-hover:grayscale-0" : "grayscale"
-                          }`}
-                          loading="lazy"
-                        />
+                        {featureVariants ? (
+                          <picture>
+                            <source
+                              type="image/avif"
+                              srcSet={`${featureVariants.avif.mobile} 640w, ${featureVariants.avif.desktop} 1600w`}
+                              sizes="80px"
+                            />
+                            <source
+                              type="image/webp"
+                              srcSet={`${featureVariants.webp.mobile} 640w, ${featureVariants.webp.desktop} 1600w`}
+                              sizes="80px"
+                            />
+                            <img
+                              src={featureVariants.desktop}
+                              srcSet={`${featureVariants.mobile} 640w, ${featureVariants.desktop} 1600w`}
+                              sizes="80px"
+                              alt={feature.label}
+                              className={`w-full h-full object-cover transition-all duration-700 ${
+                                isUnlocked ? "grayscale group-hover:grayscale-0" : "grayscale"
+                              }`}
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          </picture>
+                        ) : (
+                          <img
+                            src={feature.image}
+                            alt={feature.label}
+                            className={`w-full h-full object-cover transition-all duration-700 ${
+                              isUnlocked ? "grayscale group-hover:grayscale-0" : "grayscale"
+                            }`}
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        )}
                         <div className="absolute inset-0 rounded-full border border-chrome/10" />
                       </div>
 
