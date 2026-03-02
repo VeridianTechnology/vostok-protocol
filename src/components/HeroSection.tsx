@@ -267,18 +267,18 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 px-6 max-w-6xl mx-auto">
+      <div className="relative z-10 px-6 max-w-6xl mx-auto mt-[24svh] md:mt-0">
         <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
-          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-3 py-4 text-center sm:px-5 sm:py-7 md:px-10 md:py-12"
+          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-2 py-3 text-center sm:px-4 sm:py-6 md:px-10 md:py-12"
         >
           <m.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
-            className="relative z-10 text-ice tracking-[0.45em] uppercase text-[10px] md:text-sm mb-4 font-light"
+            className="relative z-10 hidden text-ice tracking-[0.45em] uppercase text-[9px] md:block md:text-sm mb-3 font-light"
           >
             The Hollywood Secrets They Don't Tell You
           </m.p>
@@ -287,7 +287,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-10 text-xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4 md:mb-6"
+            className="relative z-10 text-lg md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-3 md:mb-6"
           >
             The $30 Ebook that will Change Your Life
           </m.h1>
@@ -296,14 +296,14 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1.2, delay: 0.8 }}
-            className="divider-line max-w-sm mx-auto mb-4"
+            className="divider-line max-w-sm mx-auto mb-3"
           />
 
           <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="relative z-10 text-steel text-[13px] md:text-lg font-light max-w-xl mx-auto leading-relaxed"
+            className="relative z-10 hidden text-steel text-[12px] md:block md:text-lg font-light max-w-xl mx-auto leading-relaxed"
           >
             Easy to follow exercises, tips and the perfect routine to become a super model in the face.
             {" "}
@@ -314,12 +314,12 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.35 }}
-            className="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3 text-[9px] uppercase tracking-[0.3em] text-steel"
+            className="relative z-10 mt-4 flex flex-wrap items-center justify-center gap-2 text-[8px] uppercase tracking-[0.3em] text-steel"
           >
             <button
               type="button"
               onClick={() => handleSuiteChange("precision")}
-              className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
+              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
                 activeSuite === "precision"
                   ? "border-white/20 bg-white/15 text-foreground"
                   : "border-white/10 bg-white/5 text-steel"
@@ -330,7 +330,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             <button
               type="button"
               onClick={() => handleSuiteChange("adaptive")}
-              className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
+              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
                 activeSuite === "adaptive"
                   ? "border-white/20 bg-white/15 text-foreground"
                   : "border-white/10 bg-white/5 text-steel"
@@ -341,7 +341,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             <button
               type="button"
               onClick={() => handleSuiteChange("sculpted")}
-              className={`rounded-full border px-4 py-2 transition-colors duration-300 ${
+              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
                 activeSuite === "sculpted"
                   ? "border-white/20 bg-white/15 text-foreground"
                   : "border-white/10 bg-white/5 text-steel"
@@ -355,12 +355,12 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.6 }}
-            className="relative z-10 mt-6 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1 text-[10px] tracking-[0.3em] uppercase text-steel"
+            className="relative z-10 mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
           >
             <button
               type="button"
               onClick={showBefore}
-              className={`rounded-full px-6 py-2 transition-colors duration-500 ${
+              className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
                 isAfter ? "text-steel" : "bg-white/15 text-foreground"
               }`}
             >
@@ -369,7 +369,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             <button
               type="button"
               onClick={showAfter}
-              className={`rounded-full px-6 py-2 transition-colors duration-500 ${
+              className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
                 isAfter ? "bg-white/15 text-foreground" : "text-steel"
               }`}
             >
