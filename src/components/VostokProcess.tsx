@@ -4,6 +4,30 @@ import { getImageVariants } from "@/lib/utils";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
+const getThumbVariants = (src: string) => {
+  if (!src.endsWith(".jpg") && !src.endsWith(".jpeg")) {
+    return null;
+  }
+  const match = src.match(/(\.jpe?g)$/i);
+  if (!match) {
+    return null;
+  }
+  const ext = match[1];
+  const base = src.slice(0, -ext.length);
+  return {
+    mobile: {
+      jpg: `${base}_thumb_mobile${ext}`,
+      avif: `${base}_thumb_mobile.avif`,
+      webp: `${base}_thumb_mobile.webp`,
+    },
+    desktop: {
+      jpg: `${base}_thumb_desktop${ext}`,
+      avif: `${base}_thumb_desktop.avif`,
+      webp: `${base}_thumb_desktop.webp`,
+    },
+  };
+};
+
 const stages = [
   {
     key: "before",
@@ -223,7 +247,7 @@ const VostokProcess = () => {
                 </p>
                 <div className="mt-3 grid grid-cols-2 justify-items-center gap-3">
                   {stage.icons.map((icon) => {
-                    const iconVariants = getImageVariants(icon);
+                    const iconThumb = getThumbVariants(icon);
                     return (
                       <button
                         key={icon}
@@ -235,21 +259,21 @@ const VostokProcess = () => {
                             : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
                         }`}
                       >
-                        {iconVariants ? (
+                        {iconThumb ? (
                           <picture>
                             <source
                               type="image/avif"
-                              srcSet={`${iconVariants.avif.mobile} 640w, ${iconVariants.avif.desktop} 1600w`}
+                              srcSet={`${iconThumb.mobile.avif} 96w, ${iconThumb.desktop.avif} 128w`}
                               sizes="80px"
                             />
                             <source
                               type="image/webp"
-                              srcSet={`${iconVariants.webp.mobile} 640w, ${iconVariants.webp.desktop} 1600w`}
+                              srcSet={`${iconThumb.mobile.webp} 96w, ${iconThumb.desktop.webp} 128w`}
                               sizes="80px"
                             />
                             <img
-                              src={iconVariants.desktop}
-                              srcSet={`${iconVariants.mobile} 640w, ${iconVariants.desktop} 1600w`}
+                              src={iconThumb.desktop.jpg}
+                              srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
                               sizes="80px"
                               alt={`${stage.title} option`}
                               className="h-full w-full object-cover"

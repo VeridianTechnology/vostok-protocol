@@ -2,6 +2,30 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 
+const getThumbVariants = (src: string) => {
+  if (!src.endsWith(".jpg") && !src.endsWith(".jpeg")) {
+    return null;
+  }
+  const match = src.match(/(\.jpe?g)$/i);
+  if (!match) {
+    return null;
+  }
+  const ext = match[1];
+  const base = src.slice(0, -ext.length);
+  return {
+    mobile: {
+      jpg: `${base}_thumb_mobile${ext}`,
+      avif: `${base}_thumb_mobile.avif`,
+      webp: `${base}_thumb_mobile.webp`,
+    },
+    desktop: {
+      jpg: `${base}_thumb_desktop${ext}`,
+      avif: `${base}_thumb_desktop.avif`,
+      webp: `${base}_thumb_desktop.webp`,
+    },
+  };
+};
+
 const features = [
   {
     image: "/images/structure/icons/2.jpg",
@@ -280,7 +304,7 @@ const FeatureThumbnails = () => {
               <div className="relative z-10 grid grid-cols-3 gap-5 justify-items-center lg:mb-8">
                 {features.map((feature, index) => {
                   const isUnlocked = structureStep >= feature.step;
-                  const featureVariants = getImageVariants(feature.image);
+                  const featureThumb = getThumbVariants(feature.image);
                   return (
                     <motion.div
                       key={feature.label}
@@ -305,21 +329,21 @@ const FeatureThumbnails = () => {
                         <span className="absolute right-1 top-1 z-10 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9px] tracking-[0.2em] text-neutral-200">
                           {String(feature.step - 1).padStart(2, "0")}
                         </span>
-                        {featureVariants ? (
+                        {featureThumb ? (
                           <picture>
                             <source
                               type="image/avif"
-                              srcSet={`${featureVariants.avif.mobile} 640w, ${featureVariants.avif.desktop} 1600w`}
+                              srcSet={`${featureThumb.mobile.avif} 96w, ${featureThumb.desktop.avif} 128w`}
                               sizes="80px"
                             />
                             <source
                               type="image/webp"
-                              srcSet={`${featureVariants.webp.mobile} 640w, ${featureVariants.webp.desktop} 1600w`}
+                              srcSet={`${featureThumb.mobile.webp} 96w, ${featureThumb.desktop.webp} 128w`}
                               sizes="80px"
                             />
                             <img
-                              src={featureVariants.desktop}
-                              srcSet={`${featureVariants.mobile} 640w, ${featureVariants.desktop} 1600w`}
+                              src={featureThumb.desktop.jpg}
+                              srcSet={`${featureThumb.mobile.jpg} 96w, ${featureThumb.desktop.jpg} 128w`}
                               sizes="80px"
                               alt={feature.label}
                               className={`w-full h-full object-cover transition-all duration-700 ${
