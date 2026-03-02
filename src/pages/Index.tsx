@@ -27,9 +27,6 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
       <HeroSection hideWatchPrompt={isVideoClosed} />
-      <Suspense fallback={<div className="min-h-[50vh]" />}>
-        <VideoSection onClosed={() => setIsVideoClosed(true)} />
-      </Suspense>
       <div className="divider-line" />
       <Suspense fallback={<div className="min-h-[40vh]" />}>
         <VostokProcess />
@@ -43,6 +40,9 @@ const Index = () => {
       </Suspense>
       <Suspense fallback={<div className="min-h-[50vh]" />}>
         <SpecComparison />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[50vh]" />}>
+        <VideoSection onClosed={() => setIsVideoClosed(true)} />
       </Suspense>
       <div className="divider-line" />
       <Suspense fallback={<div className="min-h-[40vh]" />}>

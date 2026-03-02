@@ -321,7 +321,7 @@ const FeatureThumbnails = () => {
                         resetAutoAdvance();
                       }}
                     >
-                      <span className="badge-hud absolute right-3 top-3 rounded-full px-2 py-1 text-[8px]">
+                      <span className="badge-hud absolute right-3 top-3 hidden rounded-full px-2 py-1 text-[8px] md:inline-flex">
                         Sync
                       </span>
                       {/* Circular thumbnail */}

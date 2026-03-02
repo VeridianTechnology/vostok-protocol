@@ -247,7 +247,7 @@ const VostokProcess = () => {
                   <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
                     {stage.title}
                   </p>
-                  <span className="badge-hud rounded-full px-2 py-1 text-[8px]">
+                  <span className="badge-hud hidden rounded-full px-2 py-1 text-[8px] md:inline-flex">
                     Cal
                   </span>
                 </div>

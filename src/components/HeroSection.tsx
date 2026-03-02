@@ -19,6 +19,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const swipeDuration = 0.5;
+  const motionEnabled = isDesktop;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const showBefore = () => {
     if (isAfter) {
@@ -135,25 +136,46 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
     setActiveSuite(suite);
     resetSuiteTimer();
   };
+  const handleBuyClick = () => {
+    track("buy_button", { location: "hero" });
+    if (isDesktop) {
+      setCountdown(3);
+      setIsRedirecting(true);
+    } else {
+      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
     <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center">
+      <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden">
+        <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+          Vostok Method
+        </span>
+        <button
+          type="button"
+          onClick={handleBuyClick}
+          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+        >
+          Buy
+        </button>
+      </div>
       {/* Background image */}
       <div className="absolute inset-0">
         <m.div
           key={`pane-${transitionKey}`}
-          initial={{ x: "0%" }}
-          animate={{ x: "-102vw" }}
-          transition={{ duration: swipeDuration, ease: "easeInOut" }}
+          initial={motionEnabled ? { x: "0%" } : false}
+          animate={motionEnabled ? { x: "-102vw" } : false}
+          transition={motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined}
           className="pointer-events-none absolute inset-y-0 right-0 hidden w-[1.5vw] md:block z-20"
         >
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </m.div>
         <m.div
           key={transitionKey}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5 }}
+          initial={motionEnabled ? { opacity: 0 } : false}
+          animate={motionEnabled ? { opacity: 1 } : false}
+          transition={motionEnabled ? { duration: 1.5 } : undefined}
           className="grid h-full w-full grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1"
         >
           <div className="relative">
@@ -194,16 +216,20 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             )}
             <m.div
               key={`shade-left-mobile-${transitionKey}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              initial={motionEnabled ? { opacity: 0 } : false}
+              animate={motionEnabled ? { opacity: 1 } : false}
+              transition={
+                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
+              }
               className="absolute inset-0 bg-black/40 md:hidden"
             />
             <m.div
               key={`shade-left-${transitionKey}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              initial={motionEnabled ? { opacity: 0 } : false}
+              animate={motionEnabled ? { opacity: 1 } : false}
+              transition={
+                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
+              }
               className="absolute inset-0 hidden bg-black/40 md:block"
             />
           </div>
@@ -245,23 +271,25 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             )}
             <m.div
               key={`shade-right-mobile-${transitionKey}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              initial={motionEnabled ? { opacity: 0 } : false}
+              animate={motionEnabled ? { opacity: 1 } : false}
+              transition={
+                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
+              }
               className="absolute inset-0 bg-black/10 md:hidden"
             />
             <m.div
               key={`shade-right-${transitionKey}`}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: swipeDuration, ease: "easeInOut" }}
+              initial={motionEnabled ? { opacity: 0 } : false}
+              animate={motionEnabled ? { opacity: 1 } : false}
+              transition={
+                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
+              }
               className="absolute inset-0 hidden bg-black/10 md:block"
             />
           </div>
         </m.div>
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
-        <div className="absolute inset-0 hud-grid opacity-60 pointer-events-none" />
-        <div className="sweep-line pointer-events-none" />
         <div className="absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
@@ -269,40 +297,40 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       {/* Content */}
       <div className="relative z-10 px-6 max-w-6xl mx-auto mt-[24svh] md:mt-0">
         <m.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9 }}
+          initial={motionEnabled ? { opacity: 0, y: 20 } : false}
+          animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+          transition={motionEnabled ? { duration: 0.9 } : undefined}
           className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-2 py-3 text-center sm:px-4 sm:py-6 md:px-10 md:py-12"
         >
           <m.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.35 }}
+            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
+            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+            transition={motionEnabled ? { duration: 0.8, delay: 0.35 } : undefined}
             className="relative z-10 hidden text-ice tracking-[0.45em] uppercase text-[9px] md:block md:text-sm mb-3 font-light"
           >
             The Hollywood Secrets They Don't Tell You
           </m.p>
 
           <m.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.5 }}
+            initial={motionEnabled ? { opacity: 0, y: 30 } : false}
+            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+            transition={motionEnabled ? { duration: 1, delay: 0.5 } : undefined}
             className="relative z-10 text-lg md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-3 md:mb-6"
           >
             The $30 Ebook that will Change Your Life
           </m.h1>
 
           <m.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.2, delay: 0.8 }}
+            initial={motionEnabled ? { scaleX: 0 } : false}
+            animate={motionEnabled ? { scaleX: 1 } : false}
+            transition={motionEnabled ? { duration: 1.2, delay: 0.8 } : undefined}
             className="divider-line max-w-sm mx-auto mb-3"
           />
 
           <m.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+            initial={motionEnabled ? { opacity: 0 } : false}
+            animate={motionEnabled ? { opacity: 1 } : false}
+            transition={motionEnabled ? { duration: 0.8, delay: 1.2 } : undefined}
             className="relative z-10 hidden text-steel text-[12px] md:block md:text-lg font-light max-w-xl mx-auto leading-relaxed"
           >
             Easy to follow exercises, tips and the perfect routine to become a super model in the face.
@@ -311,9 +339,9 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           </m.p>
 
           <m.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.35 }}
+            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
+            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+            transition={motionEnabled ? { duration: 0.6, delay: 1.35 } : undefined}
             className="relative z-10 mt-4 flex flex-wrap items-center justify-center gap-2 text-[8px] uppercase tracking-[0.3em] text-steel"
           >
             <button
@@ -352,9 +380,9 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           </m.div>
 
           <m.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 1.6 }}
+            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
+            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+            transition={motionEnabled ? { duration: 0.6, delay: 1.6 } : undefined}
             className="relative z-10 mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
           >
             <button
@@ -381,16 +409,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
 
       <button
         type="button"
-        onClick={() => {
-          track("buy_button", { location: "hero" });
-          if (isDesktop) {
-            setCountdown(3);
-            setIsRedirecting(true);
-          } else {
-            window.open(gumroadUrl, "_blank", "noopener,noreferrer");
-          }
-        }}
-        className="group fixed bottom-[20%] right-4 z-30 flex h-24 w-8 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/60 text-chrome shadow-card transition-colors duration-300 hover:border-white/40 hover:text-foreground md:bottom-auto md:right-5 md:top-1/2 md:h-44 md:w-12 md:-translate-y-1/2"
+        onClick={handleBuyClick}
+        className="group fixed bottom-[20%] right-4 z-30 hidden h-24 w-8 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/60 text-chrome shadow-card transition-colors duration-300 hover:border-white/40 hover:text-foreground md:flex md:bottom-auto md:right-5 md:top-1/2 md:h-44 md:w-12 md:-translate-y-1/2"
         aria-label="Buy now"
       >
         <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10 opacity-70" />
