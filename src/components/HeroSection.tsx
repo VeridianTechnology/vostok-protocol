@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
+import { toMobileImage } from "@/lib/utils";
 
 type HeroSectionProps = {
   hideWatchPrompt?: boolean;
@@ -153,6 +155,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           <div className="relative">
             <img
               src={currentView.left}
+              srcSet={`${toMobileImage(currentView.left)} 640w, ${currentView.left} 1280w`}
+              sizes="(max-width: 640px) 100vw, 50vw"
               alt="Before transformation"
               className={`h-full w-full object-contain md:object-cover ${
                 currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
@@ -177,6 +181,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           <div className="relative">
             <img
               src={currentView.right}
+              srcSet={`${toMobileImage(currentView.right)} 640w, ${currentView.right} 1280w`}
+              sizes="(max-width: 640px) 100vw, 50vw"
               alt="After transformation"
               className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
                 activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
@@ -328,6 +334,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       <button
         type="button"
         onClick={() => {
+          track("buy_button", { location: "hero" });
           if (isDesktop) {
             setCountdown(3);
             setIsRedirecting(true);

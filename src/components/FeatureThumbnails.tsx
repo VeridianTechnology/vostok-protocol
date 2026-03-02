@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { toMobileImage } from "@/lib/utils";
 
 const features = [
   {
@@ -155,6 +156,8 @@ const FeatureThumbnails = () => {
                   <div className="relative overflow-hidden rounded-[0.9rem]">
                     <img
                       src={activeImage}
+                      srcSet={`${toMobileImage(activeImage)} 640w, ${activeImage} 1280w`}
+                      sizes="(max-width: 640px) 100vw, 60vw"
                       alt="Structured face progression"
                       className="h-[26rem] w-full object-contain md:h-[48rem]"
                       loading="lazy"
@@ -279,6 +282,8 @@ const FeatureThumbnails = () => {
                         </span>
                         <img
                           src={feature.image}
+                          srcSet={`${toMobileImage(feature.image)} 160w, ${feature.image} 320w`}
+                          sizes="80px"
                           alt={feature.label}
                           className={`w-full h-full object-cover transition-all duration-700 ${
                             isUnlocked ? "grayscale group-hover:grayscale-0" : "grayscale"

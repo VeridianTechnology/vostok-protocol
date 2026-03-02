@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
+import { toMobileImage } from "@/lib/utils";
 
 const SpecComparison = () => {
   const [spreadIndex, setSpreadIndex] = useState(0);
@@ -81,6 +82,8 @@ const SpecComparison = () => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7 }}
                     src={activePair.left}
+                    srcSet={`${toMobileImage(activePair.left)} 640w, ${activePair.left} 1280w`}
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     alt={`Chapter page ${spreadIndex + 1}`}
                     className="book-page-image absolute inset-0"
                     loading="lazy"
@@ -102,6 +105,8 @@ const SpecComparison = () => {
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.7 }}
                     src={activePair.right}
+                    srcSet={`${toMobileImage(activePair.right)} 640w, ${activePair.right} 1280w`}
+                    sizes="(max-width: 640px) 100vw, 50vw"
                     alt={`Chapter page ${spreadIndex + 1}`}
                     className="book-page-image absolute inset-0"
                     loading="lazy"

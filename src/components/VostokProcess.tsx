@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { toMobileImage } from "@/lib/utils";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
@@ -181,6 +182,8 @@ const VostokProcess = () => {
           <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white/10 md:aspect-auto md:h-full">
             <img
               src={activeImage}
+              srcSet={`${toMobileImage(activeImage)} 640w, ${activeImage} 1280w`}
+              sizes="(max-width: 640px) 100vw, 60vw"
               alt={`${currentStage.title} comparison`}
               className="h-full w-full object-cover"
               loading="lazy"
@@ -208,6 +211,8 @@ const VostokProcess = () => {
                     >
                       <img
                         src={icon}
+                        srcSet={`${toMobileImage(icon)} 160w, ${icon} 320w`}
+                        sizes="80px"
                         alt={`${stage.title} option`}
                         className="h-full w-full object-cover"
                         loading="lazy"

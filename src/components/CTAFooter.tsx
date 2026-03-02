@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 
 const CTAFooter = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -98,6 +99,7 @@ const CTAFooter = () => {
             whileTap={{ scale: 0.98 }}
             type="button"
             onClick={() => {
+              track("buy_button", { location: "footer" });
               if (isDesktop) {
                 setCountdown(3);
                 setIsRedirecting(true);

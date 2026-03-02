@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { toMobileImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
@@ -7,11 +8,21 @@ type VideoSectionProps = {
 const VideoSection = ({ onClosed }: VideoSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
-  const [isReady, setIsReady] = useState(false);
-  const videoSrc = isMobile ? "/website_video_web_mobile.webm" : "/website_video_web.webm";
+  const [hasStarted, setHasStarted] = useState(false);
+  const videoSources = isMobile
+    ? [
+        { src: "/website_video_compress_mobile.mp4", type: "video/mp4" },
+        { src: "/website_video_web_mobile.webm", type: "video/webm" },
+      ]
+    : [
+        { src: "/website_video_web.webm", type: "video/webm" },
+        { src: "/website_video_compress.mp4", type: "video/mp4" },
+      ];
+  const videoKey = isMobile ? "mobile" : "desktop";
+  const posterImage = "/1.jpg";
 
   useEffect(() => {
     if (videoRef.current) {
@@ -34,8 +45,8 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
     videoRef.current.pause();
     videoRef.current.load();
     setIsPlaying(false);
-    setIsReady(false);
-  }, [videoSrc]);
+    setHasStarted(false);
+  }, [videoKey]);
 
   const togglePlay = async () => {
     const video = videoRef.current;
@@ -44,6 +55,7 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
     }
 
     if (video.paused) {
+      setHasStarted(true);
       try {
         setIsMuted(false);
         video.muted = false;
@@ -67,38 +79,55 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
         <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full gradient-silver opacity-80" />
         <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full gradient-silver opacity-80" />
         <video
+          key={videoKey}
           ref={videoRef}
           className="relative z-10 h-[42vh] w-full object-contain py-1 md:h-[78vh] md:py-6"
-          src={videoSrc}
+          poster={posterImage}
           muted={isMuted}
           controls
           controlsList="nodownload noplaybackrate"
           playsInline
           preload="metadata"
-          onCanPlay={() => setIsReady(true)}
-          onPlay={() => setIsPlaying(true)}
+          onPlay={() => {
+            setIsPlaying(true);
+            setHasStarted(true);
+          }}
           onPause={() => setIsPlaying(false)}
           onEnded={() => {
             setIsClosed(true);
             onClosed?.();
           }}
-        />
+        >
+          {videoSources.map((source) => (
+            <source key={source.src} src={source.src} type={source.type} />
+          ))}
+        </video>
 
-        {isReady && !isPlaying && (
+        {!hasStarted && (
           <button
             type="button"
             onClick={togglePlay}
             aria-label="Play video"
-            className="absolute left-1/2 top-1/2 z-20 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-foreground transition-opacity duration-300 hover:border-white/60 hover:bg-black/60"
+            className="absolute inset-0 z-20 flex items-center justify-center"
           >
-            <svg
-              aria-hidden="true"
-              className="ml-1 h-6 w-6"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M8 5v14l11-7-11-7z" />
-            </svg>
+            <img
+              src={posterImage}
+              srcSet={`${toMobileImage(posterImage)} 640w, ${posterImage} 1280w`}
+              sizes="100vw"
+              alt="Video preview"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-black/30" />
+            <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-foreground transition-opacity duration-300 hover:border-white/60 hover:bg-black/60">
+              <svg
+                aria-hidden="true"
+                className="ml-1 h-6 w-6"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M8 5v14l11-7-11-7z" />
+              </svg>
+            </span>
           </button>
         )}
 
