@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 
@@ -64,7 +64,7 @@ const CTAFooter = () => {
       <div className="absolute inset-0 hud-grid opacity-40 pointer-events-none" />
 
       <div className="relative z-10 max-w-3xl mx-auto text-center panel-glass rounded-3xl px-6 py-10 md:px-10 md:py-14">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -95,7 +95,7 @@ const CTAFooter = () => {
           </div>
 
           {/* CTA Button */}
-          <motion.button
+          <m.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             type="button"
@@ -124,12 +124,12 @@ const CTAFooter = () => {
               <rect x="4" y="10" width="16" height="10" rx="2" />
             </svg>
             Buy Now
-          </motion.button>
+          </m.button>
 
           <p className="text-steel/50 text-[10px] tracking-wider mt-4 md:mt-6 uppercase">
             30-day precision guarantee
           </p>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Footer bar */}

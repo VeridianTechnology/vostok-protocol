@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { getImageVariants } from "@/lib/utils";
@@ -15,15 +15,11 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [liveNow, setLiveNow] = useState<number | null>(null);
-  const [visitorsToday, setVisitorsToday] = useState<number | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const swipeDuration = 0.5;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
-  const formatCount = (value: number | null) =>
-    value === null ? "--" : value.toLocaleString();
   const showBefore = () => {
     if (isAfter) {
       setIsAfter(false);
@@ -94,33 +90,6 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
-    const fetchStats = async () => {
-      try {
-        const response = await fetch("/api/active-users", { cache: "no-store" });
-        if (!response.ok) {
-          return;
-        }
-        const payload = await response.json();
-        if (!isMounted) {
-          return;
-        }
-        setLiveNow(typeof payload.active === "number" ? payload.active : null);
-        setVisitorsToday(typeof payload.today === "number" ? payload.today : null);
-      } catch {
-        // Ignore fetch errors and keep last known values.
-      }
-    };
-
-    fetchStats();
-    const interval = window.setInterval(fetchStats, 20000);
-    return () => {
-      isMounted = false;
-      window.clearInterval(interval);
-    };
-  }, []);
-
-  useEffect(() => {
     if (!isRedirecting || !isDesktop) {
       return;
     }
@@ -169,7 +138,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
     <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center">
       {/* Background image */}
       <div className="absolute inset-0">
-        <motion.div
+        <m.div
           key={`pane-${transitionKey}`}
           initial={{ x: "0%" }}
           animate={{ x: "-102vw" }}
@@ -177,8 +146,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           className="pointer-events-none absolute inset-y-0 right-0 hidden w-[1.5vw] md:block z-20"
         >
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
-        </motion.div>
-        <motion.div
+        </m.div>
+        <m.div
           key={transitionKey}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -221,14 +190,14 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
                 decoding="async"
               />
             )}
-            <motion.div
+            <m.div
               key={`shade-left-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: swipeDuration, ease: "easeInOut" }}
               className="absolute inset-0 bg-black/40 md:hidden"
             />
-            <motion.div
+            <m.div
               key={`shade-left-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -272,14 +241,14 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
                 decoding="async"
               />
             )}
-            <motion.div
+            <m.div
               key={`shade-right-mobile-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: swipeDuration, ease: "easeInOut" }}
               className="absolute inset-0 bg-black/10 md:hidden"
             />
-            <motion.div
+            <m.div
               key={`shade-right-${transitionKey}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -287,7 +256,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
               className="absolute inset-0 hidden bg-black/10 md:block"
             />
           </div>
-        </motion.div>
+        </m.div>
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
         <div className="absolute inset-0 hud-grid opacity-60 pointer-events-none" />
         <div className="sweep-line pointer-events-none" />
@@ -297,47 +266,49 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
 
       {/* Content */}
       <div className="relative z-10 px-6 max-w-6xl mx-auto">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
           className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-4 py-6 text-center sm:px-5 sm:py-7 md:px-10 md:py-12"
         >
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
             className="relative z-10 text-ice tracking-[0.45em] uppercase text-xs md:text-sm mb-5 font-light"
           >
-            This is the Guide for a Timeless Face
-          </motion.p>
+            The Hollywood Secrets They Don't Tell You
+          </m.p>
 
-          <motion.h1
+          <m.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
             className="relative z-10 text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-5 md:mb-6"
           >
-            Your Face can be Engineered, Not Inherited
-          </motion.h1>
+            The $30 Ebook that will Change Your Life
+          </m.h1>
 
-          <motion.div
+          <m.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1.2, delay: 0.8 }}
             className="divider-line max-w-sm mx-auto mb-6"
           />
 
-          <motion.p
+          <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
             className="relative z-10 text-steel text-sm md:text-lg font-light max-w-xl mx-auto leading-relaxed"
           >
-            An engineering approach to aesthetics. Precision-crafted methods for timeless beauty.
-          </motion.p>
+            Easy to follow exercises, tips and the perfect routine to become a super model in the face.
+            {" "}
+            No Botox, No Surgeries, All Natural Routines from Various Cultures and Professionals.
+          </m.p>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.35 }}
@@ -376,9 +347,9 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             >
               Client #2
             </button>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.6 }}
@@ -402,8 +373,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             >
               Side
             </button>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
 
       <button

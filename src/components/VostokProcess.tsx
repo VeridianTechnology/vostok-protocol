@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 
@@ -305,7 +305,7 @@ const VostokProcess = () => {
           </div>
         </div>
       </div>
-      <motion.div
+      <m.div
         key={activeStage}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -316,7 +316,7 @@ const VostokProcess = () => {
           {currentStage.title}
         </p>
         <div className="mt-4">{currentStage.text}</div>
-      </motion.div>
+      </m.div>
     </section>
   );
 };

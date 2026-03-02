@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 
@@ -51,7 +51,7 @@ const SpecComparison = () => {
   return (
     <section className="pb-12 px-6 pt-8 gradient-chrome md:pb-24 md:pt-20">
       <div className="max-w-6xl mx-auto">
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -64,7 +64,7 @@ const SpecComparison = () => {
           <h2 className="text-3xl md:text-4xl font-light text-foreground tracking-tight">
             Chapter <span className="font-semibold">Preview</span>
           </h2>
-        </motion.div>
+        </m.div>
       </div>
 
       <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
@@ -90,7 +90,7 @@ const SpecComparison = () => {
                         srcSet={`${leftVariants.webp.mobile} 640w, ${leftVariants.webp.desktop} 1600w`}
                         sizes="(max-width: 640px) 100vw, 50vw"
                       />
-                      <motion.img
+                      <m.img
                         key={activePair.left}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -105,7 +105,7 @@ const SpecComparison = () => {
                       />
                     </picture>
                   ) : (
-                    <motion.img
+                    <m.img
                       key={activePair.left}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -140,7 +140,7 @@ const SpecComparison = () => {
                         srcSet={`${rightVariants.webp.mobile} 640w, ${rightVariants.webp.desktop} 1600w`}
                         sizes="(max-width: 640px) 100vw, 50vw"
                       />
-                      <motion.img
+                      <m.img
                         key={activePair.right}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -155,7 +155,7 @@ const SpecComparison = () => {
                       />
                     </picture>
                   ) : (
-                    <motion.img
+                    <m.img
                       key={activePair.right}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}

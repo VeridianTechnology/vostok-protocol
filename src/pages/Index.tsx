@@ -1,12 +1,12 @@
 import HeroSection from "@/components/HeroSection";
-import VideoSection from "@/components/VideoSection";
-import FeatureThumbnails from "@/components/FeatureThumbnails";
-import QuoteSection from "@/components/QuoteSection";
-import SpecComparison from "@/components/SpecComparison";
-import VostokProcess from "@/components/VostokProcess";
-import CTAFooter from "@/components/CTAFooter";
+import { Suspense, useEffect, useRef, useState, lazy } from "react";
+const VideoSection = lazy(() => import("@/components/VideoSection"));
+const FeatureThumbnails = lazy(() => import("@/components/FeatureThumbnails"));
+const QuoteSection = lazy(() => import("@/components/QuoteSection"));
+const SpecComparison = lazy(() => import("@/components/SpecComparison"));
+const VostokProcess = lazy(() => import("@/components/VostokProcess"));
+const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 import { track } from "@vercel/analytics";
-import { useEffect, useRef, useState } from "react";
 
 const Index = () => {
   const [isVideoClosed, setIsVideoClosed] = useState(false);
@@ -27,15 +27,27 @@ const Index = () => {
   return (
     <main className="min-h-screen bg-background overflow-x-hidden">
       <HeroSection hideWatchPrompt={isVideoClosed} />
-      <VideoSection onClosed={() => setIsVideoClosed(true)} />
+      <Suspense fallback={<div className="min-h-[50vh]" />}>
+        <VideoSection onClosed={() => setIsVideoClosed(true)} />
+      </Suspense>
       <div className="divider-line" />
-      <VostokProcess />
+      <Suspense fallback={<div className="min-h-[40vh]" />}>
+        <VostokProcess />
+      </Suspense>
       <div className="divider-line" />
-      <FeatureThumbnails />
-      <QuoteSection />
-      <SpecComparison />
+      <Suspense fallback={<div className="min-h-[60vh]" />}>
+        <FeatureThumbnails />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[20vh]" />}>
+        <QuoteSection />
+      </Suspense>
+      <Suspense fallback={<div className="min-h-[50vh]" />}>
+        <SpecComparison />
+      </Suspense>
       <div className="divider-line" />
-      <CTAFooter />
+      <Suspense fallback={<div className="min-h-[40vh]" />}>
+        <CTAFooter />
+      </Suspense>
     </main>
   );
 };

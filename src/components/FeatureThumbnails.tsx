@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 
@@ -156,7 +156,7 @@ const FeatureThumbnails = () => {
           <div className="w-full lg:flex-[1.25]">
             <div className="relative rounded-3xl panel-glass p-2 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
-              <motion.div
+              <m.div
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
@@ -169,9 +169,9 @@ const FeatureThumbnails = () => {
                 <h2 className="text-3xl md:text-6xl font-light text-foreground tracking-tight">
                   <span className="font-semibold">Customize Your Face</span>
                 </h2>
-              </motion.div>
+              </m.div>
 
-              <motion.div
+              <m.div
                 key={structureStep}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -285,7 +285,7 @@ const FeatureThumbnails = () => {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             </div>
           </div>
 
@@ -307,7 +307,7 @@ const FeatureThumbnails = () => {
                   const isUnlocked = structureStep >= feature.step;
                   const featureThumb = getThumbVariants(feature.image);
                   return (
-                    <motion.div
+                    <m.div
                       key={feature.label}
                       initial={{ opacity: 0, y: 30 }}
                       whileInView={{ opacity: 1, y: 0 }}
@@ -388,12 +388,12 @@ const FeatureThumbnails = () => {
                         }`}
                       />
 
-                    </motion.div>
+                    </m.div>
                   );
                 })}
               </div>
 
-              <motion.div
+              <m.div
                 key={structureStep}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -416,7 +416,7 @@ const FeatureThumbnails = () => {
                     {paragraph}
                   </p>
                 ))}
-              </motion.div>
+              </m.div>
 
             </div>
           </div>
