@@ -51,6 +51,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const currentView = isAfter ? currentSet.side : currentSet.front;
   const rightImageFocus =
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
+  const leftMobileScale = "scale-[1.16] origin-bottom md:scale-100";
+  const rightMobileScale = "scale-[1.18] origin-bottom md:scale-100";
   const transitionKey = `${activeSuite}-${isAfter ? "side" : "front"}`;
   const suiteOrder: Array<"precision" | "adaptive" | "sculpted"> = [
     "precision",
@@ -172,7 +174,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
                   srcSet={`${leftVariants.mobile} 640w, ${leftVariants.desktop} 1600w`}
                   sizes="(max-width: 640px) 100vw, 50vw"
                   alt="Before transformation"
-                  className={`h-full w-full object-contain md:object-cover ${
+                  className={`h-full w-full object-contain md:object-cover ${leftMobileScale} ${
                     currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
                   }`}
                   loading="eager"
@@ -183,7 +185,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
               <img
                 src={currentView.left}
                 alt="Before transformation"
-                className={`h-full w-full object-contain md:object-cover ${
+                className={`h-full w-full object-contain md:object-cover ${leftMobileScale} ${
                   currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
                 }`}
                 loading="eager"
@@ -223,8 +225,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
                   srcSet={`${rightVariants.mobile} 640w, ${rightVariants.desktop} 1600w`}
                   sizes="(max-width: 640px) 100vw, 50vw"
                   alt="After transformation"
-                  className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
-                    activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
+                  className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${rightMobileScale} ${
+                    activeSuite === "adaptive" && !isAfter ? "md:scale-[1.06]" : ""
                   }`}
                   loading="eager"
                   decoding="async"
@@ -234,8 +236,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
               <img
                 src={currentView.right}
                 alt="After transformation"
-                className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${
-                  activeSuite === "adaptive" && !isAfter ? "scale-[1.06]" : ""
+                className={`h-full w-full object-contain md:object-cover ${rightImageFocus} ${rightMobileScale} ${
+                  activeSuite === "adaptive" && !isAfter ? "md:scale-[1.06]" : ""
                 }`}
                 loading="eager"
                 decoding="async"
@@ -270,13 +272,13 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
-          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-4 py-6 text-center sm:px-5 sm:py-7 md:px-10 md:py-12"
+          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-3 py-4 text-center sm:px-5 sm:py-7 md:px-10 md:py-12"
         >
           <m.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
-            className="relative z-10 text-ice tracking-[0.45em] uppercase text-xs md:text-sm mb-5 font-light"
+            className="relative z-10 text-ice tracking-[0.45em] uppercase text-[10px] md:text-sm mb-4 font-light"
           >
             The Hollywood Secrets They Don't Tell You
           </m.p>
@@ -285,7 +287,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.5 }}
-            className="relative z-10 text-2xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-5 md:mb-6"
+            className="relative z-10 text-xl md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-4 md:mb-6"
           >
             The $30 Ebook that will Change Your Life
           </m.h1>
@@ -294,14 +296,14 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
             transition={{ duration: 1.2, delay: 0.8 }}
-            className="divider-line max-w-sm mx-auto mb-6"
+            className="divider-line max-w-sm mx-auto mb-4"
           />
 
           <m.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="relative z-10 text-steel text-sm md:text-lg font-light max-w-xl mx-auto leading-relaxed"
+            className="relative z-10 text-steel text-[13px] md:text-lg font-light max-w-xl mx-auto leading-relaxed"
           >
             Easy to follow exercises, tips and the perfect routine to become a super model in the face.
             {" "}
@@ -312,7 +314,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.35 }}
-            className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] text-steel"
+            className="relative z-10 mt-6 flex flex-wrap items-center justify-center gap-3 text-[9px] uppercase tracking-[0.3em] text-steel"
           >
             <button
               type="button"
@@ -353,7 +355,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.6 }}
-            className="relative z-10 mt-10 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1 text-xs tracking-[0.3em] uppercase text-steel"
+            className="relative z-10 mt-6 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-1 text-[10px] tracking-[0.3em] uppercase text-steel"
           >
             <button
               type="button"
