@@ -28,13 +28,13 @@ const Index = () => {
     <main className="min-h-screen bg-background overflow-x-hidden">
       <HeroSection hideWatchPrompt={isVideoClosed} />
       <VideoSection onClosed={() => setIsVideoClosed(true)} />
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-chrome/50 to-transparent" />
+      <div className="divider-line" />
       <VostokProcess />
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-chrome/50 to-transparent" />
+      <div className="divider-line" />
       <FeatureThumbnails />
       <QuoteSection />
       <SpecComparison />
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-chrome/50 to-transparent" />
+      <div className="divider-line" />
       <CTAFooter />
     </main>
   );

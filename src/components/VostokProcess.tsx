@@ -197,14 +197,15 @@ const VostokProcess = () => {
   return (
     <section
       id="vostok-process"
-      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-gradient-to-b from-black/70 via-black/60 to-black/50 px-6 py-6 md:py-14"
+      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-gradient-to-b from-black/70 via-black/60 to-black/50 px-6 py-6 md:py-14 overflow-hidden"
     >
+      <div className="absolute inset-0 hud-grid opacity-35 pointer-events-none" />
       <p className="mb-6 text-center text-sm uppercase tracking-[0.35em] text-chrome/70 md:mb-8 md:text-base">
         The Vostok Process
       </p>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
-          <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl bg-white/10 md:aspect-auto md:h-full">
+          <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl panel-glass md:aspect-auto md:h-full">
             {activeVariants ? (
               <picture>
                 <source
@@ -239,12 +240,17 @@ const VostokProcess = () => {
           </div>
         </div>
         <div className="md:w-2/5">
-          <div className="w-full rounded-2xl border border-white/10 bg-white/5 p-5 md:h-full md:p-6">
+          <div className="w-full rounded-2xl panel-glass p-5 md:h-full md:p-6">
             {stages.map((stage) => (
               <div key={stage.key} className="mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                  {stage.title}
-                </p>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+                    {stage.title}
+                  </p>
+                  <span className="badge-hud rounded-full px-2 py-1 text-[8px]">
+                    Cal
+                  </span>
+                </div>
                 <div className="mt-3 grid grid-cols-2 justify-items-center gap-3">
                   {stage.icons.map((icon) => {
                     const iconThumb = getThumbVariants(icon);
@@ -304,7 +310,7 @@ const VostokProcess = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7 }}
-        className="mx-auto mt-6 w-full max-w-6xl rounded-2xl border border-white/10 bg-white/5 p-6 text-sm leading-relaxed text-steel/90 md:mt-10 md:p-8"
+        className="mx-auto mt-6 w-full max-w-6xl rounded-2xl panel-glass p-6 text-sm leading-relaxed text-steel/90 md:mt-10 md:p-8"
       >
         <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
           {currentStage.title}

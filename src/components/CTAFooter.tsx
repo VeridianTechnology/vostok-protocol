@@ -59,17 +59,18 @@ const CTAFooter = () => {
   };
 
   return (
-    <section id="purchase" className="py-10 px-6 relative md:py-32">
+    <section id="purchase" className="py-10 px-6 relative md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-background to-background" />
+      <div className="absolute inset-0 hud-grid opacity-40 pointer-events-none" />
 
-      <div className="relative z-10 max-w-3xl mx-auto text-center">
+      <div className="relative z-10 max-w-3xl mx-auto text-center panel-glass rounded-3xl px-6 py-10 md:px-10 md:py-14">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <p className="text-chrome tracking-[0.4em] uppercase text-xs mb-3 md:mb-6 font-light">
+          <p className="text-ice tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
             Begin Your Transformation
           </p>
 
@@ -107,7 +108,7 @@ const CTAFooter = () => {
                 window.open(gumroadUrl, "_blank", "noopener,noreferrer");
               }
             }}
-            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.2em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-glow transition-all duration-500"
+            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.25em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-ice transition-all duration-500"
           >
             <svg
               aria-hidden="true"

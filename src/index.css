@@ -40,19 +40,22 @@
     /* Custom tokens */
     --silver: 0 0% 78%;
     --platinum: 0 0% 88%;
-    --chrome: 220 5% 65%;
-    --steel: 220 3% 40%;
+    --chrome: 210 6% 68%;
+    --steel: 220 4% 38%;
+    --ice: 210 10% 76%;
     --obsidian: 0 0% 3%;
     --warm-highlight: 38 40% 60%;
 
-    --gradient-silver: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 8%) 50%, hsl(0 0% 6%) 100%);
+    --gradient-silver: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 7%) 55%, hsl(0 0% 5%) 100%);
     --gradient-chrome: linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%);
     --gradient-glossy: linear-gradient(180deg, hsl(0 0% 16%) 0%, hsl(0 0% 4%) 100%);
     --gradient-spec-card: linear-gradient(160deg, hsl(0 0% 13%) 0%, hsl(0 0% 8%) 100%);
+    --gradient-hud: linear-gradient(180deg, hsl(0 0% 12% / 0.8) 0%, hsl(0 0% 3% / 0.9) 100%);
 
     --shadow-luxury: 0 20px 60px -15px hsla(0, 0%, 0%, 0.6);
     --shadow-card: 0 4px 30px -5px hsla(0, 0%, 0%, 0.4);
     --shadow-glow: 0 0 40px hsla(38, 40%, 60%, 0.08);
+    --shadow-ice: 0 0 50px hsla(210, 10%, 70%, 0.12);
 
     --font-display: 'Space Grotesk', system-ui, sans-serif;
     --font-body: 'Space Grotesk', system-ui, sans-serif;
@@ -110,6 +113,9 @@
   .shadow-glow {
     box-shadow: var(--shadow-glow);
   }
+  .shadow-ice {
+    box-shadow: var(--shadow-ice);
+  }
 
   .text-silver {
     color: hsl(var(--silver));
@@ -123,6 +129,9 @@
   .text-steel {
     color: hsl(var(--steel));
   }
+  .text-ice {
+    color: hsl(var(--ice));
+  }
   .text-warm {
     color: hsl(var(--warm-highlight));
   }
@@ -132,6 +141,42 @@
   .divider-line {
     @apply w-full h-px;
     background: linear-gradient(90deg, transparent 0%, hsl(var(--chrome) / 0.3) 50%, transparent 100%);
+  }
+  .hud-grid {
+    background-image:
+      linear-gradient(90deg, hsl(var(--chrome) / 0.06) 1px, transparent 1px),
+      linear-gradient(0deg, hsl(var(--chrome) / 0.05) 1px, transparent 1px);
+    background-size: 140px 140px, 140px 140px;
+    mask-image: radial-gradient(circle at 50% 30%, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 60%, transparent 90%);
+  }
+  .panel-glass {
+    background: var(--gradient-hud);
+    border: 1px solid hsl(0 0% 100% / 0.12);
+    box-shadow:
+      0 24px 70px -30px hsl(0 0% 0% / 0.85),
+      inset 0 1px 0 hsl(0 0% 100% / 0.25),
+      inset 0 -20px 40px hsl(0 0% 0% / 0.4);
+  }
+  .sweep-line {
+    position: absolute;
+    top: 22%;
+    left: -35%;
+    height: 1px;
+    width: 70%;
+    background: linear-gradient(90deg, transparent 0%, hsl(var(--ice) / 0.5) 50%, transparent 100%);
+    filter: drop-shadow(0 0 12px hsl(var(--ice) / 0.35));
+    animation: sweep-line 10s linear infinite;
+  }
+  .pulse-hud {
+    position: relative;
+    animation: pulse-hud 3.6s ease-in-out infinite;
+  }
+  .badge-hud {
+    border: 1px solid hsl(var(--chrome) / 0.35);
+    color: hsl(var(--ice));
+    background: linear-gradient(180deg, hsl(0 0% 20% / 0.6) 0%, hsl(0 0% 5% / 0.8) 100%);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
   }
   .font-quote {
     font-family: var(--font-quote);
@@ -145,5 +190,44 @@
       0 24px 60px -30px hsl(0 0% 0% / 0.8),
       inset 0 1px 0 hsl(0 0% 100% / 0.3),
       inset 0 -20px 40px hsl(0 0% 0% / 0.35);
+  }
+}
+
+@keyframes sweep-line {
+  0% {
+    transform: translateX(-60%);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.7;
+  }
+  45% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translateX(180%);
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-hud {
+  0% {
+    opacity: 0.55;
+    text-shadow: none;
+  }
+  45% {
+    opacity: 1;
+    text-shadow: 0 0 12px hsl(var(--ice) / 0.35);
+  }
+  100% {
+    opacity: 0.7;
+    text-shadow: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep-line {
+    animation: none;
+    opacity: 0.25;
   }
 }

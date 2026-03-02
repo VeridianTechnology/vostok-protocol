@@ -15,11 +15,15 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [liveNow, setLiveNow] = useState<number | null>(null);
+  const [visitorsToday, setVisitorsToday] = useState<number | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const swipeDuration = 0.5;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
+  const formatCount = (value: number | null) =>
+    value === null ? "--" : value.toLocaleString();
   const showBefore = () => {
     if (isAfter) {
       setIsAfter(false);
@@ -87,6 +91,33 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
     updateMatch();
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchStats = async () => {
+      try {
+        const response = await fetch("/api/active-users", { cache: "no-store" });
+        if (!response.ok) {
+          return;
+        }
+        const payload = await response.json();
+        if (!isMounted) {
+          return;
+        }
+        setLiveNow(typeof payload.active === "number" ? payload.active : null);
+        setVisitorsToday(typeof payload.today === "number" ? payload.today : null);
+      } catch {
+        // Ignore fetch errors and keep last known values.
+      }
+    };
+
+    fetchStats();
+    const interval = window.setInterval(fetchStats, 20000);
+    return () => {
+      isMounted = false;
+      window.clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -258,7 +289,10 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           </div>
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+        <div className="absolute inset-0 hud-grid opacity-60 pointer-events-none" />
+        <div className="sweep-line pointer-events-none" />
         <div className="absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
       </div>
 
       {/* Content */}
@@ -267,24 +301,13 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9 }}
-          className="relative mx-auto max-w-3xl rounded-3xl border border-white/10 bg-black/20 px-4 py-6 text-center shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:px-5 sm:py-7 md:bg-black/30 md:px-10 md:py-12"
+          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-4 py-6 text-center sm:px-5 sm:py-7 md:px-10 md:py-12"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative z-10 mb-4 flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.35em] text-chrome md:mb-5"
-          >
-            <span className="rounded-full border border-white/15 bg-white/10 px-3 py-1">
-              Vostok Method Version 4
-            </span>
-          </motion.div>
-
           <motion.p
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.35 }}
-            className="relative z-10 text-chrome tracking-[0.4em] uppercase text-xs md:text-sm mb-5 font-light"
+            className="relative z-10 text-ice tracking-[0.45em] uppercase text-xs md:text-sm mb-5 font-light"
           >
             This is the Guide for a Timeless Face
           </motion.p>
@@ -318,7 +341,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.35 }}
-            className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.25em] text-steel"
+            className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-3 text-[10px] uppercase tracking-[0.3em] text-steel"
           >
             <button
               type="button"

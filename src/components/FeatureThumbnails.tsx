@@ -145,15 +145,16 @@ const FeatureThumbnails = () => {
 
 
   return (
-    <section className="relative py-8 px-6 md:py-24">
+    <section className="relative py-8 px-6 md:py-24 overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <div className="absolute left-10 top-10 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-10 right-0 h-64 w-64 rounded-full bg-chrome/10 blur-3xl" />
+        <div className="absolute inset-0 hud-grid opacity-40 pointer-events-none" />
       </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
           <div className="w-full lg:flex-[1.25]">
-            <div className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent p-2 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8">
+            <div className="relative rounded-3xl panel-glass p-2 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
               <motion.div
                 initial={{ opacity: 0 }}
@@ -289,7 +290,7 @@ const FeatureThumbnails = () => {
           </div>
 
           <div className="w-full -mt-8 lg:mt-0 lg:flex-[0.95]">
-            <div className="relative flex flex-col rounded-3xl border border-white/10 bg-gradient-to-b from-white/10 via-white/5 to-transparent p-6 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8 lg:h-full lg:justify-between">
+            <div className="relative flex flex-col rounded-3xl panel-glass p-6 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8 lg:h-full lg:justify-between">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/15 via-transparent to-transparent opacity-70 pointer-events-none" />
               <div className="relative z-10 mb-3 md:mb-6 flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-chrome">
                 <span>Performance Suite</span>
@@ -312,7 +313,7 @@ const FeatureThumbnails = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.2 }}
-                      className={`flex flex-col items-center text-center rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all duration-500 group cursor-pointer ${
+                      className={`relative flex flex-col items-center text-center rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all duration-500 group cursor-pointer ${
                         isUnlocked ? "hover:-translate-y-1" : "opacity-50 grayscale"
                       }`}
                       onClick={() => {
@@ -320,6 +321,9 @@ const FeatureThumbnails = () => {
                         resetAutoAdvance();
                       }}
                     >
+                      <span className="badge-hud absolute right-3 top-3 rounded-full px-2 py-1 text-[8px]">
+                        Sync
+                      </span>
                       {/* Circular thumbnail */}
                       <div
                         className={`relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 border border-chrome/20 shadow-card transition-shadow duration-500 ${
