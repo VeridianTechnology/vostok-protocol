@@ -317,7 +317,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             transition={motionEnabled ? { duration: 1, delay: 0.5 } : undefined}
             className="relative z-10 text-lg md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-3 md:mb-6"
           >
-            The $30 Ebook that will Change Your Life
+            How to Engineer Your Face
           </m.h1>
 
           <m.div
