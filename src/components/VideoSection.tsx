@@ -77,11 +77,9 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
   }
 
   return (
-    <section id="hero-video" className="relative w-full bg-white">
-      <div className="relative w-full overflow-hidden border-y border-black/10">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5 opacity-60" />
-        <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full bg-black/10 opacity-80" />
-        <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-black/10 opacity-80" />
+    <section id="hero-video" className="relative w-full bg-white border-y border-black/40">
+      <div className="relative w-full overflow-hidden">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5 opacity-40" />
         <video
           key={videoKey}
           ref={videoRef}

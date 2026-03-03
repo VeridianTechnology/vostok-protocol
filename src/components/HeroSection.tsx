@@ -357,6 +357,15 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
           </button>
         </div>
       </div>
+      {!isHeroMenuOpen && (
+        <button
+          type="button"
+          onClick={() => setIsHeroMenuOpen(true)}
+          className="absolute right-2 top-1/2 z-40 -translate-y-1/2 rounded-full border border-white/30 bg-black/60 px-3 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+        >
+          Menu
+        </button>
+      )}
       {showMobileCta && (
         <m.div
           initial={{ y: -12, opacity: 0 }}
@@ -680,51 +689,40 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         className="relative z-10 px-6 max-w-6xl mx-auto"
         style={!isDesktop ? { marginTop: heroFloatOffset } : undefined}
       >
-        {!isDesktop && !isHeroMenuOpen && (
-          <button
-            type="button"
-            onClick={() => setIsHeroMenuOpen(true)}
-            className="fixed right-2 top-1/2 z-40 -translate-y-1/2 rounded-full border border-white/30 bg-black/60 px-3 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
-          >
-            Menu
-          </button>
-        )}
         <m.div
           initial={motionEnabled ? { opacity: 0, y: 20 } : false}
           animate={motionEnabled ? { opacity: 1, y: 0 } : false}
           transition={motionEnabled ? { duration: 0.9 } : undefined}
-          className={`relative mx-auto max-w-[92vw] rounded-3xl panel-glass px-2 py-3 text-center transition-all duration-700 sm:max-w-3xl sm:px-4 sm:py-6 md:px-10 md:py-12 ${
+          className={`relative mx-auto max-w-[92vw] rounded-3xl panel-glass px-2 py-3 text-center transition-opacity duration-200 sm:max-w-3xl sm:px-4 sm:py-6 md:px-10 md:py-12 ${
             mobileFlashIndex !== null
               ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
               : "opacity-100"
           } ${
-            !isDesktop && !isHeroMenuOpen
-              ? "translate-x-[110%] opacity-0 pointer-events-none"
-              : ""
+            !isHeroMenuOpen
+              ? "opacity-0 pointer-events-none invisible"
+              : "visible opacity-100"
           }`}
         >
-          {!isDesktop && (
-            <button
-              type="button"
-              onClick={() => setIsHeroMenuOpen(false)}
-              aria-label="Hide menu"
-              className="absolute -right-3 -top-3 z-50 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/30 bg-black/80 text-foreground/80 shadow hover:text-foreground"
+          <button
+            type="button"
+            onClick={() => setIsHeroMenuOpen(false)}
+            aria-label="Hide menu"
+            className="absolute -right-3 -top-3 z-50 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/30 bg-black/80 text-foreground/80 shadow hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
-              <svg
-                aria-hidden="true"
-                className="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </svg>
-            </button>
-          )}
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
+          </button>
           <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
             Everyone is <em>dumb</em> (including YOU)
           </p>
