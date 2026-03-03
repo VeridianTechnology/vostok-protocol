@@ -28,6 +28,16 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    if (!isMobile || canLoadBelowFold) {
+      return;
+    }
+    const fallbackTimeout = window.setTimeout(() => {
+      setCanLoadBelowFold(true);
+    }, 2000);
+    return () => window.clearTimeout(fallbackTimeout);
+  }, [isMobile, canLoadBelowFold]);
+
+  useEffect(() => {
     stayTimerRef.current = window.setTimeout(() => {
       track("stay_30s");
     }, 30000);
@@ -45,33 +55,57 @@ const Index = () => {
         hideWatchPrompt={isVideoClosed}
         onMobileFlashComplete={() => setCanLoadBelowFold(true)}
       />
-      {canLoadBelowFold && (
-        <>
-          <div className="divider-line" />
-          <Suspense fallback={<div className="min-h-[40vh]" />}>
-            <VostokProcess />
-          </Suspense>
-          <div className="divider-line" />
-          <Suspense fallback={<div className="min-h-[60vh]" />}>
-            <FeatureThumbnails />
-          </Suspense>
-          <Suspense fallback={<div className="min-h-[50vh]" />}>
-            <ResearchStudies />
-          </Suspense>
-          <Suspense fallback={<div className="min-h-[20vh]" />}>
-            <QuoteSection />
-          </Suspense>
-          <Suspense fallback={<div className="min-h-[50vh]" />}>
-            <SpecComparison />
-          </Suspense>
-          <Suspense fallback={<div className="min-h-[50vh]" />}>
-            <VideoSection onClosed={() => setIsVideoClosed(true)} />
-          </Suspense>
-          <div className="divider-line" />
-          <Suspense fallback={<div className="min-h-[40vh]" />}>
-            <CTAFooter />
-          </Suspense>
-        </>
+      <div className="divider-line" />
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[40vh]" />}>
+          <VostokProcess />
+        </Suspense>
+      ) : (
+        <div className="min-h-[40vh]" />
+      )}
+      <div className="divider-line" />
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[60vh]" />}>
+          <FeatureThumbnails />
+        </Suspense>
+      ) : (
+        <div className="min-h-[60vh]" />
+      )}
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[50vh]" />}>
+          <ResearchStudies />
+        </Suspense>
+      ) : (
+        <div className="min-h-[50vh]" />
+      )}
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[20vh]" />}>
+          <QuoteSection />
+        </Suspense>
+      ) : (
+        <div className="min-h-[20vh]" />
+      )}
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[50vh]" />}>
+          <SpecComparison />
+        </Suspense>
+      ) : (
+        <div className="min-h-[50vh]" />
+      )}
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[50vh]" />}>
+          <VideoSection onClosed={() => setIsVideoClosed(true)} />
+        </Suspense>
+      ) : (
+        <div className="min-h-[50vh]" />
+      )}
+      <div className="divider-line" />
+      {canLoadBelowFold ? (
+        <Suspense fallback={<div className="min-h-[40vh]" />}>
+          <CTAFooter />
+        </Suspense>
+      ) : (
+        <div className="min-h-[40vh]" />
       )}
     </main>
   );
