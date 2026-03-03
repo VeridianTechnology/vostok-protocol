@@ -167,7 +167,7 @@ const FeatureThumbnails = () => {
                   An Unrefined Face Cannot Compete with a Structured Face
                 </p>
                 <h2 className="text-3xl md:text-6xl font-light text-foreground tracking-tight">
-                  <span className="font-semibold">Customize Your Face</span>
+                  <span className="font-semibold">Change YOUR Face</span>
                 </h2>
               </m.div>
 

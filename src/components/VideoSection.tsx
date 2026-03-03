@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { track } from "@vercel/analytics";
 import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
@@ -12,6 +13,8 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const hasTrackedStart = useRef(false);
+  const hasTrackedFinish = useRef(false);
   const videoSources = isMobile
     ? [
         { src: "/website_video_compress_mobile.mp4", type: "video/mp4" },
@@ -92,9 +95,17 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
           onPlay={() => {
             setIsPlaying(true);
             setHasStarted(true);
+            if (!hasTrackedStart.current) {
+              track("start_video");
+              hasTrackedStart.current = true;
+            }
           }}
           onPause={() => setIsPlaying(false)}
           onEnded={() => {
+            if (!hasTrackedFinish.current) {
+              track("finish_video");
+              hasTrackedFinish.current = true;
+            }
             setIsClosed(true);
             onClosed?.();
           }}

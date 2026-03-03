@@ -1,5 +1,5 @@
 import { m } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { getImageVariants } from "@/lib/utils";
 
@@ -18,11 +18,14 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const [showMobileCta, setShowMobileCta] = useState(false);
   const [heroFloatOffset, setHeroFloatOffset] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
+  const [mobileFlashIndex, setMobileFlashIndex] = useState<number | null>(null);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
+  const flashTimerRef = useRef<number | null>(null);
+  const hasRunMobileFlash = useRef(false);
   const maxOffsetRef = useRef(0);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
@@ -74,6 +77,23 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const frontRightVariants = getImageVariants(frontView.right);
   const sideLeftVariants = getImageVariants(sideView.left);
   const sideRightVariants = getImageVariants(sideView.right);
+  const mobileFlashSequence = useMemo(
+    () => [
+      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 500 },
+      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 500 },
+      { kind: "text", text: "CHANGE", duration: 500 },
+      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 500 },
+      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 500 },
+      { kind: "text", text: "YOUR", duration: 500 },
+      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 500 },
+      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 500 },
+      { kind: "text", text: "FACE", duration: 1000 },
+    ],
+    []
+  );
+  const activeFlash = mobileFlashIndex !== null ? mobileFlashSequence[mobileFlashIndex] : null;
+  const activeFlashVariants =
+    activeFlash && activeFlash.kind === "image" ? getImageVariants(activeFlash.src) : null;
   const sideRightObjectPosition =
     activeSuite === "adaptive"
       ? "55% center"
@@ -154,6 +174,31 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       }
     };
   }, [isDesktop]);
+
+  useEffect(() => {
+    if (isDesktop || hasRunMobileFlash.current) {
+      return;
+    }
+    hasRunMobileFlash.current = true;
+    let index = 0;
+    setMobileFlashIndex(index);
+    const step = () => {
+      index += 1;
+      if (index >= mobileFlashSequence.length) {
+        setMobileFlashIndex(null);
+        return;
+      }
+      setMobileFlashIndex(index);
+      flashTimerRef.current = window.setTimeout(step, mobileFlashSequence[index].duration);
+    };
+    flashTimerRef.current = window.setTimeout(step, mobileFlashSequence[0].duration);
+    return () => {
+      if (flashTimerRef.current) {
+        window.clearTimeout(flashTimerRef.current);
+        flashTimerRef.current = null;
+      }
+    };
+  }, [isDesktop, mobileFlashSequence.length]);
 
   useEffect(() => {
     if (!isRedirecting || !isDesktop) {
@@ -386,6 +431,70 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             <div className="absolute inset-0 bg-black/10" />
           </div>
         </div>
+        <m.div
+          initial={false}
+          animate={{ opacity: mobileFlashIndex !== null ? 1 : 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[60vh] bg-black md:hidden"
+        />
+        {activeFlash && (
+          <m.div
+            key={`mobile-flash-${mobileFlashIndex}`}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.1, ease: "easeOut" }}
+            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[60vh] bg-black md:hidden"
+          >
+            {activeFlash.kind === "image" ? (
+              <>
+                {activeFlashVariants ? (
+                  <picture>
+                    <source
+                      type="image/avif"
+                      srcSet={`${activeFlashVariants.avif.mobile} 640w, ${activeFlashVariants.avif.desktop} 1600w`}
+                      sizes="100vw"
+                    />
+                    <source
+                      type="image/webp"
+                      srcSet={`${activeFlashVariants.webp.mobile} 640w, ${activeFlashVariants.webp.desktop} 1600w`}
+                      sizes="100vw"
+                    />
+                    <img
+                      src={activeFlashVariants.desktop}
+                      srcSet={`${activeFlashVariants.mobile} 640w, ${activeFlashVariants.desktop} 1600w`}
+                      sizes="100vw"
+                      alt={activeFlash.alt}
+                      className="h-full w-full object-cover"
+                      loading="eager"
+                      decoding="async"
+                    />
+                  </picture>
+                ) : (
+                  <img
+                    src={activeFlash.src}
+                    alt={activeFlash.alt}
+                    className="h-full w-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                )}
+                <m.div
+                  key={`flash-white-${mobileFlashIndex}`}
+                  initial={{ opacity: 0.85 }}
+                  animate={{ opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                  className="absolute inset-0 bg-white"
+                />
+              </>
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center">
+                <span className="text-2xl font-semibold tracking-[0.45em] text-white">
+                  {activeFlash.text}
+                </span>
+              </div>
+            )}
+          </m.div>
+        )}
 
         <m.div
           key={transitionKey}
@@ -501,7 +610,11 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
           initial={motionEnabled ? { opacity: 0, y: 20 } : false}
           animate={motionEnabled ? { opacity: 1, y: 0 } : false}
           transition={motionEnabled ? { duration: 0.9 } : undefined}
-          className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-2 py-3 text-center sm:px-4 sm:py-6 md:px-10 md:py-12"
+          className={`relative mx-auto max-w-[92vw] rounded-3xl panel-glass px-2 py-3 text-center transition-opacity duration-700 sm:max-w-3xl sm:px-4 sm:py-6 md:px-10 md:py-12 ${
+            mobileFlashIndex !== null
+              ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
+              : "opacity-100"
+          }`}
         >
           <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
             Everyone is <em>dumb</em> (including YOU)

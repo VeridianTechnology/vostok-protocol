@@ -70,88 +70,99 @@ const CTAFooter = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <p className="text-ice tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
-            Begin Your Transformation
-          </p>
+          <div className="flex flex-col items-center gap-8 md:flex-row md:items-start md:justify-between md:gap-12">
+            <div className="hidden w-full max-w-sm flex-col items-center gap-4 md:flex md:max-w-[40%]">
+              <img
+                src="/gumroad.png"
+                alt="Gumroad secure checkout"
+                className="w-auto border border-foreground/20 rounded-sm md:h-72 lg:h-80"
+                loading="lazy"
+                decoding="async"
+              />
+              <p className="text-[10px] uppercase tracking-[0.35em] text-steel/70">
+                I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
+                simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
+                delays, no stolen credit cards. It handles the technical weight so I can focus on
+                what matters: the work you are about to do.
+              </p>
+            </div>
+            <div className="flex flex-col items-center md:flex-1 md:items-center">
+              <p className="text-ice tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
+                Begin Your Transformation
+              </p>
 
-          <h2 className="text-4xl md:text-5xl font-light text-foreground tracking-tight mb-3 md:mb-4">
-            The <span className="font-semibold">Timeless Face</span>
-          </h2>
+              <h2 className="text-4xl md:text-5xl font-light text-foreground tracking-tight mb-3 md:mb-4">
+                The <span className="font-semibold">Timeless Face</span>
+              </h2>
 
-          <p className="text-steel text-sm md:text-base font-light mb-3 max-w-md mx-auto leading-relaxed">
-            An Engineering Approach to Aesthetics
-          </p>
+              <p className="text-steel text-sm md:text-base font-light mb-3 max-w-md mx-auto leading-relaxed">
+                An Engineering Approach to Aesthetics
+              </p>
 
-          <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
+              <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
 
-          <p className="text-chrome text-xs tracking-wider mb-7 md:mb-10">
-            Instant digital delivery · 290 pages · Lifetime access
-          </p>
+              <p className="text-chrome text-xs tracking-wider mb-7 md:mb-10">
+                Instant digital delivery · 290 pages · Lifetime access
+              </p>
 
-          {/* Price */}
-          <div className="mb-6 md:mb-8 flex flex-col items-center gap-2">
-            <svg
-              aria-hidden="true"
-              className="h-5 w-5 text-chrome"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12 3 4 7v5c0 5 3.8 8.7 8 9 4.2-.3 8-4 8-9V7l-8-4z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-            <span className="text-4xl font-light text-foreground">$29.99</span>
+              {/* CTA Button */}
+              <div className="mt-4 flex flex-col items-center gap-3">
+                <m.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="button"
+                  onClick={() => {
+                    track("buy_button", { location: "footer" });
+                    if (isDesktop) {
+                      setCountdown(3);
+                      setIsRedirecting(true);
+                    } else {
+                      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+                    }
+                  }}
+                  className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-ice transition-all duration-500"
+                >
+                  <svg
+                    aria-hidden="true"
+                    className="h-4 w-4"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M7 10V7a5 5 0 0 1 10 0v3" />
+                    <rect x="4" y="10" width="16" height="10" rx="2" />
+                  </svg>
+                  Buy Now
+                </m.button>
+                {/* Price */}
+                <div className="flex flex-col items-center gap-2">
+                  <svg
+                    aria-hidden="true"
+                    className="h-5 w-5 text-chrome md:h-12 md:w-12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 3 4 7v5c0 5 3.8 8.7 8 9 4.2-.3 8-4 8-9V7l-8-4z" />
+                    <path d="m9 12 2 2 4-4" />
+                  </svg>
+                  <span className="text-4xl font-light text-foreground">$29.99</span>
+                </div>
+              </div>
+              <p className="mt-6 text-[10px] uppercase tracking-[0.35em] text-steel/70 md:hidden">
+                I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
+                simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
+                delays, no stolen credit cards. It handles the technical weight so I can focus on
+                what matters: the work you are about to do.
+              </p>
+            </div>
           </div>
-
-          {/* CTA Button */}
-          <m.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            type="button"
-            onClick={() => {
-              track("buy_button", { location: "footer" });
-              if (isDesktop) {
-                setCountdown(3);
-                setIsRedirecting(true);
-              } else {
-                window.open(gumroadUrl, "_blank", "noopener,noreferrer");
-              }
-            }}
-            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-ice transition-all duration-500"
-          >
-            <svg
-              aria-hidden="true"
-              className="h-4 w-4"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-              <rect x="4" y="10" width="16" height="10" rx="2" />
-            </svg>
-            Buy Now
-          </m.button>
-
-          <img
-            src="/gumroad2.jpg"
-            alt="Gumroad secure checkout"
-            className="mt-4 h-24 w-auto mx-auto md:h-10"
-            loading="lazy"
-            decoding="async"
-          />
-
-          <p className="mt-3 text-[10px] uppercase tracking-[0.35em] text-steel/70">
-            I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
-            simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
-            delays, no stolen credit cards. It handles the technical weight so I can focus on what
-            matters: the work you are about to do.
-          </p>
 
         </m.div>
       </div>
