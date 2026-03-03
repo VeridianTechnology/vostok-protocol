@@ -5,9 +5,10 @@ import { getImageVariants } from "@/lib/utils";
 
 type HeroSectionProps = {
   hideWatchPrompt?: boolean;
+  onMobileFlashComplete?: () => void;
 };
 
-const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
+const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSectionProps) => {
   const [isAfter, setIsAfter] = useState(false);
   const [activeSuite, setActiveSuite] = useState<"precision" | "adaptive" | "sculpted">(
     "precision"
@@ -26,6 +27,7 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const rafRef = useRef<number | null>(null);
   const flashTimerRef = useRef<number | null>(null);
   const hasRunMobileFlash = useRef(false);
+  const hasReportedMobileFlash = useRef(false);
   const maxOffsetRef = useRef(0);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
@@ -199,6 +201,16 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       }
     };
   }, [isDesktop, mobileFlashSequence.length]);
+
+  useEffect(() => {
+    if (isDesktop || !hasRunMobileFlash.current || hasReportedMobileFlash.current) {
+      return;
+    }
+    if (mobileFlashIndex === null) {
+      hasReportedMobileFlash.current = true;
+      onMobileFlashComplete?.();
+    }
+  }, [isDesktop, mobileFlashIndex, onMobileFlashComplete]);
 
   useEffect(() => {
     if (!isRedirecting || !isDesktop) {
