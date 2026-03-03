@@ -90,7 +90,19 @@ const CTAFooter = () => {
 
           {/* Price */}
           <div className="mb-6 md:mb-8 flex flex-col items-center gap-2">
-            <span className="text-steel text-sm line-through">$49.99</span>
+            <svg
+              aria-hidden="true"
+              className="h-5 w-5 text-chrome"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 3 4 7v5c0 5 3.8 8.7 8 9 4.2-.3 8-4 8-9V7l-8-4z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
             <span className="text-4xl font-light text-foreground">$29.99</span>
           </div>
 
@@ -108,7 +120,7 @@ const CTAFooter = () => {
                 window.open(gumroadUrl, "_blank", "noopener,noreferrer");
               }
             }}
-            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.25em] uppercase text-sm px-16 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-ice transition-all duration-500"
+            className="inline-flex items-center justify-center gap-3 gradient-glossy text-foreground font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-chrome/20 shadow-luxury hover:shadow-ice transition-all duration-500"
           >
             <svg
               aria-hidden="true"
@@ -126,9 +138,21 @@ const CTAFooter = () => {
             Buy Now
           </m.button>
 
-          <p className="text-steel/50 text-[10px] tracking-wider mt-4 md:mt-6 uppercase">
-            30-day precision guarantee
+          <img
+            src="/gumroad2.jpg"
+            alt="Gumroad secure checkout"
+            className="mt-4 h-24 w-auto mx-auto md:h-10"
+            loading="lazy"
+            decoding="async"
+          />
+
+          <p className="mt-3 text-[10px] uppercase tracking-[0.35em] text-steel/70">
+            I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
+            simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
+            delays, no stolen credit cards. It handles the technical weight so I can focus on what
+            matters: the work you are about to do.
           </p>
+
         </m.div>
       </div>
 

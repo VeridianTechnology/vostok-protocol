@@ -15,9 +15,15 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [showMobileCta, setShowMobileCta] = useState(false);
+  const [heroFloatOffset, setHeroFloatOffset] = useState(0);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const heroSectionRef = useRef<HTMLElement | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const maxOffsetRef = useRef(0);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
@@ -50,6 +56,8 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
 
   const currentSet = imageSets[activeSuite];
   const currentView = isAfter ? currentSet.side : currentSet.front;
+  const frontView = currentSet.front;
+  const sideView = currentSet.side;
   const rightImageFocus =
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
   const leftMobileScale = "scale-[1.16] origin-bottom md:scale-100";
@@ -62,6 +70,16 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   ];
   const leftVariants = getImageVariants(currentView.left);
   const rightVariants = getImageVariants(currentView.right);
+  const frontLeftVariants = getImageVariants(frontView.left);
+  const frontRightVariants = getImageVariants(frontView.right);
+  const sideLeftVariants = getImageVariants(sideView.left);
+  const sideRightVariants = getImageVariants(sideView.right);
+  const sideRightObjectPosition =
+    activeSuite === "adaptive"
+      ? "55% center"
+      : activeSuite === "sculpted"
+        ? "45% center"
+        : "50% center";
 
   const resetSuiteTimer = () => {
     if (suiteTimerRef.current) {
@@ -91,6 +109,51 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
+
+  useEffect(() => {
+    if (isDesktop) {
+      setShowMobileCta(false);
+      setHeroFloatOffset(0);
+      setHasScrolled(false);
+      return;
+    }
+
+    const updateScroll = () => {
+      if (rafRef.current) {
+        return;
+      }
+      rafRef.current = window.requestAnimationFrame(() => {
+        rafRef.current = null;
+        const scrollY = window.scrollY;
+        if (scrollY > 4) {
+          setHasScrolled(true);
+        }
+        const nextOffset = Math.min(scrollY * 0.35, maxOffsetRef.current);
+        setHeroFloatOffset((current) => Math.max(current, nextOffset));
+
+        const sectionHeight = heroSectionRef.current?.offsetHeight ?? 0;
+        setShowMobileCta(sectionHeight > 0 && scrollY >= sectionHeight - 8);
+      });
+    };
+
+    const updateMetrics = () => {
+      maxOffsetRef.current = window.innerHeight * 0.18;
+      updateScroll();
+    };
+
+    updateMetrics();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateMetrics);
+
+    return () => {
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateMetrics);
+      if (rafRef.current) {
+        window.cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+    };
+  }, [isDesktop]);
 
   useEffect(() => {
     if (!isRedirecting || !isDesktop) {
@@ -147,19 +210,29 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
   };
 
   return (
-    <section className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center">
-      <div className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden">
-        <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
-          Vostok Method
-        </span>
-        <button
-          type="button"
-          onClick={handleBuyClick}
-          className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+    <section
+      ref={heroSectionRef}
+      className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center"
+    >
+      {showMobileCta && (
+        <m.div
+          initial={{ y: -12, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
         >
-          Buy
-        </button>
-      </div>
+          <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+            Vostok Method
+          </span>
+          <button
+            type="button"
+            onClick={handleBuyClick}
+            className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+          >
+            Buy
+          </button>
+        </m.div>
+      )}
       {/* Background image */}
       <div className="absolute inset-0">
         <m.div
@@ -171,12 +244,155 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
         >
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </m.div>
+        <div className="grid h-full w-full grid-cols-2 grid-rows-2 md:hidden">
+          <div className="relative">
+            {frontLeftVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${frontLeftVariants.avif.mobile} 640w, ${frontLeftVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${frontLeftVariants.webp.mobile} 640w, ${frontLeftVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <img
+                  src={frontLeftVariants.desktop}
+                  srcSet={`${frontLeftVariants.mobile} 640w, ${frontLeftVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                  alt="Front before"
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={frontView.left}
+                alt="Front before"
+                className="h-full w-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
+          <div className="relative">
+            {frontRightVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${frontRightVariants.avif.mobile} 640w, ${frontRightVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${frontRightVariants.webp.mobile} 640w, ${frontRightVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <img
+                  src={frontRightVariants.desktop}
+                  srcSet={`${frontRightVariants.mobile} 640w, ${frontRightVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                  alt="Front after"
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={frontView.right}
+                alt="Front after"
+                className="h-full w-full object-cover"
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/10" />
+          </div>
+          <div className="relative">
+            {sideLeftVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${sideLeftVariants.avif.mobile} 640w, ${sideLeftVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${sideLeftVariants.webp.mobile} 640w, ${sideLeftVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <img
+                  src={sideLeftVariants.desktop}
+                  srcSet={`${sideLeftVariants.mobile} 640w, ${sideLeftVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                  alt="Side before"
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: "70% center" }}
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={sideView.left}
+                alt="Side before"
+                className="h-full w-full object-cover"
+                style={{ objectPosition: "70% center" }}
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/40" />
+          </div>
+          <div className="relative">
+            {sideRightVariants ? (
+              <picture>
+                <source
+                  type="image/avif"
+                  srcSet={`${sideRightVariants.avif.mobile} 640w, ${sideRightVariants.avif.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <source
+                  type="image/webp"
+                  srcSet={`${sideRightVariants.webp.mobile} 640w, ${sideRightVariants.webp.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                />
+                <img
+                  src={sideRightVariants.desktop}
+                  srcSet={`${sideRightVariants.mobile} 640w, ${sideRightVariants.desktop} 1600w`}
+                  sizes="(max-width: 640px) 50vw, 50vw"
+                  alt="Side after"
+                  className="h-full w-full object-cover"
+                  style={{ objectPosition: sideRightObjectPosition }}
+                  loading="eager"
+                  decoding="async"
+                />
+              </picture>
+            ) : (
+              <img
+                src={sideView.right}
+                alt="Side after"
+                className="h-full w-full object-cover"
+                style={{ objectPosition: sideRightObjectPosition }}
+                loading="eager"
+                decoding="async"
+              />
+            )}
+            <div className="absolute inset-0 bg-black/10" />
+          </div>
+        </div>
+
         <m.div
           key={transitionKey}
           initial={motionEnabled ? { opacity: 0 } : false}
           animate={motionEnabled ? { opacity: 1 } : false}
           transition={motionEnabled ? { duration: 1.5 } : undefined}
-          className="grid h-full w-full grid-cols-1 grid-rows-2 md:grid-cols-2 md:grid-rows-1"
+          className="hidden h-full w-full md:grid md:grid-cols-2 md:grid-rows-1"
         >
           <div className="relative">
             {leftVariants ? (
@@ -214,15 +430,6 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
                 decoding="async"
               />
             )}
-            <m.div
-              key={`shade-left-mobile-${transitionKey}`}
-              initial={motionEnabled ? { opacity: 0 } : false}
-              animate={motionEnabled ? { opacity: 1 } : false}
-              transition={
-                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
-              }
-              className="absolute inset-0 bg-black/40 md:hidden"
-            />
             <m.div
               key={`shade-left-${transitionKey}`}
               initial={motionEnabled ? { opacity: 0 } : false}
@@ -270,15 +477,6 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
               />
             )}
             <m.div
-              key={`shade-right-mobile-${transitionKey}`}
-              initial={motionEnabled ? { opacity: 0 } : false}
-              animate={motionEnabled ? { opacity: 1 } : false}
-              transition={
-                motionEnabled ? { duration: swipeDuration, ease: "easeInOut" } : undefined
-              }
-              className="absolute inset-0 bg-black/10 md:hidden"
-            />
-            <m.div
               key={`shade-right-${transitionKey}`}
               initial={motionEnabled ? { opacity: 0 } : false}
               animate={motionEnabled ? { opacity: 1 } : false}
@@ -295,29 +493,27 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 px-6 max-w-6xl mx-auto mt-[24svh] md:mt-0">
+      <div
+        className="relative z-10 px-6 max-w-6xl mx-auto"
+        style={!isDesktop ? { marginTop: heroFloatOffset } : undefined}
+      >
         <m.div
           initial={motionEnabled ? { opacity: 0, y: 20 } : false}
           animate={motionEnabled ? { opacity: 1, y: 0 } : false}
           transition={motionEnabled ? { duration: 0.9 } : undefined}
           className="relative mx-auto max-w-3xl rounded-3xl panel-glass px-2 py-3 text-center sm:px-4 sm:py-6 md:px-10 md:py-12"
         >
-          <m.p
-            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
-            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
-            transition={motionEnabled ? { duration: 0.8, delay: 0.35 } : undefined}
-            className="relative z-10 hidden text-ice tracking-[0.45em] uppercase text-[9px] md:block md:text-sm mb-3 font-light"
-          >
-            The Hollywood Secrets They Don't Tell You
-          </m.p>
+          <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
+            Everyone is <em>dumb</em> (including YOU)
+          </p>
 
           <m.h1
             initial={motionEnabled ? { opacity: 0, y: 30 } : false}
             animate={motionEnabled ? { opacity: 1, y: 0 } : false}
             transition={motionEnabled ? { duration: 1, delay: 0.5 } : undefined}
-            className="relative z-10 text-lg md:text-4xl lg:text-5xl font-light tracking-tight text-foreground mb-3 md:mb-6"
+            className="relative z-10 text-2xl md:text-5xl lg:text-6xl font-light tracking-tight text-foreground mb-3 md:mb-6"
           >
-            How to Engineer Your Face
+            For Ignoring <strong>The Number One</strong> Way to get <strong>Insanely HOT</strong>
           </m.h1>
 
           <m.div
@@ -327,82 +523,98 @@ const HeroSection = ({ hideWatchPrompt = false }: HeroSectionProps) => {
             className="divider-line max-w-sm mx-auto mb-3"
           />
 
-          <m.p
-            initial={motionEnabled ? { opacity: 0 } : false}
-            animate={motionEnabled ? { opacity: 1 } : false}
-            transition={motionEnabled ? { duration: 0.8, delay: 1.2 } : undefined}
-            className="relative z-10 hidden text-steel text-[12px] md:block md:text-lg font-light max-w-xl mx-auto leading-relaxed"
-          >
-            Easy to follow exercises, tips and the perfect routine to become a super model in the face.
-            {" "}
-            No Botox, No Surgeries, All Natural Routines from Various Cultures and Professionals.
-          </m.p>
-
           <m.div
-            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
-            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
-            transition={motionEnabled ? { duration: 0.6, delay: 1.35 } : undefined}
-            className="relative z-10 mt-4 flex flex-wrap items-center justify-center gap-2 text-[8px] uppercase tracking-[0.3em] text-steel"
+            initial={motionEnabled ? false : { opacity: 0, height: 0 }}
+            animate={
+              motionEnabled ? { opacity: 1, height: "auto" } : hasScrolled
+                ? { opacity: 1, height: "auto" }
+                : { opacity: 0, height: 0 }
+            }
+            transition={
+              motionEnabled ? { duration: 0.6, delay: 1.2 } : { duration: 0.6, delay: 1 }
+            }
+            className="relative z-10 overflow-hidden"
           >
-            <button
-              type="button"
-              onClick={() => handleSuiteChange("precision")}
-              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
-                activeSuite === "precision"
-                  ? "border-white/20 bg-white/15 text-foreground"
-                  : "border-white/10 bg-white/5 text-steel"
-              }`}
+            <m.p
+              initial={motionEnabled ? { opacity: 0 } : false}
+              animate={motionEnabled ? { opacity: 1 } : false}
+              transition={motionEnabled ? { duration: 0.8, delay: 1.2 } : undefined}
+              className="text-steel text-[10px] md:text-lg font-light max-w-2xl mx-auto leading-relaxed"
             >
-              Myself
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSuiteChange("adaptive")}
-              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
-                activeSuite === "adaptive"
-                  ? "border-white/20 bg-white/15 text-foreground"
-                  : "border-white/10 bg-white/5 text-steel"
-              }`}
-            >
-              Client #1
-            </button>
-            <button
-              type="button"
-              onClick={() => handleSuiteChange("sculpted")}
-              className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
-                activeSuite === "sculpted"
-                  ? "border-white/20 bg-white/15 text-foreground"
-                  : "border-white/10 bg-white/5 text-steel"
-              }`}
-            >
-              Client #2
-            </button>
-          </m.div>
+              Skin care, doesn't make you HOT. Working out, doesn't make you HOT. Only working out
+              the face, with <u>SPECIFIC</u> face exercises works!
+              <span className="block">
+                This is the <strong>ULTIMATE</strong> easy-to-do no BS guide! Get yours for only
+                $30!
+              </span>
+            </m.p>
 
-          <m.div
-            initial={motionEnabled ? { opacity: 0, y: 10 } : false}
-            animate={motionEnabled ? { opacity: 1, y: 0 } : false}
-            transition={motionEnabled ? { duration: 0.6, delay: 1.6 } : undefined}
-            className="relative z-10 mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
-          >
-            <button
-              type="button"
-              onClick={showBefore}
-              className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
-                isAfter ? "text-steel" : "bg-white/15 text-foreground"
-              }`}
+            <m.div
+              initial={motionEnabled ? { opacity: 0, y: 10 } : false}
+              animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+              transition={motionEnabled ? { duration: 0.6, delay: 1.35 } : undefined}
+              className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[8px] uppercase tracking-[0.3em] text-steel"
             >
-              Front
-            </button>
-            <button
-              type="button"
-              onClick={showAfter}
-              className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
-                isAfter ? "bg-white/15 text-foreground" : "text-steel"
-              }`}
+              <button
+                type="button"
+                onClick={() => handleSuiteChange("precision")}
+                className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
+                  activeSuite === "precision"
+                    ? "border-white/20 bg-white/15 text-foreground"
+                    : "border-white/10 bg-white/5 text-steel"
+                }`}
+              >
+                Myself
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSuiteChange("adaptive")}
+                className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
+                  activeSuite === "adaptive"
+                    ? "border-white/20 bg-white/15 text-foreground"
+                    : "border-white/10 bg-white/5 text-steel"
+                }`}
+              >
+                Client #1
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSuiteChange("sculpted")}
+                className={`rounded-full border px-3 py-1.5 text-[8px] md:px-4 md:py-2 md:text-[10px] transition-colors duration-300 ${
+                  activeSuite === "sculpted"
+                    ? "border-white/20 bg-white/15 text-foreground"
+                    : "border-white/10 bg-white/5 text-steel"
+                }`}
+              >
+                Client #2
+              </button>
+            </m.div>
+
+            <m.div
+              initial={motionEnabled ? { opacity: 0, y: 10 } : false}
+              animate={motionEnabled ? { opacity: 1, y: 0 } : false}
+              transition={motionEnabled ? { duration: 0.6, delay: 1.6 } : undefined}
+              className="mt-4 hidden items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:inline-flex md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
             >
-              Side
-            </button>
+              <button
+                type="button"
+                onClick={showBefore}
+                className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
+                  isAfter ? "text-steel" : "bg-white/15 text-foreground"
+                }`}
+              >
+                Front
+              </button>
+              <button
+                type="button"
+                onClick={showAfter}
+                className={`rounded-full px-4 py-1.5 md:px-6 md:py-2 transition-colors duration-500 ${
+                  isAfter ? "bg-white/15 text-foreground" : "text-steel"
+                }`}
+              >
+                Side
+              </button>
+            </m.div>
           </m.div>
         </m.div>
       </div>
