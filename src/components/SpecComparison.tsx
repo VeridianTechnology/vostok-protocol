@@ -49,7 +49,8 @@ const SpecComparison = () => {
   };
 
   return (
-    <section className="pb-12 px-6 pt-8 gradient-chrome md:pb-24 md:pt-20">
+    <section className="relative bg-white pb-2 px-6 pt-8 md:pb-24 md:pt-20 overflow-hidden">
+      <div className="absolute inset-0 -z-10 overflow-hidden bg-white" />
       <div className="max-w-6xl mx-auto">
         <m.div
           initial={{ opacity: 0 }}
@@ -58,17 +59,17 @@ const SpecComparison = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-4 md:mb-16"
         >
-          <p className="text-chrome tracking-[0.4em] uppercase text-xs mb-4 font-light">
+          <p className="text-black/60 tracking-[0.4em] uppercase text-xs mb-4 font-light">
             Vostok Protocol
           </p>
-          <h2 className="text-3xl md:text-4xl font-light text-foreground tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-light text-black tracking-tight">
             Chapter <span className="font-semibold">Preview</span>
           </h2>
         </m.div>
       </div>
 
       <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
-        <div className="book-shell w-full max-w-none rounded-2xl border border-white/10 px-1 py-2 md:px-14">
+        <div className="book-shell w-full max-w-none rounded-2xl border border-black/15 bg-white/40 px-1 py-2 md:px-14">
           <div className="book-spread grid">
             <button
               type="button"

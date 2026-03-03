@@ -93,6 +93,8 @@ const FeatureThumbnails = () => {
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
   const [isAngleView, setIsAngleView] = useState(false);
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
@@ -143,18 +145,47 @@ const FeatureThumbnails = () => {
   const detailTitle = structureStep === 1 ? defaultDetailTitle : activeFeature.detailTitle;
   const detailText = structureStep === 1 ? defaultDetailText : activeFeature.detailText;
 
+  const handleParallaxMove = (event: React.PointerEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    if (rafRef.current) {
+      return;
+    }
+    rafRef.current = window.requestAnimationFrame(() => {
+      rafRef.current = null;
+      setParallaxOffset({ x: x * 50, y: y * 34 });
+    });
+  };
+
+  const handleParallaxLeave = () => {
+    if (rafRef.current) {
+      window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    setParallaxOffset({ x: 0, y: 0 });
+  };
+
 
   return (
-    <section className="relative py-8 px-6 md:py-24 overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute left-10 top-10 h-56 w-56 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute bottom-10 right-0 h-64 w-64 rounded-full bg-chrome/10 blur-3xl" />
-        <div className="absolute inset-0 hud-grid opacity-40 pointer-events-none" />
+    <section
+      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-white py-8 px-6 md:py-24 overflow-hidden"
+      onPointerMove={handleParallaxMove}
+      onPointerLeave={handleParallaxLeave}
+    >
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-white" />
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
+          }}
+        />
       </div>
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
           <div className="w-full lg:flex-[1.25]">
-            <div className="relative rounded-3xl panel-glass p-2 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8">
+            <div className="relative rounded-3xl border border-black/10 bg-white/90 p-2 text-black/80 shadow-[0_30px_70px_rgba(0,0,0,0.2)] backdrop-blur-xl md:p-8">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
               <m.div
                 initial={{ opacity: 0 }}
@@ -163,10 +194,10 @@ const FeatureThumbnails = () => {
                 transition={{ duration: 0.8 }}
                 className="relative z-10 text-center mb-3 md:mb-6"
               >
-                <p className="text-chrome tracking-[0.35em] uppercase text-xs mb-4 font-light">
+                <p className="text-black/60 tracking-[0.35em] uppercase text-xs mb-4 font-light">
                   An Unrefined Face Cannot Compete with a Structured Face
                 </p>
-                <h2 className="text-3xl md:text-6xl font-light text-foreground tracking-tight">
+                <h2 className="text-3xl md:text-6xl font-light text-black tracking-tight">
                   <span className="font-semibold">Change YOUR Face</span>
                 </h2>
               </m.div>
@@ -178,7 +209,7 @@ const FeatureThumbnails = () => {
                 transition={{ duration: 1.5 }}
                 className="relative z-10 mx-auto max-w-3xl mt-0"
               >
-                <div className="relative overflow-hidden rounded-2xl border border-transparent p-0 md:border-white/15 md:p-1">
+                  <div className="relative overflow-hidden rounded-2xl border border-transparent p-0 md:border-black/10 md:p-1">
                   <div className="relative overflow-hidden rounded-[0.9rem]">
                     {activeVariants ? (
                       <picture>
@@ -218,7 +249,7 @@ const FeatureThumbnails = () => {
                             type="button"
                             onClick={() => setIsAngleView(true)}
                             aria-label="Show 45 degree view"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 via-white/10 to-black/40 p-3 text-white shadow-[0_8px_16px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:right-5 md:p-4"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-black/20 bg-white/80 p-3 text-black/80 shadow-[0_8px_16px_rgba(0,0,0,0.25)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:right-5 md:p-4"
                           >
                             <svg
                               aria-hidden="true"
@@ -239,7 +270,7 @@ const FeatureThumbnails = () => {
                             type="button"
                             onClick={() => setIsAngleView(false)}
                             aria-label="Return to original view"
-                            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-gradient-to-br from-white/20 via-white/10 to-black/40 p-3 text-white shadow-[0_8px_16px_rgba(0,0,0,0.45)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:left-5 md:p-4"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-black/20 bg-white/80 p-3 text-black/80 shadow-[0_8px_16px_rgba(0,0,0,0.25)] transition-transform duration-300 hover:-translate-y-1/2 hover:scale-105 md:left-5 md:p-4"
                           >
                             <svg
                               aria-hidden="true"
@@ -264,8 +295,8 @@ const FeatureThumbnails = () => {
                           onClick={() => setIsHighlightOn(false)}
                           className={`rounded-full border px-4 pt-2 pb-3 pl-5 text-[10px] uppercase tracking-[0.25em] transition-colors md:px-8 md:pt-3 md:pb-4 md:pl-10 md:text-xs ${
                             !isHighlightOn
-                              ? "border-white/60 bg-white/20 text-white"
-                              : "border-white/20 bg-black/50 text-white/70 hover:text-white"
+                              ? "border-black/70 bg-black/90 text-white"
+                              : "border-black/20 bg-white text-black/70 hover:text-black"
                           }`}
                         >
                           Highlight Off
@@ -275,8 +306,8 @@ const FeatureThumbnails = () => {
                           onClick={() => setIsHighlightOn(true)}
                           className={`rounded-full border px-4 pt-2 pb-3 pr-5 text-[10px] uppercase tracking-[0.25em] transition-colors md:px-8 md:pt-3 md:pb-4 md:pr-10 md:text-xs ${
                             isHighlightOn
-                              ? "border-white/60 bg-white/20 text-white"
-                              : "border-white/20 bg-black/50 text-white/70 hover:text-white"
+                              ? "border-black/70 bg-black/90 text-white"
+                              : "border-black/20 bg-white text-black/70 hover:text-black"
                           }`}
                         >
                           Highlight On
@@ -290,15 +321,15 @@ const FeatureThumbnails = () => {
           </div>
 
           <div className="w-full -mt-8 lg:mt-0 lg:flex-[0.95]">
-            <div className="relative flex flex-col rounded-3xl panel-glass p-6 shadow-[0_30px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-8 lg:h-full lg:justify-between">
+            <div className="relative flex flex-col rounded-3xl border border-black/10 bg-white/90 p-6 text-black/80 shadow-[0_30px_70px_rgba(0,0,0,0.2)] backdrop-blur-xl md:p-8 lg:h-full lg:justify-between">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/15 via-transparent to-transparent opacity-70 pointer-events-none" />
-              <div className="relative z-10 mb-3 md:mb-6 flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-chrome">
+              <div className="relative z-10 mb-3 md:mb-6 flex items-center justify-between text-[10px] uppercase tracking-[0.35em] text-black/60">
                 <span>Performance Suite</span>
-                <span className="h-px w-10 bg-chrome/40" />
+                <span className="h-px w-10 bg-black/30" />
                 <span className="hidden md:inline">Trim Level S</span>
               </div>
 
-              <h3 className="relative z-10 mb-3 md:mb-5 text-center text-sm md:text-base uppercase tracking-[0.35em] text-neutral-300">
+              <h3 className="relative z-10 mb-3 md:mb-5 text-center text-sm md:text-base uppercase tracking-[0.35em] text-black/70">
                 Vostok Facial Modification
               </h3>
 
@@ -313,7 +344,7 @@ const FeatureThumbnails = () => {
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.2 }}
-                      className={`relative flex flex-col items-center text-center rounded-2xl border border-white/10 bg-white/5 p-4 shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all duration-500 group cursor-pointer ${
+                      className={`relative flex flex-col items-center text-center rounded-2xl border border-black/15 bg-white/95 p-4 text-black shadow-[0_12px_30px_rgba(0,0,0,0.15)] transition-all duration-500 group cursor-pointer ${
                         isUnlocked ? "hover:-translate-y-1" : "opacity-50 grayscale"
                       }`}
                       onClick={() => {
@@ -321,16 +352,13 @@ const FeatureThumbnails = () => {
                         resetAutoAdvance();
                       }}
                     >
-                      <span className="badge-hud absolute right-3 top-3 hidden rounded-full px-2 py-1 text-[8px] md:inline-flex">
-                        Sync
-                      </span>
                       {/* Circular thumbnail */}
                       <div
-                        className={`relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 border border-chrome/20 shadow-card transition-shadow duration-500 ${
+                        className={`relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden mb-3 border border-black/20 shadow-card transition-shadow duration-500 ${
                           isUnlocked ? "group-hover:shadow-glow" : ""
                         }`}
                       >
-                        <span className="absolute right-1 top-1 z-10 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9px] tracking-[0.2em] text-neutral-200">
+                        <span className="absolute right-1 top-1 z-10 rounded-full border border-black/20 bg-white/80 px-2 py-0.5 text-[9px] tracking-[0.2em] text-black/70">
                           {String(feature.step - 1).padStart(2, "0")}
                         </span>
                         {featureThumb ? (
@@ -368,23 +396,23 @@ const FeatureThumbnails = () => {
                             decoding="async"
                           />
                         )}
-                        <div className="absolute inset-0 rounded-full border border-chrome/10" />
+                        <div className="absolute inset-0 rounded-full border border-black/10" />
                       </div>
 
                       {/* Value */}
-                      <span className="text-lg md:text-xl font-light text-foreground tracking-tight mb-1">
+                      <span className="text-lg md:text-xl font-light text-black tracking-tight mb-1">
                         {feature.value}
                       </span>
 
                       {/* Label */}
-                      <span className="text-[10px] tracking-[0.25em] uppercase text-chrome">
+                      <span className="text-[10px] tracking-[0.25em] uppercase text-black/60">
                         {feature.label}
                       </span>
                       <span
                         className={`h-0.5 w-8 rounded-full transition-opacity duration-300 ${
                           isUnlocked
-                            ? "bg-white/70 opacity-100"
-                            : "bg-transparent opacity-0"
+                          ? "bg-black/60 opacity-100"
+                          : "bg-transparent opacity-0"
                         }`}
                       />
 
@@ -398,20 +426,20 @@ const FeatureThumbnails = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 1.2 }}
-                className={`relative z-10 mt-4 mb-6 rounded-2xl border border-white/10 bg-black/40 px-4 pb-3 pt-4 md:mt-0 md:px-5 md:pb-4 md:pt-8 ${
+                className={`relative z-10 mt-4 mb-6 rounded-2xl border border-black/10 bg-white/80 px-4 pb-3 pt-4 md:mt-0 md:px-5 md:pb-4 md:pt-8 ${
                   isActiveUnlocked ? "" : "opacity-55 grayscale"
                 }`}
               >
-                <p className="text-[12px] uppercase tracking-[0.3em] text-neutral-400 mb-2">
+                <p className="text-[12px] uppercase tracking-[0.3em] text-black/50 mb-2">
                   Operator Notes
                 </p>
-                <h3 className="text-base md:text-lg font-light text-neutral-200 mb-2">
+                <h3 className="text-base md:text-lg font-light text-black/80 mb-2">
                   {detailTitle}
                 </h3>
                 {detailText.split("\n\n").map((paragraph) => (
                   <p
                     key={paragraph}
-                    className="text-sm md:text-base text-neutral-400 leading-relaxed mb-3 last:mb-0"
+                    className="text-sm md:text-base text-black/70 leading-relaxed mb-3 last:mb-0"
                   >
                     {paragraph}
                   </p>

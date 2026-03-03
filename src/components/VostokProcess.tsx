@@ -197,15 +197,22 @@ const VostokProcess = () => {
   return (
     <section
       id="vostok-process"
-      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-gradient-to-b from-black/70 via-black/60 to-black/50 px-6 py-6 md:py-14 overflow-hidden"
+      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 py-6 md:py-14 overflow-hidden"
     >
-      <div className="absolute inset-0 hud-grid opacity-35 pointer-events-none" />
-      <p className="mb-6 text-center text-sm uppercase tracking-[0.35em] text-chrome/70 md:mb-8 md:text-base">
+      <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[#b9b9b9]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/15" />
+        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
+        <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/15 blur-[110px]" />
+        <div className="absolute inset-0 hud-grid opacity-12 pointer-events-none" />
+      </div>
+      <p className="relative z-10 mb-6 text-center text-sm uppercase tracking-[0.35em] text-black font-semibold md:mb-8 md:text-base">
         The Vostok Process
       </p>
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
-          <div className="aspect-[4/5] w-full overflow-hidden rounded-2xl panel-glass md:aspect-auto md:h-full">
+          <div className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full">
+            <div className="absolute inset-0 z-0 bg-black" />
             {activeVariants ? (
               <picture>
                 <source
@@ -223,7 +230,7 @@ const VostokProcess = () => {
                   srcSet={`${activeVariants.mobile} 640w, ${activeVariants.desktop} 1600w`}
                   sizes="(max-width: 640px) 100vw, 60vw"
                   alt={`${currentStage.title} comparison`}
-                  className="h-full w-full object-cover"
+                  className="relative z-10 h-full w-full object-cover"
                   loading="lazy"
                   decoding="async"
                 />
@@ -232,7 +239,7 @@ const VostokProcess = () => {
               <img
                 src={activeImage}
                 alt={`${currentStage.title} comparison`}
-                className="h-full w-full object-cover"
+                className="relative z-10 h-full w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
@@ -240,16 +247,13 @@ const VostokProcess = () => {
           </div>
         </div>
         <div className="md:w-2/5">
-          <div className="w-full rounded-2xl panel-glass p-5 md:h-full md:p-6">
+          <div className="w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white/85 shadow-[0_24px_60px_rgba(0,0,0,0.55)] md:h-full md:p-6">
             {stages.map((stage) => (
               <div key={stage.key} className="mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0">
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
                     {stage.title}
                   </p>
-                  <span className="badge-hud hidden rounded-full px-2 py-1 text-[8px] md:inline-flex">
-                    Cal
-                  </span>
                 </div>
                 <div className="mt-3 grid grid-cols-2 justify-items-center gap-3">
                   {stage.icons.map((icon) => {
@@ -259,7 +263,7 @@ const VostokProcess = () => {
                         key={icon}
                         type="button"
                         onClick={() => selectStage(stage.key as StageKey, icon)}
-                        className={`h-20 w-20 overflow-hidden rounded border transition-all ${
+                        className={`h-20 w-20 overflow-hidden rounded border bg-black transition-all ${
                           activeStage === stage.key && activeImage === icon
                             ? "border-chrome/60"
                             : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
@@ -282,7 +286,7 @@ const VostokProcess = () => {
                               srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
                               sizes="80px"
                               alt={`${stage.title} option`}
-                              className="h-full w-full object-cover"
+                              className="h-full w-full object-cover bg-black"
                               loading="lazy"
                               decoding="async"
                             />
@@ -291,7 +295,7 @@ const VostokProcess = () => {
                           <img
                             src={icon}
                             alt={`${stage.title} option`}
-                            className="h-full w-full object-cover"
+                            className="h-full w-full object-cover bg-black"
                             loading="lazy"
                             decoding="async"
                           />

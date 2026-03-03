@@ -20,6 +20,8 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
   const [heroFloatOffset, setHeroFloatOffset] = useState(0);
   const [hasScrolled, setHasScrolled] = useState(false);
   const [mobileFlashIndex, setMobileFlashIndex] = useState<number | null>(null);
+  const [isHeroMenuOpen, setIsHeroMenuOpen] = useState(true);
+  const [mobileImageIndex, setMobileImageIndex] = useState(0);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
@@ -61,8 +63,6 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
 
   const currentSet = imageSets[activeSuite];
   const currentView = isAfter ? currentSet.side : currentSet.front;
-  const frontView = currentSet.front;
-  const sideView = currentSet.side;
   const rightImageFocus =
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
   const leftMobileScale = "scale-[1.16] origin-bottom md:scale-100";
@@ -75,10 +75,8 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
   ];
   const leftVariants = getImageVariants(currentView.left);
   const rightVariants = getImageVariants(currentView.right);
-  const frontLeftVariants = getImageVariants(frontView.left);
-  const frontRightVariants = getImageVariants(frontView.right);
-  const sideLeftVariants = getImageVariants(sideView.left);
-  const sideRightVariants = getImageVariants(sideView.right);
+  const mobileImage = mobileImageIndex === 0 ? currentView.left : currentView.right;
+  const mobileImageVariants = getImageVariants(mobileImage);
   const mobileFlashSequence = useMemo(
     () => [
       { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 500 },
@@ -96,13 +94,6 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
   const activeFlash = mobileFlashIndex !== null ? mobileFlashSequence[mobileFlashIndex] : null;
   const activeFlashVariants =
     activeFlash && activeFlash.kind === "image" ? getImageVariants(activeFlash.src) : null;
-  const sideRightObjectPosition =
-    activeSuite === "adaptive"
-      ? "55% center"
-      : activeSuite === "sculpted"
-        ? "45% center"
-        : "50% center";
-
   const resetSuiteTimer = () => {
     if (suiteTimerRef.current) {
       window.clearInterval(suiteTimerRef.current);
@@ -213,6 +204,17 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
   }, [isDesktop, mobileFlashIndex, onMobileFlashComplete]);
 
   useEffect(() => {
+    if (isDesktop) {
+      return;
+    }
+    setMobileImageIndex(0);
+    const interval = window.setInterval(() => {
+      setMobileImageIndex((current) => (current === 0 ? 1 : 0));
+    }, 5000);
+    return () => window.clearInterval(interval);
+  }, [isDesktop, activeSuite, isAfter]);
+
+  useEffect(() => {
     if (!isRedirecting || !isDesktop) {
       return;
     }
@@ -269,8 +271,92 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
   return (
     <section
       ref={heroSectionRef}
-      className="relative min-h-[100svh] flex items-start justify-center overflow-hidden pt-10 pb-8 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center"
+      className="relative min-h-[69svh] flex items-start justify-center overflow-hidden pt-6 pb-4 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center"
     >
+      <div className="fixed top-0 left-0 right-0 z-40 hidden md:flex items-center justify-between border-b border-white/10 bg-black/70 px-6 py-2 backdrop-blur">
+        <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+          Vostok Method
+        </span>
+        <div className="flex items-center gap-4">
+          <a
+            href="https://discord.gg/DvMc34ygjx"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Discord"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-foreground/80 transition hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4"
+            >
+              <path d="M19.54 5.07a18.3 18.3 0 0 0-4.56-1.43c-.2.36-.44.84-.6 1.22a16.9 16.9 0 0 0-4.76 0c-.17-.38-.4-.86-.6-1.22-1.6.28-3.13.77-4.56 1.43-2.88 4.27-3.66 8.43-3.27 12.52 1.7 1.27 3.35 2.04 4.98 2.55.4-.54.75-1.11 1.05-1.72a10.5 10.5 0 0 1-1.65-.8c.14-.1.27-.2.4-.31 3.18 1.5 6.6 1.5 9.74 0 .13.11.26.21.4.31-.53.32-1.08.59-1.65.8.3.61.65 1.18 1.05 1.72 1.63-.51 3.28-1.28 4.98-2.55.47-4.74-.8-8.86-3.27-12.52ZM8.98 14.06c-.86 0-1.56-.8-1.56-1.78 0-.98.68-1.78 1.56-1.78.88 0 1.58.8 1.56 1.78 0 .98-.68 1.78-1.56 1.78Zm6.04 0c-.86 0-1.56-.8-1.56-1.78 0-.98.68-1.78 1.56-1.78.88 0 1.58.8 1.56 1.78 0 .98-.68 1.78-1.56 1.78Z" />
+            </svg>
+          </a>
+          <a
+            href="https://t.me/+h5yMAzkhmcY3NTFh"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Telegram"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-foreground/80 transition hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4"
+            >
+              <path d="M21.6 4.4a1.2 1.2 0 0 0-1.26-.2L3.6 11.1a1.2 1.2 0 0 0 .08 2.28l4.72 1.55 1.86 5.52c.2.6.96.78 1.42.34l2.7-2.6 4.94 3.64c.5.37 1.22.08 1.32-.53l2.7-16.16a1.2 1.2 0 0 0-.74-1.34ZM8.74 13.9l9.25-5.7-7.18 6.58-.28 3.1-1.06-3.13-3.06-1 2.33-.85Z" />
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/profile.php?id=61588217763336"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Facebook"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-foreground/80 transition hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="h-4 w-4"
+            >
+              <path d="M13.5 9H15V6h-2.25C10.8 6 10 7.05 10 8.4V10H8v3h2v5h3v-5h2.1l.6-3H13V8.55c0-.36.18-.55.5-.55z" />
+            </svg>
+          </a>
+          <a
+            href="https://www.instagram.com/vostok.method/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Instagram"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-foreground/80 transition hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="3.5" />
+              <circle cx="17" cy="7" r="1" />
+            </svg>
+          </a>
+          <button
+            type="button"
+            onClick={handleBuyClick}
+            className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground/90 transition hover:text-foreground"
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
       {showMobileCta && (
         <m.div
           initial={{ y: -12, opacity: 0 }}
@@ -278,16 +364,91 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
           transition={{ duration: 0.25, ease: "easeOut" }}
           className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
         >
-          <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
-            Vostok Method
-          </span>
-          <button
-            type="button"
-            onClick={handleBuyClick}
-            className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
-          >
-            Buy
-          </button>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="The Timeless Face logo" className="h-5 w-5" />
+            <span className="text-[9px] uppercase tracking-[0.3em] text-chrome/80">
+              Vostok
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="https://discord.gg/DvMc34ygjx"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Discord"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-foreground/80"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-3.5 w-3.5"
+              >
+                <path d="M19.54 5.07a18.3 18.3 0 0 0-4.56-1.43c-.2.36-.44.84-.6 1.22a16.9 16.9 0 0 0-4.76 0c-.17-.38-.4-.86-.6-1.22-1.6.28-3.13.77-4.56 1.43-2.88 4.27-3.66 8.43-3.27 12.52 1.7 1.27 3.35 2.04 4.98 2.55.4-.54.75-1.11 1.05-1.72a10.5 10.5 0 0 1-1.65-.8c.14-.1.27-.2.4-.31 3.18 1.5 6.6 1.5 9.74 0 .13.11.26.21.4.31-.53.32-1.08.59-1.65.8.3.61.65 1.18 1.05 1.72 1.63-.51 3.28-1.28 4.98-2.55.47-4.74-.8-8.86-3.27-12.52ZM8.98 14.06c-.86 0-1.56-.8-1.56-1.78 0-.98.68-1.78 1.56-1.78.88 0 1.58.8 1.56 1.78 0 .98-.68 1.78-1.56 1.78Zm6.04 0c-.86 0-1.56-.8-1.56-1.78 0-.98.68-1.78 1.56-1.78.88 0 1.58.8 1.56 1.78 0 .98-.68 1.78-1.56 1.78Z" />
+              </svg>
+            </a>
+            <a
+              href="https://t.me/+h5yMAzkhmcY3NTFh"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Telegram"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-foreground/80"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-3.5 w-3.5"
+              >
+                <path d="M21.6 4.4a1.2 1.2 0 0 0-1.26-.2L3.6 11.1a1.2 1.2 0 0 0 .08 2.28l4.72 1.55 1.86 5.52c.2.6.96.78 1.42.34l2.7-2.6 4.94 3.64c.5.37 1.22.08 1.32-.53l2.7-16.16a1.2 1.2 0 0 0-.74-1.34ZM8.74 13.9l9.25-5.7-7.18 6.58-.28 3.1-1.06-3.13-3.06-1 2.33-.85Z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61588217763336"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Facebook"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-foreground/80"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-3.5 w-3.5"
+              >
+                <path d="M13.5 9H15V6h-2.25C10.8 6 10 7.05 10 8.4V10H8v3h2v5h3v-5h2.1l.6-3H13V8.55c0-.36.18-.55.5-.55z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.instagram.com/vostok.method/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Instagram"
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/20 text-foreground/80"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-3.5 w-3.5"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="3.5" />
+                <circle cx="17" cy="7" r="1" />
+              </svg>
+            </a>
+            <button
+              type="button"
+              onClick={handleBuyClick}
+              className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+            >
+              Buy
+            </button>
+          </div>
         </m.div>
       )}
       {/* Background image */}
@@ -301,25 +462,31 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         >
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </m.div>
-        <div className="grid h-full w-full grid-cols-2 grid-rows-2 md:hidden">
-          <div className="relative">
-            {frontLeftVariants ? (
+        <div className="relative h-[69vh] w-full md:hidden">
+          <m.div
+            key={`mobile-hero-${transitionKey}-${mobileImageIndex}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="absolute inset-0"
+          >
+            {mobileImageVariants ? (
               <picture>
                 <source
                   type="image/avif"
-                  srcSet={`${frontLeftVariants.avif.mobile} 640w, ${frontLeftVariants.avif.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
+                  srcSet={`${mobileImageVariants.avif.mobile} 640w, ${mobileImageVariants.avif.desktop} 1600w`}
+                  sizes="100vw"
                 />
                 <source
                   type="image/webp"
-                  srcSet={`${frontLeftVariants.webp.mobile} 640w, ${frontLeftVariants.webp.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
+                  srcSet={`${mobileImageVariants.webp.mobile} 640w, ${mobileImageVariants.webp.desktop} 1600w`}
+                  sizes="100vw"
                 />
                 <img
-                  src={frontLeftVariants.desktop}
-                  srcSet={`${frontLeftVariants.mobile} 640w, ${frontLeftVariants.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                  alt="Front before"
+                  src={mobileImageVariants.desktop}
+                  srcSet={`${mobileImageVariants.mobile} 640w, ${mobileImageVariants.desktop} 1600w`}
+                  sizes="100vw"
+                  alt={mobileImageIndex === 0 ? "Front before" : "Front after"}
                   className="h-full w-full object-cover"
                   loading="eager"
                   decoding="async"
@@ -327,127 +494,21 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
               </picture>
             ) : (
               <img
-                src={frontView.left}
-                alt="Front before"
+                src={mobileImage}
+                alt={mobileImageIndex === 0 ? "Front before" : "Front after"}
                 className="h-full w-full object-cover"
                 loading="eager"
                 decoding="async"
               />
             )}
             <div className="absolute inset-0 bg-black/40" />
-          </div>
-          <div className="relative">
-            {frontRightVariants ? (
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${frontRightVariants.avif.mobile} 640w, ${frontRightVariants.avif.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={`${frontRightVariants.webp.mobile} 640w, ${frontRightVariants.webp.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <img
-                  src={frontRightVariants.desktop}
-                  srcSet={`${frontRightVariants.mobile} 640w, ${frontRightVariants.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                  alt="Front after"
-                  className="h-full w-full object-cover"
-                  loading="eager"
-                  decoding="async"
-                />
-              </picture>
-            ) : (
-              <img
-                src={frontView.right}
-                alt="Front after"
-                className="h-full w-full object-cover"
-                loading="eager"
-                decoding="async"
-              />
-            )}
-            <div className="absolute inset-0 bg-black/10" />
-          </div>
-          <div className="relative">
-            {sideLeftVariants ? (
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${sideLeftVariants.avif.mobile} 640w, ${sideLeftVariants.avif.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={`${sideLeftVariants.webp.mobile} 640w, ${sideLeftVariants.webp.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <img
-                  src={sideLeftVariants.desktop}
-                  srcSet={`${sideLeftVariants.mobile} 640w, ${sideLeftVariants.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                  alt="Side before"
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: "70% center" }}
-                  loading="eager"
-                  decoding="async"
-                />
-              </picture>
-            ) : (
-              <img
-                src={sideView.left}
-                alt="Side before"
-                className="h-full w-full object-cover"
-                style={{ objectPosition: "70% center" }}
-                loading="eager"
-                decoding="async"
-              />
-            )}
-            <div className="absolute inset-0 bg-black/40" />
-          </div>
-          <div className="relative">
-            {sideRightVariants ? (
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${sideRightVariants.avif.mobile} 640w, ${sideRightVariants.avif.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={`${sideRightVariants.webp.mobile} 640w, ${sideRightVariants.webp.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                />
-                <img
-                  src={sideRightVariants.desktop}
-                  srcSet={`${sideRightVariants.mobile} 640w, ${sideRightVariants.desktop} 1600w`}
-                  sizes="(max-width: 640px) 50vw, 50vw"
-                  alt="Side after"
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: sideRightObjectPosition }}
-                  loading="eager"
-                  decoding="async"
-                />
-              </picture>
-            ) : (
-              <img
-                src={sideView.right}
-                alt="Side after"
-                className="h-full w-full object-cover"
-                style={{ objectPosition: sideRightObjectPosition }}
-                loading="eager"
-                decoding="async"
-              />
-            )}
-            <div className="absolute inset-0 bg-black/10" />
-          </div>
+          </m.div>
         </div>
         <m.div
           initial={false}
           animate={{ opacity: mobileFlashIndex !== null ? 1 : 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[60vh] bg-black md:hidden"
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[69vh] bg-black md:hidden"
         />
         {activeFlash && (
           <m.div
@@ -455,7 +516,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[60vh] bg-black md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[69vh] bg-black md:hidden"
           >
             {activeFlash.kind === "image" ? (
               <>
@@ -611,6 +672,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
         <div className="absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
         <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/10" />
       </div>
 
       {/* Content */}
@@ -618,16 +680,51 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         className="relative z-10 px-6 max-w-6xl mx-auto"
         style={!isDesktop ? { marginTop: heroFloatOffset } : undefined}
       >
+        {!isDesktop && !isHeroMenuOpen && (
+          <button
+            type="button"
+            onClick={() => setIsHeroMenuOpen(true)}
+            className="fixed right-2 top-1/2 z-40 -translate-y-1/2 rounded-full border border-white/30 bg-black/60 px-3 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
+          >
+            Menu
+          </button>
+        )}
         <m.div
           initial={motionEnabled ? { opacity: 0, y: 20 } : false}
           animate={motionEnabled ? { opacity: 1, y: 0 } : false}
           transition={motionEnabled ? { duration: 0.9 } : undefined}
-          className={`relative mx-auto max-w-[92vw] rounded-3xl panel-glass px-2 py-3 text-center transition-opacity duration-700 sm:max-w-3xl sm:px-4 sm:py-6 md:px-10 md:py-12 ${
+          className={`relative mx-auto max-w-[92vw] rounded-3xl panel-glass px-2 py-3 text-center transition-all duration-700 sm:max-w-3xl sm:px-4 sm:py-6 md:px-10 md:py-12 ${
             mobileFlashIndex !== null
               ? "opacity-0 pointer-events-none md:opacity-100 md:pointer-events-auto"
               : "opacity-100"
+          } ${
+            !isDesktop && !isHeroMenuOpen
+              ? "translate-x-[110%] opacity-0 pointer-events-none"
+              : ""
           }`}
         >
+          {!isDesktop && (
+            <button
+              type="button"
+              onClick={() => setIsHeroMenuOpen(false)}
+              aria-label="Hide menu"
+              className="absolute -right-3 -top-3 z-50 inline-flex h-7 w-7 items-center justify-center rounded-full border border-white/30 bg-black/80 text-foreground/80 shadow hover:text-foreground"
+            >
+              <svg
+                aria-hidden="true"
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          )}
           <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
             Everyone is <em>dumb</em> (including YOU)
           </p>
@@ -719,7 +816,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
               initial={motionEnabled ? { opacity: 0, y: 10 } : false}
               animate={motionEnabled ? { opacity: 1, y: 0 } : false}
               transition={motionEnabled ? { duration: 0.6, delay: 1.6 } : undefined}
-              className="mt-4 hidden items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:inline-flex md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
+              className="mt-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 p-0.5 text-[8px] md:p-1 md:text-[9px] tracking-[0.3em] uppercase text-steel"
             >
               <button
                 type="button"
@@ -743,24 +840,6 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
           </m.div>
         </m.div>
       </div>
-
-      <button
-        type="button"
-        onClick={handleBuyClick}
-        className="group fixed bottom-[20%] right-4 z-30 hidden h-24 w-8 items-center justify-center overflow-hidden rounded-full border border-white/20 bg-black/60 text-chrome shadow-card transition-colors duration-300 hover:border-white/40 hover:text-foreground md:flex md:bottom-auto md:right-5 md:top-1/2 md:h-44 md:w-12 md:-translate-y-1/2"
-        aria-label="Buy now"
-      >
-        <span className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-white/10 opacity-70" />
-        <span className="relative flex h-full w-full items-center justify-center overflow-hidden">
-          <span className="buy-scroll flex flex-col items-center text-[11px] font-light uppercase tracking-[0.45em] md:text-sm">
-            <span className="flex flex-col items-center leading-none">
-              <span>B</span>
-              <span>U</span>
-              <span>Y</span>
-            </span>
-          </span>
-        </span>
-      </button>
 
       {!hideWatchPrompt && (
         <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">

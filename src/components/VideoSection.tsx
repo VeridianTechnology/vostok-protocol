@@ -77,15 +77,15 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
   }
 
   return (
-    <section id="hero-video" className="relative w-full bg-black">
-      <div className="relative w-full overflow-hidden border-y border-white/40 md:border-white/50">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/15 via-transparent to-white/5 opacity-70" />
-        <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full gradient-silver opacity-80" />
-        <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full gradient-silver opacity-80" />
+    <section id="hero-video" className="relative w-full bg-white">
+      <div className="relative w-full overflow-hidden border-y border-black/10">
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5 opacity-60" />
+        <div className="pointer-events-none absolute left-0 top-0 h-[2px] w-full bg-black/10 opacity-80" />
+        <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-full bg-black/10 opacity-80" />
         <video
           key={videoKey}
           ref={videoRef}
-          className="relative z-10 h-[42vh] w-full object-contain py-1 md:h-[78vh] md:py-6"
+          className="relative z-10 h-[42vh] w-full object-contain py-0 md:h-[78vh] md:py-6"
           poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls
@@ -151,8 +151,8 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
                 decoding="async"
               />
             )}
-            <div className="absolute inset-0 bg-black/30" />
-            <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-foreground transition-opacity duration-300 hover:border-white/60 hover:bg-black/60">
+            <div className="absolute inset-0 bg-white/30" />
+            <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-black/20 bg-white/60 text-black/70 transition-opacity duration-300 hover:border-black/40 hover:bg-white/80">
               <svg
                 aria-hidden="true"
                 className="ml-1 h-6 w-6"

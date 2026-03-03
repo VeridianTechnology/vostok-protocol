@@ -1,26 +1,290 @@
+import { useMemo, useRef, useState } from "react";
+import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const ResearchStudies = () => (
-  <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-gradient-to-b from-black/75 via-black/60 to-black/50 px-6 py-10 md:py-16">
-    <div className="absolute inset-0 hud-grid opacity-30 pointer-events-none" />
-    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-      <div className="rounded-3xl panel-glass p-6 md:p-10">
-        <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70 md:text-xs">
-          Research snapshot
-        </p>
-        <h2 className="mt-3 text-2xl font-light tracking-tight text-foreground md:text-4xl">
-          Why being hot is the way forward
-        </h2>
-        <p className="mt-4 text-sm text-steel md:text-base">
-          This is about social currency. When you look better, people make faster, warmer
-          assumptions, and those assumptions often compound into real-world outcomes. The studies
-          below map how appearance can influence treatment, income, and opportunity.
-        </p>
-      </div>
+const ResearchStudies = () => {
+  const narrativeTabs = useMemo(
+    () => [
+      {
+        label: "Foundation",
+        text: [
+          "Beauty is not superficial. It is structural. It is the invisible architecture upon which human interaction is built. We are biological creatures wired for pattern recognition, symmetry, and health cues. We do not choose to respond to beauty; we simply do. It operates below the threshold of conscious thought, in the same space where we decide who to trust, who to follow, and who to remember.",
+          "To possess it is to move through the world on a different plane.",
+        ],
+        sources: [
+          {
+            label: "Maxims or Myths of Beauty? (meta-analysis, 2000)",
+            href: "https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com",
+          },
+          {
+            label: "What is Beautiful is Good (classic halo-effect study)",
+            href: "https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com",
+          },
+        ],
+      },
+      {
+        label: "Doors",
+        text: [
+          "Doors open. Literally and figuratively. The attractive man is waved through security checkpoints while the other is searched. He is pulled over and released with a warning; the other receives a ticket. Studies in jurisprudence have shown that physically appealing defendants receive lighter sentences for the same crimes. The law, supposedly blind, is not blind at all—it is human, and humans are weak to a well-proportioned face.",
+          "This is not fair. This is simply true.",
+        ],
+        sources: [
+          {
+            label: "Efran (1974) physical appearance and judgments of guilt",
+            href: "https://www.sciencedirect.com/science/article/abs/pii/0092656674900440?utm_source=chatgpt.com",
+          },
+          {
+            label: "Mazzella & Feingold (1994) meta-analysis",
+            href: "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1559-1816.1994.tb01552.x?utm_source=chatgpt.com",
+          },
+          {
+            label: "Beaver et al. (2019) attractiveness bias review",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/?utm_source=chatgpt.com",
+          },
+        ],
+      },
+      {
+        label: "Gravity",
+        text: [
+          "In social spaces, the dynamic is even more pronounced. The attractive man does not approach; he is approached. Women manufacture reasons to stand near him, to brush against him, to ask him questions to which they already know the answers. It is not manipulation; it is magnetism. His presence alters the geometry of a room. People orient toward him like flowers to a sun they do not consciously see.",
+          "Dating, for him, is not a hunt. It is a selection process. His options are not limited by his job, his car, or his wit—though those help—but by the simple, brutal arithmetic of his jawline and cheekbones. His potential partners forgive awkwardness. They forgive silence. They forgive mistakes they would hold against another man for years.",
+        ],
+        sources: [
+          {
+            label: "Duchenne smile research",
+            href: "https://akjournals.com/downloadpdf/journals/1126/5/1/article-p183.pdf?utm_source=chatgpt.com",
+          },
+          {
+            label: "EMG studies on attractiveness",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3269167/?utm_source=chatgpt.com",
+          },
+          {
+            label: "Good-looking people are not what we think (Feingold, 1992)",
+            href: "https://www.semanticscholar.org/paper/Good-looking-people-are-not-what-we-think.-Feingold/7a30a68c4d9534e12231a7ac95fe86c867c77566?utm_source=chatgpt.com",
+          },
+        ],
+      },
+      {
+        label: "Career",
+        text: [
+          "But it does not stop at romance.",
+          "Careers are built on this currency. The attractive man is hired faster, promoted sooner, and paid more over his lifetime. This is not opinion; this is longitudinal data. He is perceived as more competent, more intelligent, more capable—even when his resume is identical to the man sitting across from him. His face is a resume of its own, scanned and judged in milliseconds before a single word is spoken.",
+          "He receives better service. Waiters remember his name. Bartenders pour heavier. Strangers smile. The world, for him, is slightly warmer, slightly softer, slightly more forgiving.",
+        ],
+        sources: [
+          {
+            label: "Beauty and the Labor Market (Hamermesh & Biddle, 1994)",
+            href: "https://www.nber.org/papers/w4518?utm_source=chatgpt.com",
+          },
+          {
+            label: "Why Beauty Matters (Mobius & Rosenblat, 2006)",
+            href: "https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com",
+          },
+          {
+            label: "Ruffle & Shtudiner (2015) callbacks",
+            href: "https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927?utm_source=chatgpt.com",
+          },
+          {
+            label: "Judge, Hurst & Simon (2009) lifetime earnings",
+            href: "https://www.apa.org/pubs/journals/releases/apl943742.pdf?utm_source=chatgpt.com",
+          },
+          {
+            label: "Observers’ facial EMG responses and service warmth",
+            href: "https://www.sciencedirect.com/science/article/pii/S1090513899000367?utm_source=chatgpt.com",
+          },
+        ],
+      },
+      {
+        label: "Return",
+        text: [
+          "And then something strange happens.",
+          "Because the world expects more from him, he begins to expect more from himself. He dresses better. He speaks more carefully. He holds doors. He becomes the man everyone assumed he was. The expectation becomes the reality. Beauty, in this way, is not just a gift given at birth—it is a loan that accrues interest, compounding into character over time.",
+        ],
+      },
+      {
+        label: "Problem",
+        text: [
+          "You see the problem.",
+          "If you were born without it, you have been navigating the world on hard mode without ever being told. You have been invisible when you should have been seen. You have been passed over when you should have been chosen. You have been spoken down to when you should have been respected. And you have internalized all of it as something wrong with you, rather than something wrong with the wiring of the species.",
+        ],
+      },
+      {
+        label: "Question",
+        text: [
+          "So let me ask you:",
+          "How many opportunities have slipped through your hands because of the way light falls across your face?",
+          "How many conversations have ended before they began because your bone structure did not signal safety, strength, or symmetry?",
+          "How many times have you watched a man with less to offer walk away with what should have been yours, simply because his face opened doors that yours kept closed?",
+        ],
+      },
+      {
+        label: "Choice",
+        text: [
+          "And if the research is correct—if muscle can influence bone, if tension can reshape structure, if the face is not fixed but fluid—then what are you willing to endure to change it?",
+          "Because the exercises hurt. They are boring. They take months.",
+          "But so does regret.",
+        ],
+        sources: [
+          {
+            label: "Facial exercise study (JAMA Dermatology, 2018)",
+            href: "https://jamanetwork.com/journals/jamadermatology/fullarticle/2666801?utm_source=chatgpt.com",
+          },
+          {
+            label: "Masticatory muscle studies (Kiliaridis, 1986; 1995)",
+            href: "https://pubmed.ncbi.nlm.nih.gov/3465055/?utm_source=chatgpt.com",
+          },
+          {
+            label: "Kiliaridis (1995) jaw adaptation",
+            href: "https://actaorthop.org/actaodontologica/article/download/39557/44744?utm_source=chatgpt.com",
+          },
+          {
+            label: "Soft-diet model (Kono et al., 2017)",
+            href: "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00567/full?utm_source=chatgpt.com",
+          },
+        ],
+      },
+    ],
+    [],
+  );
+  const [activeNarrative, setActiveNarrative] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const rafRef = useRef<number | null>(null);
+  const currentNarrative = narrativeTabs[activeNarrative];
 
-      <div className="rounded-3xl panel-glass p-6 md:p-8">
-        <Tabs defaultValue="social">
+  const setNarrative = (index: number) => {
+    if (index === activeNarrative) {
+      return;
+    }
+    setDirection(index > activeNarrative ? 1 : -1);
+    setActiveNarrative(index);
+  };
+
+  const handleParallaxMove = (event: React.PointerEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width - 0.5;
+    const y = (event.clientY - rect.top) / rect.height - 0.5;
+    if (rafRef.current) {
+      return;
+    }
+    rafRef.current = window.requestAnimationFrame(() => {
+      rafRef.current = null;
+      setParallaxOffset({ x: x * 48, y: y * 32 });
+    });
+  };
+
+  const handleParallaxLeave = () => {
+    if (rafRef.current) {
+      window.cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    setParallaxOffset({ x: 0, y: 0 });
+  };
+
+  return (
+    <section
+      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 py-12 md:py-20"
+      onPointerMove={handleParallaxMove}
+      onPointerLeave={handleParallaxLeave}
+    >
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[#b9b9b9]" />
+      <div
+        className="absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(120deg, rgba(0,0,0,0.28) 0 1px, transparent 1px 160px), repeating-linear-gradient(30deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 200px)",
+          transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
+        }}
+      />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/20" />
+        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
+        <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/20 blur-[110px]" />
+        <div className="absolute inset-0 hud-grid opacity-15 pointer-events-none" />
+      </div>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+        <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
+          <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70 md:text-xs">
+            Research snapshot
+          </p>
+          <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
+            Why being hot is the way forward
+          </h2>
+          <div className="mt-5">
+            <div className="flex flex-wrap items-center gap-2">
+              {narrativeTabs.map((tab, index) => (
+                <button
+                  key={tab.label}
+                  type="button"
+                  onClick={() => setNarrative(index)}
+                  className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
+                    index === activeNarrative
+                      ? "border-black/40 bg-black/10 text-black"
+                      : "border-black/10 bg-white/30 text-black/60 hover:text-black"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            <div className="relative mt-5 min-h-[14rem] overflow-hidden">
+              <AnimatePresence mode="wait" custom={direction}>
+                <m.div
+                  key={currentNarrative.label}
+                  custom={direction}
+                  initial={{ opacity: 0, x: direction * 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -direction * 30 }}
+                  transition={{ duration: 0.45, ease: "easeOut" }}
+                  className="space-y-4 text-sm text-steel md:text-base"
+                >
+                  {currentNarrative.text.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {currentNarrative.sources && currentNarrative.sources.length > 0 && (
+                    <div className="pt-3">
+                      <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+                        Sources
+                      </p>
+                      <ul className="mt-3 space-y-2 text-xs text-steel">
+                        {currentNarrative.sources.map((source) => (
+                          <li key={source.href}>
+                            {source.label}
+                            {" "}
+                            <a
+                              href={source.href}
+                              className="text-ice underline-offset-4 hover:underline"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              Link
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </m.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+
+      <div className="rounded-3xl border border-black/10 bg-white/16 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur-xl md:p-8">
+        <Tabs defaultValue="awareness">
           <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
+            <TabsTrigger
+              value="awareness"
+              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+            >
+              Awareness
+            </TabsTrigger>
+            <TabsTrigger
+              value="authority"
+              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+            >
+              Authority
+            </TabsTrigger>
             <TabsTrigger
               value="social"
               className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
@@ -28,41 +292,41 @@ const ResearchStudies = () => (
               Social
             </TabsTrigger>
             <TabsTrigger
-              value="earnings"
+              value="dating"
               className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              Earnings
+              Dating
             </TabsTrigger>
             <TabsTrigger
-              value="power"
+              value="income"
               className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              Power
+              Income
             </TabsTrigger>
             <TabsTrigger
-              value="legal"
+              value="service"
               className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              Legal
+              Service
             </TabsTrigger>
             <TabsTrigger
-              value="training"
+              value="physiology"
               className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
             >
-              Facial training
+              Physiology
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="social" className="mt-6">
+          <TabsContent value="awareness" className="mt-6">
             <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Social treatment and halo effects
+              Beauty operates below conscious awareness
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-steel">
               <li>
-                Maxims or Myths of Beauty? (Psychological Bulletin, 2000)
+                Maxims or Myths of Beauty? (meta-analysis, 2000)
                 {" "}
                 <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/10825783/"
+                  href="https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -71,10 +335,74 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                What is Beautiful is Good (Dion, Berscheid, Walster, 1972)
+                What is Beautiful is Good (classic halo-effect study)
                 {" "}
                 <a
-                  href="https://www4.uwsp.edu/psych/s/389/dion72.pdf"
+                  href="https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com"
+                  className="text-ice underline-offset-4 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  PDF
+                </a>
+              </li>
+            </ul>
+          </TabsContent>
+
+          <TabsContent value="authority" className="mt-6">
+            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+              Attractive people are treated better by authorities
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm text-steel">
+              <li>
+                Efran (1974) physical appearance reduces judgment of guilt
+                {" "}
+                <a
+                  href="https://www.sciencedirect.com/science/article/abs/pii/0092656674900440?utm_source=chatgpt.com"
+                  className="text-ice underline-offset-4 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  ScienceDirect
+                </a>
+              </li>
+              <li>
+                Mazzella &amp; Feingold (1994 meta-analysis)
+                {" "}
+                <a
+                  href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1559-1816.1994.tb01552.x?utm_source=chatgpt.com"
+                  className="text-ice underline-offset-4 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Wiley
+                </a>
+              </li>
+              <li>
+                Beaver et al. (2019 review) on legal perception bias
+                {" "}
+                <a
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/?utm_source=chatgpt.com"
+                  className="text-ice underline-offset-4 hover:underline"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  PMC
+                </a>
+              </li>
+            </ul>
+          </TabsContent>
+
+          <TabsContent value="social" className="mt-6">
+            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+              Social attention and approach behavior
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm text-steel">
+              <li>
+                Duchenne smile research
+                {" "}
+                <a
+                  href="https://akjournals.com/downloadpdf/journals/1126/5/1/article-p183.pdf?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -83,22 +411,30 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                What Is Beautiful Is Good, But… (meta-analysis, 1991)
+                EMG studies on attractiveness
                 {" "}
                 <a
-                  href="https://www.scirp.org/reference/referencespapers?referenceid=4106667"
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3269167/?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Reference
+                  PMC
                 </a>
               </li>
+            </ul>
+          </TabsContent>
+
+          <TabsContent value="dating" className="mt-6">
+            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+              Dating opportunities and social leniency
+            </h3>
+            <ul className="mt-4 space-y-3 text-sm text-steel">
               <li>
-                Good-looking people are not what we think (meta-analysis, 1992)
+                Good-looking people are not what we think (Feingold, 1992)
                 {" "}
                 <a
-                  href="https://www.semanticscholar.org/paper/Good-looking-people-are-not-what-we-think.-Feingold/7a30a68c4d9534e12231a7ac95fe86c867c77566"
+                  href="https://www.semanticscholar.org/paper/Good-looking-people-are-not-what-we-think.-Feingold/7a30a68c4d9534e12231a7ac95fe86c867c77566?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -109,16 +445,16 @@ const ResearchStudies = () => (
             </ul>
           </TabsContent>
 
-          <TabsContent value="earnings" className="mt-6">
+          <TabsContent value="income" className="mt-6">
             <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Earnings and hiring ("beauty premium")
+              Hiring, income, and promotion ("beauty premium")
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-steel">
               <li>
                 Beauty and the Labor Market (Hamermesh &amp; Biddle, 1994)
                 {" "}
                 <a
-                  href="https://www.nber.org/papers/w4518"
+                  href="https://www.nber.org/papers/w4518?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -130,7 +466,7 @@ const ResearchStudies = () => (
                 Why Beauty Matters (Mobius &amp; Rosenblat, 2006)
                 {" "}
                 <a
-                  href="https://www.aeaweb.org/articles?id=10.1257/000282806776157515"
+                  href="https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -139,22 +475,10 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                Does it pay to be smart, attractive, or confident? (Judge et al., 2009)
+                Ruffle &amp; Shtudiner (2015) callbacks
                 {" "}
                 <a
-                  href="https://www.apa.org/pubs/journals/releases/apl943742.pdf"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PDF
-                </a>
-              </li>
-              <li>
-                Are Good-Looking People More Employable? (Ruffle &amp; Shtudiner, 2015)
-                {" "}
-                <a
-                  href="https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927"
+                  href="https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -163,10 +487,10 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                Beauty Pays (Hamermesh, Princeton University Press)
+                Judge, Hurst &amp; Simon (2009) lifetime earnings
                 {" "}
                 <a
-                  href="https://nibmehub.com/opac-service/pdf/read/Beauty%20Pays%20_%20why%20attractive%20people%20are%20more%20successful.pdf"
+                  href="https://www.apa.org/pubs/journals/releases/apl943742.pdf?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -177,36 +501,16 @@ const ResearchStudies = () => (
             </ul>
           </TabsContent>
 
-          <TabsContent value="power" className="mt-6">
+          <TabsContent value="service" className="mt-6">
             <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Power and competence impressions
+              Attractive people elicit more positive service
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-steel">
               <li>
-                Inferences of competence from faces predict election outcomes (Todorov et al., 2005)
+                Observers’ facial EMG responses show reduced negative emotion activity
                 {" "}
                 <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/15947187/"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PubMed
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="legal" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Legal outcomes and sentencing bias
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                The effect of physical appearance on judgments of guilt (Efran, 1974)
-                {" "}
-                <a
-                  href="https://www.sciencedirect.com/science/article/abs/pii/0092656674900440"
+                  href="https://www.sciencedirect.com/science/article/pii/S1090513899000367?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -214,31 +518,19 @@ const ResearchStudies = () => (
                   ScienceDirect
                 </a>
               </li>
-              <li>
-                Mazzella &amp; Feingold meta-analysis on mock juror judgments (1994)
-                {" "}
-                <a
-                  href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1559-1816.1994.tb01552.x"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Wiley
-                </a>
-              </li>
             </ul>
           </TabsContent>
 
-          <TabsContent value="training" className="mt-6">
+          <TabsContent value="physiology" className="mt-6">
             <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Facial training and structure (early evidence)
+              Facial structure can change
             </h3>
             <ul className="mt-4 space-y-3 text-sm text-steel">
               <li>
-                Association of Facial Exercise With the Appearance of Aging (JAMA Dermatology, 2018)
+                Facial exercise study (JAMA Dermatology, 2018)
                 {" "}
                 <a
-                  href="https://jamanetwork.com/journals/jamadermatology/fullarticle/2666801"
+                  href="https://jamanetwork.com/journals/jamadermatology/fullarticle/2666801?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -247,10 +539,10 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                Masticatory muscle function and craniofacial morphology (Kiliaridis, 1986)
+                Masticatory muscle studies (Kiliaridis, 1986; 1995)
                 {" "}
                 <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/3465055/"
+                  href="https://pubmed.ncbi.nlm.nih.gov/3465055/?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -259,22 +551,22 @@ const ResearchStudies = () => (
                 </a>
               </li>
               <li>
-                Masticatory muscle influence on craniofacial growth (Kiliaridis, 1995 review)
+                Kiliaridis (1995) jaw adaptation
                 {" "}
                 <a
-                  href="https://actaorthop.org/actaodontologica/article/download/39557/44744"
+                  href="https://actaorthop.org/actaodontologica/article/download/39557/44744?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  PDF
+                  Acta
                 </a>
               </li>
               <li>
-                Soft-diet model and mandibular changes (Kono et al., Frontiers in Physiology, 2017)
+                Soft-diet model (Kono et al., 2017)
                 {" "}
                 <a
-                  href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00567/full"
+                  href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00567/full?utm_source=chatgpt.com"
                   className="text-ice underline-offset-4 hover:underline"
                   target="_blank"
                   rel="noreferrer"
@@ -283,15 +575,12 @@ const ResearchStudies = () => (
                 </a>
               </li>
             </ul>
-            <p className="mt-4 text-xs text-steel/80">
-              Evidence here is smaller and more mixed than the economics and social literature. Use
-              it as directional, not definitive.
-            </p>
           </TabsContent>
         </Tabs>
       </div>
     </div>
   </section>
-);
+  );
+};
 
 export default ResearchStudies;
