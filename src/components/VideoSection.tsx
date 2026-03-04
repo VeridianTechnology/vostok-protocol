@@ -4,9 +4,10 @@ import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
+  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
 };
 
-const VideoSection = ({ onClosed }: VideoSectionProps) => {
+const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
@@ -95,6 +96,15 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
             setHasStarted(true);
             if (!hasTrackedStart.current) {
               track("start_video");
+              if (entrySource === "facebook") {
+                track("start_video_facebook");
+              }
+              if (entrySource === "4chan") {
+                track("start_video_4chan");
+              }
+              if (entrySource === "instagram") {
+                track("start_video_instagram");
+              }
               hasTrackedStart.current = true;
             }
           }}
@@ -102,6 +112,15 @@ const VideoSection = ({ onClosed }: VideoSectionProps) => {
           onEnded={() => {
             if (!hasTrackedFinish.current) {
               track("finish_video");
+              if (entrySource === "facebook") {
+                track("finish_video_facebook");
+              }
+              if (entrySource === "4chan") {
+                track("finish_video_4chan");
+              }
+              if (entrySource === "instagram") {
+                track("finish_video_instagram");
+              }
               hasTrackedFinish.current = true;
             }
             setIsClosed(true);

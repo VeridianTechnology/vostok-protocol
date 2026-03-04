@@ -6,9 +6,16 @@ import { getImageVariants } from "@/lib/utils";
 type HeroSectionProps = {
   hideWatchPrompt?: boolean;
   onMobileFlashComplete?: () => void;
+  onRequestBuy?: (continueToCheckout: () => void) => void;
+  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
 };
 
-const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSectionProps) => {
+const HeroSection = ({
+  hideWatchPrompt = false,
+  onMobileFlashComplete,
+  onRequestBuy,
+  entrySource = "direct",
+}: HeroSectionProps) => {
   const [isAfter, setIsAfter] = useState(false);
   const [activeSuite, setActiveSuite] = useState<"precision" | "adaptive" | "sculpted">(
     "precision"
@@ -258,8 +265,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
     setActiveSuite(suite);
     resetSuiteTimer();
   };
-  const handleBuyClick = () => {
-    track("buy_button", { location: "hero" });
+  const handleBuyNow = () => {
     if (isDesktop) {
       setCountdown(3);
       setIsRedirecting(true);
@@ -267,11 +273,35 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
       window.open(gumroadUrl, "_blank", "noopener,noreferrer");
     }
   };
+  const handleBuyClick = () => {
+    track("buy_button", { location: "hero" });
+    if (entrySource === "facebook") {
+      track("buy_button_facebook", { location: "hero" });
+    }
+    if (entrySource === "4chan") {
+      track("buy_button_4chan", { location: "hero" });
+    }
+    if (entrySource === "instagram") {
+      track("buy_button_instagram", { location: "hero" });
+    }
+    if (onRequestBuy) {
+      onRequestBuy(handleBuyNow);
+      return;
+    }
+    handleBuyNow();
+  };
+
+  const heroMinHeight = isDesktop
+    ? entrySource === "4chan"
+      ? "126vh"
+      : "115vh"
+    : "100vh";
 
   return (
     <section
       ref={heroSectionRef}
-      className="relative min-h-[69svh] flex items-start justify-center overflow-hidden pt-6 pb-4 md:min-h-[100vh] md:pt-0 md:pb-16 md:items-center"
+      className="relative flex items-start justify-center overflow-hidden pt-6 pb-0 md:pt-0 md:pb-16 md:items-center"
+      style={{ minHeight: heroMinHeight }}
     >
       <div className="fixed top-0 left-0 right-0 z-40 hidden md:flex items-center justify-between border-b border-white/10 bg-black/70 px-6 py-2 backdrop-blur">
         <span className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
@@ -471,7 +501,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         >
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </m.div>
-        <div className="relative h-[69vh] w-full md:hidden">
+        <div className="relative h-full w-full md:hidden">
           <m.div
             key={`mobile-hero-${transitionKey}-${mobileImageIndex}`}
             initial={{ opacity: 0 }}
@@ -517,7 +547,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
           initial={false}
           animate={{ opacity: mobileFlashIndex !== null ? 1 : 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-[69vh] bg-black md:hidden"
+          className="pointer-events-none absolute inset-x-0 top-0 z-20 h-full bg-black md:hidden"
         />
         {activeFlash && (
           <m.div
@@ -525,7 +555,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.1, ease: "easeOut" }}
-            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-[69vh] bg-black md:hidden"
+            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-black md:hidden"
           >
             {activeFlash.kind === "image" ? (
               <>
@@ -678,10 +708,9 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
             />
           </div>
         </m.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/30 to-background" />
+        <div className="absolute inset-0 hidden bg-gradient-to-b from-background/60 via-background/30 to-background md:block" />
         <div className="absolute -top-32 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-white/5 blur-3xl" />
-        <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white/10" />
+        <div className="absolute bottom-0 left-0 right-0 hidden h-24 bg-gradient-to-t from-black/60 to-transparent md:block" />
       </div>
 
       {/* Content */}
@@ -839,7 +868,7 @@ const HeroSection = ({ hideWatchPrompt = false, onMobileFlashComplete }: HeroSec
         </m.div>
       </div>
 
-      {!hideWatchPrompt && (
+      {!hideWatchPrompt && isDesktop && (
         <div className="absolute bottom-6 left-0 right-0 z-20 flex flex-col items-center">
           <button
             type="button"

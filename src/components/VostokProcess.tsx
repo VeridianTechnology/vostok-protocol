@@ -4,6 +4,10 @@ import { getImageVariants } from "@/lib/utils";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
+type VostokProcessProps = {
+  onLoaded?: () => void;
+};
+
 const getThumbVariants = (src: string) => {
   if (!src.endsWith(".jpg") && !src.endsWith(".jpeg")) {
     return null;
@@ -142,7 +146,7 @@ const stages = [
   },
 ];
 
-const VostokProcess = () => {
+const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
   const [activeStage, setActiveStage] = useState<StageKey>("before");
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
   const activeStageRef = useRef(activeStage);
@@ -194,10 +198,14 @@ const VostokProcess = () => {
     };
   }, [iconSequence]);
 
+  useEffect(() => {
+    onLoaded?.();
+  }, [onLoaded]);
+
   return (
     <section
       id="vostok-process"
-      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 py-6 md:py-14 overflow-hidden"
+      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-6 md:mt-0 md:py-14 overflow-hidden"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[#b9b9b9]" />

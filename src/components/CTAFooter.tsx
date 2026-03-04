@@ -2,7 +2,12 @@ import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 
-const CTAFooter = () => {
+type CTAFooterProps = {
+  onRequestBuy?: (continueToCheckout: () => void) => void;
+  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
+};
+
+const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -144,7 +149,7 @@ const CTAFooter = () => {
               <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
 
               <p className="text-black/50 text-xs tracking-wider mb-7 md:mb-10">
-                Instant digital delivery · 290 pages · Lifetime access
+                Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
               </p>
 
               {/* CTA Button */}
@@ -176,13 +181,29 @@ const CTAFooter = () => {
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => {
+                    const goToCheckout = () => {
+                      if (isDesktop) {
+                        setCountdown(3);
+                        setIsRedirecting(true);
+                      } else {
+                        window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+                      }
+                    };
                     track("buy_button", { location: "footer" });
-                    if (isDesktop) {
-                      setCountdown(3);
-                      setIsRedirecting(true);
-                    } else {
-                      window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+                    if (entrySource === "facebook") {
+                      track("buy_button_facebook", { location: "footer" });
                     }
+                    if (entrySource === "4chan") {
+                      track("buy_button_4chan", { location: "footer" });
+                    }
+                    if (entrySource === "instagram") {
+                      track("buy_button_instagram", { location: "footer" });
+                    }
+                    if (onRequestBuy) {
+                      onRequestBuy(goToCheckout);
+                      return;
+                    }
+                    goToCheckout();
                   }}
                   className="inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500"
                 >
