@@ -4,10 +4,11 @@ import { track } from "@vercel/analytics";
 
 type CTAFooterProps = {
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
 };
 
 const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {
+  const isFourChan = entrySource === "4chan";
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -151,6 +152,12 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               <p className="text-black/50 text-xs tracking-wider mb-7 md:mb-10">
                 Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
               </p>
+              {isFourChan && (
+                <p className="text-black/70 text-sm mb-6">
+                  Best purchase you&apos;ll make. It stacks indefinitely: 4s to 7s, 6s to 9s, and
+                  higher the more you work.
+                </p>
+              )}
 
               {/* CTA Button */}
               <div className="mt-4 flex flex-col items-center gap-3">
@@ -199,6 +206,9 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                     if (entrySource === "instagram") {
                       track("buy_button_instagram", { location: "footer" });
                     }
+                    if (entrySource === "tiktok") {
+                      track("buy_button_tiktok", { location: "footer" });
+                    }
                     if (onRequestBuy) {
                       onRequestBuy(goToCheckout);
                       return;
@@ -220,7 +230,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                     <path d="M7 10V7a5 5 0 0 1 10 0v3" />
                     <rect x="4" y="10" width="16" height="10" rx="2" />
                   </svg>
-                  Buy Now
+                  {isFourChan ? "NEETBUX HERE" : "Buy Now"}
                 </m.button>
                 {/* Price */}
                 <div className="flex flex-col items-center gap-2">

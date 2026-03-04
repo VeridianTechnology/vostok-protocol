@@ -89,7 +89,12 @@ const features = [
   },
 ];
 
-const FeatureThumbnails = () => {
+type FeatureThumbnailsProps = {
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+};
+
+const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) => {
+  const isFourChan = entrySource === "4chan";
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
   const [isAngleView, setIsAngleView] = useState(false);
@@ -195,11 +200,19 @@ const FeatureThumbnails = () => {
                 className="relative z-10 text-center mb-3 md:mb-6"
               >
                 <p className="text-black/60 tracking-[0.35em] uppercase text-xs mb-4 font-light">
-                  An Unrefined Face Cannot Compete with a Structured Face
+                  {isFourChan
+                    ? "Stop doomscrolling. This is your ladder out."
+                    : "An Unrefined Face Cannot Compete with a Structured Face"}
                 </p>
                 <h2 className="text-3xl md:text-6xl font-light text-black tracking-tight">
                   <span className="font-semibold">Change YOUR Face</span>
                 </h2>
+                {isFourChan && (
+                  <p className="mt-3 text-sm text-black/70">
+                    This moves 4s to 7s and 6s to 9s. It stacks indefinitely if you keep doing the
+                    work.
+                  </p>
+                )}
               </m.div>
 
               <m.div

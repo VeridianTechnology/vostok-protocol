@@ -7,7 +7,7 @@ type HeroSectionProps = {
   hideWatchPrompt?: boolean;
   onMobileFlashComplete?: () => void;
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
 };
 
 const HeroSection = ({
@@ -284,6 +284,9 @@ const HeroSection = ({
     if (entrySource === "instagram") {
       track("buy_button_instagram", { location: "hero" });
     }
+    if (entrySource === "tiktok") {
+      track("buy_button_tiktok", { location: "hero" });
+    }
     if (onRequestBuy) {
       onRequestBuy(handleBuyNow);
       return;
@@ -383,7 +386,7 @@ const HeroSection = ({
             onClick={handleBuyClick}
             className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground/90 transition hover:text-foreground"
           >
-            Buy Now
+            {entrySource === "4chan" ? "NEETBUX HERE" : "Buy Now"}
           </button>
         </div>
       </div>
@@ -485,7 +488,7 @@ const HeroSection = ({
               onClick={handleBuyClick}
               className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground"
             >
-              Buy
+              {entrySource === "4chan" ? "NEETBUX HERE" : "Buy"}
             </button>
           </div>
         </m.div>
@@ -762,7 +765,17 @@ const HeroSection = ({
             transition={motionEnabled ? { duration: 1, delay: 0.5 } : undefined}
             className="relative z-10 text-2xl md:text-5xl lg:text-6xl font-light tracking-tight text-foreground mb-3 md:mb-6"
           >
-            For Ignoring <strong>The Number One</strong> Way to get <strong>Insanely HOT</strong>
+            {entrySource === "4chan" ? (
+              <>
+                You Don&apos;t have to be an Incel, Dude. This Method Works. Ask Mom for{" "}
+                <strong>NEETBux.</strong>
+              </>
+            ) : (
+              <>
+                For Ignoring <strong>The Number One</strong> Way to get{" "}
+                <strong>Insanely HOT</strong>
+              </>
+            )}
           </m.h1>
 
           <m.div
@@ -790,12 +803,21 @@ const HeroSection = ({
               transition={motionEnabled ? { duration: 0.8, delay: 1.2 } : undefined}
               className="text-steel text-[10px] md:text-lg font-light max-w-2xl mx-auto leading-relaxed"
             >
-              Skin care, doesn't make you HOT. Working out, doesn't make you HOT. Only working out
-              the face, with <u>SPECIFIC</u> face exercises works!
-              <span className="block">
-                This is the <strong>ULTIMATE</strong> easy-to-do no BS guide! Get yours for only
-                $30!
-              </span>
+              {entrySource === "4chan" ? (
+                <>
+                  I went from a good looking guy TO THE MAIN FUCKING CHARACTER, Don&apos;t be a
+                  pussy and miss out, maybe you can escape 4chan once and for all.
+                </>
+              ) : (
+                <>
+                  Skin care, doesn&apos;t make you HOT. Working out, doesn&apos;t make you HOT. Only
+                  working out the face, with <u>SPECIFIC</u> face exercises works!
+                  <span className="block">
+                    This is the <strong>ULTIMATE</strong> easy-to-do no BS guide! Get yours for
+                    only $30!
+                  </span>
+                </>
+              )}
             </m.p>
 
             <m.div

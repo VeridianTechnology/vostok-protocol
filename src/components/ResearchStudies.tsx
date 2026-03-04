@@ -2,7 +2,12 @@ import { useMemo, useRef, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-const ResearchStudies = () => {
+type ResearchStudiesProps = {
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+};
+
+const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
+  const isFourChan = entrySource === "4chan";
   const narrativeTabs = useMemo(
     () => [
       {
@@ -208,8 +213,16 @@ const ResearchStudies = () => {
             Research snapshot
           </p>
           <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
-            Why being hot is the way forward
+            {isFourChan
+              ? "Blackpill is cope. Here’s the data that breaks the loop."
+              : "Why being hot is the way forward"}
           </h2>
+          {isFourChan && (
+            <p className="mt-3 text-sm text-black/70">
+              This keeps men out of spiral ideologies and shows exactly why structure beats
+              nihilism.
+            </p>
+          )}
           <div className="mt-5">
             <div className="flex flex-wrap items-center gap-2">
               {narrativeTabs.map((tab, index) => (

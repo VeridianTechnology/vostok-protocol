@@ -24,6 +24,7 @@ const Index = () => {
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
   const [isInstagramEntry, setIsInstagramEntry] = useState(false);
+  const [isTikTokEntry, setIsTikTokEntry] = useState(false);
   const stayTimerRef = useRef<number | null>(null);
   const pendingBuyRef = useRef<(() => void) | null>(null);
   const loadTimersRef = useRef<number[]>([]);
@@ -90,6 +91,9 @@ const Index = () => {
     if (normalizedSource === "instagram") {
       setIsInstagramEntry(true);
     }
+    if (normalizedSource === "tiktok") {
+      setIsTikTokEntry(true);
+    }
 
     stayTimerRef.current = window.setTimeout(() => {
       track("stay_30s");
@@ -101,6 +105,9 @@ const Index = () => {
       }
       if (source?.toLowerCase() === "instagram") {
         track("stay_30s_instagram");
+      }
+      if (source?.toLowerCase() === "tiktok") {
+        track("stay_30s_tiktok");
       }
     }, 30000);
 
@@ -135,6 +142,8 @@ const Index = () => {
               ? "4chan"
               : isInstagramEntry
                 ? "instagram"
+                : isTikTokEntry
+                  ? "tiktok"
                 : "direct"
         }
       />
@@ -156,6 +165,17 @@ const Index = () => {
                 setHasVostokLoaded(true);
               }
             }}
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : "direct"
+            }
           />
         </Suspense>
       ) : (
@@ -164,28 +184,76 @@ const Index = () => {
       <div className="divider-line" />
       {loadChangeYourFace ? (
         <Suspense fallback={<div className="min-h-[60vh]" />}>
-          <FeatureThumbnails />
+          <FeatureThumbnails
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : "direct"
+            }
+          />
         </Suspense>
       ) : (
         <div className="min-h-[60vh]" />
       )}
       {loadResearch ? (
         <Suspense fallback={<div className="min-h-[50vh]" />}>
-          <ResearchStudies />
+          <ResearchStudies
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : "direct"
+            }
+          />
         </Suspense>
       ) : (
         <div className="min-h-[50vh]" />
       )}
       {loadRest ? (
         <Suspense fallback={<div className="min-h-[20vh]" />}>
-          <QuoteSection />
+          <QuoteSection
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : "direct"
+            }
+          />
         </Suspense>
       ) : (
         <div className="min-h-[20vh]" />
       )}
       {loadChapterPreview ? (
         <Suspense fallback={<div className="min-h-[50vh]" />}>
-          <SpecComparison />
+          <SpecComparison
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : "direct"
+            }
+          />
         </Suspense>
       ) : (
         <div className="min-h-[50vh]" />
@@ -201,6 +269,8 @@ const Index = () => {
                   ? "4chan"
                   : isInstagramEntry
                     ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
                     : "direct"
             }
           />
@@ -220,6 +290,8 @@ const Index = () => {
                   ? "4chan"
                   : isInstagramEntry
                     ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
                     : "direct"
             }
           />

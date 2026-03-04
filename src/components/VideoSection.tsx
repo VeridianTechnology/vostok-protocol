@@ -4,7 +4,7 @@ import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
 };
 
 const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) => {
@@ -105,6 +105,9 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
               if (entrySource === "instagram") {
                 track("start_video_instagram");
               }
+              if (entrySource === "tiktok") {
+                track("start_video_tiktok");
+              }
               hasTrackedStart.current = true;
             }
           }}
@@ -120,6 +123,9 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
               }
               if (entrySource === "instagram") {
                 track("finish_video_instagram");
+              }
+              if (entrySource === "tiktok") {
+                track("finish_video_tiktok");
               }
               hasTrackedFinish.current = true;
             }

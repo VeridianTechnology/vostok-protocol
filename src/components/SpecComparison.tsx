@@ -2,7 +2,12 @@ import { m } from "framer-motion";
 import { useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 
-const SpecComparison = () => {
+type SpecComparisonProps = {
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+};
+
+const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
+  const isFourChan = entrySource === "4chan";
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [flipDirection, setFlipDirection] = useState<"next" | "prev" | null>(null);
   const flipTimeout = useRef<number | null>(null);
@@ -60,10 +65,18 @@ const SpecComparison = () => {
           className="text-center mb-4 md:mb-16"
         >
           <p className="text-black/60 tracking-[0.4em] uppercase text-xs mb-4 font-light">
-            Vostok Protocol
+            {isFourChan ? "Exit the Spiral" : "Vostok Protocol"}
           </p>
           <h2 className="text-3xl md:text-4xl font-light text-black tracking-tight">
-            Chapter <span className="font-semibold">Preview</span>
+            {isFourChan ? (
+              <>
+                Chapter <span className="font-semibold">Preview</span> (No More Blackpill)
+              </>
+            ) : (
+              <>
+                Chapter <span className="font-semibold">Preview</span>
+              </>
+            )}
           </h2>
         </m.div>
       </div>

@@ -6,6 +6,7 @@ type StageKey = "before" | "20" | "45" | "70" | "100";
 
 type VostokProcessProps = {
   onLoaded?: () => void;
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
 };
 
 const getThumbVariants = (src: string) => {
@@ -146,14 +147,22 @@ const stages = [
   },
 ];
 
-const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
+const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const [activeStage, setActiveStage] = useState<StageKey>("before");
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
+  const [parallaxShift, setParallaxShift] = useState(0);
+  const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const activeStageRef = useRef(activeStage);
   const activeImageRef = useRef(activeImage);
   const rotationTimerRef = useRef<number | null>(null);
+  const parallaxRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants = getImageVariants(activeImage);
+  const handleGridShift = () => {
+    const nextX = Math.round((Math.random() - 0.5) * 120);
+    const nextY = Math.round((Math.random() - 0.5) * 120);
+    setGridShift({ x: nextX, y: nextY });
+  };
   const iconSequence = useMemo(
     () =>
       stages.flatMap((stage) =>
@@ -202,21 +211,60 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
     onLoaded?.();
   }, [onLoaded]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (parallaxRef.current) {
+        return;
+      }
+      parallaxRef.current = window.requestAnimationFrame(() => {
+        parallaxRef.current = null;
+        const offset = window.scrollY * 0.08;
+        setParallaxShift(Math.min(offset, 40));
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (parallaxRef.current) {
+        window.cancelAnimationFrame(parallaxRef.current);
+        parallaxRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <section
       id="vostok-process"
-      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-6 md:mt-0 md:py-14 overflow-hidden"
+      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
+      onClick={handleGridShift}
     >
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[#b9b9b9]" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/15" />
         <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
         <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/15 blur-[110px]" />
-        <div className="absolute inset-0 hud-grid opacity-12 pointer-events-none" />
+        <div
+          className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 opacity-35 transition-transform duration-700"
+          style={{
+            transform: `translate3d(calc(-50% + ${gridShift.x + parallaxShift}px), calc(-50% + ${gridShift.y - parallaxShift}px), 0)`,
+            backgroundImage:
+              "linear-gradient(90deg, rgba(0,0,0,0.22) 1px, transparent 1px), linear-gradient(0deg, rgba(0,0,0,0.22) 1px, transparent 1px)",
+            backgroundSize: "40px 40px, 40px 40px",
+            backgroundPosition: "0 0, 0 0",
+          }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
       </div>
       <p className="relative z-10 mb-6 text-center text-sm uppercase tracking-[0.35em] text-black font-semibold md:mb-8 md:text-base">
         The Vostok Process
       </p>
+      {entrySource === "4chan" && (
+        <p className="relative z-10 mx-auto mb-6 max-w-2xl text-center text-sm text-black/70">
+          Blackpill doom is a loop. This is the off-ramp: 4s to 7s, 6s to 9s. It stacks the more
+          you work it and keeps you out of the incel spiral.
+        </p>
+      )}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
           <div className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full">
