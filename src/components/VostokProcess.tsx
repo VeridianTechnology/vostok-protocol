@@ -152,10 +152,15 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
   const [parallaxShift, setParallaxShift] = useState(0);
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [showFlash, setShowFlash] = useState(false);
   const activeStageRef = useRef(activeStage);
   const activeImageRef = useRef(activeImage);
   const rotationTimerRef = useRef<number | null>(null);
   const parallaxRef = useRef<number | null>(null);
+  const flashTimersRef = useRef<number[]>([]);
+  const isFlashingRef = useRef(false);
+  const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants = getImageVariants(activeImage);
   const handleGridShift = () => {
@@ -185,11 +190,14 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     activeImageRef.current = activeImage;
   }, [activeStage, activeImage]);
 
-  useEffect(() => {
+  const startRotation = () => {
     if (rotationTimerRef.current) {
       window.clearInterval(rotationTimerRef.current);
     }
     rotationTimerRef.current = window.setInterval(() => {
+      if (isFlashingRef.current) {
+        return;
+      }
       const currentIndex = iconSequence.findIndex(
         (entry) =>
           entry.stageKey === activeStageRef.current && entry.icon === activeImageRef.current
@@ -199,7 +207,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       setActiveStage(next.stageKey);
       setActiveImage(next.icon);
     }, 35000);
+  };
 
+  useEffect(() => {
+    startRotation();
     return () => {
       if (rotationTimerRef.current) {
         window.clearInterval(rotationTimerRef.current);
@@ -232,6 +243,88 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       }
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateMatch = () => setIsMobile(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || !imageFrameRef.current) {
+      return;
+    }
+
+    const stopFlashing = () => {
+      isFlashingRef.current = false;
+      flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      flashTimersRef.current = [];
+      setShowFlash(false);
+    };
+
+    const startFlashing = () => {
+      if (isFlashingRef.current) {
+        return;
+      }
+      isFlashingRef.current = true;
+      if (rotationTimerRef.current) {
+        window.clearInterval(rotationTimerRef.current);
+        rotationTimerRef.current = null;
+      }
+
+      const sequence = iconSequence;
+      const imageDuration = 700;
+      const flashDuration = 120;
+      let index = 0;
+
+      const step = () => {
+        if (!isFlashingRef.current) {
+          return;
+        }
+        const entry = sequence[index];
+        setActiveStage(entry.stageKey);
+        setActiveImage(entry.icon);
+
+        const flashTimer = window.setTimeout(() => {
+          setShowFlash(true);
+        }, imageDuration);
+        const nextTimer = window.setTimeout(() => {
+          setShowFlash(false);
+          index += 1;
+          if (index >= sequence.length) {
+            isFlashingRef.current = false;
+            startRotation();
+            return;
+          }
+          step();
+        }, imageDuration + flashDuration);
+
+        flashTimersRef.current.push(flashTimer, nextTimer);
+      };
+
+      step();
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          startFlashing();
+        } else {
+          stopFlashing();
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    observer.observe(imageFrameRef.current);
+
+    return () => {
+      observer.disconnect();
+      stopFlashing();
+    };
+  }, [iconSequence, isMobile]);
 
   return (
     <section
@@ -267,7 +360,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       )}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
-          <div className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full">
+          <div
+            ref={imageFrameRef}
+            className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full"
+          >
             <div className="absolute inset-0 z-0 bg-black" />
             {activeVariants ? (
               <picture>
@@ -300,6 +396,11 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 decoding="async"
               />
             )}
+            <div
+              className={`pointer-events-none absolute inset-0 z-20 bg-white transition-opacity duration-150 ${
+                showFlash ? "opacity-90" : "opacity-0"
+              }`}
+            />
           </div>
         </div>
         <div className="md:w-2/5">
@@ -319,7 +420,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                         key={icon}
                         type="button"
                         onClick={() => selectStage(stage.key as StageKey, icon)}
-                        className={`h-20 w-20 overflow-hidden rounded border bg-black transition-all ${
+                        className={`h-10 w-10 overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                           activeStage === stage.key && activeImage === icon
                             ? "border-chrome/60"
                             : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
@@ -330,17 +431,17 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                             <source
                               type="image/avif"
                               srcSet={`${iconThumb.mobile.avif} 96w, ${iconThumb.desktop.avif} 128w`}
-                              sizes="80px"
+                              sizes="40px"
                             />
                             <source
                               type="image/webp"
                               srcSet={`${iconThumb.mobile.webp} 96w, ${iconThumb.desktop.webp} 128w`}
-                              sizes="80px"
+                              sizes="40px"
                             />
                             <img
                               src={iconThumb.desktop.jpg}
                               srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
-                              sizes="80px"
+                              sizes="40px"
                               alt={`${stage.title} option`}
                               className="h-full w-full object-cover bg-black"
                               loading="lazy"

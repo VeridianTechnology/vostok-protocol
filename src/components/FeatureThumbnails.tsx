@@ -98,8 +98,10 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
   const [isAngleView, setIsAngleView] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
@@ -112,11 +114,17 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
     ? highlightImage
     : structureImage;
   const intervalRef = useRef<number | null>(null);
+  const flashTimersRef = useRef<number[]>([]);
+  const autoAdvanceEnabledRef = useRef(true);
+  const hasFlashedRef = useRef(false);
   const advanceStep = () => {
     setStructureStep((currentStep) => (currentStep >= 7 ? 1 : currentStep + 1));
   };
 
   const resetAutoAdvance = () => {
+    if (!autoAdvanceEnabledRef.current) {
+      return;
+    }
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
     }
@@ -131,6 +139,64 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
       }
     };
   }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateMatch = () => setIsMobile(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile || !sectionRef.current) {
+      return;
+    }
+
+    const stopTimers = () => {
+      flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      flashTimersRef.current = [];
+    };
+
+    const runQuickFlash = () => {
+      if (hasFlashedRef.current) {
+        return;
+      }
+      hasFlashedRef.current = true;
+      autoAdvanceEnabledRef.current = false;
+      if (intervalRef.current) {
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+
+      const steps = Array.from({ length: 7 }, (_, index) => index + 1);
+      const totalDuration = 1000;
+      const stepDuration = Math.max(80, Math.floor(totalDuration / steps.length));
+
+      steps.forEach((step, index) => {
+        const timer = window.setTimeout(() => {
+          setStructureStep(step);
+        }, index * stepDuration);
+        flashTimersRef.current.push(timer);
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          runQuickFlash();
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    observer.observe(sectionRef.current);
+
+    return () => {
+      observer.disconnect();
+      stopTimers();
+    };
+  }, [isMobile]);
   
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
@@ -174,6 +240,7 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
 
   return (
     <section
+      ref={sectionRef}
       className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-white py-8 px-6 md:py-24 overflow-hidden"
       onPointerMove={handleParallaxMove}
       onPointerLeave={handleParallaxLeave}
@@ -204,9 +271,6 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
                     ? "Stop doomscrolling. This is your ladder out."
                     : "An Unrefined Face Cannot Compete with a Structured Face"}
                 </p>
-                <h2 className="text-3xl md:text-6xl font-light text-black tracking-tight">
-                  <span className="font-semibold">Change YOUR Face</span>
-                </h2>
                 {isFourChan && (
                   <p className="mt-3 text-sm text-black/70">
                     This moves 4s to 7s and 6s to 9s. It stacks indefinitely if you keep doing the

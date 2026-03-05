@@ -86,15 +86,16 @@ const HeroSection = ({
   const mobileImageVariants = getImageVariants(mobileImage);
   const mobileFlashSequence = useMemo(
     () => [
-      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 500 },
-      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 500 },
-      { kind: "text", text: "CHANGE", duration: 500 },
-      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 500 },
-      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 500 },
-      { kind: "text", text: "YOUR", duration: 500 },
-      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 500 },
-      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 500 },
-      { kind: "text", text: "FACE", duration: 1000 },
+      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 400 },
+      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 400 },
+      { kind: "text", text: "IT'S TIME", duration: 400 },
+      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 400 },
+      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 400 },
+      { kind: "text", text: "CHANGE", duration: 400 },
+      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 400 },
+      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 400 },
+      { kind: "text", text: "YOUR", duration: 400 },
+      { kind: "text", text: "FACE", duration: 800 },
     ],
     []
   );
@@ -294,6 +295,16 @@ const HeroSection = ({
     handleBuyNow();
   };
 
+  const handleChatOpen = () => {
+    if (window.chatbase) {
+      window.chatbase("open");
+      return;
+    }
+    if (import.meta.env.DEV) {
+      console.warn("Chatbase widget not ready yet.");
+    }
+  };
+
   const heroMinHeight = isDesktop
     ? entrySource === "4chan"
       ? "126vh"
@@ -383,6 +394,25 @@ const HeroSection = ({
           </a>
           <button
             type="button"
+            onClick={handleChatOpen}
+            aria-label="Open chat"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 text-foreground/80 transition hover:text-foreground"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-4 w-4"
+            >
+              <path d="M21 14a4 4 0 0 1-4 4H8l-5 3V6a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+            </svg>
+          </button>
+          <button
+            type="button"
             onClick={handleBuyClick}
             className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.35em] text-foreground/90 transition hover:text-foreground"
           >
@@ -404,7 +434,7 @@ const HeroSection = ({
           initial={{ y: -12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
+          className="fixed top-4 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
         >
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="The Timeless Face logo" className="h-5 w-5" />
@@ -493,6 +523,25 @@ const HeroSection = ({
           </div>
         </m.div>
       )}
+      <button
+        type="button"
+        onClick={handleChatOpen}
+        aria-label="Open chat"
+        className="fixed bottom-5 right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/70 text-foreground shadow-[0_12px_24px_rgba(0,0,0,0.35)] transition hover:scale-105 md:hidden"
+      >
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-5 w-5"
+        >
+          <path d="M21 14a4 4 0 0 1-4 4H8l-5 3V6a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
+        </svg>
+      </button>
       {/* Background image */}
       <div className="absolute inset-0">
         <m.div

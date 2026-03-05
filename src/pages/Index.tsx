@@ -1,5 +1,4 @@
 import HeroSection from "@/components/HeroSection";
-import SurveyModal from "@/components/SurveyModal";
 import { Suspense, useEffect, useRef, useState, lazy } from "react";
 const VideoSection = lazy(() => import("@/components/VideoSection"));
 const FeatureThumbnails = lazy(() => import("@/components/FeatureThumbnails"));
@@ -19,14 +18,11 @@ const Index = () => {
   const [loadChapterPreview, setLoadChapterPreview] = useState(true);
   const [loadRest, setLoadRest] = useState(true);
   const [hasVostokLoaded, setHasVostokLoaded] = useState(false);
-  const [isSurveyOpen, setIsSurveyOpen] = useState(false);
-  const [surveySource, setSurveySource] = useState<"hero" | "footer">("hero");
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
   const [isInstagramEntry, setIsInstagramEntry] = useState(false);
   const [isTikTokEntry, setIsTikTokEntry] = useState(false);
   const stayTimerRef = useRef<number | null>(null);
-  const pendingBuyRef = useRef<(() => void) | null>(null);
   const loadTimersRef = useRef<number[]>([]);
   const hasScheduledLoadRef = useRef(false);
 
@@ -118,15 +114,8 @@ const Index = () => {
     };
   }, []);
 
-  const handleRequestBuy = (continueToCheckout: () => void, source: "hero" | "footer") => {
-    pendingBuyRef.current = continueToCheckout;
-    setSurveySource(source);
-    setIsSurveyOpen(true);
-  };
-
-  const handleSurveyComplete = () => {
-    pendingBuyRef.current?.();
-    pendingBuyRef.current = null;
+  const handleRequestBuy = (continueToCheckout: () => void) => {
+    continueToCheckout();
   };
 
   return (
@@ -134,7 +123,7 @@ const Index = () => {
       <HeroSection
         hideWatchPrompt={isVideoClosed}
         onMobileFlashComplete={scheduleMobileLoad}
-        onRequestBuy={(continueToCheckout) => handleRequestBuy(continueToCheckout, "hero")}
+        onRequestBuy={handleRequestBuy}
         entrySource={
           isFacebookEntry
             ? "facebook"
@@ -282,7 +271,7 @@ const Index = () => {
       {loadRest ? (
         <Suspense fallback={<div className="min-h-[40vh]" />}>
           <CTAFooter
-            onRequestBuy={(continueToCheckout) => handleRequestBuy(continueToCheckout, "footer")}
+            onRequestBuy={handleRequestBuy}
             entrySource={
               isFacebookEntry
                 ? "facebook"
@@ -299,12 +288,6 @@ const Index = () => {
       ) : (
         <div className="min-h-[40vh]" />
       )}
-      <SurveyModal
-        open={isSurveyOpen}
-        source={surveySource}
-        onOpenChange={setIsSurveyOpen}
-        onComplete={handleSurveyComplete}
-      />
     </main>
   );
 };

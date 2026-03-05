@@ -334,7 +334,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               </a>
             </div>
             <div className="flex flex-col items-end text-right md:items-center md:text-center">
-              <span>© 2026 The Timeless Face</span>
+              <span className="hidden md:inline">© 2026 The Timeless Face</span>
               <span>Engineered for Excellence</span>
             </div>
           </div>
