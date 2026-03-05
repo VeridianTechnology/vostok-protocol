@@ -29,6 +29,10 @@ const HeroSection = ({
   const [mobileFlashIndex, setMobileFlashIndex] = useState<number | null>(null);
   const [isHeroMenuOpen, setIsHeroMenuOpen] = useState(true);
   const [mobileImageIndex, setMobileImageIndex] = useState(0);
+  const [mobileIntroPhase, setMobileIntroPhase] = useState<
+    "pending" | "video1" | "video2" | "done"
+  >("pending");
+  const [mobileIntroKey, setMobileIntroKey] = useState(0);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
@@ -39,6 +43,7 @@ const HeroSection = ({
   const afterIntervalRef = useRef<number | null>(null);
   const hasRunMobileFlash = useRef(false);
   const hasReportedMobileFlash = useRef(false);
+  const hasStartedMobileIntro = useRef(false);
   const maxOffsetRef = useRef(0);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
@@ -74,8 +79,8 @@ const HeroSection = ({
   const currentView = isAfter ? currentSet.side : currentSet.front;
   const rightImageFocus =
     activeSuite === "adaptive" ? "object-center" : "object-bottom md:object-center";
-  const leftMobileScale = "scale-[1.16] origin-bottom md:scale-100";
-  const rightMobileScale = "scale-[1.18] origin-bottom md:scale-100";
+  const leftMobileScale = "scale-[1.02] origin-bottom md:scale-100";
+  const rightMobileScale = "scale-[1.04] origin-bottom md:scale-100";
   const transitionKey = `${activeSuite}-${isAfter ? "side" : "front"}`;
   const suiteOrder: Array<"precision" | "adaptive" | "sculpted"> = [
     "precision",
@@ -88,16 +93,20 @@ const HeroSection = ({
   const mobileImageVariants = getImageVariants(mobileImage);
   const mobileFlashSequence = useMemo(
     () => [
-      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 400 },
-      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 400 },
-      { kind: "text", text: "IT'S TIME", duration: 400 },
-      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 400 },
-      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 400 },
-      { kind: "text", text: "CHANGE", duration: 400 },
-      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 400 },
-      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 400 },
-      { kind: "text", text: "YOUR", duration: 400 },
-      { kind: "text", text: "FACE", duration: 800 },
+      { kind: "video", src: "/hero_section_videos/1.mp4", duration: 1500 },
+      { kind: "text", text: "IT'S TIME", duration: 500 },
+      { kind: "video", src: "/hero_section_videos/2.mp4", duration: 1500 },
+      { kind: "text", text: "TO", duration: 500 },
+      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 450 },
+      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 450 },
+      { kind: "text", text: "CHANGE", duration: 500 },
+      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 450 },
+      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 450 },
+      { kind: "text", text: "YOUR", duration: 500 },
+      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 450 },
+      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 450 },
+      { kind: "text", text: "FACE", duration: 650 },
+      { kind: "black", duration: 450 },
     ],
     []
   );
@@ -138,6 +147,8 @@ const HeroSection = ({
       setShowMobileCta(false);
       setHeroFloatOffset(0);
       setHasScrolled(false);
+      setMobileIntroPhase("done");
+      hasStartedMobileIntro.current = false;
       return;
     }
 
@@ -210,6 +221,11 @@ const HeroSection = ({
     if (mobileFlashIndex === null) {
       hasReportedMobileFlash.current = true;
       onMobileFlashComplete?.();
+      if (!hasStartedMobileIntro.current) {
+        hasStartedMobileIntro.current = true;
+        setMobileIntroKey((current) => current + 1);
+        setMobileIntroPhase("video1");
+      }
     }
   }, [isDesktop, mobileFlashIndex, onMobileFlashComplete]);
 
@@ -223,6 +239,15 @@ const HeroSection = ({
     }, 5000);
     return () => window.clearInterval(interval);
   }, [isDesktop, activeSuite, isAfter]);
+
+  useEffect(() => {
+    if (isDesktop) {
+      return;
+    }
+    if (!hasRunMobileFlash.current) {
+      setMobileIntroPhase("pending");
+    }
+  }, [isDesktop]);
 
   useEffect(() => {
     if (isDesktop) {
@@ -576,46 +601,89 @@ const HeroSection = ({
           <div className="h-full w-full bg-black/40 backdrop-blur-sm shadow-[0_0_45px_rgba(120,120,120,0.25)]" />
         </m.div>
         <div className="relative h-full w-full md:hidden">
-          <m.div
-            key={`mobile-hero-${transitionKey}-${mobileImageIndex}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
-            className="absolute inset-0"
-          >
-            {mobileImageVariants ? (
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${mobileImageVariants.avif.mobile} 640w, ${mobileImageVariants.avif.desktop} 1600w`}
-                  sizes="100vw"
+          {mobileIntroPhase !== "done" ? (
+            <div className="absolute inset-0 bg-black">
+              {mobileIntroPhase === "video1" ? (
+                <video
+                  key={`mobile-intro-video-1-${mobileIntroKey}`}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src="/hero_section_videos/1.mp4"
+                  muted
+                  playsInline
+                  autoPlay
+                  onLoadedMetadata={(event) => {
+                    event.currentTarget.playbackRate = 1.2;
+                    event.currentTarget.currentTime = 0;
+                    event.currentTarget.play().catch(() => {});
+                  }}
+                  onEnded={() => setMobileIntroPhase("video2")}
                 />
-                <source
-                  type="image/webp"
-                  srcSet={`${mobileImageVariants.webp.mobile} 640w, ${mobileImageVariants.webp.desktop} 1600w`}
-                  sizes="100vw"
-                />
+              ) : mobileIntroPhase === "video2" ? (
+                <m.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.4 }}
+                  className="absolute inset-0"
+                >
+                  <video
+                    key={`mobile-intro-video-2-${mobileIntroKey}`}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    src="/hero_section_videos/2.mp4"
+                    muted
+                    playsInline
+                    autoPlay
+                    onLoadedMetadata={(event) => {
+                      event.currentTarget.playbackRate = 1.2;
+                      event.currentTarget.currentTime = 0;
+                      event.currentTarget.play().catch(() => {});
+                    }}
+                    onEnded={() => setMobileIntroPhase("done")}
+                  />
+                </m.div>
+              ) : null}
+            </div>
+          ) : (
+            <m.div
+              key={`mobile-hero-${transitionKey}-${mobileImageIndex}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="absolute inset-0"
+            >
+              {mobileImageVariants ? (
+                <picture>
+                  <source
+                    type="image/avif"
+                    srcSet={`${mobileImageVariants.avif.mobile} 640w, ${mobileImageVariants.avif.desktop} 1600w`}
+                    sizes="100vw"
+                  />
+                  <source
+                    type="image/webp"
+                    srcSet={`${mobileImageVariants.webp.mobile} 640w, ${mobileImageVariants.webp.desktop} 1600w`}
+                    sizes="100vw"
+                  />
+                  <img
+                    src={mobileImageVariants.desktop}
+                    srcSet={`${mobileImageVariants.mobile} 640w, ${mobileImageVariants.desktop} 1600w`}
+                    sizes="100vw"
+                    alt={mobileImageIndex === 0 ? "Front before" : "Front after"}
+                    className="h-full w-full object-cover"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </picture>
+              ) : (
                 <img
-                  src={mobileImageVariants.desktop}
-                  srcSet={`${mobileImageVariants.mobile} 640w, ${mobileImageVariants.desktop} 1600w`}
-                  sizes="100vw"
+                  src={mobileImage}
                   alt={mobileImageIndex === 0 ? "Front before" : "Front after"}
                   className="h-full w-full object-cover"
                   loading="eager"
                   decoding="async"
                 />
-              </picture>
-            ) : (
-              <img
-                src={mobileImage}
-                alt={mobileImageIndex === 0 ? "Front before" : "Front after"}
-                className="h-full w-full object-cover"
-                loading="eager"
-                decoding="async"
-              />
-            )}
-            <div className="absolute inset-0 bg-black/40" />
-          </m.div>
+              )}
+              <div className="absolute inset-0 bg-black/40" />
+            </m.div>
+          )}
         </div>
         <m.div
           initial={false}
@@ -631,7 +699,22 @@ const HeroSection = ({
             transition={{ duration: 0.1, ease: "easeOut" }}
             className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-black md:hidden"
           >
-            {activeFlash.kind === "image" ? (
+            {activeFlash.kind === "video" ? (
+              <div className="flex h-full w-full items-center justify-center bg-black">
+                <video
+                  className="h-full w-full object-cover"
+                  src={activeFlash.src}
+                  muted
+                  playsInline
+                  autoPlay
+                  onLoadedMetadata={(event) => {
+                    event.currentTarget.playbackRate = 2;
+                    event.currentTarget.currentTime = 0;
+                    event.currentTarget.play().catch(() => {});
+                  }}
+                />
+              </div>
+            ) : activeFlash.kind === "image" ? (
               <>
                 {activeFlashVariants ? (
                   <picture>
@@ -672,6 +755,8 @@ const HeroSection = ({
                   className="absolute inset-0 bg-white"
                 />
               </>
+            ) : activeFlash.kind === "black" ? (
+              <div className="absolute inset-0 bg-black" />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="text-2xl font-semibold tracking-[0.45em] text-white">
@@ -689,9 +774,15 @@ const HeroSection = ({
           transition={motionEnabled ? { duration: 1.5 } : undefined}
           className="hidden h-full w-full md:grid md:grid-cols-2 md:grid-rows-1"
         >
-          <div className="relative">
-            {leftVariants ? (
-              <picture>
+        <div className="relative">
+          <div className="pointer-events-none absolute inset-0 hidden md:block">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#d7d7d7] via-[#bfbfbf] to-[#9a9a9a] opacity-70" />
+            <div className="absolute inset-6 rounded-3xl bg-gradient-to-br from-white/75 via-white/30 to-black/15" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,rgba(255,255,255,0.6),transparent_65%)]" />
+            <div className="absolute inset-3 rounded-[28px] border border-white/30" />
+          </div>
+          {leftVariants ? (
+            <picture>
                 <source
                   type="image/avif"
                   srcSet={`${leftVariants.avif.mobile} 640w, ${leftVariants.avif.desktop} 1600w`}
@@ -708,7 +799,7 @@ const HeroSection = ({
                   sizes="(max-width: 640px) 100vw, 50vw"
                   alt="Before transformation"
                   className={`h-full w-full object-contain md:object-cover ${leftMobileScale} ${
-                    currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
+                    currentView.left === "/images/1.jpg" ? "md:scale-[1.04]" : ""
                   }`}
                   loading="eager"
                   decoding="async"
@@ -719,7 +810,7 @@ const HeroSection = ({
                 src={currentView.left}
                 alt="Before transformation"
                 className={`h-full w-full object-contain md:object-cover ${leftMobileScale} ${
-                  currentView.left === "/images/1.jpg" ? "md:scale-[1.1]" : ""
+                  currentView.left === "/images/1.jpg" ? "md:scale-[1.04]" : ""
                 }`}
                 loading="eager"
                 decoding="async"
