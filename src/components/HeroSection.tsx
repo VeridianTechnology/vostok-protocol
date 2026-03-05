@@ -434,7 +434,7 @@ const HeroSection = ({
           initial={{ y: -12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="fixed top-4 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
+          className="fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-black/70 px-4 py-3 backdrop-blur md:hidden"
         >
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="The Timeless Face logo" className="h-5 w-5" />
