@@ -193,12 +193,32 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
 
       </div>
       <div className="mx-auto max-w-3xl px-6 pb-6 pt-4 text-center text-xs leading-relaxed text-black/70 md:pb-10 md:pt-6 md:text-sm md:text-left">
-        This video explains how gravity—an unrelenting force—sags the face. Smog, pollution, pet
-        hair, and smoke can clog the nose and reduce nasal capacity, which can contribute to a
-        recessed face. Soft foods weaken jaw and chin projection, leading to a weaker face. On top
-        of that, constantly looking down at our phones and screens weakens head posture, reducing
-        neck and jaw strength. Prolonged screen focus also reduces distance vision and strains the
-        eyes.
+        {entrySource === "4chan" ? (
+          <div className="text-center">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-black/70 md:text-base">
+              The Environment Is Mogging You
+            </h3>
+            <p className="mt-3 text-black/70">
+              Gravity never takes a day off. Every year it pulls your face downward millimeter by
+              millimeter. Smog. Pollution. Pet hair. Smoke. Your nose clogs. Your airway shrinks.
+              The face collapses inward. Then we make it worse. We eat food so soft a toddler
+              could chew it. No resistance. No strain. No development. Jaw weak. Chin recessed.
+              And then we stare down at glowing rectangles all day. Head forward. Neck folded.
+              Spine collapsing. Your posture decays. Your jawline disappears. Eyes locked six
+              inches from a screen. Distance vision fades. Eye muscles weaken. The modern
+              environment is not neutral. It is actively degrading the human face.
+            </p>
+          </div>
+        ) : (
+          <>
+            This video explains how gravity—an unrelenting force—sags the face. Smog, pollution,
+            pet hair, and smoke can clog the nose and reduce nasal capacity, which can contribute
+            to a recessed face. Soft foods weaken jaw and chin projection, leading to a weaker
+            face. On top of that, constantly looking down at our phones and screens weakens head
+            posture, reducing neck and jaw strength. Prolonged screen focus also reduces distance
+            vision and strains the eyes.
+          </>
+        )}
       </div>
     </section>
   );

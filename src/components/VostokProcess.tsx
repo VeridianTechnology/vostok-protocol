@@ -1,6 +1,7 @@
 import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
+import { track } from "@vercel/analytics";
 
 type StageKey = "before" | "20" | "45" | "70" | "100";
 
@@ -40,9 +41,7 @@ const stages = [
     icons: ["/Comparison/3z.jpg", "/Comparison/4z.jpg"],
     text: (
       <>
-        <p>
-          Life was dull. Flat. Almost depressing.
-        </p>
+        <p>Life was dull. Flat. Almost depressing.</p>
         <p className="mt-4">
           I couldn&apos;t understand why I wasn&apos;t getting the women I wanted, why attention
           felt slipping, why I—someone who had always been &quot;conventionally attractive&quot;—was
@@ -148,6 +147,8 @@ const stages = [
 ];
 
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
+  const isFourChan = entrySource === "4chan";
+  const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("before");
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
   const [parallaxShift, setParallaxShift] = useState(0);
@@ -404,62 +405,62 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           </div>
         </div>
         <div className="md:w-2/5">
-          <div className="w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white/85 shadow-[0_24px_60px_rgba(0,0,0,0.55)] md:h-full md:p-6">
+          <div className="w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] md:h-full md:p-6">
             {stages.map((stage) => (
               <div key={stage.key} className="mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0">
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-4">
                   <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
                     {stage.title}
                   </p>
-                </div>
-                <div className="mt-3 grid grid-cols-2 justify-items-center gap-3">
-                  {stage.icons.map((icon) => {
-                    const iconThumb = getThumbVariants(icon);
-                    return (
-                      <button
-                        key={icon}
-                        type="button"
-                        onClick={() => selectStage(stage.key as StageKey, icon)}
-                        className={`h-10 w-10 overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
-                          activeStage === stage.key && activeImage === icon
-                            ? "border-chrome/60"
-                            : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
-                        }`}
-                      >
-                        {iconThumb ? (
-                          <picture>
-                            <source
-                              type="image/avif"
-                              srcSet={`${iconThumb.mobile.avif} 96w, ${iconThumb.desktop.avif} 128w`}
-                              sizes="40px"
-                            />
-                            <source
-                              type="image/webp"
-                              srcSet={`${iconThumb.mobile.webp} 96w, ${iconThumb.desktop.webp} 128w`}
-                              sizes="40px"
-                            />
+                  <div className="grid grid-cols-2 justify-items-center gap-3">
+                    {stage.icons.map((icon) => {
+                      const iconThumb = getThumbVariants(icon);
+                      return (
+                        <button
+                          key={icon}
+                          type="button"
+                          onClick={() => selectStage(stage.key as StageKey, icon)}
+                          className={`h-10 w-10 overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
+                            activeStage === stage.key && activeImage === icon
+                              ? "border-chrome/60"
+                              : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
+                          }`}
+                        >
+                          {iconThumb ? (
+                            <picture>
+                              <source
+                                type="image/avif"
+                                srcSet={`${iconThumb.mobile.avif} 96w, ${iconThumb.desktop.avif} 128w`}
+                                sizes="40px"
+                              />
+                              <source
+                                type="image/webp"
+                                srcSet={`${iconThumb.mobile.webp} 96w, ${iconThumb.desktop.webp} 128w`}
+                                sizes="40px"
+                              />
+                              <img
+                                src={iconThumb.desktop.jpg}
+                                srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
+                                sizes="40px"
+                                alt={`${stage.title} option`}
+                                className="h-full w-full object-cover bg-black"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            </picture>
+                          ) : (
                             <img
-                              src={iconThumb.desktop.jpg}
-                              srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
-                              sizes="40px"
+                              src={icon}
                               alt={`${stage.title} option`}
                               className="h-full w-full object-cover bg-black"
                               loading="lazy"
                               decoding="async"
                             />
-                          </picture>
-                        ) : (
-                          <img
-                            src={icon}
-                            alt={`${stage.title} option`}
-                            className="h-full w-full object-cover bg-black"
-                            loading="lazy"
-                            decoding="async"
-                          />
-                        )}
-                      </button>
-                    );
-                  })}
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             ))}
@@ -471,12 +472,347 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.7 }}
-        className="mx-auto mt-6 w-full max-w-6xl rounded-2xl panel-glass p-6 text-sm leading-relaxed text-steel/90 md:mt-10 md:p-8"
+        className="mx-auto mt-6 w-full max-w-6xl rounded-2xl panel-glass p-6 text-sm leading-relaxed text-white/85 md:mt-10 md:p-8"
       >
         <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
           {currentStage.title}
         </p>
-        <div className="mt-4">{currentStage.text}</div>
+        <div className="mt-4">
+          {isFourChan && currentStage.key === "before" ? (
+            <>
+              <p>I used to be obsessed with politics.</p>
+              <p className="mt-4">
+                I consumed it like air. The podcasts, the pundits, the endless Twitter arguments
+                about systems and structures and justice. I believed that being right mattered. I
+                believed that if I aligned my beliefs correctly, the universe would align itself
+                to me.
+              </p>
+              <p className="mt-4">It took me years to understand the joke.</p>
+              <p className="mt-4">
+                Politics is a game for men who cannot get laid. It is a coping mechanism for the
+                overlooked, the invisible, the ones who need to believe that their lack of
+                romantic success is the fault of "society" rather than the fault of their own
+                reflection.
+              </p>
+              <p className="mt-4">
+                I say this not as an insult, but as a confession. I was one of them.
+              </p>
+              <p className="mt-4">
+                Then something shifted. I started putting in the work. The dull, boring, repetitive
+                work of reshaping my face. And as the mirror began to return a different image, the
+                world began to return a different response.
+              </p>
+              <p className="mt-4">
+                The first hot girl was an accident. The second was a pattern. By the time I
+                reached the fifth—the kind of woman who, a year earlier, would not have registered
+                my existence—I understood the truth.
+              </p>
+              <p className="mt-4">Politics is what men discuss. Beauty is what men possess.</p>
+              <p className="mt-4">And possession changes everything.</p>
+            </>
+          ) : isFourChan && currentStage.key === "20" ? (
+            <>
+              <p>Then I got super egoic.</p>
+              <p className="mt-4">
+                You would have laughed to see it. The same man who months earlier could not buy
+                attention was now turning women down. Not cruelly—at first—but with a quiet,
+                internal gatekeeping I had never known. She is a 6. Pass. She is a 7 but the
+                personality is off. Pass. She is beautiful but she looked at me wrong. Pass.
+              </p>
+              <p className="mt-4">I had become the selector. And I loved it.</p>
+              <p className="mt-4">
+                But the universe, as it does, had a lesson waiting.
+              </p>
+              <p className="mt-4">
+                I met her at a cafe. Dark hair. Green eyes. The kind of face that stops
+                conversations mid-sentence. A legitimate 9. Out of my league by every metric I had
+                ever known—except my metrics had changed. I approached. She responded. We talked
+                for hours.
+              </p>
+              <p className="mt-4">
+                And I fell.
+              </p>
+              <p className="mt-4">
+                Not like an adult. Like a teenager. Like a boy who had never been loved before,
+                which, in a way, I hadn't. I texted first. I overthought every pause. I bought her
+                things. I waited. I hoped. I became exactly what I had despised: a simp for a
+                woman who knew exactly what she was worth and exactly how much I was willing to
+                give.
+              </p>
+              <p className="mt-4">
+                She ended it after six weeks. Broke my heart in a way that surprised me with its
+                weight. I sat in my apartment afterward, staring at the wall, and I laughed at the
+                absurdity of it.
+              </p>
+              <p className="mt-4">
+                I had never had a chance before—and now that I did, I had squandered it on the
+                first beautiful face that looked back.
+              </p>
+              <p className="mt-4">Dramatic, right? Man.</p>
+              <p className="mt-4">
+                But here is the thing about falling: you either stay down, or you get up and keep
+                moving. I got up. I kept progressing. I kept sharpening. Not for her. Not for
+                revenge. Just because the work itself had become the only thing that made sense.
+              </p>
+              <p className="mt-4">
+                And eventually, the hot girls kept coming. But this time, I was ready.
+              </p>
+            </>
+          ) : isFourChan && currentStage.key === "45" ? (
+            <>
+              <p>This stage hit hard.</p>
+              <p className="mt-4">
+                I started walking around like I was the most attractive guy in whatever room I
+                entered. And honestly--
+              </p>
+              <p className="mt-4">I wasn't wrong.</p>
+              <p className="mt-4">
+                Cashiers acted differently. Girls responded instantly. Even my own mother couldn't
+                understand the sudden spike in female attention.
+              </p>
+              <p className="mt-4">
+                It was overwhelming at times, but I felt like I'd unlocked a cheat code.
+              </p>
+              <p className="mt-4">Then the crypto market fell.</p>
+              <p className="mt-4">
+                Not that it mattered much--I was broke anyway. The bull had been good while it
+                lasted, but when it turned, I had nothing left to lose. No money. No portfolio. No
+                safety net. Just a face in the mirror and the creeping suspicion that this--this
+                weird obsession with bone and muscle and symmetry--was the only thing I still
+                controlled.
+              </p>
+              <p className="mt-4">So I kept working.</p>
+              <p className="mt-4">Relentlessly.</p>
+              <p className="mt-4">
+                Every morning, the exercises. Every night, the analysis. I tore through anatomy
+                textbooks like they were thrillers. I built custom AI models to track millimeter-
+                level changes in my jawline over weeks. I studied the insertion points of the
+                masseter, the behavior of the zygomaticus, the way the platysma could be trained to
+                pull the entire lower face upward like a suspension bridge.
+              </p>
+              <p className="mt-4">
+                I avoided bonesmashing. Avoided the retarded looksmaxxing experiments that end in
+                asymmetry and regret. I kept it professional. Clinical. I treated my face like a
+                research project, and I was both the scientist and the specimen.
+              </p>
+              <p className="mt-4">The results did not come fast. But they came.</p>
+              <p className="mt-4">Then came the grocery store.</p>
+              <p className="mt-4">
+                I was with my mother--helping her shop, as a NEET does when the market crashes and
+                time is the only currency left. She pushed the cart. I walked beside her. And
+                everywhere we went, the looks followed.
+              </p>
+              <p className="mt-4">
+                The girl in produce. The cashier at register three. The mother with her toddler who
+                glanced once, then twice, then again. My mother noticed. Of course she noticed. She
+                is a mother. She sees everything.
+              </p>
+              <p className="mt-4">Halfway through the frozen aisle, she stopped walking.</p>
+              <p className="mt-4">"Does this happen everywhere?" she asked.</p>
+              <p className="mt-4">I shrugged. Tried to play it cool.</p>
+              <p className="mt-4">
+                She shook her head, embarrassed, almost flustered. "This is insane. I can't shop
+                with you anymore."
+              </p>
+              <p className="mt-4">
+                But here is the thing about NEETs--you know how we are. No job. No money. No
+                direction. Living in the basement or the spare bedroom, surviving on ramen and
+                whatever our mothers bring home. We are supposed to be invisible. We are supposed
+                to be ashamed.
+              </p>
+              <p className="mt-4">I was neither.</p>
+              <p className="mt-4">
+                I walked through that grocery store like I owned it. Like every glance was owed to
+                me. Like every double-take was confirmation of something I had suspected but never
+                proved.
+              </p>
+              <p className="mt-4">And I loved every second of it.</p>
+            </>
+          ) : isFourChan && currentStage.key === "70" ? (
+            <>
+              <p>By now I thought I was untouchable.</p>
+              <p className="mt-4">
+                Results were obvious, not subtle. Strangers double-took. Women initiated more.
+              </p>
+              <p className="mt-4">
+                I started questioning everything:
+                <br />
+                <strong>Is this really all looks? Did I just uncover something no one&apos;s been talking about?</strong>
+              </p>
+              <p className="mt-4">The answer was becoming clearer: yes.</p>
+              <p className="mt-4">I knew I would get a bad bitch. I knew I would have success.</p>
+              <p className="mt-4">
+                Not in a wishful way-in a factual way. The same way you know the sun will rise. It
+                was not confidence anymore. It was certainty. The data was in. The experiment had
+                concluded. And the results were undeniable:
+              </p>
+              <p className="mt-4">People REALLY started treating me different.</p>
+              <p className="mt-4">And honestly? It was FUCKING annoying.</p>
+              <p className="mt-4">
+                You try ordering a coffee and having the cashier forget your order halfway through
+                because she cannot stop staring at your face. You try standing in line at the
+                grocery store while the woman in front of you turns around three times like she
+                forgot something but really just wants another look. You try walking through a mall
+                and feeling every pair of eyes track you like you are a fucking exhibit.
+              </p>
+              <p className="mt-4">YES, I GET IT. YOU&apos;VE NEVER SEEN A 10/10. MOVE ON.</p>
+              <p className="mt-4">
+                But they don&apos;t move on. They gawk. They fluster. They forget basic human
+                functions because their lizard brain short-circuits at the sight of symmetry and
+                proportion. And you are left standing there, waiting for your change, wondering if
+                this is what models feel like every day and if they are all secretly exhausted by
+                it.
+              </p>
+              <p className="mt-4">BUT I KEPT WORKING.</p>
+              <p className="mt-4">
+                Because here is the thing about obsession: it does not stop when you arrive. It
+                only deepens.
+              </p>
+              <p className="mt-4">Then came the strange part.</p>
+              <p className="mt-4">
+                I am not a big guy. Never was. Shoulders, sure, but height? Average at best. By
+                every physical metric, I should be the guy that rude muscular men push around in
+                clubs. The one they cut in front of. The one they use as an armrest.
+              </p>
+              <p className="mt-4">But they didn&apos;t.</p>
+              <p className="mt-4">
+                They looked at me. They sized me up. And something in their eyes shifted. Not
+                fear-recognition. Like I was one of them. Like my face had signaled something so
+                primal, so dominant, that their bodies responded before their brains could
+                intervene.
+              </p>
+              <p className="mt-4">THEY RESPECTED ME.</p>
+              <p className="mt-4">
+                Not because I was strong. Not because I was loud. Not because I had money or status
+                or anything a man is supposed to have.
+              </p>
+              <p className="mt-4">I brought value TO EVERY interaction just by standing around like a dweeb.</p>
+              <p className="mt-4">
+                Just existing. Just breathing. Just occupying space with a face that had been
+                refined and sharpened and sculpted into something the human brain cannot ignore.
+              </p>
+              <p className="mt-4">
+                And that, more than the women, more than the attention, more than the grocery store
+                gawking--that was when I knew I had won.
+              </p>
+            </>
+          ) : isFourChan && currentStage.key === "100" ? (
+            <>
+              <p>Then I moved to Thailand and finished the full protocol.</p>
+              <p className="mt-4">This is where everything exploded.</p>
+              <p className="mt-4">
+                While writing this out right now, a woman sat herself at my table-uninvited-and
+                started flirting nonstop.
+              </p>
+              <p className="mt-4">Meanwhile, my girlfriend, a literal model, was asleep back home.</p>
+              <p className="mt-4">That's when it hit me:</p>
+              <p className="mt-4">
+                Tall guys, muscular guys, rich guys-doesn't matter.
+                <br />
+                <strong>If your face wins the sexual signal game, you win.</strong>
+              </p>
+              <p className="mt-4">
+                Life is cleaner, lighter, easier... and I haven't even maxed out the method yet.
+              </p>
+              <p className="mt-4">As I write this, I have a 10/10 in my bed right now.</p>
+              <p className="mt-4">
+                Literal 10/10. Six foot two. Twenty-three, maybe twenty-four, I don't know and I
+                don't care. She is a fucking model. She could have anyone on the planet.
+              </p>
+              <p className="mt-4">I am five foot seven.</p>
+              <p className="mt-4">
+                I am broke. I am a NEET. I have no career, no savings, no direction. I eat like
+                shit and I barely work out anymore. By every conventional metric, I should be
+                invisible to her.
+              </p>
+              <p className="mt-4">
+                But she is in my bed. Asleep. Naked. Wrapped around me like I am something
+                precious.
+              </p>
+              <p className="mt-4">Why?</p>
+              <p className="mt-4">
+                Not because of my money-I mean, she is obviously with me for money except I don't
+                have any, so no. Not because of my height-she towers over me in heels. Not because
+                of my personality, because I am literally writing this sales page while she sleeps
+                next to me, ignoring her.
+              </p>
+              <p className="mt-4">She is with me because I MOG her.</p>
+              <p className="mt-4">I mog everyone.</p>
+              <p className="mt-4">
+                I walk into a room and the geometry shifts. Not because I am loud or charismatic or
+                successful. Because my face fires neurons in people's brains that they cannot
+                control. It is not fair. It is not moral. It is just biology.
+              </p>
+              <p className="mt-4">And I am obsessed with it.</p>
+              <p className="mt-4">Here is what happens when you fix your face:</p>
+              <p className="mt-4">
+                Investment opportunities appear. Not because you got smarter, but because people
+                take you more seriously when you look like you matter. They assume you know things.
+                They assume you have money. They want to be near you, work with you, give you
+                things.
+              </p>
+              <p className="mt-4">
+                Your own family starts treating you better. Your mother, your father, your
+                cousins-people who have known you your whole life-suddenly defer to you. They ask
+                your opinion. They respect your space. They introduce you to their friends like you
+                are someone to be proud of.
+              </p>
+              <p className="mt-4">
+                Your friends take you seriously. The ones who used to talk over you now listen. The
+                ones who used to dismiss you now ask what you think. You bring value to every
+                interaction just by standing there like a dweeb, because your face has already done
+                the work for you.
+              </p>
+              <p className="mt-4">
+                I did not get any wiser. I did not get smarter. I did not get more experienced or
+                more confident or more successful.
+              </p>
+              <p className="mt-4">I just got hotter.</p>
+              <p className="mt-4">That's it. That's the whole secret.</p>
+              <p className="mt-4">
+                I am literally not that confident. I am literally not that successful. I am just
+                another broke NEET who figured out how to manipulate bone and muscle and symmetry
+                until the world had no choice but to treat me differently.
+              </p>
+              <p className="mt-4">And now I get respect everywhere I go.</p>
+              <p className="mt-4">
+                I totally get the movies now. The jaded hot guy living alone, staring out the
+                window, tired of the attention. I understand him. I am close to becoming him. Maybe
+                that is the full cycle: NEET to hot guy back to hot NEET. Isolation with better
+                cheekbones.
+              </p>
+              <p className="mt-4">So here is my advice to you:</p>
+              <p className="mt-4">
+                Stop working out. Muscle is cope. Women do not care about your biceps when a
+                well-proportioned face walks into the room. Save your tendy money and blow it on
+                something real. Blow it on this.
+              </p>
+              <p className="mt-4">
+                THIS and workout hard-for your health, for your frame-but follow every step. Every
+                exercise. Every angle. Every millimeter of progress. Be disciplined. Be relentless.
+                Be obsessed.
+              </p>
+              <p className="mt-4">And thank me later.</p>
+              <p className="mt-4">You won't believe the results, NEET loser.</p>
+              <p className="mt-4">Neither did I.</p>
+              <m.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => {
+                  track("buy_button", { location: "vostok_process" });
+                  track("buy_button_4chan", { location: "vostok_process" });
+                  window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+                }}
+                className="mt-4 inline-flex items-center justify-center rounded-sm border border-white/20 bg-white/10 px-5 py-3 text-[10px] uppercase tracking-[0.3em] text-white transition hover:text-white"
+              >
+                Buy Now
+              </m.button>
+            </>
+          ) : (
+            currentStage.text
+          )}
+        </div>
       </m.div>
     </section>
   );

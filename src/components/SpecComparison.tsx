@@ -15,6 +15,7 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [flipDirection, setFlipDirection] = useState<"next" | "prev" | null>(null);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [isDesktop, setIsDesktop] = useState(false);
   const flipTimeout = useRef<number | null>(null);
   const scrollRafRef = useRef<number | null>(null);
   const chapterPairs = [
@@ -81,6 +82,14 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    const updateMatch = () => setIsDesktop(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
   const trackNextOnce = () => {
     const key = `next_page_${entrySource}`;
     if (sessionStorage.getItem(key)) {
@@ -97,7 +106,7 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
   };
 
   return (
-    <section className="relative bg-white pb-2 px-6 pt-8 md:pb-24 md:pt-20 overflow-hidden">
+    <section className="relative bg-white pb-2 px-6 pt-8 md:pb-24 md:pt-20">
       <div className="absolute inset-0 z-0 overflow-hidden bg-white">
         <LavaLampBlobs offsetX={parallaxOffset.x} offsetY={parallaxOffset.y} />
       </div>
@@ -114,9 +123,7 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
           </p>
           <h2 className="text-3xl md:text-4xl font-light text-black tracking-tight">
             {isFourChan ? (
-              <>
-                Chapter <span className="font-semibold">Preview</span> (No More Blackpill)
-              </>
+              <>FUCKING READ - AND UNDERSTAND, SIMP</>
             ) : (
               <>
                 Chapter <span className="font-semibold">Preview</span>
@@ -129,7 +136,15 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
       <div className="relative z-10 left-1/2 right-1/2 w-screen -translate-x-1/2">
         <div className="book-shell w-full max-w-none rounded-2xl border border-black/15 bg-white/40 px-1 py-2 md:px-14">
           <div className="book-spread grid">
-            <div className="book-page book-page-left" style={{ height: "100%" }}>
+            <div
+              className="book-page book-page-left"
+              style={{ height: "100%" }}
+              onClick={() => {
+                if (isDesktop) {
+                  goPrev();
+                }
+              }}
+            >
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
                   {spreadIndex === 0 && (
@@ -195,7 +210,15 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
                 </div>
               </div>
             </div>
-            <div className="book-page book-page-right" style={{ height: "100%" }}>
+            <div
+              className="book-page book-page-right"
+              style={{ height: "100%" }}
+              onClick={() => {
+                if (isDesktop) {
+                  goNext();
+                }
+              }}
+            >
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
                   <button

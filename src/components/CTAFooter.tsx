@@ -107,6 +107,35 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     setParallaxOffset({ x: 0, y: 0 });
   };
 
+  const handleCheckoutClick = (location: "footer" | "footer_secondary") => {
+    const goToCheckout = () => {
+      if (isDesktop) {
+        setCountdown(3);
+        setIsRedirecting(true);
+      } else {
+        window.open(gumroadUrl, "_blank", "noopener,noreferrer");
+      }
+    };
+    track("buy_button", { location });
+    if (entrySource === "facebook") {
+      track("buy_button_facebook", { location });
+    }
+    if (entrySource === "4chan") {
+      track("buy_button_4chan", { location });
+    }
+    if (entrySource === "instagram") {
+      track("buy_button_instagram", { location });
+    }
+    if (entrySource === "tiktok") {
+      track("buy_button_tiktok", { location });
+    }
+    if (onRequestBuy) {
+      onRequestBuy(goToCheckout);
+      return;
+    }
+    goToCheckout();
+  };
+
   return (
     <section
       id="purchase"
@@ -150,6 +179,24 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   </div>
                 )}
               </div>
+              {isFourChan && (
+                <div className="text-center text-[11px] leading-relaxed text-black/60">
+                  <p>
+                    Too broke to afford the 29.99? Don&apos;t want to risk it? Don&apos;t want to
+                    trust some weird internet guru with AI pics? Makes sense. Buy the Jaw
+                    section, Chapter 2 only for 3.99, try it out for a week then come back when
+                    the results are visible. Less risk. Go for it, brokie.
+                  </p>
+                  <a
+                    href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
+                  >
+                    Buy Now Chapter 2 Only
+                  </a>
+                </div>
+              )}
             </div>
             <div className="flex flex-col items-center md:flex-1 md:items-center">
               <p className="text-black/60 tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
@@ -166,14 +213,21 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
 
               <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
 
-              <p className="text-black/50 text-xs tracking-wider mb-7 md:mb-10">
-                Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
-              </p>
-              {isFourChan && (
-                <p className="text-black/70 text-sm mb-6">
-                  Best purchase you&apos;ll make. It stacks indefinitely: 4s to 7s, 6s to 9s, and
-                  higher the more you work.
+              {!isFourChan && (
+                <p className="text-black/50 text-xs tracking-wider mb-7 md:mb-10">
+                  Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
                 </p>
+              )}
+              {isFourChan && (
+                <div className="mb-6 space-y-3 text-black/70 text-sm">
+                  <p>
+                    Dude, this is not another pill or scam, this shit actually works. Do you
+                    understand how hot I am? I have a hot as shit gf and I&apos;m a total autist,
+                    turbo autist. Looks are EVERYTHING and this is the definitive ONLY book on the
+                    internet to make it happen.
+                  </p>
+                  <p>BUY MY SHIT DUDE, you will THANK ME, this is like a new religion.</p>
+                </div>
               )}
 
               {/* CTA Button */}
@@ -210,34 +264,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="button"
-                  onClick={() => {
-                    const goToCheckout = () => {
-                      if (isDesktop) {
-                        setCountdown(3);
-                        setIsRedirecting(true);
-                      } else {
-                        window.open(gumroadUrl, "_blank", "noopener,noreferrer");
-                      }
-                    };
-                    track("buy_button", { location: "footer" });
-                    if (entrySource === "facebook") {
-                      track("buy_button_facebook", { location: "footer" });
-                    }
-                    if (entrySource === "4chan") {
-                      track("buy_button_4chan", { location: "footer" });
-                    }
-                    if (entrySource === "instagram") {
-                      track("buy_button_instagram", { location: "footer" });
-                    }
-                    if (entrySource === "tiktok") {
-                      track("buy_button_tiktok", { location: "footer" });
-                    }
-                    if (onRequestBuy) {
-                      onRequestBuy(goToCheckout);
-                      return;
-                    }
-                    goToCheckout();
-                  }}
+                  onClick={() => handleCheckoutClick("footer")}
                   className="inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500"
                 >
                   <svg
@@ -255,6 +282,24 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   </svg>
                   {isFourChan ? "NEETBUX HERE" : "Buy Now"}
                 </m.button>
+                {isFourChan && (
+                  <div className="mt-4 text-center text-[11px] leading-relaxed text-black/60 md:hidden">
+                    <p>
+                      Too broke to afford the 29.99? Don&apos;t want to risk it? Don&apos;t want to
+                      trust some weird internet guru with AI pics? Makes sense. Buy the Jaw
+                      section, Chapter 2 only for 3.99, try it out for a week then come back when
+                      the results are visible. Less risk. Go for it, brokie.
+                    </p>
+                    <a
+                      href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
+                    >
+                      Buy Now Chapter 2 Only
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

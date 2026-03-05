@@ -8,6 +8,139 @@ type ResearchStudiesProps = {
 
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const isFourChan = entrySource === "4chan";
+  const makeFourChanValue = (title: string) =>
+    title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const fourChanSections = [
+    {
+      title: "Beauty Is Not Superficial",
+      body: [
+        "Beauty is structure.",
+        "It is geometry.",
+        "It is the silent architecture of human interaction.",
+        "Your brain is a pattern-recognition machine that evolved over hundreds of thousands of years.",
+        "It scans faces for symmetry, health, and dominance before you even finish blinking.",
+        "You don't consciously choose who looks trustworthy.",
+        "Your nervous system already decided.",
+        "All beauty does is trigger ancient code.",
+      ],
+    },
+    {
+      title: "Life On Easy Mode",
+      body: [
+        "If you have it, the world is different.",
+        "Security guards wave you through.",
+        "Police let you off with warnings.",
+        "Judges give lighter sentences to attractive defendants for the same crimes.",
+        "Yes, this is documented.",
+        "No, it isn't fair.",
+        "It's human nature.",
+      ],
+    },
+    {
+      title: "Social Gravity",
+      body: [
+        "In a room full of people, attention has mass.",
+        "And attractive men have gravity.",
+        "They don't chase conversations.",
+        "Conversations orbit them.",
+        "People drift closer.",
+        "Questions appear out of nowhere.",
+        "The room rearranges itself around presence.",
+        "Not manipulation.",
+        "Physics.",
+      ],
+    },
+    {
+      title: "The Dating Equation",
+      body: [
+        "Dating for the average man is pursuit.",
+        "Dating for the attractive man is selection.",
+        "Same room. Same women.",
+        "Completely different game.",
+        "The difference is bone structure.",
+        "A stronger jawline buys patience.",
+        "Silence becomes mysterious instead of awkward.",
+        "Mistakes get forgiven.",
+        "Because the brain already decided he belongs.",
+      ],
+    },
+    {
+      title: "The Beauty Premium",
+      body: [
+        "This extends far beyond dating.",
+        "Attractive people get hired faster.",
+        "Promoted sooner.",
+        "Paid more over a lifetime.",
+        "Same resume.",
+        "Same qualifications.",
+        "Different face.",
+        "Your appearance is evaluated before you speak a single word.",
+        "Milliseconds.",
+        "That's all it takes.",
+      ],
+    },
+    {
+      title: "The Feedback Loop",
+      body: [
+        "Something interesting happens next.",
+        "When the world treats you like a high-status person, you start behaving like one.",
+        "You dress sharper.",
+        "You speak with intention.",
+        "You move with certainty.",
+        "Expectations become reality.",
+        "Beauty compounds.",
+        "Like interest in a bank account.",
+      ],
+    },
+    {
+      title: "The Hidden Difficulty Setting",
+      body: [
+        "Now imagine the opposite.",
+        "You were born without that advantage.",
+        "Doors close before you reach them.",
+        "People underestimate you.",
+        "Conversations end early.",
+        "Respect comes slower.",
+        "And nobody explains why.",
+        "So you assume the problem is you.",
+        "But the problem is the system.",
+        "Humans are wired this way.",
+      ],
+    },
+    {
+      title: "The Question",
+      body: [
+        "How many chances disappeared because your face didn't signal strength?",
+        "How many conversations ended before they began?",
+        "How many times did someone with less intelligence, less discipline, and less ambition walk away with what should have been yours...",
+        "simply because their bone structure opened doors?",
+      ],
+    },
+    {
+      title: "The Possibility",
+      body: [
+        "Now imagine something else.",
+        "What if the face isn't static?",
+        "What if muscle affects bone?",
+        "What if tension shapes structure?",
+        "What if the face is not fixed...",
+        "But Trainable?",
+      ],
+    },
+    {
+      title: "The Cost",
+      body: [
+        "The exercises hurt.",
+        "They're repetitive.",
+        "They take months.",
+        "Most people quit.",
+        "But regret also takes months.",
+        "Then years.",
+        "Then decades.",
+        "Choose your difficulty.",
+      ],
+    },
+  ];
   const narrativeTabs = useMemo(
     () => [
       {
@@ -208,159 +341,184 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         <div className="absolute inset-0 hud-grid opacity-15 pointer-events-none" />
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
-          <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70 md:text-xs">
-            Research snapshot
-          </p>
-          <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
-            {isFourChan
-              ? "Blackpill is cope. Here’s the data that breaks the loop."
-              : "Why being hot is the way forward"}
-          </h2>
-          {isFourChan && (
-            <p className="mt-3 text-sm text-black/70">
-              This keeps men out of spiral ideologies and shows exactly why structure beats
-              nihilism.
-            </p>
-          )}
-          <div className="mt-5">
-            <div className="flex flex-wrap items-center gap-2">
-              {narrativeTabs.map((tab, index) => (
-                <button
-                  key={tab.label}
-                  type="button"
-                  onClick={() => setNarrative(index)}
-                  className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
-                    index === activeNarrative
-                      ? "border-black/40 bg-black/10 text-black"
-                      : "border-black/10 bg-white/30 text-black/60 hover:text-black"
-                  }`}
+        {isFourChan ? (
+          <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
+            <Tabs defaultValue={makeFourChanValue(fourChanSections[0].title)}>
+              <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
+                {fourChanSections.map((section) => (
+                  <TabsTrigger
+                    key={section.title}
+                    value={makeFourChanValue(section.title)}
+                    className="rounded-full border border-black/10 bg-white/30 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/60 data-[state=active]:border-black/40 data-[state=active]:bg-black/10 data-[state=active]:text-black"
+                  >
+                    {section.title}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {fourChanSections.map((section) => (
+                <TabsContent
+                  key={section.title}
+                  value={makeFourChanValue(section.title)}
+                  className="mt-5"
                 >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            <div className="relative mt-5 min-h-[14rem] overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction}>
-                <m.div
-                  key={currentNarrative.label}
-                  custom={direction}
-                  initial={{ opacity: 0, x: direction * 30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -direction * 30 }}
-                  transition={{ duration: 0.45, ease: "easeOut" }}
-                  className="space-y-4 text-sm text-steel md:text-base"
-                >
-                  {currentNarrative.text.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                  {currentNarrative.sources && currentNarrative.sources.length > 0 && (
-                    <div className="pt-3">
-                      <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
-                        Sources
+                  <div className="rounded-2xl border border-black/10 bg-white/60 p-5 text-sm text-steel md:text-base">
+                    {section.body.map((line) => (
+                      <p key={line} className="mt-4 first:mt-0">
+                        {line}
                       </p>
-                      <ul className="mt-3 space-y-2 text-xs text-steel">
-                        {currentNarrative.sources.map((source) => (
-                          <li key={source.href}>
-                            {source.label}
-                            {" "}
-                            <a
-                              href={source.href}
-                              className="text-ice underline-offset-4 hover:underline"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              Link
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </m.div>
-              </AnimatePresence>
-            </div>
+                    ))}
+                  </div>
+                </TabsContent>
+              ))}
+            </Tabs>
           </div>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-6">
+            <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
+              <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70 md:text-xs">
+                Research snapshot
+              </p>
+              <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
+                Why being hot is the way forward
+              </h2>
+              <div className="mt-5">
+                <div className="flex flex-wrap items-center gap-2">
+                  {narrativeTabs.map((tab, index) => (
+                    <button
+                      key={tab.label}
+                      type="button"
+                      onClick={() => setNarrative(index)}
+                      className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
+                        index === activeNarrative
+                          ? "border-black/40 bg-black/10 text-black"
+                          : "border-black/10 bg-white/30 text-black/60 hover:text-black"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+                <div className="relative mt-5 min-h-[14rem] overflow-hidden">
+                  <AnimatePresence mode="wait" custom={direction}>
+                    <m.div
+                      key={currentNarrative.label}
+                      custom={direction}
+                      initial={{ opacity: 0, x: direction * 30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -direction * 30 }}
+                      transition={{ duration: 0.45, ease: "easeOut" }}
+                      className="space-y-4 text-sm text-steel md:text-base"
+                    >
+                      {currentNarrative.text.map((paragraph) => (
+                        <p key={paragraph}>{paragraph}</p>
+                      ))}
+                      {currentNarrative.sources && currentNarrative.sources.length > 0 && (
+                        <div className="pt-3">
+                          <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+                            Sources
+                          </p>
+                          <ul className="mt-3 space-y-2 text-xs text-steel">
+                            {currentNarrative.sources.map((source) => (
+                              <li key={source.href}>
+                                {source.label}
+                                {" "}
+                                <a
+                                  href={source.href}
+                                  className="text-ice underline-offset-4 hover:underline"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Link
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </m.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+            </div>
 
-      <div className="rounded-3xl border border-black/10 bg-white/16 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur-xl md:p-8">
-        <Tabs defaultValue="awareness">
-          <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
-            <TabsTrigger
-              value="awareness"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Awareness
-            </TabsTrigger>
-            <TabsTrigger
-              value="authority"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Authority
-            </TabsTrigger>
-            <TabsTrigger
-              value="social"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Social
-            </TabsTrigger>
-            <TabsTrigger
-              value="dating"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Dating
-            </TabsTrigger>
-            <TabsTrigger
-              value="income"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Income
-            </TabsTrigger>
-            <TabsTrigger
-              value="service"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Service
-            </TabsTrigger>
-            <TabsTrigger
-              value="physiology"
-              className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
-            >
-              Physiology
-            </TabsTrigger>
-          </TabsList>
+            <div className="rounded-3xl border border-black/10 bg-white/16 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur-xl md:p-8">
+              <Tabs defaultValue="awareness">
+                <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
+                  <TabsTrigger
+                    value="awareness"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Awareness
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="authority"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Authority
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="social"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Social
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="dating"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Dating
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="income"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Income
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="service"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Service
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="physiology"
+                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                  >
+                    Physiology
+                  </TabsTrigger>
+                </TabsList>
 
-          <TabsContent value="awareness" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Beauty operates below conscious awareness
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Maxims or Myths of Beauty? (meta-analysis, 2000)
-                {" "}
-                <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PubMed
-                </a>
-              </li>
-              <li>
-                What is Beautiful is Good (classic halo-effect study)
-                {" "}
-                <a
-                  href="https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PDF
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
+                <TabsContent value="awareness" className="mt-6">
+                  <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+                    Beauty operates below conscious awareness
+                  </h3>
+                  <ul className="mt-4 space-y-3 text-sm text-steel">
+                    <li>
+                      Maxims or Myths of Beauty? (meta-analysis, 2000)
+                      {" "}
+                      <a
+                        href="https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com"
+                        className="text-ice underline-offset-4 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        PubMed
+                      </a>
+                    </li>
+                    <li>
+                      What is Beautiful is Good (classic halo-effect study)
+                      {" "}
+                      <a
+                        href="https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com"
+                        className="text-ice underline-offset-4 hover:underline"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        PDF
+                      </a>
+                    </li>
+                  </ul>
+                </TabsContent>
 
           <TabsContent value="authority" className="mt-6">
             <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
@@ -592,7 +750,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         </Tabs>
       </div>
     </div>
-  </section>
+  )}
+</div>
+</section>
   );
 };
 

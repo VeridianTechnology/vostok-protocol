@@ -35,6 +35,8 @@ const HeroSection = ({
   const redirectTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const flashTimerRef = useRef<number | null>(null);
+  const afterTimersRef = useRef<number[]>([]);
+  const afterIntervalRef = useRef<number | null>(null);
   const hasRunMobileFlash = useRef(false);
   const hasReportedMobileFlash = useRef(false);
   const maxOffsetRef = useRef(0);
@@ -221,6 +223,45 @@ const HeroSection = ({
     }, 5000);
     return () => window.clearInterval(interval);
   }, [isDesktop, activeSuite, isAfter]);
+
+  useEffect(() => {
+    if (isDesktop) {
+      return;
+    }
+    setIsAfter(false);
+    afterTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    afterTimersRef.current = [];
+    if (afterIntervalRef.current) {
+      window.clearInterval(afterIntervalRef.current);
+      afterIntervalRef.current = null;
+    }
+
+    const timers: number[] = [];
+    const schedule = (delay: number, callback: () => void) => {
+      timers.push(window.setTimeout(callback, delay));
+    };
+
+    schedule(2000, () => setIsAfter(true));
+    schedule(4000, () => setIsAfter(false));
+    schedule(9000, () => setIsAfter(true));
+    schedule(19000, () => {
+      setIsAfter(false);
+      afterIntervalRef.current = window.setInterval(() => {
+        setIsAfter((current) => !current);
+      }, 10000);
+    });
+
+    afterTimersRef.current = timers;
+
+    return () => {
+      afterTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+      afterTimersRef.current = [];
+      if (afterIntervalRef.current) {
+        window.clearInterval(afterIntervalRef.current);
+        afterIntervalRef.current = null;
+      }
+    };
+  }, [isDesktop]);
 
   useEffect(() => {
     if (!isRedirecting || !isDesktop) {
@@ -786,7 +827,13 @@ const HeroSection = ({
             </svg>
           </button>
           <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
-            Everyone is <em>dumb</em> (including YOU)
+            {entrySource === "4chan" ? (
+              <>Who gives a shit about ANOTHER Middle Eastern War, Get HOT, Dude.</>
+            ) : (
+              <>
+                Everyone is <em>dumb</em> (including YOU)
+              </>
+            )}
           </p>
 
           <m.h1
