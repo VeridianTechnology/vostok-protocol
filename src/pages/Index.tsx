@@ -22,6 +22,7 @@ const Index = () => {
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
   const [isInstagramEntry, setIsInstagramEntry] = useState(false);
   const [isTikTokEntry, setIsTikTokEntry] = useState(false);
+  const [isRedditEntry, setIsRedditEntry] = useState(false);
   const stayTimerRef = useRef<number | null>(null);
   const loadTimersRef = useRef<number[]>([]);
   const hasScheduledLoadRef = useRef(false);
@@ -90,6 +91,9 @@ const Index = () => {
     if (normalizedSource === "tiktok") {
       setIsTikTokEntry(true);
     }
+    if (normalizedSource === "reddit") {
+      setIsRedditEntry(true);
+    }
 
     stayTimerRef.current = window.setTimeout(() => {
       track("stay_30s");
@@ -133,7 +137,9 @@ const Index = () => {
                 ? "instagram"
                 : isTikTokEntry
                   ? "tiktok"
-                : "direct"
+                  : isRedditEntry
+                    ? "reddit"
+                  : "direct"
         }
       />
       <div className="divider-line hidden md:block" />
@@ -163,6 +169,8 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
                       : "direct"
             }
           />
@@ -183,6 +191,8 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
                       : "direct"
             }
           />
@@ -202,31 +212,14 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
                       : "direct"
             }
           />
         </Suspense>
       ) : (
         <div className="min-h-[50vh]" />
-      )}
-      {loadRest ? (
-        <Suspense fallback={<div className="min-h-[20vh]" />}>
-          <QuoteSection
-            entrySource={
-              isFacebookEntry
-                ? "facebook"
-                : isFourChanEntry
-                  ? "4chan"
-                  : isInstagramEntry
-                    ? "instagram"
-                    : isTikTokEntry
-                      ? "tiktok"
-                      : "direct"
-            }
-          />
-        </Suspense>
-      ) : (
-        <div className="min-h-[20vh]" />
       )}
       {loadChapterPreview ? (
         <Suspense fallback={<div className="min-h-[50vh]" />}>
@@ -240,13 +233,38 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
-                      : "direct"
+                      : isRedditEntry
+                        ? "reddit"
+                    : "direct"
             }
           />
         </Suspense>
       ) : (
         <div className="min-h-[50vh]" />
       )}
+      <div className="h-1 w-full bg-black/80" />
+      {loadRest ? (
+        <Suspense fallback={<div className="min-h-[20vh]" />}>
+          <QuoteSection
+            entrySource={
+              isFacebookEntry
+                ? "facebook"
+                : isFourChanEntry
+                  ? "4chan"
+                  : isInstagramEntry
+                    ? "instagram"
+                    : isTikTokEntry
+                      ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
+                        : "direct"
+            }
+          />
+        </Suspense>
+      ) : (
+        <div className="min-h-[20vh]" />
+      )}
+      <div className="h-1 w-full bg-black/80" />
       {loadRest ? (
         <Suspense fallback={<div className="min-h-[50vh]" />}>
           <VideoSection
@@ -260,6 +278,8 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
                     : "direct"
             }
           />
@@ -281,6 +301,8 @@ const Index = () => {
                     ? "instagram"
                     : isTikTokEntry
                       ? "tiktok"
+                      : isRedditEntry
+                        ? "reddit"
                     : "direct"
             }
           />

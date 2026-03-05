@@ -7,7 +7,7 @@ type HeroSectionProps = {
   hideWatchPrompt?: boolean;
   onMobileFlashComplete?: () => void;
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 };
 
 const HeroSection = ({
@@ -523,25 +523,6 @@ const HeroSection = ({
           </div>
         </m.div>
       )}
-      <button
-        type="button"
-        onClick={handleChatOpen}
-        aria-label="Open chat"
-        className="fixed bottom-5 right-5 z-50 inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-black/70 text-foreground shadow-[0_12px_24px_rgba(0,0,0,0.35)] transition hover:scale-105 md:hidden"
-      >
-        <svg
-          aria-hidden="true"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-5 w-5"
-        >
-          <path d="M21 14a4 4 0 0 1-4 4H8l-5 3V6a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z" />
-        </svg>
-      </button>
       {/* Background image */}
       <div className="absolute inset-0">
         <m.div

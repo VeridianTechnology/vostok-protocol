@@ -4,7 +4,7 @@ import { track } from "@vercel/analytics";
 
 type CTAFooterProps = {
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 };
 
 const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {

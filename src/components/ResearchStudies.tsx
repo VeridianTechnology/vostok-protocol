@@ -3,7 +3,7 @@ import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ResearchStudiesProps = {
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 };
 
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {

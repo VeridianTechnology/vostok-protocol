@@ -4,7 +4,7 @@ import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 };
 
 const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) => {
@@ -78,13 +78,16 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   }
 
   return (
-    <section id="hero-video" className="relative w-full bg-white border-y border-black/40">
+    <section
+      id="hero-video"
+      className="relative w-full bg-white border-y border-black/40 mt-0 mb-0"
+    >
       <div className="relative w-full overflow-hidden">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5 opacity-40" />
         <video
           key={videoKey}
           ref={videoRef}
-          className="relative z-10 h-[42vh] w-full object-contain py-0 md:h-[78vh] md:py-6"
+          className="relative z-10 h-[42vh] w-full object-cover py-0 md:h-[78vh] md:py-6 md:object-contain"
           poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls
@@ -188,6 +191,14 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
           </button>
         )}
 
+      </div>
+      <div className="mx-auto max-w-3xl px-6 pb-6 pt-4 text-center text-xs leading-relaxed text-black/70 md:pb-10 md:pt-6 md:text-sm md:text-left">
+        This video explains how gravity—an unrelenting force—sags the face. Smog, pollution, pet
+        hair, and smoke can clog the nose and reduce nasal capacity, which can contribute to a
+        recessed face. Soft foods weaken jaw and chin projection, leading to a weaker face. On top
+        of that, constantly looking down at our phones and screens weakens head posture, reducing
+        neck and jaw strength. Prolonged screen focus also reduces distance vision and strains the
+        eyes.
       </div>
     </section>
   );

@@ -1,16 +1,22 @@
 import { m } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
+import LavaLampBlobs from "@/components/LavaLampBlobs";
+import { track } from "@vercel/analytics";
+
+type EntrySource = "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 
 type SpecComparisonProps = {
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: EntrySource;
 };
 
 const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
   const isFourChan = entrySource === "4chan";
   const [spreadIndex, setSpreadIndex] = useState(0);
   const [flipDirection, setFlipDirection] = useState<"next" | "prev" | null>(null);
+  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const flipTimeout = useRef<number | null>(null);
+  const scrollRafRef = useRef<number | null>(null);
   const chapterPairs = [
     { left: "/Sections/1.jpg", right: "/Sections/1_page-0001.jpg" },
     { left: "/Sections/2.jpg", right: "/Sections/2_page-0001.jpg" },
@@ -53,10 +59,49 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
     }, 450);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (scrollRafRef.current) {
+        return;
+      }
+      scrollRafRef.current = window.requestAnimationFrame(() => {
+        scrollRafRef.current = null;
+        const offsetY = (window.scrollY % 200) * 0.15;
+        setParallaxOffset({ x: 0, y: -offsetY });
+      });
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollRafRef.current) {
+        window.cancelAnimationFrame(scrollRafRef.current);
+        scrollRafRef.current = null;
+      }
+    };
+  }, []);
+
+  const trackNextOnce = () => {
+    const key = `next_page_${entrySource}`;
+    if (sessionStorage.getItem(key)) {
+      return;
+    }
+    sessionStorage.setItem(key, "1");
+    track(key);
+  };
+
+  const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    trackNextOnce();
+    goNext();
+  };
+
   return (
     <section className="relative bg-white pb-2 px-6 pt-8 md:pb-24 md:pt-20 overflow-hidden">
-      <div className="absolute inset-0 -z-10 overflow-hidden bg-white" />
-      <div className="max-w-6xl mx-auto">
+      <div className="absolute inset-0 z-0 overflow-hidden bg-white">
+        <LavaLampBlobs offsetX={parallaxOffset.x} offsetY={parallaxOffset.y} />
+      </div>
+      <div className="relative z-10 max-w-6xl mx-auto">
         <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -81,17 +126,33 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
         </m.div>
       </div>
 
-      <div className="relative left-1/2 right-1/2 w-screen -translate-x-1/2">
+      <div className="relative z-10 left-1/2 right-1/2 w-screen -translate-x-1/2">
         <div className="book-shell w-full max-w-none rounded-2xl border border-black/15 bg-white/40 px-1 py-2 md:px-14">
           <div className="book-spread grid">
-            <button
-              type="button"
-              className="book-page book-page-left"
-              onClick={goPrev}
-              style={{ height: "100%" }}
-            >
+            <div className="book-page book-page-left" style={{ height: "100%" }}>
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
+                  {spreadIndex === 0 && (
+                    <button
+                      type="button"
+                      onClick={handleNextButtonClick}
+                      className="absolute right-3 top-3 z-20 rounded-full border border-black/20 bg-white/80 px-5 py-2 text-[11px] uppercase tracking-[0.3em] text-black/80 shadow-md md:hidden"
+                    >
+                      Next
+                    </button>
+                  )}
+                  {spreadIndex > 0 && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        goPrev();
+                      }}
+                      className="absolute right-3 top-3 z-20 rounded-full border border-black/20 bg-white/80 px-5 py-2 text-[11px] uppercase tracking-[0.3em] text-black/80 shadow-md md:hidden"
+                    >
+                      Prev
+                    </button>
+                  )}
                   {leftVariants ? (
                     <picture>
                       <source
@@ -133,15 +194,17 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
                   )}
                 </div>
               </div>
-            </button>
-            <button
-              type="button"
-              className="book-page book-page-right"
-              onClick={goNext}
-              style={{ height: "100%" }}
-            >
+            </div>
+            <div className="book-page book-page-right" style={{ height: "100%" }}>
               <div className="book-page-inner">
                 <div className="relative w-full flex-1">
+                  <button
+                    type="button"
+                    onClick={handleNextButtonClick}
+                    className="absolute bottom-3 right-3 z-20 rounded-full border border-black/20 bg-white/80 px-5 py-2 text-[11px] uppercase tracking-[0.3em] text-black/80 shadow-md md:hidden"
+                  >
+                    {spreadIndex === chapterPairs.length - 1 ? "Start Over" : "Next"}
+                  </button>
                   {rightVariants ? (
                     <picture>
                       <source
@@ -183,7 +246,7 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
                   )}
                 </div>
               </div>
-            </button>
+            </div>
             {flipDirection && (
               <div className={`book-flip-layer book-flip-${flipDirection}`}>
                 <div className="book-flip-face book-flip-front" />

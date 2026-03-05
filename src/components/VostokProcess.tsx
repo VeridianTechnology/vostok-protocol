@@ -6,7 +6,7 @@ type StageKey = "before" | "20" | "45" | "70" | "100";
 
 type VostokProcessProps = {
   onLoaded?: () => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
 };
 
 const getThumbVariants = (src: string) => {

@@ -221,6 +221,49 @@
     height: 28rem;
     animation-delay: -6s, 1.4s;
   }
+
+  .lava-lamp-blob {
+    position: absolute;
+    display: block;
+    opacity: 0.9;
+    mix-blend-mode: multiply;
+    animation: lava-lamp-path 14s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .lava-lamp-core,
+  .lava-lamp-split {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: radial-gradient(circle at 35% 35%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.96) 65%, rgba(0, 0, 0, 0.75) 100%);
+  }
+
+  .lava-lamp-core {
+    animation: lava-lamp-morph 9s ease-in-out infinite;
+  }
+
+  .lava-lamp-split {
+    opacity: 0;
+    animation: lava-lamp-split 14s ease-in-out infinite;
+  }
+
+  .lava-lamp-split-a {
+    animation-delay: 0s;
+  }
+
+  .lava-lamp-split-b {
+    animation-delay: 0.25s;
+  }
+
+  .lava-lamp-dots {
+    position: absolute;
+    inset: -20%;
+    opacity: 0.22;
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.55) 2.4px, transparent 2.6px);
+    background-size: 30px 30px;
+    transition: transform 0.2s ease-out;
+  }
 }
 
 @keyframes lava-drift {
@@ -243,6 +286,68 @@
     opacity: 0.55;
   }
 }
+
+@keyframes lava-lamp-morph {
+  0% {
+    border-radius: 50% 60% 45% 55%;
+  }
+  50% {
+    border-radius: 60% 40% 60% 40%;
+  }
+  100% {
+    border-radius: 45% 55% 50% 60%;
+  }
+}
+
+@keyframes lava-lamp-path {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(240px, 0, 0);
+  }
+  50% {
+    transform: translate3d(240px, 180px, 0);
+  }
+  75% {
+    transform: translate3d(0, 180px, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes lava-lamp-split {
+  0%,
+  20% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  28% {
+    opacity: 0.8;
+    transform: translate3d(18px, -14px, 0) scale(0.35);
+  }
+  36% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  50% {
+    opacity: 0;
+  }
+  58% {
+    opacity: 0.8;
+    transform: translate3d(-16px, 16px, 0) scale(0.35);
+  }
+  66% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.6);
+  }
+}
+
 
 @keyframes sweep-line {
   0% {
