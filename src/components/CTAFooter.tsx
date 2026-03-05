@@ -12,10 +12,12 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
+  const infoTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -51,7 +53,25 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         redirectTimeoutRef.current = null;
       }
     };
-  }, [isRedirecting, gumroadUrl]);
+  }, [isRedirecting, gumroadUrl, isDesktop]);
+
+  useEffect(() => {
+    return () => {
+      if (infoTimeoutRef.current) {
+        window.clearTimeout(infoTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleInfoClick = () => {
+    setIsInfoOpen(true);
+    if (infoTimeoutRef.current) {
+      window.clearTimeout(infoTimeoutRef.current);
+    }
+    infoTimeoutRef.current = window.setTimeout(() => {
+      setIsInfoOpen(false);
+    }, 20000);
+  };
 
   const closeRedirect = () => {
     if (redirectIntervalRef.current) {
@@ -113,26 +133,23 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   loading="lazy"
                   decoding="async"
                 />
-                <svg
-                  aria-hidden="true"
-                  className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 text-white/90"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <button
+                  type="button"
+                  onClick={handleInfoClick}
+                  aria-label="Checkout details"
+                  className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full border border-black/20 bg-white/90 text-xs font-semibold text-black/70 shadow-md"
                 >
-                  <path d="M12 3 4 7v5c0 5 3.8 8.7 8 9 4.2-.3 8-4 8-9V7l-8-4z" />
-                  <path d="m9 12 2 2 4-4" />
-                </svg>
+                  ?
+                </button>
+                {isInfoOpen && (
+                  <div className="absolute right-3 top-12 z-10 w-64 rounded-md border border-black/10 bg-white/95 p-3 text-[10px] uppercase tracking-[0.25em] text-black/60 shadow-lg">
+                    I am a writer, not a developer. I built the exercises, not the checkout.
+                    Gumroad is simply the most reliable way to deliver the PDF the moment you
+                    pay—no glitches, no delays, no stolen credit cards. It handles the technical
+                    weight so I can focus on what matters: the work you are about to do.
+                  </div>
+                )}
               </div>
-              <p className="text-[10px] uppercase tracking-[0.35em] text-steel/70">
-                I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
-                simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
-                delays, no stolen credit cards. It handles the technical weight so I can focus on
-                what matters: the work you are about to do.
-              </p>
             </div>
             <div className="flex flex-col items-center md:flex-1 md:items-center">
               <p className="text-black/60 tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
@@ -160,7 +177,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               )}
 
               {/* CTA Button */}
-              <div className="mt-4 flex flex-col items-center gap-3">
+              <div className="mt-4 flex flex-col items-center gap-3 md:mt-2">
                 <div className="relative md:hidden">
                   <img
                     src="/gumroad.png"
@@ -169,19 +186,25 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                     loading="lazy"
                     decoding="async"
                   />
-                  <svg
-                    aria-hidden="true"
-                    className="absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 text-white/90"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.4"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <button
+                    type="button"
+                    onClick={handleInfoClick}
+                    aria-label="Checkout details"
+                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-black/20 bg-white/90 text-[10px] font-semibold text-black/70 shadow-md"
                   >
-                    <path d="M12 3 4 7v5c0 5 3.8 8.7 8 9 4.2-.3 8-4 8-9V7l-8-4z" />
-                    <path d="m9 12 2 2 4-4" />
-                  </svg>
+                    ?
+                  </button>
+                  {isInfoOpen && (
+                    <div className="absolute right-3 top-11 z-10 w-56 rounded-md border border-black/10 bg-white/95 p-3 text-[9px] uppercase tracking-[0.25em] text-black/60 shadow-lg">
+                      I am a writer, not a developer. I built the exercises, not the checkout.
+                      Gumroad is simply the most reliable way to deliver the PDF the moment you
+                      pay—no glitches, no delays, no stolen credit cards. It handles the technical
+                      weight so I can focus on what matters: the work you are about to do.
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-4xl font-light text-black">$29.99</span>
                 </div>
                 <m.button
                   whileHover={{ scale: 1.02 }}
@@ -232,17 +255,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   </svg>
                   {isFourChan ? "NEETBUX HERE" : "Buy Now"}
                 </m.button>
-                {/* Price */}
-                <div className="flex flex-col items-center gap-2">
-                  <span className="text-4xl font-light text-black">$29.99</span>
-                </div>
               </div>
-              <p className="mt-6 text-[10px] uppercase tracking-[0.35em] text-black/50 md:hidden">
-                I am a writer, not a developer. I built the exercises, not the checkout. Gumroad is
-                simply the most reliable way to deliver the PDF the moment you pay—no glitches, no
-                delays, no stolen credit cards. It handles the technical weight so I can focus on
-                what matters: the work you are about to do.
-              </p>
             </div>
           </div>
 
