@@ -161,6 +161,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const parallaxRef = useRef<number | null>(null);
   const flashTimersRef = useRef<number[]>([]);
   const isFlashingRef = useRef(false);
+  const hasFlashedOnceRef = useRef(false);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants = getImageVariants(activeImage);
@@ -177,7 +178,18 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     []
   );
 
+  const stopFlashSequence = () => {
+    isFlashingRef.current = false;
+    flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    flashTimersRef.current = [];
+    setShowFlash(false);
+    hasFlashedOnceRef.current = true;
+  };
+
   const selectStage = (stageKey: StageKey, image: string) => {
+    if (isMobile) {
+      stopFlashSequence();
+    }
     if (rotationTimerRef.current) {
       window.clearInterval(rotationTimerRef.current);
       rotationTimerRef.current = null;
@@ -258,15 +270,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       return;
     }
 
-    const stopFlashing = () => {
-      isFlashingRef.current = false;
-      flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-      flashTimersRef.current = [];
-      setShowFlash(false);
-    };
-
     const startFlashing = () => {
-      if (isFlashingRef.current) {
+      if (isFlashingRef.current || hasFlashedOnceRef.current) {
         return;
       }
       isFlashingRef.current = true;
@@ -308,22 +313,20 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       step();
     };
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          startFlashing();
-        } else {
-          stopFlashing();
-        }
-      },
-      { threshold: 0.6 }
-    );
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            startFlashing();
+          }
+        },
+        { threshold: 0.6 }
+      );
 
     observer.observe(imageFrameRef.current);
 
     return () => {
       observer.disconnect();
-      stopFlashing();
+      stopFlashSequence();
     };
   }, [iconSequence, isMobile]);
 
@@ -364,6 +367,11 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           <div
             ref={imageFrameRef}
             className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full"
+            onClick={() => {
+              if (isMobile) {
+                stopFlashSequence();
+              }
+            }}
           >
             <div className="absolute inset-0 z-0 bg-black" />
             {activeVariants ? (
