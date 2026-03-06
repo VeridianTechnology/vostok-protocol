@@ -1,10 +1,11 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import { trackSafe } from "@/lib/analytics";
 
 type CTAFooterProps = {
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {
@@ -65,6 +66,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
 
   const handleInfoClick = () => {
     setIsInfoOpen(true);
+    trackSafe("gumroad_info_open");
     if (infoTimeoutRef.current) {
       window.clearTimeout(infoTimeoutRef.current);
     }
@@ -125,6 +127,9 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     }
     if (entrySource === "instagram") {
       track("buy_button_instagram", { location });
+    }
+    if (entrySource === "twitter") {
+      track("buy_button_twitter", { location });
     }
     if (entrySource === "tiktok") {
       track("buy_button_tiktok", { location });
@@ -191,6 +196,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                     href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => trackSafe("chapter2_click")}
                     className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
                   >
                     Buy Now Chapter 2 Only
@@ -282,6 +288,9 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   </svg>
                   {isFourChan ? "NEETBUX HERE" : "Buy Now"}
                 </m.button>
+                <p className="text-[9px] uppercase tracking-[0.25em] text-black/60">
+                  Secure Gumroad checkout · 128-bit encryption
+                </p>
                 {isFourChan && (
                   <div className="mt-4 text-center text-[11px] leading-relaxed text-black/60 md:hidden">
                     <p>
@@ -294,6 +303,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                       href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
                       target="_blank"
                       rel="noreferrer"
+                      onClick={() => trackSafe("chapter2_click")}
                       className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
                     >
                       Buy Now Chapter 2 Only

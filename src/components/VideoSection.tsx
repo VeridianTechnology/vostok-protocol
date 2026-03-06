@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
+import { trackSafe } from "@/lib/analytics";
 import { getImageVariants, toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) => {
@@ -108,6 +109,9 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
               if (entrySource === "instagram") {
                 track("start_video_instagram");
               }
+              if (entrySource === "twitter") {
+                track("start_video_twitter");
+              }
               if (entrySource === "tiktok") {
                 track("start_video_tiktok");
               }
@@ -127,11 +131,15 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
               if (entrySource === "instagram") {
                 track("finish_video_instagram");
               }
+              if (entrySource === "twitter") {
+                track("finish_video_twitter");
+              }
               if (entrySource === "tiktok") {
                 track("finish_video_tiktok");
               }
               hasTrackedFinish.current = true;
             }
+            trackSafe("video_closed");
             setIsClosed(true);
             onClosed?.();
           }}

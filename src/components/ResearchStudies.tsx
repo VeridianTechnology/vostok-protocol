@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { trackSafe } from "@/lib/analytics";
 
 type ResearchStudiesProps = {
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
@@ -343,7 +344,12 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         {isFourChan ? (
           <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
-            <Tabs defaultValue={makeFourChanValue(fourChanSections[0].title)}>
+            <Tabs
+              defaultValue={makeFourChanValue(fourChanSections[0].title)}
+              onValueChange={(value) => {
+                trackSafe("research_tab_change", { tab: value, variant: "4chan" });
+              }}
+            >
               <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
                 {fourChanSections.map((section) => (
                   <TabsTrigger
@@ -387,7 +393,10 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                     <button
                       key={tab.label}
                       type="button"
-                      onClick={() => setNarrative(index)}
+                      onClick={() => {
+                        setNarrative(index);
+                        trackSafe("research_story_tab_change", { tab: tab.label });
+                      }}
                       className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
                         index === activeNarrative
                           ? "border-black/40 bg-black/10 text-black"
@@ -442,7 +451,12 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
             </div>
 
             <div className="rounded-3xl border border-black/10 bg-white/16 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur-xl md:p-8">
-              <Tabs defaultValue="awareness">
+              <Tabs
+                defaultValue="awareness"
+                onValueChange={(value) => {
+                  trackSafe("research_tab_change", { tab: value, variant: "studies" });
+                }}
+              >
                 <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
                   <TabsTrigger
                     value="awareness"

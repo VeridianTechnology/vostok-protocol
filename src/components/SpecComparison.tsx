@@ -3,8 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 import LavaLampBlobs from "@/components/LavaLampBlobs";
 import { track } from "@vercel/analytics";
+import { trackSafe } from "@/lib/analytics";
 
-type EntrySource = "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+type EntrySource =
+  | "facebook"
+  | "4chan"
+  | "instagram"
+  | "tiktok"
+  | "reddit"
+  | "twitter"
+  | "direct";
 
 type SpecComparisonProps = {
   entrySource?: EntrySource;
@@ -39,6 +47,7 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
     if (spreadIndex === 0) {
       return;
     }
+    trackSafe("book_prev");
     if (flipTimeout.current) {
       window.clearTimeout(flipTimeout.current);
     }
@@ -50,6 +59,8 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
   };
 
   const goNext = () => {
+    const isLast = spreadIndex === chapterPairs.length - 1;
+    trackSafe(isLast ? "book_start_over" : "book_next");
     if (flipTimeout.current) {
       window.clearTimeout(flipTimeout.current);
     }

@@ -1,13 +1,15 @@
 import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { MouseEvent as ReactMouseEvent } from "react";
 import { track } from "@vercel/analytics";
+import { trackOnce, trackSafe } from "@/lib/analytics";
 import { getImageVariants } from "@/lib/utils";
 
 type HeroSectionProps = {
   hideWatchPrompt?: boolean;
   onMobileFlashComplete?: () => void;
   onRequestBuy?: (continueToCheckout: () => void) => void;
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const HeroSection = ({
@@ -33,36 +35,88 @@ const HeroSection = ({
     "pending" | "video1" | "video2" | "done"
   >("pending");
   const [mobileIntroKey, setMobileIntroKey] = useState(0);
+  const [isHeroLocked, setIsHeroLocked] = useState(false);
   const heroSectionRef = useRef<HTMLElement | null>(null);
   const suiteTimerRef = useRef<number | null>(null);
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const flashTimerRef = useRef<number | null>(null);
+  const mobileImageIntervalRef = useRef<number | null>(null);
+  const heroLockTimersRef = useRef<number[]>([]);
   const afterTimersRef = useRef<number[]>([]);
   const afterIntervalRef = useRef<number | null>(null);
   const hasRunMobileFlash = useRef(false);
   const hasReportedMobileFlash = useRef(false);
   const hasStartedMobileIntro = useRef(false);
+  const skipMobileIntroRef = useRef(false);
   const maxOffsetRef = useRef(0);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
-  const showBefore = () => {
-    if (isAfter) {
-      setIsAfter(false);
+  const isTwitter = entrySource === "twitter";
+  const unlockHeroMotion = () => {
+    if (!isHeroLocked) {
+      return;
+    }
+    setIsHeroLocked(false);
+    heroLockTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    heroLockTimersRef.current = [];
+    trackSafe("hero_unlock");
+  };
+
+  const skipMobileFlashSequence = () => {
+    if (mobileFlashIndex === null || hasReportedMobileFlash.current) {
+      return;
+    }
+    if (flashTimerRef.current) {
+      window.clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = null;
+    }
+    hasRunMobileFlash.current = true;
+    setMobileFlashIndex(null);
+    hasReportedMobileFlash.current = true;
+    setHasScrolled(true);
+    onMobileFlashComplete?.();
+    if (!skipMobileIntroRef.current) {
+      startMobileIntro();
     }
   };
 
+  const skipMobileIntroVideos = () => {
+    skipMobileIntroRef.current = true;
+    hasStartedMobileIntro.current = true;
+    setMobileIntroPhase("done");
+  };
+
+  const showBefore = () => {
+    setIsAfter(false);
+    setMobileImageIndex(0);
+    startHeroLockSequence();
+    trackSafe("hero_toggle_front");
+  };
+
   const showAfter = () => {
-    if (!isAfter) {
-      setIsAfter(true);
+    setIsAfter(true);
+    setMobileImageIndex(0);
+    startHeroLockSequence();
+    trackSafe("hero_toggle_side");
+  };
+
+  const startMobileIntro = () => {
+    if (hasStartedMobileIntro.current) {
+      return;
     }
+    hasStartedMobileIntro.current = true;
+    window.setTimeout(() => {
+      setMobileIntroKey((current) => current + 1);
+      setMobileIntroPhase("video1");
+    }, 100);
   };
 
   const imageSets = {
     precision: {
-      front: { left: "/images/1.jpg", right: "/images/2.jpg" },
+      front: { left: "/images/1.jpg", right: "/images/2.png" },
       side: { left: "/images/4.jpg", right: "/images/3.jpeg" },
     },
     adaptive: {
@@ -93,12 +147,10 @@ const HeroSection = ({
   const mobileImageVariants = getImageVariants(mobileImage);
   const mobileFlashSequence = useMemo(
     () => [
-      { kind: "video", src: "/hero_section_videos/1.mp4", duration: 1500 },
       { kind: "text", text: "IT'S TIME", duration: 500 },
-      { kind: "video", src: "/hero_section_videos/2.mp4", duration: 1500 },
       { kind: "text", text: "TO", duration: 500 },
       { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 450 },
-      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 450 },
+      { kind: "image", src: "/images/2.png", alt: "Client 1 after", duration: 450 },
       { kind: "text", text: "CHANGE", duration: 500 },
       { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 450 },
       { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 450 },
@@ -114,6 +166,9 @@ const HeroSection = ({
   const activeFlashVariants =
     activeFlash && activeFlash.kind === "image" ? getImageVariants(activeFlash.src) : null;
   const resetSuiteTimer = () => {
+    if (isHeroLocked) {
+      return;
+    }
     if (suiteTimerRef.current) {
       window.clearInterval(suiteTimerRef.current);
     }
@@ -126,13 +181,21 @@ const HeroSection = ({
   };
 
   useEffect(() => {
+    if (isHeroLocked) {
+      if (suiteTimerRef.current) {
+        window.clearInterval(suiteTimerRef.current);
+        suiteTimerRef.current = null;
+      }
+      return;
+    }
     resetSuiteTimer();
     return () => {
       if (suiteTimerRef.current) {
         window.clearInterval(suiteTimerRef.current);
+        suiteTimerRef.current = null;
       }
     };
-  }, []);
+  }, [isHeroLocked]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -159,9 +222,6 @@ const HeroSection = ({
       rafRef.current = window.requestAnimationFrame(() => {
         rafRef.current = null;
         const scrollY = window.scrollY;
-        if (scrollY > 4) {
-          setHasScrolled(true);
-        }
         const nextOffset = Math.min(scrollY * 0.35, maxOffsetRef.current);
         setHeroFloatOffset((current) => Math.max(current, nextOffset));
 
@@ -219,26 +279,55 @@ const HeroSection = ({
       return;
     }
     if (mobileFlashIndex === null) {
+      // NOTE: After the flash sequence ends, ALWAYS start with 1.mp4, then 2.mp4.
       hasReportedMobileFlash.current = true;
+      setHasScrolled(true);
       onMobileFlashComplete?.();
-      if (!hasStartedMobileIntro.current) {
-        hasStartedMobileIntro.current = true;
-        setMobileIntroKey((current) => current + 1);
-        setMobileIntroPhase("video1");
-      }
+      startMobileIntro();
     }
   }, [isDesktop, mobileFlashIndex, onMobileFlashComplete]);
+
+  useEffect(() => {
+    if (mobileFlashIndex === null || hasReportedMobileFlash.current) {
+      return;
+    }
+    const handlePointerDown = () => {
+      skipMobileFlashSequence();
+    };
+    window.addEventListener("pointerdown", handlePointerDown, { passive: true, capture: true });
+    window.addEventListener("mousedown", handlePointerDown, { passive: true, capture: true });
+    window.addEventListener("click", handlePointerDown, { passive: true, capture: true });
+    window.addEventListener("touchstart", handlePointerDown, { passive: true, capture: true });
+    return () => {
+      window.removeEventListener("pointerdown", handlePointerDown, true);
+      window.removeEventListener("mousedown", handlePointerDown, true);
+      window.removeEventListener("click", handlePointerDown, true);
+      window.removeEventListener("touchstart", handlePointerDown, true);
+    };
+  }, [mobileFlashIndex]);
 
   useEffect(() => {
     if (isDesktop) {
       return;
     }
+    if (isHeroLocked) {
+      if (mobileImageIntervalRef.current) {
+        window.clearInterval(mobileImageIntervalRef.current);
+        mobileImageIntervalRef.current = null;
+      }
+      return;
+    }
     setMobileImageIndex(0);
-    const interval = window.setInterval(() => {
+    mobileImageIntervalRef.current = window.setInterval(() => {
       setMobileImageIndex((current) => (current === 0 ? 1 : 0));
     }, 5000);
-    return () => window.clearInterval(interval);
-  }, [isDesktop, activeSuite, isAfter]);
+    return () => {
+      if (mobileImageIntervalRef.current) {
+        window.clearInterval(mobileImageIntervalRef.current);
+        mobileImageIntervalRef.current = null;
+      }
+    };
+  }, [isDesktop, activeSuite, isAfter, isHeroLocked]);
 
   useEffect(() => {
     if (isDesktop) {
@@ -251,6 +340,9 @@ const HeroSection = ({
 
   useEffect(() => {
     if (isDesktop) {
+      return;
+    }
+    if (isHeroLocked) {
       return;
     }
     setIsAfter(false);
@@ -286,7 +378,7 @@ const HeroSection = ({
         afterIntervalRef.current = null;
       }
     };
-  }, [isDesktop]);
+  }, [isDesktop, isHeroLocked]);
 
   useEffect(() => {
     if (!isRedirecting || !isDesktop) {
@@ -330,7 +422,9 @@ const HeroSection = ({
 
   const handleSuiteChange = (suite: "precision" | "adaptive" | "sculpted") => {
     setActiveSuite(suite);
-    resetSuiteTimer();
+    setMobileImageIndex(0);
+    startHeroLockSequence();
+    trackSafe("hero_suite_change", { suite });
   };
   const handleBuyNow = () => {
     if (isDesktop) {
@@ -351,6 +445,9 @@ const HeroSection = ({
     if (entrySource === "instagram") {
       track("buy_button_instagram", { location: "hero" });
     }
+    if (entrySource === "twitter") {
+      track("buy_button_twitter", { location: "hero" });
+    }
     if (entrySource === "tiktok") {
       track("buy_button_tiktok", { location: "hero" });
     }
@@ -359,6 +456,57 @@ const HeroSection = ({
       return;
     }
     handleBuyNow();
+  };
+
+  const startHeroLockSequence = () => {
+    setIsHeroLocked(true);
+    skipMobileFlashSequence();
+    if (skipMobileIntroRef.current) {
+      skipMobileIntroVideos();
+    }
+    heroLockTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    heroLockTimersRef.current = [];
+    if (suiteTimerRef.current) {
+      window.clearInterval(suiteTimerRef.current);
+      suiteTimerRef.current = null;
+    }
+    if (mobileImageIntervalRef.current) {
+      window.clearInterval(mobileImageIntervalRef.current);
+      mobileImageIntervalRef.current = null;
+    }
+    afterTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    afterTimersRef.current = [];
+    if (afterIntervalRef.current) {
+      window.clearInterval(afterIntervalRef.current);
+      afterIntervalRef.current = null;
+    }
+    heroLockTimersRef.current.push(
+      window.setTimeout(() => {
+        setMobileImageIndex((current) => (current === 0 ? 1 : 0));
+      }, 2000)
+    );
+    heroLockTimersRef.current.push(
+      window.setTimeout(() => {
+        setMobileImageIndex((current) => (current === 0 ? 1 : 0));
+      }, 4000)
+    );
+    heroLockTimersRef.current.push(
+      window.setTimeout(() => {
+        setMobileImageIndex((current) => (current === 0 ? 1 : 0));
+      }, 6000)
+    );
+  };
+
+  const lockHeroMotion = (event?: ReactMouseEvent<HTMLElement>) => {
+    if (isHeroLocked) {
+      return;
+    }
+    const target = event?.target as HTMLElement | null;
+    if (target?.closest("button, a, input, textarea, select, [data-hero-ignore]")) {
+      skipMobileIntroVideos();
+    }
+    startHeroLockSequence();
+    trackOnce("hero_lock_click");
   };
 
   const handleChatOpen = () => {
@@ -380,6 +528,8 @@ const HeroSection = ({
   return (
     <section
       ref={heroSectionRef}
+      onClick={(event) => lockHeroMotion(event)}
+      onClickCapture={(event) => lockHeroMotion(event)}
       className="relative flex items-start justify-center overflow-hidden pt-6 pb-0 md:pt-0 md:pb-16 md:items-center"
       style={{ minHeight: heroMinHeight }}
     >
@@ -616,7 +766,10 @@ const HeroSection = ({
                     event.currentTarget.currentTime = 0;
                     event.currentTarget.play().catch(() => {});
                   }}
-                  onEnded={() => setMobileIntroPhase("video2")}
+                  onEnded={() => {
+                    trackOnce("hero_intro_video1_end");
+                    setMobileIntroPhase("video2");
+                  }}
                 />
               ) : mobileIntroPhase === "video2" ? (
                 <m.div
@@ -637,7 +790,10 @@ const HeroSection = ({
                       event.currentTarget.currentTime = 0;
                       event.currentTarget.play().catch(() => {});
                     }}
-                    onEnded={() => setMobileIntroPhase("done")}
+                    onEnded={() => {
+                      trackOnce("hero_intro_video2_end");
+                      setMobileIntroPhase("done");
+                    }}
                   />
                 </m.div>
               ) : null}
@@ -920,6 +1076,8 @@ const HeroSection = ({
           <p className="relative z-10 text-ice tracking-[0.35em] uppercase text-[11px] md:text-base mb-3 font-light">
             {entrySource === "4chan" ? (
               <>Who gives a shit about ANOTHER Middle Eastern War, Get HOT, Dude.</>
+            ) : isTwitter ? (
+              <>The method exists.</>
             ) : (
               <>
                 Everyone is <em>dumb</em> (including YOU)
@@ -937,6 +1095,10 @@ const HeroSection = ({
               <>
                 You Don&apos;t have to be an Incel, Dude. This Method Works. Ask Mom for{" "}
                 <strong>NEETBux.</strong>
+              </>
+            ) : isTwitter ? (
+              <>
+                I built it. Tested it. Lived it.
               </>
             ) : (
               <>
@@ -965,28 +1127,33 @@ const HeroSection = ({
             }
             className="relative z-10 overflow-hidden"
           >
-            <m.p
+            <m.div
               initial={motionEnabled ? { opacity: 0 } : false}
               animate={motionEnabled ? { opacity: 1 } : false}
               transition={motionEnabled ? { duration: 0.8, delay: 1.2 } : undefined}
               className="text-steel text-[10px] md:text-lg font-light max-w-2xl mx-auto leading-relaxed"
             >
               {entrySource === "4chan" ? (
-                <>
+                <p>
                   I went from a good looking guy TO THE MAIN FUCKING CHARACTER, Don&apos;t be a
                   pussy and miss out, maybe you can escape 4chan once and for all.
+                </p>
+              ) : isTwitter ? (
+                <>
+                  <p>You modify your timeline. Your tech. Your body.</p>
+                  <p className="mt-3">Why not your face?</p>
                 </>
               ) : (
-                <>
+                <p>
                   Skin care, doesn&apos;t make you HOT. Working out, doesn&apos;t make you HOT. Only
                   working out the face, with <u>SPECIFIC</u> face exercises works!
                   <span className="block">
                     This is the <strong>ULTIMATE</strong> easy-to-do no BS guide! Get yours for
                     only $30!
                   </span>
-                </>
+                </p>
               )}
-            </m.p>
+            </m.div>
 
             <m.div
               initial={motionEnabled ? { opacity: 0, y: 10 } : false}

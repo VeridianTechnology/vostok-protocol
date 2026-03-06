@@ -90,7 +90,7 @@ const features = [
 ];
 
 type FeatureThumbnailsProps = {
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) => {

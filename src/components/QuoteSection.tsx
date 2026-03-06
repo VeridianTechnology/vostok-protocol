@@ -1,5 +1,5 @@
 type QuoteSectionProps = {
-  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "direct";
+  entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
 const QuoteSection = ({ entrySource = "direct" }: QuoteSectionProps) => {
