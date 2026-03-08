@@ -34,199 +34,211 @@ const getThumbVariants = (src: string) => {
   };
 };
 
-const stages = [
-  {
-    key: "before",
-    title: "Before Vostok",
-    icons: ["/Comparison/3z.jpg", "/Comparison/4z.jpg"],
-    text: (
-      <>
-        <p>Let me guess.</p>
-        <p className="mt-4">You&apos;ve optimized everything else.</p>
-        <p className="mt-4">
-          Your timeline? Curated. Block lists. Mute words. Follow lists so tight you see exactly
-          what you need and nothing you don&apos;t.
-        </p>
-        <p className="mt-4">
-          Your setup? Monitors. Keyboards. Desk ergonomics that would make an engineer weep.
-          You&apos;ve spent hours researching the difference between mechanical switches no
-          normie will ever understand.
-        </p>
-        <p className="mt-4">
-          Your body? You lift. You track macros. You&apos;ve tried carnivore, keto, OMAD, maybe
-          even peptides if you&apos;re deep enough. HRT? You&apos;ve at least thought about it.
-          You run the numbers on everything.
-        </p>
-        <p className="mt-4">But your face?</p>
-        <p className="mt-4">You just... live with it.</p>
-        <p className="mt-4">Here&apos;s what took me years to understand:</p>
-        <p className="mt-4">The hierarchy is real.</p>
-        <p className="mt-4">
-          Not the fake one they tell you about - money, status, career. Those help. They&apos;re
-          fine. But there&apos;s a deeper one. One that operates whether you believe in it or not.
-        </p>
-        <p className="mt-4">The face hierarchy.</p>
-        <p className="mt-4">
-          You&apos;ve seen it play out. The guy who walks into a room and everyone just... orients
-          toward him. Not because he said anything. Not because he&apos;s loud. Just because his
-          face fires something primal in every monkey brain in that room. And they cannot help
-          themselves.
-        </p>
-        <p className="mt-4">
-          You&apos;ve seen the opposite too. The guy who&apos;s smarter. Funnier. More successful on
-          paper. But he&apos;s invisible. He&apos;s background noise. He exists, but he doesn&apos;t
-          register.
-        </p>
-        <p className="mt-4">That gap?</p>
-        <p className="mt-4">
-          It&apos;s not personality. It&apos;s not money. It&apos;s not even height, though the cope
-          merchants will tell you otherwise.
-        </p>
-        <p className="mt-4">It&apos;s face.</p>
-        <p className="mt-4">I used to believe the lies.</p>
-        <p className="mt-4">
-          Politics matter. Be interesting. Be kind. The right one will see past your face.
-        </p>
-        <p className="mt-4">Then I got hot.</p>
-        <p className="mt-4">
-          Not rich. Not successful. Not wiser or more experienced or more confident. Just...
-          hotter.
-        </p>
-        <p className="mt-4">And suddenly:</p>
-        <p className="mt-4">Cashiers forgot my order because they couldn&apos;t stop staring.</p>
-        <p className="mt-4">Strangers smiled for no reason.</p>
-        <p className="mt-4">Women invented excuses to stand near me.</p>
-        <p className="mt-4">
-          Men - bigger men, stronger men - stepped aside. Not from fear. From recognition. Like I
-          was one of them. Like my face had already done the talking so they didn&apos;t need to.
-        </p>
-        <p className="mt-4">
-          I brought value to every interaction just by standing there like a dweeb.
-        </p>
-        <p className="mt-4">Here&apos;s what actually changed:</p>
-        <p className="mt-4">
-          Investment opportunities appeared. People assumed I knew things. Assumed I had money.
-          Wanted to be near me, work with me, give me things.
-        </p>
-        <p className="mt-4">
-          My own family started treating me better. My mother, my father, cousins - people
-          who&apos;ve known me my whole life - suddenly deferred. Asked my opinion. Introduced me
-          like I was someone to be proud of.
-        </p>
-        <p className="mt-4">
-          Friends who used to talk over me started listening. Friends who used to dismiss me
-          started asking what I thought.
-        </p>
-        <p className="mt-4">
-          I didn&apos;t get smarter. I didn&apos;t get more experienced. I didn&apos;t get more
-          successful.
-        </p>
-        <p className="mt-4">I just got hotter.</p>
-        <p className="mt-4">That&apos;s it. That&apos;s the whole secret.</p>
-        <p className="mt-4">The tech-bro in you is already running the numbers.</p>
-        <p className="mt-4">
-          You modify your timeline because information determines your reality. You modify your
-          tech because tools determine your capability. You modify your body because hardware
-          determines your longevity.
-        </p>
-        <p className="mt-4">
-          Why would the one thing people judge in the first 0.3 seconds of meeting you be the one
-          thing you leave to chance?
-        </p>
-        <p className="mt-4">It doesn&apos;t scale. It doesn&apos;t optimize. It doesn&apos;t ROI.</p>
-        <p className="mt-4">
-          Unless you treat it like everything else you&apos;ve ever improved.
-        </p>
-      </>
-    ),
-  },
-  {
-    key: "20",
-    title: "20 Hours of Vostok",
-    icons: ["/Comparison/5z.jpg", "/Comparison/6z.jpg"],
-    text: (
-      <>
-        <p>This is when things started to click.</p>
-        <p className="mt-4">
-          I wasn&apos;t obsessed yet, but once I sharpened a few muscles and angles, the world
-          shifted. It was like gravity tilted in my favor.
-        </p>
-        <p className="mt-4">People were warmer. More open.</p>
-        <p className="mt-4">
-          I felt the first real <em>pull</em> of Vostok—<br />
-          and it was addictive.
-        </p>
-      </>
-    ),
-  },
-  {
-    key: "45",
-    title: "45 Hours of Vostok",
-    icons: ["/Comparison/9z.jpg", "/Comparison/10z.jpg"],
-    text: (
-      <>
-        <p>This stage hit hard.</p>
-        <p className="mt-4">
-          I started walking around like I was the most attractive guy in whatever room I
-          entered. And honestly—
-        </p>
-        <p className="mt-4">I wasn&apos;t wrong.</p>
-        <p className="mt-4">
-          Cashiers acted differently. Girls responded instantly. Even my own mother couldn&apos;t
-          understand the sudden spike in female attention.
-        </p>
-        <p className="mt-4">
-          It was overwhelming at times, but I felt like I&apos;d unlocked a cheat code.
-        </p>
-      </>
-    ),
-  },
-  {
-    key: "70",
-    title: "70 Hours of Vostok",
-    icons: ["/Comparison/8z.jpg", "/Comparison/7z.jpg"],
-    text: (
-      <>
-        <p>By now I thought I was untouchable.</p>
-        <p className="mt-4">
-          Results were obvious, not subtle. Strangers double-took. Women initiated more.
-        </p>
-        <p className="mt-4">
-          I started questioning everything:
-          <br />
-          <strong>Is this really all looks? Did I just uncover something no one&apos;s been talking about?</strong>
-        </p>
-        <p className="mt-4">The answer was becoming clearer: yes.</p>
-      </>
-    ),
-  },
-  {
-    key: "100",
-    title: "100 Hours of Vostok",
-    icons: ["/Comparison/1z.jpg", "/Comparison/2z.jpg"],
-    text: (
-      <>
-        <p>The method exists.</p>
-        <p className="mt-4">
-          I built it. Tested it. Lived it. Spent 100 hours refining it in Thailand while models
-          slept in my bed and strangers interrupted my writing to flirt.
-        </p>
-        <p className="mt-4">I&apos;m 5&apos;7&quot;. Broke. NEET. No career. No savings. No direction.</p>
-        <p className="mt-4">I have a literal 10/10 model in my bed right now.</p>
-        <p className="mt-4">
-          Not because of money. Not because of status. Not because I&apos;m interesting or confident
-          or any of the other things they told you matter.
-        </p>
-        <p className="mt-4">Because I MOG.</p>
-        <p className="mt-4">I mog everyone. And so can you.</p>
-      </>
-    ),
-  },
-];
-
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const isFourChan = entrySource === "4chan";
   const isTwitter = entrySource === "twitter";
+  const stages = useMemo(
+    () => [
+      {
+        key: "before",
+        title: "Before Vostok",
+        icons: ["/Comparison/3z.jpg", "/Comparison/4z.jpg"],
+        text: isTwitter ? (
+          <>
+            <p>Let me guess.</p>
+            <p className="mt-4">You&apos;ve optimized everything else.</p>
+            <p className="mt-4">
+              Your timeline? Curated. Block lists. Mute words. Follow lists so tight you see exactly
+              what you need and nothing you don&apos;t.
+            </p>
+            <p className="mt-4">
+              Your setup? Monitors. Keyboards. Desk ergonomics that would make an engineer weep.
+              You&apos;ve spent hours researching the difference between mechanical switches no
+              normie will ever understand.
+            </p>
+            <p className="mt-4">
+              Your body? You lift. You track macros. You&apos;ve tried carnivore, keto, OMAD, maybe
+              even peptides if you&apos;re deep enough. HRT? You&apos;ve at least thought about it.
+              You run the numbers on everything.
+            </p>
+            <p className="mt-4">But your face?</p>
+            <p className="mt-4">You just... live with it.</p>
+            <p className="mt-4">Here&apos;s what took me years to understand:</p>
+            <p className="mt-4">The hierarchy is real.</p>
+            <p className="mt-4">
+              Not the fake one they tell you about - money, status, career. Those help. They&apos;re
+              fine. But there&apos;s a deeper one. One that operates whether you believe in it or not.
+            </p>
+            <p className="mt-4">The face hierarchy.</p>
+            <p className="mt-4">
+              You&apos;ve seen it play out. The guy who walks into a room and everyone just... orients
+              toward him. Not because he said anything. Not because he&apos;s loud. Just because his
+              face fires something primal in every monkey brain in that room. And they cannot help
+              themselves.
+            </p>
+            <p className="mt-4">
+              You&apos;ve seen the opposite too. The guy who&apos;s smarter. Funnier. More successful on
+              paper. But he&apos;s invisible. He&apos;s background noise. He exists, but he doesn&apos;t
+              register.
+            </p>
+            <p className="mt-4">That gap?</p>
+            <p className="mt-4">
+              It&apos;s not personality. It&apos;s not money. It&apos;s not even height, though the cope
+              merchants will tell you otherwise.
+            </p>
+            <p className="mt-4">It&apos;s face.</p>
+            <p className="mt-4">I used to believe the lies.</p>
+            <p className="mt-4">
+              Politics matter. Be interesting. Be kind. The right one will see past your face.
+            </p>
+            <p className="mt-4">Then I got hot.</p>
+            <p className="mt-4">
+              Not rich. Not successful. Not wiser or more experienced or more confident. Just...
+              hotter.
+            </p>
+            <p className="mt-4">And suddenly:</p>
+            <p className="mt-4">Cashiers forgot my order because they couldn&apos;t stop staring.</p>
+            <p className="mt-4">Strangers smiled for no reason.</p>
+            <p className="mt-4">Women invented excuses to stand near me.</p>
+            <p className="mt-4">
+              Men - bigger men, stronger men - stepped aside. Not from fear. From recognition. Like I
+              was one of them. Like my face had already done the talking so they didn&apos;t need to.
+            </p>
+            <p className="mt-4">
+              I brought value to every interaction just by standing there like a dweeb.
+            </p>
+            <p className="mt-4">Here&apos;s what actually changed:</p>
+            <p className="mt-4">
+              Investment opportunities appeared. People assumed I knew things. Assumed I had money.
+              Wanted to be near me, work with me, give me things.
+            </p>
+            <p className="mt-4">
+              My own family started treating me better. My mother, my father, cousins - people
+              who&apos;ve known me my whole life - suddenly deferred. Asked my opinion. Introduced me
+              like I was someone to be proud of.
+            </p>
+            <p className="mt-4">
+              Friends who used to talk over me started listening. Friends who used to dismiss me
+              started asking what I thought.
+            </p>
+            <p className="mt-4">
+              I didn&apos;t get smarter. I didn&apos;t get more experienced. I didn&apos;t get more
+              successful.
+            </p>
+            <p className="mt-4">I just got hotter.</p>
+            <p className="mt-4">That&apos;s it. That&apos;s the whole secret.</p>
+            <p className="mt-4">The tech-bro in you is already running the numbers.</p>
+            <p className="mt-4">
+              You modify your timeline because information determines your reality. You modify your
+              tech because tools determine your capability. You modify your body because hardware
+              determines your longevity.
+            </p>
+            <p className="mt-4">
+              Why would the one thing people judge in the first 0.3 seconds of meeting you be the one
+              thing you leave to chance?
+            </p>
+            <p className="mt-4">It doesn&apos;t scale. It doesn&apos;t optimize. It doesn&apos;t ROI.</p>
+            <p className="mt-4">
+              Unless you treat it like everything else you&apos;ve ever improved.
+            </p>
+          </>
+        ) : (
+          <>
+            <p>You&apos;ve optimized everything else.</p>
+            <p className="mt-4">
+              Timeline, tools, body. But your face is still left to chance.
+            </p>
+            <p className="mt-4">
+              Vostok is the missing upgrade: direct, measurable, and fast.
+            </p>
+          </>
+        ),
+      },
+      {
+        key: "20",
+        title: "20 Hours of Vostok",
+        icons: ["/Comparison/5z.jpg", "/Comparison/6z.jpg"],
+        text: (
+          <>
+            <p>This is when things started to click.</p>
+            <p className="mt-4">
+              I wasn&apos;t obsessed yet, but once I sharpened a few muscles and angles, the world
+              shifted. It was like gravity tilted in my favor.
+            </p>
+            <p className="mt-4">People were warmer. More open.</p>
+            <p className="mt-4">
+              I felt the first real <em>pull</em> of Vostok—<br />
+              and it was addictive.
+            </p>
+          </>
+        ),
+      },
+      {
+        key: "45",
+        title: "45 Hours of Vostok",
+        icons: ["/Comparison/9z.jpg", "/Comparison/10z.jpg"],
+        text: (
+          <>
+            <p>This stage hit hard.</p>
+            <p className="mt-4">
+              I started walking around like I was the most attractive guy in whatever room I
+              entered. And honestly—
+            </p>
+            <p className="mt-4">I wasn&apos;t wrong.</p>
+            <p className="mt-4">
+              Cashiers acted differently. Girls responded instantly. Even my own mother couldn&apos;t
+              understand the sudden spike in female attention.
+            </p>
+            <p className="mt-4">
+              It was overwhelming at times, but I felt like I&apos;d unlocked a cheat code.
+            </p>
+          </>
+        ),
+      },
+      {
+        key: "70",
+        title: "70 Hours of Vostok",
+        icons: ["/Comparison/8z.jpg", "/Comparison/7z.jpg"],
+        text: (
+          <>
+            <p>By now I thought I was untouchable.</p>
+            <p className="mt-4">
+              Results were obvious, not subtle. Strangers double-took. Women initiated more.
+            </p>
+            <p className="mt-4">
+              I started questioning everything:
+              <br />
+              <strong>Is this really all looks? Did I just uncover something no one&apos;s been talking about?</strong>
+            </p>
+            <p className="mt-4">The answer was becoming clearer: yes.</p>
+          </>
+        ),
+      },
+      {
+        key: "100",
+        title: "100 Hours of Vostok",
+        icons: ["/Comparison/1z.jpg", "/Comparison/2z.jpg"],
+        text: (
+          <>
+            <p>The method exists.</p>
+            <p className="mt-4">
+              I built it. Tested it. Lived it. Spent 100 hours refining it in Thailand while models
+              slept in my bed and strangers interrupted my writing to flirt.
+            </p>
+            <p className="mt-4">I&apos;m 5&apos;7&quot;. Broke. NEET. No career. No savings. No direction.</p>
+            <p className="mt-4">I have a literal 10/10 model in my bed right now.</p>
+            <p className="mt-4">
+              Not because of money. Not because of status. Not because I&apos;m interesting or confident
+              or any of the other things they told you matter.
+            </p>
+            <p className="mt-4">Because I MOG.</p>
+            <p className="mt-4">I mog everyone. And so can you.</p>
+          </>
+        ),
+      },
+    ],
+    [isTwitter]
+  );
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("before");
   const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
@@ -254,7 +266,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       stages.flatMap((stage) =>
         stage.icons.map((icon) => ({ stageKey: stage.key as StageKey, icon }))
       ),
-    []
+    [stages]
   );
 
   const stopFlashSequence = () => {
