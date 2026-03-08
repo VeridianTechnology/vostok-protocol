@@ -16,7 +16,7 @@ type ImageFormat = "avif" | "webp" | "jpg";
 
 const HERO_IMAGES = [
   "/images/1.jpg",
-  "/images/2.png",
+  "/images/2.jpg",
   "/images/4.jpg",
   "/images/3.jpeg",
   "/images/8.jpg",

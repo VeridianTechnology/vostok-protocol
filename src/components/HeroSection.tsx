@@ -116,7 +116,7 @@ const HeroSection = ({
 
   const imageSets = {
     precision: {
-      front: { left: "/images/1.jpg", right: "/images/2.png" },
+      front: { left: "/images/1.jpg", right: "/images/2.jpg" },
       side: { left: "/images/4.jpg", right: "/images/3.jpeg" },
     },
     adaptive: {
@@ -150,7 +150,7 @@ const HeroSection = ({
       { kind: "text", text: "IT'S TIME", duration: 500 },
       { kind: "text", text: "TO", duration: 500 },
       { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 450 },
-      { kind: "image", src: "/images/2.png", alt: "Client 1 after", duration: 450 },
+      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 450 },
       { kind: "text", text: "CHANGE", duration: 500 },
       { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 450 },
       { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 450 },
