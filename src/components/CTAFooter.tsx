@@ -184,6 +184,20 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                   </div>
                 )}
               </div>
+              {!isFourChan && (
+                <p className="hidden md:block text-center text-[11px] leading-relaxed text-black/60">
+                  Don&apos;t want to try the full version out?{" "}
+                  <a
+                    href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => trackSafe("chapter2_click")}
+                    className="underline decoration-black/40 underline-offset-4 transition hover:text-black"
+                  >
+                    Just buy chapter 2 and try the exercises.
+                  </a>
+                </p>
+              )}
               {isFourChan && (
                 <div className="text-center text-[11px] leading-relaxed text-black/60">
                   <p>
