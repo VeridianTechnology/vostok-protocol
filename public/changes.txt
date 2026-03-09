@@ -2,3 +2,18 @@ Date: 3/10/26
 Changes:
 - Added timeouts to image/video preloaders to prevent loaders from hanging indefinitely.
 - Switched to hero-first render and viewport-triggered section loading for faster initial paint.
+- Updated hero headline to "Engineering Facial Structure" and "VOSTOK METHOD".
+- Replaced hero subcopy with structural training protocol description.
+- Added hero support line for exercises, anatomy diagrams, and structural mechanics.
+- Added rotating hero copy with 20s cadence and silver highlight fade.
+- Updated Research section headline and Foundation narrative copy.
+- Rewrote the 100 Hours of Vostok section copy in the Vostok Process.
+- Added CTA feature bullet list under the final buy section subtitle.
+- Updated footer copyright line and tagline.
+- Added price into CTA button text and moved price above lifetime access line.
+- Removed chapter 2 upsell copy from CTA section.
+- Added CTA download line beneath the Buy Now button.
+- Updated Gumroad info tooltip copy and removed standalone price display.
+- Added auto-dismiss + close control for the checkout tooltip (15s fade-out).
+- Reordered mobile CTA layout and updated copy to match the new mobile flow.
+- Updated CTA button label and mobile spacing/typography for readability and conversion.

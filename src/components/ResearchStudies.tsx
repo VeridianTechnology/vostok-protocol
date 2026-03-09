@@ -147,8 +147,11 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       {
         label: "Foundation",
         text: [
-          "Beauty is not superficial. It is structural. It is the invisible architecture upon which human interaction is built. We are biological creatures wired for pattern recognition, symmetry, and health cues. We do not choose to respond to beauty; we simply do. It operates below the threshold of conscious thought, in the same space where we decide who to trust, who to follow, and who to remember.",
-          "To possess it is to move through the world on a different plane.",
+          "Facial structure is not superficial.",
+          "Human perception is highly sensitive to symmetry, bone structure, and facial balance.",
+          "Research consistently shows that facial structure influences trust, attraction, leadership perception, and social outcomes.",
+          "Beauty is not random.",
+          "It is structural.",
         ],
         sources: [
           {
@@ -385,7 +388,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                 Research snapshot
               </p>
               <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
-                Why being hot is the way forward
+                Why Facial Structure Matters
               </h2>
               <div className="mt-5">
                 <div className="flex flex-wrap items-center gap-2">

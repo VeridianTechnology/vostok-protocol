@@ -1,4 +1,4 @@
-import { m } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { trackSafe } from "@/lib/analytics";
@@ -72,7 +72,15 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     }
     infoTimeoutRef.current = window.setTimeout(() => {
       setIsInfoOpen(false);
-    }, 20000);
+    }, 15000);
+  };
+
+  const handleInfoClose = () => {
+    if (infoTimeoutRef.current) {
+      window.clearTimeout(infoTimeoutRef.current);
+      infoTimeoutRef.current = null;
+    }
+    setIsInfoOpen(false);
   };
 
   const closeRedirect = () => {
@@ -175,66 +183,119 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                 >
                   ?
                 </button>
-                {isInfoOpen && (
-                  <div className="absolute right-3 top-12 z-10 w-64 rounded-md border border-black/10 bg-white/95 p-3 text-[10px] uppercase tracking-[0.25em] text-black/60 shadow-lg">
-                    I am a writer, not a developer. I built the exercises, not the checkout.
-                    Gumroad is simply the most reliable way to deliver the PDF the moment you
-                    pay—no glitches, no delays, no stolen credit cards. It handles the technical
-                    weight so I can focus on what matters: the work you are about to do.
-                  </div>
-                )}
+                <AnimatePresence>
+                  {isInfoOpen && (
+                    <m.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-3 top-12 z-10 w-64 rounded-md border border-black/10 bg-white/95 p-3 text-[10px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
+                    >
+                      <button
+                        type="button"
+                        onClick={handleInfoClose}
+                        aria-label="Close"
+                        className="absolute left-2 top-2 text-[11px] font-semibold text-black/50 hover:text-black/80"
+                      >
+                        x
+                      </button>
+                      <p className="text-[11px] font-semibold tracking-[0.3em] text-black/70">
+                        Secure Checkout
+                      </p>
+                      <p className="mt-2">
+                        The Vostok manual is delivered instantly through Gumroad, a trusted
+                        platform used by thousands of independent creators.
+                      </p>
+                      <p className="mt-2">
+                        After purchase you will immediately receive the PDF download and all
+                        future updates.
+                      </p>
+                      <p className="mt-2">
+                        Your payment is processed securely and your email is never shared.
+                      </p>
+                    </m.div>
+                  )}
+                </AnimatePresence>
               </div>
-              {!isFourChan && (
-                <p className="hidden md:block text-center text-[11px] leading-relaxed text-black/60">
-                  Don&apos;t want to try the full version out?{" "}
-                  <a
-                    href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => trackSafe("chapter2_click")}
-                    className="underline decoration-black/40 underline-offset-4 transition hover:text-black"
-                  >
-                    Just buy chapter 2 and try the exercises.
-                  </a>
-                </p>
-              )}
-              {isFourChan && (
-                <div className="text-center text-[11px] leading-relaxed text-black/60">
-                  <p>
-                    Too broke to afford the 29.99? Don&apos;t want to risk it? Don&apos;t want to
-                    trust some weird internet guru with AI pics? Makes sense. Buy the Jaw
-                    section, Chapter 2 only for 3.99, try it out for a week then come back when
-                    the results are visible. Less risk. Go for it, brokie.
-                  </p>
-                  <a
-                    href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => trackSafe("chapter2_click")}
-                    className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
-                  >
-                    Buy Now Chapter 2 Only
-                  </a>
-                </div>
-              )}
+              
             </div>
-            <div className="flex flex-col items-center md:flex-1 md:items-center">
-              <p className="text-black/60 tracking-[0.45em] uppercase text-xs mb-3 md:mb-6 font-light">
+            <div className="flex w-full max-w-[420px] flex-col items-center md:max-w-none md:flex-1 md:items-center">
+              <p className="text-black/60 tracking-[0.45em] uppercase text-[11px] md:text-xs mb-6 md:mb-6 font-light">
                 Begin Your Transformation
               </p>
 
-              <h2 className="text-4xl md:text-5xl font-semibold text-black tracking-tight mb-3 md:mb-4 font-serif text-center">
+              <h2 className="text-[36px] md:text-5xl font-semibold text-black tracking-tight mb-4 md:mb-4 font-serif text-center">
                 Vostok Method
               </h2>
 
-              <p className="text-black/60 text-sm md:text-base font-light mb-3 max-w-md mx-auto leading-relaxed">
-                An Engineering Approach to Aesthetics
+              <p className="text-black/50 text-[18px] md:text-base font-light mb-6 max-w-md mx-auto leading-relaxed">
+                Engineering Facial Structure
               </p>
+              <ul className="mb-8 space-y-3 text-xs md:text-sm text-black/60 font-light leading-[1.6]">
+                <li>• Step-by-step facial exercises</li>
+                <li>• Jaw strengthening protocols</li>
+                <li>• Posture correction</li>
+                <li>• Nasal breathing mechanics</li>
+                <li>• Anatomy diagrams</li>
+              </ul>
 
-              <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
+              <div className="relative md:hidden mt-6 mb-8">
+                <img
+                  src="/gumroad.png"
+                  alt="Gumroad secure checkout"
+                  className="w-auto border border-foreground/20 rounded-sm h-44"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <button
+                  type="button"
+                  onClick={handleInfoClick}
+                  aria-label="Checkout details"
+                  className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-black/20 bg-white/90 text-[10px] font-semibold text-black/70 shadow-md"
+                >
+                  ?
+                </button>
+                <AnimatePresence>
+                  {isInfoOpen && (
+                    <m.div
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute right-3 top-11 z-10 w-56 rounded-md border border-black/10 bg-white/95 p-3 text-[9px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
+                    >
+                      <button
+                        type="button"
+                        onClick={handleInfoClose}
+                        aria-label="Close"
+                        className="absolute left-2 top-2 text-[10px] font-semibold text-black/50 hover:text-black/80"
+                      >
+                        x
+                      </button>
+                      <p className="text-[10px] font-semibold tracking-[0.3em] text-black/70">
+                        Secure Checkout
+                      </p>
+                      <p className="mt-2">
+                        The Vostok manual is delivered instantly through Gumroad, a trusted
+                        platform used by thousands of independent creators.
+                      </p>
+                      <p className="mt-2">
+                        After purchase you will immediately receive the PDF download and all
+                        future updates.
+                      </p>
+                      <p className="mt-2">
+                        Your payment is processed securely and your email is never shared.
+                      </p>
+                    </m.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              <div className="divider-line max-w-xs mx-auto mb-8 md:mb-8" />
 
               {!isFourChan && (
-                <p className="text-black/50 text-xs tracking-wider mb-7 md:mb-10">
+                <p className="text-black/50 text-xs tracking-wider mb-8 md:mb-8">
                   Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
                 </p>
               )}
@@ -251,41 +312,13 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               )}
 
               {/* CTA Button */}
-              <div className="mt-4 flex flex-col items-center gap-3 md:mt-2">
-                <div className="relative md:hidden">
-                  <img
-                    src="/gumroad.png"
-                    alt="Gumroad secure checkout"
-                    className="w-auto border border-foreground/20 rounded-sm h-44"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleInfoClick}
-                    aria-label="Checkout details"
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full border border-black/20 bg-white/90 text-[10px] font-semibold text-black/70 shadow-md"
-                  >
-                    ?
-                  </button>
-                  {isInfoOpen && (
-                    <div className="absolute right-3 top-11 z-10 w-56 rounded-md border border-black/10 bg-white/95 p-3 text-[9px] uppercase tracking-[0.25em] text-black/60 shadow-lg">
-                      I am a writer, not a developer. I built the exercises, not the checkout.
-                      Gumroad is simply the most reliable way to deliver the PDF the moment you
-                      pay—no glitches, no delays, no stolen credit cards. It handles the technical
-                      weight so I can focus on what matters: the work you are about to do.
-                    </div>
-                  )}
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <span className="text-4xl font-light text-black">$29.99</span>
-                </div>
+              <div className="mt-8 flex flex-col items-center gap-3 md:mt-2">
                 <m.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => handleCheckoutClick("footer")}
-                  className="inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-12 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500"
+                  className="mt-8 mb-4 w-[90%] max-w-[360px] inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-6 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500 md:mt-0 md:mb-0 md:w-auto md:px-12"
                 >
                   <svg
                     aria-hidden="true"
@@ -298,32 +331,16 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                     strokeLinejoin="round"
                   >
                     <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-                    <rect x="4" y="10" width="16" height="10" rx="2" />
+                  <rect x="4" y="10" width="16" height="10" rx="2" />
                   </svg>
-                  {isFourChan ? "NEETBUX HERE" : "Buy Now"}
+                  {isFourChan ? "NEETBUX HERE" : "Download the Vostok Manual — $29.99"}
                 </m.button>
-                <p className="text-[9px] uppercase tracking-[0.25em] text-black/60">
-                  Secure Gumroad checkout · 128-bit encryption
+                <p className="text-[10px] uppercase tracking-[0.2em] text-black/70">
+                  Download the Vostok Structural Training Manual
                 </p>
-                {isFourChan && (
-                  <div className="mt-4 text-center text-[11px] leading-relaxed text-black/60 md:hidden">
-                    <p>
-                      Too broke to afford the 29.99? Don&apos;t want to risk it? Don&apos;t want to
-                      trust some weird internet guru with AI pics? Makes sense. Buy the Jaw
-                      section, Chapter 2 only for 3.99, try it out for a week then come back when
-                      the results are visible. Less risk. Go for it, brokie.
-                    </p>
-                    <a
-                      href="https://vostok67.gumroad.com/l/mini_book_chapter_2?wanted=true"
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={() => trackSafe("chapter2_click")}
-                      className="mt-3 inline-flex items-center justify-center rounded-full border border-black/20 bg-black/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/80 transition hover:text-black"
-                    >
-                      Buy Now Chapter 2 Only
-                    </a>
-                  </div>
-                )}
+                <p className="text-[9px] uppercase tracking-[0.25em] text-black/60 mt-2">
+                  Secure checkout via Gumroad
+                </p>
               </div>
             </div>
           </div>
@@ -416,8 +433,8 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               </a>
             </div>
             <div className="flex flex-col items-end text-right md:items-center md:text-center">
-              <span className="hidden md:inline">© 2026 The Timeless Face</span>
-              <span>Engineered for Excellence</span>
+              <span className="hidden md:inline">© 2026</span>
+              <span>Engineering Facial Structure</span>
             </div>
           </div>
         </div>

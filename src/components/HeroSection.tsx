@@ -51,6 +51,8 @@ const HeroSection = ({
   const hasStartedMobileIntro = useRef(false);
   const skipMobileIntroRef = useRef(false);
   const maxOffsetRef = useRef(0);
+  const [copyIndex, setCopyIndex] = useState(0);
+  const [isCopyHighlight, setIsCopyHighlight] = useState(true);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
@@ -165,6 +167,28 @@ const HeroSection = ({
   const activeFlash = mobileFlashIndex !== null ? mobileFlashSequence[mobileFlashIndex] : null;
   const activeFlashVariants =
     activeFlash && activeFlash.kind === "image" ? getImageVariants(activeFlash.src) : null;
+  const copyVariants = [
+    <>
+      <p>
+        Modern life weakens facial structure.
+        <span className="block mt-3">Soft diets reduce jaw strength.</span>
+        <span className="block">Screens weaken posture.</span>
+        <span className="block">Mouth breathing alters facial development.</span>
+        <span className="block mt-3">
+          The Vostok Method reintroduces the structural forces the face evolved to respond to.
+        </span>
+      </p>
+    </>,
+    <>
+      <p>
+        A structural training protocol designed to improve jaw strength, posture, and facial
+        alignment
+      </p>
+      <p className="mt-3 text-steel/70 text-[9px] md:text-base font-light tracking-[0.08em] uppercase">
+        Exercises • Anatomy diagrams • Structural mechanics
+      </p>
+    </>,
+  ];
   const resetSuiteTimer = () => {
     if (isHeroLocked) {
       return;
@@ -248,6 +272,23 @@ const HeroSection = ({
       }
     };
   }, [isDesktop]);
+
+  useEffect(() => {
+    const timeouts: number[] = [];
+    const triggerHighlight = () => {
+      setIsCopyHighlight(true);
+      timeouts.push(window.setTimeout(() => setIsCopyHighlight(false), 900));
+    };
+    triggerHighlight();
+    const interval = window.setInterval(() => {
+      setCopyIndex((current) => (current + 1) % copyVariants.length);
+      triggerHighlight();
+    }, 20000);
+    return () => {
+      timeouts.forEach((id) => window.clearTimeout(id));
+      window.clearInterval(interval);
+    };
+  }, [copyVariants.length]);
 
   useEffect(() => {
     if (isDesktop || hasRunMobileFlash.current) {
@@ -1080,7 +1121,7 @@ const HeroSection = ({
               <>The method exists.</>
             ) : (
               <>
-                Everyone is <em>dumb</em> (including YOU)
+                Engineering Facial Structure
               </>
             )}
           </p>
@@ -1102,8 +1143,7 @@ const HeroSection = ({
               </>
             ) : (
               <>
-                For Ignoring <strong>The Number One</strong> Way to get{" "}
-                <strong>Insanely HOT</strong>
+                VOSTOK METHOD
               </>
             )}
           </m.h1>
@@ -1144,14 +1184,13 @@ const HeroSection = ({
                   <p className="mt-3">Why not your face?</p>
                 </>
               ) : (
-                <p>
-                  Skin care, doesn&apos;t make you HOT. Working out, doesn&apos;t make you HOT. Only
-                  working out the face, with <u>SPECIFIC</u> face exercises works!
-                  <span className="block">
-                    This is the <strong>ULTIMATE</strong> easy-to-do no BS guide! Get yours for
-                    only $30!
-                  </span>
-                </p>
+                <div
+                  className={`transition-colors duration-700 ${
+                    isCopyHighlight ? "text-ice" : "text-steel"
+                  }`}
+                >
+                  {copyVariants[copyIndex]}
+                </div>
               )}
             </m.div>
 

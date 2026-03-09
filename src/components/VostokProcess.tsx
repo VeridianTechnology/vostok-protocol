@@ -220,19 +220,19 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         icons: ["/Comparison/1z.jpg", "/Comparison/2z.jpg"],
         text: (
           <>
-            <p>The method exists.</p>
+            <p>The Vostok Method</p>
             <p className="mt-4">
-              I built it. Tested it. Lived it. Spent 100 hours refining it in Thailand while models
-              slept in my bed and strangers interrupted my writing to flirt.
+              I developed this system while studying the mechanics of facial structure, posture,
+              and muscular influence on the skull.
             </p>
-            <p className="mt-4">I&apos;m 5&apos;7&quot;. Broke. NEET. No career. No savings. No direction.</p>
-            <p className="mt-4">I have a literal 10/10 model in my bed right now.</p>
             <p className="mt-4">
-              Not because of money. Not because of status. Not because I&apos;m interesting or confident
-              or any of the other things they told you matter.
+              Over 100 hours were spent testing exercises, refining protocols, and documenting
+              measurable changes.
             </p>
-            <p className="mt-4">Because I MOG.</p>
-            <p className="mt-4">I mog everyone. And so can you.</p>
+            <p className="mt-4">
+              The result is a structured training manual designed to strengthen the muscles that
+              influence facial form.
+            </p>
           </>
         ),
       },
