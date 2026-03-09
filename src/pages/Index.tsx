@@ -112,18 +112,39 @@ const resolveThumbSource = (src: string, format: ImageFormat) => {
   return variants.mobile.jpg;
 };
 
-const preloadImage = (src: string) =>
+const preloadImage = (src: string, timeoutMs = 8000) =>
   new Promise<void>((resolve) => {
     const image = new Image();
-    image.onload = () => resolve();
-    image.onerror = () => resolve();
+    let settled = false;
+    const settle = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
+    // Guard against stalled requests so loaders do not hang forever.
+    const timeoutId = window.setTimeout(settle, timeoutMs);
+    image.onload = settle;
+    image.onerror = settle;
     image.src = src;
   });
 
-const preloadVideoMetadata = (src: string) =>
+const preloadVideoMetadata = (src: string, timeoutMs = 8000) =>
   new Promise<void>((resolve) => {
     const video = document.createElement("video");
-    const settle = () => resolve();
+    let settled = false;
+    const settle = () => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      window.clearTimeout(timeoutId);
+      resolve();
+    };
+    // Guard against stalled requests so loaders do not hang forever.
+    const timeoutId = window.setTimeout(settle, timeoutMs);
     video.preload = "metadata";
     video.onloadedmetadata = settle;
     video.onerror = settle;
