@@ -1,4 +1,4 @@
 Date: 3/10/26
 Changes:
 - Added timeouts to image/video preloaders to prevent loaders from hanging indefinitely.
-
+- Switched to hero-first render and viewport-triggered section loading for faster initial paint.
