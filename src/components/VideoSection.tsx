@@ -15,6 +15,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
   const hasTrackedStart = useRef(false);
   const hasTrackedFinish = useRef(false);
   const videoSources = isMobile
@@ -52,6 +53,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
     videoRef.current.load();
     setIsPlaying(false);
     setHasStarted(false);
+    setIsVideoReady(false);
   }, [videoKey]);
 
   const togglePlay = async () => {
@@ -94,6 +96,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
           controlsList="nodownload noplaybackrate"
           playsInline
           preload="metadata"
+          onCanPlay={() => setIsVideoReady(true)}
           onPlay={() => {
             setIsPlaying(true);
             setHasStarted(true);
@@ -148,7 +151,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
           ))}
         </video>
 
-        {!hasStarted && (
+        {!hasStarted && (isMobile || !isVideoReady) && (
           <button
             type="button"
             onClick={togglePlay}
