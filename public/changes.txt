@@ -58,3 +58,4 @@ Changes:
 - Added a slight delay before starting the main flash background audio.
 - Reduced quote/video divider thickness, removed video top padding, and resized VOSTOK flash text.
 - Updated protocol CTA link to the Gumroad checkout.
+3/11/26 - Added a 3D skull pane with orbit controls, hid it on mobile, and disabled structural timeline flashing on hover.

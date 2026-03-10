@@ -81,14 +81,13 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   return (
     <section
       id="hero-video"
-      className="relative w-full bg-white border-y border-black/40 mt-0 mb-0"
+      className="relative w-full bg-white md:border-y md:border-black/40 mt-0 mb-0 overflow-hidden"
     >
-      <div className="relative w-full overflow-hidden">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/5 opacity-40" />
+      <div className="video-frame relative w-full">
         <video
           key={videoKey}
           ref={videoRef}
-          className="relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:py-0 md:object-contain md:aspect-auto"
+          className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:py-0 md:object-contain md:aspect-auto"
           poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls
@@ -173,7 +172,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
                   srcSet={`${posterVariants.mobile} 640w, ${posterVariants.desktop} 1600w`}
                   sizes="100vw"
                   alt="Video preview"
-                  className="h-full w-full object-cover"
+                  className="video-crop-mobile h-full w-full object-cover"
                   decoding="async"
                 />
               </picture>
@@ -181,7 +180,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
               <img
                 src={posterImage}
                 alt="Video preview"
-                className="h-full w-full object-cover"
+                className="video-crop-mobile h-full w-full object-cover"
                 decoding="async"
               />
             )}

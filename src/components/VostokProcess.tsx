@@ -399,6 +399,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             className={`relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 md:aspect-auto md:h-full ${
               focusPulse ? "brightness-110 shadow-[0_0_90px_rgba(255,255,255,0.25)]" : ""
             }`}
+            onMouseEnter={stopFlashSequence}
             onClick={() => {
               if (isMobile) {
                 stopFlashSequence();

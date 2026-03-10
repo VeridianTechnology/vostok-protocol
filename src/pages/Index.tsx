@@ -261,7 +261,7 @@ const Index = () => {
         />
       </LazySection>
       <div className="h-px w-full bg-black/80" />
-      <LazySection id="section-quote" minHeightClass="min-h-[20vh]">
+      <LazySection id="section-quote" minHeightClass="min-h-0 md:min-h-[20vh]">
         <QuoteSection
           entrySource={
             isFacebookEntry
@@ -280,8 +280,8 @@ const Index = () => {
           }
         />
       </LazySection>
-      <div className="h-px w-full bg-black/80" />
-      <LazySection id="section-video" minHeightClass="min-h-[50vh]">
+      <div className="hidden h-px w-full bg-black/80 md:block" />
+      <LazySection id="section-video" minHeightClass="min-h-0 md:min-h-[50vh]">
         <VideoSection
           onClosed={() => setIsVideoClosed(true)}
           entrySource={

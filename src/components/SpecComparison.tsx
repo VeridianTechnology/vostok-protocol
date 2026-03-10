@@ -2,6 +2,7 @@ import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 import LavaLampBlobs from "@/components/LavaLampBlobs";
+import SkullPane from "@/components/SkullPane";
 import { track } from "@vercel/analytics";
 import { trackSafe } from "@/lib/analytics";
 
@@ -122,6 +123,9 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
         <LavaLampBlobs offsetX={parallaxOffset.x} offsetY={parallaxOffset.y} />
       </div>
       <div className="relative z-10 max-w-6xl mx-auto">
+        <div className="hidden md:block">
+          <SkullPane />
+        </div>
         <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}

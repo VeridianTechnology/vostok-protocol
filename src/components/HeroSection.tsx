@@ -206,9 +206,9 @@ const HeroSection = ({
       mainFlashDelayRef.current = null;
     }
     if (!mainFlashAudioRef.current) {
-      const audio = new Audio("/audio/main.mp3");
+      const audio = new Audio("/audio/heartbeat.m4a");
       audio.preload = "auto";
-      audio.volume = 1;
+      audio.volume = 0.5;
       mainFlashAudioRef.current = audio;
     }
     const audio = mainFlashAudioRef.current;
@@ -240,7 +240,7 @@ const HeroSection = ({
     const audioSources = mobileFlashSequence
       .map((entry) => entry.audioSrc)
       .filter((src): src is string => Boolean(src));
-    audioSources.push("/audio/main.mp3");
+    audioSources.push("/audio/heartbeat.m4a");
     audioSources.forEach((src) => {
       if (!audioCacheRef.current.has(src)) {
         const audio = new Audio(src);

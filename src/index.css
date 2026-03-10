@@ -195,6 +195,18 @@
 }
 
 @layer utilities {
+  @media (max-width: 767px) {
+    .video-frame {
+      overflow: hidden;
+    }
+
+    .video-crop-mobile {
+      transform: scale(1.08) translateY(-6%);
+      transform-origin: center top;
+    }
+  }
+}
+@layer utilities {
   .lava-blob {
     position: absolute;
     width: 22rem;
@@ -265,6 +277,71 @@
     transition: transform 0.2s ease-out;
   }
 }
+
+@layer utilities {
+  .skull-pane {
+    position: relative;
+    border-radius: 28px;
+    padding: 28px 22px 30px;
+    margin-bottom: 32px;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.35) 55%, rgba(240, 236, 230, 0.2) 100%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(247, 243, 238, 0.55));
+    overflow: hidden;
+  }
+
+  .skull-pane-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+    align-items: start;
+  }
+
+  .skull-viewport {
+    position: relative;
+    width: 100%;
+    height: calc(clamp(340px, 44vw, 560px) + 25vh);
+    margin: 0;
+    perspective: 900px;
+  }
+
+  .skull-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+  }
+
+  .skull-canvas:active {
+    cursor: grabbing;
+  }
+
+  .skull-halo {
+    position: absolute;
+    inset: 12%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0) 70%);
+    filter: blur(8px);
+    pointer-events: none;
+  }
+
+  .skull-caption {
+    text-align: center;
+  }
+}
+
+@media (min-width: 768px) {
+  .skull-pane-inner {
+    gap: 36px;
+  }
+}
+
+@media (min-width: 768px) {
+  .skull-caption {
+    text-align: left;
+  }
+}
+
 
 @keyframes lava-drift {
   0% {
