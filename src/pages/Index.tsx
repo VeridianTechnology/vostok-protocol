@@ -260,7 +260,7 @@ const Index = () => {
           }
         />
       </LazySection>
-      <div className="h-1 w-full bg-black/80" />
+      <div className="h-px w-full bg-black/80" />
       <LazySection id="section-quote" minHeightClass="min-h-[20vh]">
         <QuoteSection
           entrySource={
@@ -280,7 +280,7 @@ const Index = () => {
           }
         />
       </LazySection>
-      <div className="h-1 w-full bg-black/80" />
+      <div className="h-px w-full bg-black/80" />
       <LazySection id="section-video" minHeightClass="min-h-[50vh]">
         <VideoSection
           onClosed={() => setIsVideoClosed(true)}

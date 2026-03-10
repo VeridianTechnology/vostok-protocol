@@ -137,10 +137,21 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
               <>FUCKING READ - AND UNDERSTAND, SIMP</>
             ) : (
               <>
-                Chapter <span className="font-semibold">Preview</span>
+                Inside the Vostok Protocol
               </>
             )}
           </h2>
+          {!isFourChan && (
+            <div className="mt-4 space-y-3">
+              <p className="text-black/60 text-sm md:text-base font-light max-w-2xl mx-auto leading-relaxed">
+                The full protocol contains 11 chapters
+                <br />
+                and over 200 pages of exercises,
+                <br />
+                diagrams, and structural training methods.
+              </p>
+            </div>
+          )}
         </m.div>
       </div>
 
@@ -311,6 +322,21 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
           </div>
         </div>
       </div>
+      {!isFourChan && (
+        <div className="relative z-10 mt-6 flex flex-col items-center gap-2">
+          <span className="text-[10px] uppercase tracking-[0.35em] text-black/50">
+            Continue Reading →
+          </span>
+          <a
+            href="https://vostok67.gumroad.com/l/vostokmethod?wanted=true"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-[11px] px-6 py-3 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500"
+          >
+            Unlock the Complete Protocol
+          </a>
+        </div>
+      )}
     </section>
   );
 };

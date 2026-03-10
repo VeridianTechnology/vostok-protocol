@@ -17,3 +17,44 @@ Changes:
 - Added auto-dismiss + close control for the checkout tooltip (15s fade-out).
 - Reordered mobile CTA layout and updated copy to match the new mobile flow.
 - Updated CTA button label and mobile spacing/typography for readability and conversion.
+- Tightened CTA mobile spacing and centered the checkout tooltip over the Gumroad image.
+- Reduced spacing above the CTA button on mobile.
+- Reworked hero mobile flash timeline with audio cues and new messaging.
+- Preloaded mobile flash audio and unlocked playback on first user interaction.
+- Adjusted final audio timing and enlarged the VOSTOK METHOD flash text.
+- Played final audio 0.5s before the VOSTOK METHOD flash and increased its size.
+- Fixed double-play of flash audio cues.
+- Delayed early flash audio cues by 0.6s to match text timing.
+- Extended early flash timings for MODERN LIFE, before/after images, and WEAKENS.
+- Shortened early flash durations and shifted the sequence to keep flow.
+- Re-timed flash sequence durations and added dual-size Structure/Vostok overlay.
+- Moved Structure/Vostok to standalone black panes and corrected THE FACE audio timing.
+- Reordered and re-timed the mobile flash beats per new duration list.
+- Re-timed flash beats to 0.7s/1.2s/1.5s durations and enlarged flash text with a soft halo.
+- Added glossy hero overlay, mobile swipe transitions on hero controls, and consistent image vignette.
+- Updated Vostok Process copy, labels, stats, and added subtle scan/glow effects.
+- Added hero zoom controls on mobile, broke MODERN LIFE into two lines, and enlarged VOSTOK METHOD flash text.
+- Updated chapter preview header copy and added protocol description + CTA link.
+- Removed duplicate hour labels inside stage descriptions.
+- Reduced VOSTOK METHOD flash size and added non-AI photo gallery with mobile/desktop variants.
+- Added non-AI photo thumbnails to the 100 HOURS icon strip and responsive icon fallbacks.
+- Split non-AI photos into their own timeline stage with dedicated icons.
+- Moved non-AI photos to public/before/after and updated copy for the new stage.
+- Removed the old public/before:after folder.
+- Fixed non-AI icon thumbnails by bypassing missing thumb variants.
+- Added base image fallback for non-AI stage and icon rendering.
+- Removed the second after image from the non-AI photos stage.
+- Updated non-AI photos narrative copy.
+- Added background flash audio (main.m4a) at 40% volume and switched cues to m4a for mobile.
+- Updated CTA button text/price layout and centered mobile checkout reassurance.
+- Triggered main flash audio on first user interaction to satisfy autoplay rules.
+- Corrected CTA button label to "Download the Vostok Manual".
+- Moved the $29.99 price into the CTA button on a new line.
+- Ensured main flash audio starts after user unlock during the active flash window.
+- Moved the protocol CTA under the book navigation controls.
+- Increased main flash background audio to full volume.
+- Updated quote section copy.
+- Switched main flash background audio to the updated main.mp3 file.
+- Added a slight delay before starting the main flash background audio.
+- Reduced quote/video divider thickness, removed video top padding, and resized VOSTOK flash text.
+- Updated protocol CTA link to the Gumroad checkout.

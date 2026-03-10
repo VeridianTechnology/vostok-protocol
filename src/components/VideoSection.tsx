@@ -88,7 +88,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         <video
           key={videoKey}
           ref={videoRef}
-          className="relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:py-6 md:object-contain md:aspect-auto"
+          className="relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:py-0 md:object-contain md:aspect-auto"
           poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls

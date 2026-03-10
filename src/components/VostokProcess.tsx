@@ -1,9 +1,9 @@
 import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getImageVariants } from "@/lib/utils";
+import { getImageVariants, toDesktopImage, toMobileImage } from "@/lib/utils";
 import { track } from "@vercel/analytics";
 
-type StageKey = "before" | "20" | "45" | "70" | "100";
+type StageKey = "before" | "20" | "45" | "70" | "100" | "non_ai";
 
 type VostokProcessProps = {
   onLoaded?: () => void;
@@ -43,201 +43,121 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         key: "before",
         title: "Before Vostok",
         icons: ["/Comparison/3z.jpg", "/Comparison/4z.jpg"],
-        text: isTwitter ? (
+        text: (
           <>
-            <p>Let me guess.</p>
-            <p className="mt-4">You&apos;ve optimized everything else.</p>
+            <p>Like most people, I optimized everything except</p>
+            <p>the structure of the face.</p>
+            <p className="mt-4">Fitness. Style. Grooming.</p>
             <p className="mt-4">
-              Your timeline? Curated. Block lists. Mute words. Follow lists so tight you see exactly
-              what you need and nothing you don&apos;t.
+              But facial structure remained the one variable
             </p>
-            <p className="mt-4">
-              Your setup? Monitors. Keyboards. Desk ergonomics that would make an engineer weep.
-              You&apos;ve spent hours researching the difference between mechanical switches no
-              normie will ever understand.
-            </p>
-            <p className="mt-4">
-              Your body? You lift. You track macros. You&apos;ve tried carnivore, keto, OMAD, maybe
-              even peptides if you&apos;re deep enough. HRT? You&apos;ve at least thought about it.
-              You run the numbers on everything.
-            </p>
-            <p className="mt-4">But your face?</p>
-            <p className="mt-4">You just... live with it.</p>
-            <p className="mt-4">Here&apos;s what took me years to understand:</p>
-            <p className="mt-4">The hierarchy is real.</p>
-            <p className="mt-4">
-              Not the fake one they tell you about - money, status, career. Those help. They&apos;re
-              fine. But there&apos;s a deeper one. One that operates whether you believe in it or not.
-            </p>
-            <p className="mt-4">The face hierarchy.</p>
-            <p className="mt-4">
-              You&apos;ve seen it play out. The guy who walks into a room and everyone just... orients
-              toward him. Not because he said anything. Not because he&apos;s loud. Just because his
-              face fires something primal in every monkey brain in that room. And they cannot help
-              themselves.
-            </p>
-            <p className="mt-4">
-              You&apos;ve seen the opposite too. The guy who&apos;s smarter. Funnier. More successful on
-              paper. But he&apos;s invisible. He&apos;s background noise. He exists, but he doesn&apos;t
-              register.
-            </p>
-            <p className="mt-4">That gap?</p>
-            <p className="mt-4">
-              It&apos;s not personality. It&apos;s not money. It&apos;s not even height, though the cope
-              merchants will tell you otherwise.
-            </p>
-            <p className="mt-4">It&apos;s face.</p>
-            <p className="mt-4">I used to believe the lies.</p>
-            <p className="mt-4">
-              Politics matter. Be interesting. Be kind. The right one will see past your face.
-            </p>
-            <p className="mt-4">Then I got hot.</p>
-            <p className="mt-4">
-              Not rich. Not successful. Not wiser or more experienced or more confident. Just...
-              hotter.
-            </p>
-            <p className="mt-4">And suddenly:</p>
-            <p className="mt-4">Cashiers forgot my order because they couldn&apos;t stop staring.</p>
-            <p className="mt-4">Strangers smiled for no reason.</p>
-            <p className="mt-4">Women invented excuses to stand near me.</p>
-            <p className="mt-4">
-              Men - bigger men, stronger men - stepped aside. Not from fear. From recognition. Like I
-              was one of them. Like my face had already done the talking so they didn&apos;t need to.
-            </p>
-            <p className="mt-4">
-              I brought value to every interaction just by standing there like a dweeb.
-            </p>
-            <p className="mt-4">Here&apos;s what actually changed:</p>
-            <p className="mt-4">
-              Investment opportunities appeared. People assumed I knew things. Assumed I had money.
-              Wanted to be near me, work with me, give me things.
-            </p>
-            <p className="mt-4">
-              My own family started treating me better. My mother, my father, cousins - people
-              who&apos;ve known me my whole life - suddenly deferred. Asked my opinion. Introduced me
-              like I was someone to be proud of.
-            </p>
-            <p className="mt-4">
-              Friends who used to talk over me started listening. Friends who used to dismiss me
-              started asking what I thought.
-            </p>
-            <p className="mt-4">
-              I didn&apos;t get smarter. I didn&apos;t get more experienced. I didn&apos;t get more
-              successful.
-            </p>
-            <p className="mt-4">I just got hotter.</p>
-            <p className="mt-4">That&apos;s it. That&apos;s the whole secret.</p>
-            <p className="mt-4">The tech-bro in you is already running the numbers.</p>
-            <p className="mt-4">
-              You modify your timeline because information determines your reality. You modify your
-              tech because tools determine your capability. You modify your body because hardware
-              determines your longevity.
-            </p>
-            <p className="mt-4">
-              Why would the one thing people judge in the first 0.3 seconds of meeting you be the one
-              thing you leave to chance?
-            </p>
-            <p className="mt-4">It doesn&apos;t scale. It doesn&apos;t optimize. It doesn&apos;t ROI.</p>
-            <p className="mt-4">
-              Unless you treat it like everything else you&apos;ve ever improved.
-            </p>
-          </>
-        ) : (
-          <>
-            <p>You&apos;ve optimized everything else.</p>
-            <p className="mt-4">
-              Timeline, tools, body. But your face is still left to chance.
-            </p>
-            <p className="mt-4">
-              Vostok is the missing upgrade: direct, measurable, and fast.
-            </p>
+            <p>left entirely to chance.</p>
           </>
         ),
       },
       {
         key: "20",
-        title: "20 Hours of Vostok",
+        title: "20 HOURS",
         icons: ["/Comparison/5z.jpg", "/Comparison/6z.jpg"],
         text: (
           <>
-            <p>This is when things started to click.</p>
+            <p className="mt-4">Early structural engagement.</p>
             <p className="mt-4">
-              I wasn&apos;t obsessed yet, but once I sharpened a few muscles and angles, the world
-              shifted. It was like gravity tilted in my favor.
+              Small adjustments in posture and facial tension
             </p>
-            <p className="mt-4">People were warmer. More open.</p>
+            <p>began altering the resting geometry of the face.</p>
+            <p className="mt-4">The changes were subtle — but unmistakable.</p>
             <p className="mt-4">
-              I felt the first real <em>pull</em> of Vostok—<br />
-              and it was addictive.
+              People responded differently before I even
             </p>
+            <p>fully understood why.</p>
           </>
         ),
       },
       {
         key: "45",
-        title: "45 Hours of Vostok",
+        title: "45 HOURS",
         icons: ["/Comparison/9z.jpg", "/Comparison/10z.jpg"],
         text: (
           <>
-            <p>This stage hit hard.</p>
+            <p className="mt-4">Muscle activation became consistent.</p>
+            <p className="mt-4">Jaw position stabilized.</p>
+            <p>Neck posture improved.</p>
+            <p>Facial tension redistributed.</p>
             <p className="mt-4">
-              I started walking around like I was the most attractive guy in whatever room I
-              entered. And honestly—
+              For the first time, the face felt
             </p>
-            <p className="mt-4">I wasn&apos;t wrong.</p>
-            <p className="mt-4">
-              Cashiers acted differently. Girls responded instantly. Even my own mother couldn&apos;t
-              understand the sudden spike in female attention.
-            </p>
-            <p className="mt-4">
-              It was overwhelming at times, but I felt like I&apos;d unlocked a cheat code.
-            </p>
+            <p>like a system that could be trained.</p>
           </>
         ),
       },
       {
         key: "70",
-        title: "70 Hours of Vostok",
+        title: "70 HOURS",
         icons: ["/Comparison/8z.jpg", "/Comparison/7z.jpg"],
         text: (
           <>
-            <p>By now I thought I was untouchable.</p>
+            <p className="mt-4">Structural changes became visible.</p>
+            <p className="mt-4">Strangers held eye contact longer.</p>
+            <p>People responded more openly.</p>
+            <p className="mt-4">It was no longer subtle.</p>
             <p className="mt-4">
-              Results were obvious, not subtle. Strangers double-took. Women initiated more.
+              Something about the face had shifted
             </p>
-            <p className="mt-4">
-              I started questioning everything:
-              <br />
-              <strong>Is this really all looks? Did I just uncover something no one&apos;s been talking about?</strong>
-            </p>
-            <p className="mt-4">The answer was becoming clearer: yes.</p>
+            <p>into a different category of perception.</p>
           </>
         ),
       },
       {
         key: "100",
-        title: "100 Hours of Vostok",
-        icons: ["/Comparison/1z.jpg", "/Comparison/2z.jpg"],
+        title: "100 HOURS",
+        icons: [
+          "/Comparison/1z.jpg",
+          "/Comparison/2z.jpg",
+        ],
         text: (
           <>
-            <p>The Vostok Method</p>
+            <p className="mt-4">The structure had adapted.</p>
+            <p className="mt-4">Facial balance improved.</p>
+            <p>Jaw definition increased.</p>
+            <p>Posture stabilized.</p>
+            <p className="mt-4">The face was no longer passive.</p>
+            <p className="mt-4">It was engineered.</p>
+          </>
+        ),
+      },
+      {
+        key: "non_ai",
+        title: "NON-AI PHOTOS",
+        icons: [
+          "/before/after/before.jpg",
+          "/before/after/me_samui.jpg",
+        ],
+        text: (
+          <>
+            <p>Before</p>
             <p className="mt-4">
-              I developed this system while studying the mechanics of facial structure, posture,
-              and muscular influence on the skull.
+              Before the protocol, my face was like most people’s — shaped more by habit than by
+              intention.
             </p>
             <p className="mt-4">
-              Over 100 hours were spent testing exercises, refining protocols, and documenting
-              measurable changes.
+              Years of looking down at screens, soft foods, and poor posture gradually softened the
+              structure of the face.
+            </p>
+            <p className="mt-6">After</p>
+            <p className="mt-4">
+              These photos were taken five years later.
             </p>
             <p className="mt-4">
-              The result is a structured training manual designed to strengthen the muscles that
-              influence facial form.
+              Despite being older, the face appears stronger and more defined. Through structural
+              training, the jaw tightened, posture improved, and the face began to hold itself
+              differently.
             </p>
           </>
         ),
       },
     ],
-    [isTwitter]
+    []
   );
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("before");
@@ -246,6 +166,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
   const [showFlash, setShowFlash] = useState(false);
+  const [scanKey, setScanKey] = useState(0);
+  const [focusPulse, setFocusPulse] = useState(false);
   const activeStageRef = useRef(activeStage);
   const activeImageRef = useRef(activeImage);
   const rotationTimerRef = useRef<number | null>(null);
@@ -255,7 +177,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const hasFlashedOnceRef = useRef(false);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
-  const activeVariants = getImageVariants(activeImage);
+  const activeVariants =
+    activeStage === "non_ai" ? null : getImageVariants(activeImage);
   const handleGridShift = () => {
     const nextX = Math.round((Math.random() - 0.5) * 120);
     const nextY = Math.round((Math.random() - 0.5) * 120);
@@ -292,6 +215,13 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   useEffect(() => {
     activeStageRef.current = activeStage;
     activeImageRef.current = activeImage;
+  }, [activeStage, activeImage]);
+
+  useEffect(() => {
+    setScanKey((current) => current + 1);
+    setFocusPulse(true);
+    const timeout = window.setTimeout(() => setFocusPulse(false), 900);
+    return () => window.clearTimeout(timeout);
   }, [activeStage, activeImage]);
 
   const startRotation = () => {
@@ -432,20 +362,26 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/15" />
         <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
         <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/15 blur-[110px]" />
-        <div
-          className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 opacity-35 transition-transform duration-700"
-          style={{
-            transform: `translate3d(calc(-50% + ${gridShift.x + parallaxShift}px), calc(-50% + ${gridShift.y - parallaxShift}px), 0)`,
-            backgroundImage:
-              "linear-gradient(90deg, rgba(0,0,0,0.22) 1px, transparent 1px), linear-gradient(0deg, rgba(0,0,0,0.22) 1px, transparent 1px)",
-            backgroundSize: "40px 40px, 40px 40px",
-            backgroundPosition: "0 0, 0 0",
-          }}
-        />
+        <m.div
+          className="absolute inset-0"
+          animate={{ y: -10 }}
+          transition={{ duration: 20, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
+        >
+          <div
+            className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 opacity-35 transition-transform duration-700"
+            style={{
+              transform: `translate3d(calc(-50% + ${gridShift.x + parallaxShift}px), calc(-50% + ${gridShift.y - parallaxShift}px), 0)`,
+              backgroundImage:
+                "linear-gradient(90deg, rgba(0,0,0,0.22) 1px, transparent 1px), linear-gradient(0deg, rgba(0,0,0,0.22) 1px, transparent 1px)",
+              backgroundSize: "40px 40px, 40px 40px",
+              backgroundPosition: "0 0, 0 0",
+            }}
+          />
+        </m.div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
       </div>
       <p className="relative z-10 mb-6 text-center text-sm uppercase tracking-[0.35em] text-black font-semibold md:mb-8 md:text-base">
-        The Vostok Process
+        Structural Adaptation Timeline
       </p>
       {entrySource === "4chan" && (
         <p className="relative z-10 mx-auto mb-6 max-w-2xl text-center text-sm text-black/70">
@@ -455,9 +391,14 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       )}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
         <div className="md:w-3/5">
+          <p className="mb-3 text-center text-[10px] uppercase tracking-[0.35em] text-black/70 md:text-left">
+            Observed Structural Progression
+          </p>
           <div
             ref={imageFrameRef}
-            className="relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] md:aspect-auto md:h-full"
+            className={`relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 md:aspect-auto md:h-full ${
+              focusPulse ? "brightness-110 shadow-[0_0_90px_rgba(255,255,255,0.25)]" : ""
+            }`}
             onClick={() => {
               if (isMobile) {
                 stopFlashSequence();
@@ -465,6 +406,9 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             }}
           >
             <div className="absolute inset-0 z-0 bg-black" />
+            <div className="absolute left-4 top-4 z-30 rounded-full border border-white/30 bg-black/70 px-3 py-1 text-[9px] uppercase tracking-[0.3em] text-white/80">
+              LIVE STRUCTURE VIEW
+            </div>
             {activeVariants ? (
               <picture>
                 <source
@@ -490,12 +434,25 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             ) : (
               <img
                 src={activeImage}
+                srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w, ${activeImage} 2000w`}
+                sizes="(max-width: 640px) 100vw, 60vw"
                 alt={`${currentStage.title} comparison`}
                 className="relative z-10 h-full w-full object-cover"
                 loading="lazy"
                 decoding="async"
               />
             )}
+            <m.div
+              key={`scan-${scanKey}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.35, 0], y: [8, -8, -12] }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
+              className="pointer-events-none absolute inset-0 z-20"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(180deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 10px)",
+              }}
+            />
             <div
               className={`pointer-events-none absolute inset-0 z-20 bg-white transition-opacity duration-150 ${
                 showFlash ? "opacity-90" : "opacity-0"
@@ -504,16 +461,31 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           </div>
         </div>
         <div className="md:w-2/5">
-          <div className="w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] md:h-full md:p-6">
-            {stages.map((stage) => (
-              <div key={stage.key} className="mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0">
+          <div
+            className={`w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-shadow duration-500 md:h-full md:p-6 ${
+              focusPulse ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
+            }`}
+          >
+            {stages.map((stage) => {
+              const isActiveStage = activeStage === stage.key;
+              return (
+              <div
+                key={stage.key}
+                className={`mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0 ${
+                  isActiveStage ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
+                }`}
+              >
                 <div className="flex items-center justify-between gap-4">
                   <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
                     {stage.title}
                   </p>
                   <div className="grid grid-cols-2 justify-items-center gap-3">
                     {stage.icons.map((icon) => {
-                      const iconThumb = getThumbVariants(icon);
+                      const iconThumb = icon.includes("/before/after/")
+                        ? null
+                        : getThumbVariants(icon);
+                      const iconMobile = toMobileImage(icon);
+                      const iconDesktop = toDesktopImage(icon);
                       return (
                         <button
                           key={icon}
@@ -550,6 +522,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           ) : (
                             <img
                               src={icon}
+                              srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
+                              sizes="40px"
                               alt={`${stage.title} option`}
                               className="h-full w-full object-cover bg-black"
                               loading="lazy"
@@ -562,7 +536,14 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                   </div>
                 </div>
               </div>
-            ))}
+            );
+            })}
+            <div className="mt-5 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.3em] text-chrome/80">
+              <p>20 HOURS · Posture correction: +18%</p>
+              <p className="mt-2">45 HOURS · Jaw engagement: +32%</p>
+              <p className="mt-2">70 HOURS · Facial symmetry: +21%</p>
+              <p className="mt-2">100 HOURS · Structural balance: +37%</p>
+            </div>
           </div>
         </div>
       </div>

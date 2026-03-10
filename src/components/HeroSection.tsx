@@ -41,7 +41,7 @@ const HeroSection = ({
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
-  const flashTimerRef = useRef<number | null>(null);
+  const flashTimersRef = useRef<number[]>([]);
   const mobileImageIntervalRef = useRef<number | null>(null);
   const heroLockTimersRef = useRef<number[]>([]);
   const afterTimersRef = useRef<number[]>([]);
@@ -53,6 +53,13 @@ const HeroSection = ({
   const maxOffsetRef = useRef(0);
   const [copyIndex, setCopyIndex] = useState(0);
   const [isCopyHighlight, setIsCopyHighlight] = useState(true);
+  const audioUnlockedRef = useRef(false);
+  const audioCacheRef = useRef<Map<string, HTMLAudioElement>>(new Map());
+  const mainFlashAudioRef = useRef<HTMLAudioElement | null>(null);
+  const mainFlashDelayRef = useRef<number | null>(null);
+  const isFlashActiveRef = useRef(false);
+  const [mobileSwipeKey, setMobileSwipeKey] = useState(0);
+  const [zoomLevel, setZoomLevel] = useState(1);
   const swipeDuration = 0.5;
   const motionEnabled = isDesktop;
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
@@ -71,10 +78,9 @@ const HeroSection = ({
     if (mobileFlashIndex === null || hasReportedMobileFlash.current) {
       return;
     }
-    if (flashTimerRef.current) {
-      window.clearTimeout(flashTimerRef.current);
-      flashTimerRef.current = null;
-    }
+    flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
+    flashTimersRef.current = [];
+    stopMainFlashAudio();
     hasRunMobileFlash.current = true;
     setMobileFlashIndex(null);
     hasReportedMobileFlash.current = true;
@@ -94,6 +100,7 @@ const HeroSection = ({
   const showBefore = () => {
     setIsAfter(false);
     setMobileImageIndex(0);
+    triggerMobileSwipe();
     startHeroLockSequence();
     trackSafe("hero_toggle_front");
   };
@@ -101,6 +108,7 @@ const HeroSection = ({
   const showAfter = () => {
     setIsAfter(true);
     setMobileImageIndex(0);
+    triggerMobileSwipe();
     startHeroLockSequence();
     trackSafe("hero_toggle_side");
   };
@@ -149,24 +157,135 @@ const HeroSection = ({
   const mobileImageVariants = getImageVariants(mobileImage);
   const mobileFlashSequence = useMemo(
     () => [
-      { kind: "text", text: "IT'S TIME", duration: 500 },
-      { kind: "text", text: "TO", duration: 500 },
-      { kind: "image", src: "/images/1.jpg", alt: "Client 1 before", duration: 450 },
-      { kind: "image", src: "/images/2.jpg", alt: "Client 1 after", duration: 450 },
-      { kind: "text", text: "CHANGE", duration: 500 },
-      { kind: "image", src: "/images/8.jpg", alt: "Client 2 before", duration: 450 },
-      { kind: "image", src: "/images/7.jpg", alt: "Client 2 after", duration: 450 },
-      { kind: "text", text: "YOUR", duration: 500 },
-      { kind: "image", src: "/images/12.jpg", alt: "Client 3 before", duration: 450 },
-      { kind: "image", src: "/images/14.jpg", alt: "Client 3 after", duration: 450 },
-      { kind: "text", text: "FACE", duration: 650 },
-      { kind: "black", duration: 450 },
+      { kind: "text", text: "MODERN\nLIFE", atMs: 0, audioSrc: "/audio/1.m4a" },
+      { kind: "image", src: "/images/1.jpg", alt: "Myself before", atMs: 700 },
+      { kind: "text", text: "WEAKENS", atMs: 1400, audioSrc: "/audio/2.m4a" },
+      { kind: "image", src: "/images/2.jpg", alt: "Myself after", atMs: 2100 },
+      { kind: "text", text: "THE FACE", atMs: 2800, audioSrc: "/audio/3.m4a" },
+      { kind: "image", src: "/images/8.jpg", alt: "Client 1 before", atMs: 3500 },
+      { kind: "text", text: "SOFT FOOD", atMs: 4200, audioSrc: "/audio/4.m4a" },
+      { kind: "image", src: "/images/7.jpg", alt: "Client 1 after", atMs: 4900 },
+      { kind: "text", text: "SCREENS", atMs: 5600, audioSrc: "/audio/5.m4a" },
+      { kind: "image", src: "/images/12.jpg", alt: "Client 2 before", atMs: 6300 },
+      { kind: "text", text: "MOUTH BREATHING", atMs: 7000, audioSrc: "/audio/6.m4a" },
+      { kind: "image", src: "/images/14.jpg", alt: "Client 2 after", atMs: 7700 },
+      {
+        kind: "text",
+        text: "STRUCTURE\nRESPONDS\nTO FORCE",
+        atMs: 8400,
+        audioSrc: "/audio/final.m4a",
+      },
+      { kind: "text", text: "VOSTOK\nMETHOD", atMs: 9600 },
+      { kind: "black", atMs: 11100 },
     ],
     []
   );
+  const flashSequenceDuration = 12600;
   const activeFlash = mobileFlashIndex !== null ? mobileFlashSequence[mobileFlashIndex] : null;
   const activeFlashVariants =
-    activeFlash && activeFlash.kind === "image" ? getImageVariants(activeFlash.src) : null;
+    activeFlash && (activeFlash.kind === "image" || activeFlash.kind === "imageText")
+      ? getImageVariants(activeFlash.src)
+      : null;
+  const playFlashAudio = (src?: string) => {
+    if (!src) {
+      return;
+    }
+    const cached = audioCacheRef.current.get(src);
+    const audio = cached ?? new Audio(src);
+    if (!cached) {
+      audio.preload = "auto";
+      audioCacheRef.current.set(src, audio);
+    }
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  };
+
+  const startMainFlashAudio = () => {
+    if (mainFlashDelayRef.current) {
+      window.clearTimeout(mainFlashDelayRef.current);
+      mainFlashDelayRef.current = null;
+    }
+    if (!mainFlashAudioRef.current) {
+      const audio = new Audio("/audio/main.mp3");
+      audio.preload = "auto";
+      audio.volume = 1;
+      mainFlashAudioRef.current = audio;
+    }
+    const audio = mainFlashAudioRef.current;
+    audio.currentTime = 0;
+    mainFlashDelayRef.current = window.setTimeout(() => {
+      audio.play().catch(() => {});
+      mainFlashDelayRef.current = null;
+    }, 150);
+  };
+
+  const stopMainFlashAudio = () => {
+    if (mainFlashDelayRef.current) {
+      window.clearTimeout(mainFlashDelayRef.current);
+      mainFlashDelayRef.current = null;
+    }
+    const audio = mainFlashAudioRef.current;
+    if (!audio) {
+      return;
+    }
+    audio.pause();
+    audio.currentTime = 0;
+  };
+
+  const clampZoom = (next: number) => Math.min(1.4, Math.max(0.9, next));
+  const handleZoomIn = () => setZoomLevel((current) => clampZoom(current + 0.08));
+  const handleZoomOut = () => setZoomLevel((current) => clampZoom(current - 0.08));
+
+  useEffect(() => {
+    const audioSources = mobileFlashSequence
+      .map((entry) => entry.audioSrc)
+      .filter((src): src is string => Boolean(src));
+    audioSources.push("/audio/main.mp3");
+    audioSources.forEach((src) => {
+      if (!audioCacheRef.current.has(src)) {
+        const audio = new Audio(src);
+        audio.preload = "auto";
+        audioCacheRef.current.set(src, audio);
+      }
+    });
+
+    const unlockAudio = () => {
+      if (audioUnlockedRef.current) {
+        return;
+      }
+      audioUnlockedRef.current = true;
+      const sampleSrc = audioSources[0];
+      if (!sampleSrc) {
+        return;
+      }
+      const sample = audioCacheRef.current.get(sampleSrc);
+      if (!sample) {
+        return;
+      }
+      const originalVolume = sample.volume;
+      sample.volume = 0;
+      sample
+        .play()
+        .then(() => {
+          sample.pause();
+          sample.currentTime = 0;
+          sample.volume = originalVolume;
+        })
+        .catch(() => {
+          sample.volume = originalVolume;
+        });
+      if (isFlashActiveRef.current) {
+        startMainFlashAudio();
+      }
+    };
+
+    window.addEventListener("pointerdown", unlockAudio, { once: true });
+    window.addEventListener("touchstart", unlockAudio, { once: true });
+    return () => {
+      window.removeEventListener("pointerdown", unlockAudio);
+      window.removeEventListener("touchstart", unlockAudio);
+    };
+  }, [mobileFlashSequence]);
   const copyVariants = [
     <>
       <p>
@@ -295,25 +414,36 @@ const HeroSection = ({
       return;
     }
     hasRunMobileFlash.current = true;
-    let index = 0;
-    setMobileFlashIndex(index);
-    const step = () => {
-      index += 1;
-      if (index >= mobileFlashSequence.length) {
+    isFlashActiveRef.current = true;
+    if (audioUnlockedRef.current) {
+      startMainFlashAudio();
+    }
+    const timeouts: number[] = [];
+    mobileFlashSequence.forEach((entry, index) => {
+      const timeout = window.setTimeout(() => {
+        setMobileFlashIndex(index);
+      }, entry.atMs);
+      timeouts.push(timeout);
+      if (entry.audioSrc) {
+        const audioAtMs = entry.audioAtMs ?? entry.atMs;
+        timeouts.push(window.setTimeout(() => playFlashAudio(entry.audioSrc), audioAtMs));
+      }
+    });
+    timeouts.push(
+      window.setTimeout(() => {
         setMobileFlashIndex(null);
-        return;
-      }
-      setMobileFlashIndex(index);
-      flashTimerRef.current = window.setTimeout(step, mobileFlashSequence[index].duration);
-    };
-    flashTimerRef.current = window.setTimeout(step, mobileFlashSequence[0].duration);
+        stopMainFlashAudio();
+        isFlashActiveRef.current = false;
+      }, flashSequenceDuration)
+    );
+    flashTimersRef.current = timeouts;
     return () => {
-      if (flashTimerRef.current) {
-        window.clearTimeout(flashTimerRef.current);
-        flashTimerRef.current = null;
-      }
+      timeouts.forEach((timeout) => window.clearTimeout(timeout));
+      flashTimersRef.current = [];
+      stopMainFlashAudio();
+      isFlashActiveRef.current = false;
     };
-  }, [isDesktop, mobileFlashSequence.length]);
+  }, [isDesktop, mobileFlashSequence, flashSequenceDuration]);
 
   useEffect(() => {
     if (isDesktop || !hasRunMobileFlash.current || hasReportedMobileFlash.current) {
@@ -464,6 +594,7 @@ const HeroSection = ({
   const handleSuiteChange = (suite: "precision" | "adaptive" | "sculpted") => {
     setActiveSuite(suite);
     setMobileImageIndex(0);
+    triggerMobileSwipe();
     startHeroLockSequence();
     trackSafe("hero_suite_change", { suite });
   };
@@ -497,6 +628,13 @@ const HeroSection = ({
       return;
     }
     handleBuyNow();
+  };
+
+  const triggerMobileSwipe = () => {
+    if (isDesktop) {
+      return;
+    }
+    setMobileSwipeKey((current) => current + 1);
   };
 
   const startHeroLockSequence = () => {
@@ -782,6 +920,7 @@ const HeroSection = ({
       )}
       {/* Background image */}
       <div className="absolute inset-0">
+        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.2),transparent_45%)]" />
         <m.div
           key={`pane-${transitionKey}`}
           initial={motionEnabled ? { x: "0%" } : false}
@@ -846,6 +985,7 @@ const HeroSection = ({
               animate={{ opacity: 1 }}
               transition={{ duration: 1, ease: "easeOut" }}
               className="absolute inset-0"
+              style={{ transform: `scale(${zoomLevel})` }}
             >
               {mobileImageVariants ? (
                 <picture>
@@ -878,10 +1018,36 @@ const HeroSection = ({
                   decoding="async"
                 />
               )}
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.18),transparent_60%)]" />
               <div className="absolute inset-0 bg-black/40" />
             </m.div>
           )}
         </div>
+        <div className="absolute bottom-4 left-4 z-30 flex items-center gap-2 rounded-full border border-white/20 bg-black/60 px-3 py-2 text-[10px] uppercase tracking-[0.25em] text-white/80 md:hidden">
+          <button
+            type="button"
+            onClick={handleZoomOut}
+            aria-label="Zoom out"
+            className="h-7 w-7 rounded-full border border-white/20 text-white/80 hover:text-white"
+          >
+            -
+          </button>
+          <button
+            type="button"
+            onClick={handleZoomIn}
+            aria-label="Zoom in"
+            className="h-7 w-7 rounded-full border border-white/20 text-white/80 hover:text-white"
+          >
+            +
+          </button>
+        </div>
+        <m.div
+          key={`mobile-swipe-${mobileSwipeKey}`}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.9, 0] }}
+          transition={{ duration: swipeDuration, ease: "easeInOut" }}
+          className="pointer-events-none absolute inset-0 z-30 bg-black md:hidden"
+        />
         <m.div
           initial={false}
           animate={{ opacity: mobileFlashIndex !== null ? 1 : 0 }}
@@ -911,7 +1077,7 @@ const HeroSection = ({
                   }}
                 />
               </div>
-            ) : activeFlash.kind === "image" ? (
+            ) : activeFlash.kind === "image" || activeFlash.kind === "imageText" ? (
               <>
                 {activeFlashVariants ? (
                   <picture>
@@ -944,6 +1110,25 @@ const HeroSection = ({
                     decoding="async"
                   />
                 )}
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.18),transparent_60%)]" />
+                {activeFlash.kind === "imageText" && activeFlash.text && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/35">
+                    {activeFlash.emphasisText ? (
+                      <div className="text-center text-white">
+                        <span className="block text-2xl font-semibold tracking-[0.45em] whitespace-pre-line">
+                          {activeFlash.text}
+                        </span>
+                        <span className="mt-3 block text-5xl font-semibold tracking-[0.45em] whitespace-pre-line">
+                          {activeFlash.emphasisText}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-2xl font-semibold tracking-[0.45em] text-white text-center whitespace-pre-line">
+                        {activeFlash.text}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <m.div
                   key={`flash-white-${mobileFlashIndex}`}
                   initial={{ opacity: 0.85 }}
@@ -956,7 +1141,11 @@ const HeroSection = ({
               <div className="absolute inset-0 bg-black" />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-semibold tracking-[0.45em] text-white">
+                <span
+                  className={`font-semibold tracking-[0.45em] text-white text-center whitespace-pre-line ${
+                    activeFlash.text?.includes("VOSTOK") ? "text-[2.1rem]" : "text-4xl"
+                  }`}
+                >
                   {activeFlash.text}
                 </span>
               </div>
@@ -1013,6 +1202,7 @@ const HeroSection = ({
                 decoding="async"
               />
             )}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.18),transparent_60%)]" />
             <m.div
               key={`shade-left-${transitionKey}`}
               initial={motionEnabled ? { opacity: 0 } : false}
@@ -1059,6 +1249,7 @@ const HeroSection = ({
                 decoding="async"
               />
             )}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(255,255,255,0.18),transparent_60%)]" />
             <m.div
               key={`shade-right-${transitionKey}`}
               initial={motionEnabled ? { opacity: 0 } : false}

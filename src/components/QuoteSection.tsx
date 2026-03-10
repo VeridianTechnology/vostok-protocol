@@ -27,9 +27,7 @@ const QuoteSection = ({ entrySource = "direct" }: QuoteSectionProps) => {
               </>
             ) : (
               <>
-                <span className="text-black/60">You weren&apos;t born with your final face.</span>
-                <br />
-                <span className="text-black">You just stopped building it.</span>
+                <span className="text-black/60">Your face is the biography of your habits.</span>
               </>
             )}
           </p>

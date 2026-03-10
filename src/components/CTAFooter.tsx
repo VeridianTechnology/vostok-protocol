@@ -190,7 +190,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-3 top-12 z-10 w-64 rounded-md border border-black/10 bg-white/95 p-3 text-[10px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
+                      className="absolute left-1/2 top-12 z-10 w-64 -translate-x-1/2 rounded-md border border-black/10 bg-white/95 p-3 text-[10px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
                     >
                       <button
                         type="button"
@@ -232,7 +232,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               <p className="text-black/50 text-[18px] md:text-base font-light mb-6 max-w-md mx-auto leading-relaxed">
                 Engineering Facial Structure
               </p>
-              <ul className="mb-8 space-y-3 text-xs md:text-sm text-black/60 font-light leading-[1.6]">
+              <ul className="mb-6 space-y-2 text-xs md:text-sm text-black/60 font-light leading-[1.6]">
                 <li>• Step-by-step facial exercises</li>
                 <li>• Jaw strengthening protocols</li>
                 <li>• Posture correction</li>
@@ -240,7 +240,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                 <li>• Anatomy diagrams</li>
               </ul>
 
-              <div className="relative md:hidden mt-6 mb-8">
+              <div className="relative md:hidden mt-4 mb-6">
                 <img
                   src="/gumroad.png"
                   alt="Gumroad secure checkout"
@@ -263,7 +263,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-3 top-11 z-10 w-56 rounded-md border border-black/10 bg-white/95 p-3 text-[9px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
+                      className="absolute left-1/2 top-11 z-10 w-56 -translate-x-1/2 rounded-md border border-black/10 bg-white/95 p-3 text-[9px] uppercase tracking-[0.25em] text-black/60 shadow-lg"
                     >
                       <button
                         type="button"
@@ -292,10 +292,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                 </AnimatePresence>
               </div>
 
-              <div className="divider-line max-w-xs mx-auto mb-8 md:mb-8" />
+              <div className="divider-line max-w-xs mx-auto mb-6 md:mb-8" />
 
               {!isFourChan && (
-                <p className="text-black/50 text-xs tracking-wider mb-8 md:mb-8">
+                <p className="text-black/50 text-xs tracking-wider mb-2 md:mb-8">
                   Lifetime Access to ALL Future Updates of Vostok Method - Sent to YOU Via Email
                 </p>
               )}
@@ -312,33 +312,21 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               )}
 
               {/* CTA Button */}
-              <div className="mt-8 flex flex-col items-center gap-3 md:mt-2">
+              <div className="mt-3 flex flex-col items-center gap-2 md:mt-2">
                 <m.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   type="button"
                   onClick={() => handleCheckoutClick("footer")}
-                  className="mt-8 mb-4 w-[90%] max-w-[360px] inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-6 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500 md:mt-0 md:mb-0 md:w-auto md:px-12"
+                  className="mt-3 mb-3 w-[90%] max-w-[360px] inline-flex items-center justify-center gap-3 bg-black/90 text-white font-medium tracking-[0.25em] uppercase text-sm px-6 py-5 rounded-sm border border-black/20 shadow-luxury hover:bg-black transition-all duration-500 md:mt-0 md:mb-0 md:w-auto md:px-12"
                 >
-                  <svg
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-                  <rect x="4" y="10" width="16" height="10" rx="2" />
-                  </svg>
-                  {isFourChan ? "NEETBUX HERE" : "Download the Vostok Manual — $29.99"}
+                  {isFourChan ? "NEETBUX HERE" : "Download the Vostok Manual"}
+                  {!isFourChan && <span className="block text-[13px] tracking-[0.2em]">$29.99</span>}
                 </m.button>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-black/70">
                   Download the Vostok Structural Training Manual
                 </p>
-                <p className="text-[9px] uppercase tracking-[0.25em] text-black/60 mt-2">
+                <p className="text-[9px] uppercase tracking-[0.25em] text-black/60 mt-1 text-center">
                   Secure checkout via Gumroad
                 </p>
               </div>
