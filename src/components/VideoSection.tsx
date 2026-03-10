@@ -184,7 +184,6 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
                 decoding="async"
               />
             )}
-            <div className="absolute inset-0 bg-white/30" />
             <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-black/20 bg-white/60 text-black/70 transition-opacity duration-300 hover:border-black/40 hover:bg-white/80">
               <svg
                 aria-hidden="true"

@@ -196,6 +196,19 @@
 
 @layer utilities {
   @media (max-width: 767px) {
+    .instagram-embed-crop {
+      max-height: 560px;
+      overflow: hidden;
+    }
+
+    .facebook-embed-crop {
+      max-height: 420px;
+      overflow: hidden;
+    }
+  }
+}
+@layer utilities {
+  @media (max-width: 767px) {
     .video-frame {
       overflow: hidden;
     }
