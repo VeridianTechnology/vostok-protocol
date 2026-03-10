@@ -679,6 +679,21 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
               </div>
             )}
           </div>
+          <div className="mt-6 w-full max-w-[760px] rounded-2xl border border-black/10 bg-white/80 px-6 py-5 text-center shadow-card md:px-8 md:py-6">
+            <p className="text-[11px] uppercase tracking-[0.4em] text-black/60">Sampler</p>
+            <p className="mt-3 text-sm text-black/70 leading-relaxed">
+              Back-of-head alignment drills, neck stacking cues, and occipital release patterns from
+              the protocol. Quick to scan, immediately usable.
+            </p>
+            <a
+              href="/sampler_compressed.pdf"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-4 inline-flex items-center justify-center gap-3 rounded-sm border border-black/20 bg-black/90 px-6 py-3 text-[11px] font-medium uppercase tracking-[0.35em] text-white transition hover:bg-black"
+            >
+              Open Sampler
+            </a>
+          </div>
         </div>
       )}
     </section>
