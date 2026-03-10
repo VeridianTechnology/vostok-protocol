@@ -280,7 +280,6 @@ const Index = () => {
           }
         />
       </LazySection>
-      <div className="hidden h-px w-full bg-black/80 md:block" />
       <LazySection id="section-video" minHeightClass="min-h-0 md:min-h-[50vh]">
         <VideoSection
           onClosed={() => setIsVideoClosed(true)}

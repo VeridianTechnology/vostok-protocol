@@ -81,7 +81,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   return (
     <section
       id="hero-video"
-      className="relative w-full bg-white md:border-y md:border-black/40 mt-0 mb-0 overflow-hidden"
+      className="relative w-full bg-white md:border-b md:border-black/40 mt-0 mb-0"
     >
       <div className="video-frame relative w-full">
         <video
@@ -198,7 +198,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         )}
 
       </div>
-      <div className="mx-auto max-w-3xl px-6 pb-6 pt-4 text-center text-xs leading-relaxed text-black/70 md:pb-10 md:pt-6 md:text-sm md:text-left">
+      <div className="mx-auto max-w-3xl px-6 pb-8 pt-4 text-center text-xs leading-relaxed text-black/70 md:pb-10 md:pt-6 md:text-sm md:text-left">
         {entrySource === "4chan" ? (
           <div className="text-center">
             <h3 className="text-sm font-semibold uppercase tracking-[0.3em] text-black/70 md:text-base">
