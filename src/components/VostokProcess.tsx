@@ -133,16 +133,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [parallaxShift, setParallaxShift] = useState(0);
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
-  const [showFlash, setShowFlash] = useState(false);
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
   const activeStageRef = useRef(activeStage);
   const activeImageRef = useRef(activeImage);
   const rotationTimerRef = useRef<number | null>(null);
   const parallaxRef = useRef<number | null>(null);
-  const flashTimersRef = useRef<number[]>([]);
-  const isFlashingRef = useRef(false);
-  const hasFlashedOnceRef = useRef(false);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants =
@@ -160,18 +156,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     [stages]
   );
 
-  const stopFlashSequence = () => {
-    isFlashingRef.current = false;
-    flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-    flashTimersRef.current = [];
-    setShowFlash(false);
-    hasFlashedOnceRef.current = true;
-  };
-
   const selectStage = (stageKey: StageKey, image: string) => {
-    if (isMobile) {
-      stopFlashSequence();
-    }
     if (rotationTimerRef.current) {
       window.clearInterval(rotationTimerRef.current);
       rotationTimerRef.current = null;
@@ -197,9 +182,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       window.clearInterval(rotationTimerRef.current);
     }
     rotationTimerRef.current = window.setInterval(() => {
-      if (isFlashingRef.current) {
-        return;
-      }
       const currentIndex = iconSequence.findIndex(
         (entry) =>
           entry.stageKey === activeStageRef.current && entry.icon === activeImageRef.current
@@ -254,71 +236,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
 
-  useEffect(() => {
-    if (!isMobile || !imageFrameRef.current) {
-      return;
-    }
-
-    const startFlashing = () => {
-      if (isFlashingRef.current || hasFlashedOnceRef.current) {
-        return;
-      }
-      isFlashingRef.current = true;
-      if (rotationTimerRef.current) {
-        window.clearInterval(rotationTimerRef.current);
-        rotationTimerRef.current = null;
-      }
-
-      const sequence = iconSequence;
-      const imageDuration = 700;
-      const flashDuration = 120;
-      let index = 0;
-
-      const step = () => {
-        if (!isFlashingRef.current) {
-          return;
-        }
-        const entry = sequence[index];
-        setActiveStage(entry.stageKey);
-        setActiveImage(entry.icon);
-
-        const flashTimer = window.setTimeout(() => {
-          setShowFlash(true);
-        }, imageDuration);
-        const nextTimer = window.setTimeout(() => {
-          setShowFlash(false);
-          index += 1;
-          if (index >= sequence.length) {
-            isFlashingRef.current = false;
-            startRotation();
-            return;
-          }
-          step();
-        }, imageDuration + flashDuration);
-
-        flashTimersRef.current.push(flashTimer, nextTimer);
-      };
-
-      step();
-    };
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            startFlashing();
-          }
-        },
-        { threshold: 0.6 }
-      );
-
-    observer.observe(imageFrameRef.current);
-
-    return () => {
-      observer.disconnect();
-      stopFlashSequence();
-    };
-  }, [iconSequence, isMobile]);
-
   return (
     <section
       id="vostok-process"
@@ -368,12 +285,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             className={`relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 md:aspect-auto md:h-full ${
               focusPulse ? "brightness-110 shadow-[0_0_90px_rgba(255,255,255,0.25)]" : ""
             }`}
-            onMouseEnter={stopFlashSequence}
-            onClick={() => {
-              if (isMobile) {
-                stopFlashSequence();
-              }
-            }}
           >
             <div className="absolute inset-0 z-0 bg-black" />
             <div className="absolute left-4 top-4 z-30 rounded-full border border-white/30 bg-black/70 px-3 py-1 text-[9px] uppercase tracking-[0.3em] text-white/80">
@@ -425,11 +336,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 backgroundImage:
                   "repeating-linear-gradient(180deg, rgba(255,255,255,0.12) 0px, rgba(255,255,255,0.12) 1px, transparent 1px, transparent 10px)",
               }}
-            />
-            <div
-              className={`pointer-events-none absolute inset-0 z-20 bg-white transition-opacity duration-150 ${
-                showFlash ? "opacity-90" : "opacity-0"
-              }`}
             />
           </div>
         </div>

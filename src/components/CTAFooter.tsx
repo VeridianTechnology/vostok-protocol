@@ -9,40 +9,18 @@ type CTAFooterProps = {
 };
 
 const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {
-  const BUY_VIDEO_BASE_RATE = 0.5;
-  const BUY_VIDEO_BURST_RATE = 1;
-  const BUY_VIDEO_BURST_DURATION_S = 1;
-  const BUY_VIDEO_BURST_COUNT = 2;
   const isFourChan = entrySource === "4chan";
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
   const [pointerOffset, setPointerOffset] = useState({ x: 0, y: 0 });
-  const [scrollOffsetY, setScrollOffsetY] = useState(0);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-  const burstTimesRef = useRef<number[]>([]);
-  const triggeredBurstsRef = useRef<Set<number>>(new Set());
   const clamp = (value: number, min: number, max: number) =>
     Math.min(Math.max(value, min), max);
-
-  const getBurstTimes = (duration: number) => {
-    const safeStart = Math.max(4, duration * 0.24);
-    const safeEnd = Math.min(duration - 4, duration * 0.82);
-    if (safeEnd <= safeStart) {
-      return [];
-    }
-
-    const segment = (safeEnd - safeStart) / (BUY_VIDEO_BURST_COUNT + 1);
-    return Array.from({ length: BUY_VIDEO_BURST_COUNT }, (_, index) => {
-      const jitter = (Math.random() - 0.5) * Math.min(1.4, segment * 0.4);
-      return safeStart + segment * (index + 1) + jitter;
-    }).sort((left, right) => left - right);
-  };
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -50,86 +28,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     updateMatch();
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrollOffsetY(0);
-    };
-
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) {
-      return;
-    }
-
-    const syncBaseRate = () => {
-      if (triggeredBurstsRef.current.size === 0) {
-        video.playbackRate = BUY_VIDEO_BASE_RATE;
-      }
-    };
-
-    const handleLoadedMetadata = () => {
-      burstTimesRef.current = getBurstTimes(video.duration || 0);
-      triggeredBurstsRef.current = new Set();
-      video.playbackRate = BUY_VIDEO_BASE_RATE;
-    };
-
-    const handleTimeUpdate = () => {
-      const burstIndex = burstTimesRef.current.findIndex(
-        (burstTime, index) =>
-          !triggeredBurstsRef.current.has(index) &&
-          video.currentTime >= burstTime &&
-          video.currentTime < burstTime + BUY_VIDEO_BURST_DURATION_S
-      );
-
-      if (burstIndex >= 0) {
-        triggeredBurstsRef.current.add(burstIndex);
-        video.playbackRate = BUY_VIDEO_BURST_RATE;
-        window.setTimeout(() => {
-          if (!video.ended) {
-            video.playbackRate = BUY_VIDEO_BASE_RATE;
-          }
-        }, BUY_VIDEO_BURST_DURATION_S * 1000);
-        return;
-      }
-
-      const isInsideBurstWindow = burstTimesRef.current.some(
-        (burstTime) =>
-          video.currentTime >= burstTime &&
-          video.currentTime < burstTime + BUY_VIDEO_BURST_DURATION_S
-      );
-
-      if (!isInsideBurstWindow) {
-        syncBaseRate();
-      }
-    };
-
-    const handleEnded = () => {
-      burstTimesRef.current = getBurstTimes(video.duration || 0);
-      triggeredBurstsRef.current = new Set();
-      video.playbackRate = BUY_VIDEO_BASE_RATE;
-    };
-
-    video.playbackRate = BUY_VIDEO_BASE_RATE;
-    video.addEventListener("loadedmetadata", handleLoadedMetadata);
-    video.addEventListener("timeupdate", handleTimeUpdate);
-    video.addEventListener("ended", handleEnded);
-
-    return () => {
-      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
-      video.removeEventListener("timeupdate", handleTimeUpdate);
-      video.removeEventListener("ended", handleEnded);
-    };
   }, []);
 
   useEffect(() => {
@@ -238,53 +136,17 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-[-12%] bg-[#d9d9d6]" aria-hidden="true" />
-        <video
-          ref={videoRef}
-          className="absolute bottom-0 left-1/2 z-[1] h-[176%] w-[164%] max-w-none -translate-x-1/2 object-cover object-bottom transition-transform duration-500 ease-out will-change-transform md:h-[186%] md:w-[172%]"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+        <div
+          aria-hidden="true"
+          className="pod-wallpaper-bg absolute bottom-0 left-1/2 z-[1] h-[176%] w-[164%] max-w-none -translate-x-1/2 transition-transform duration-500 ease-out will-change-transform md:h-[186%] md:w-[172%]"
           style={{
-            transform: `translate3d(calc(-50% + ${pointerOffset.x}px), ${
-              pointerOffset.y + scrollOffsetY
-            }px, 0) scale(1)`,
+            transform: `translate3d(calc(-50% + ${pointerOffset.x}px), ${pointerOffset.y}px, 0) scale(1)`,
           }}
-        >
-          <source
-            media="(max-width: 767px)"
-            src="/section_wallpaper/buy/refined_videos/1_mobile.webm"
-            type="video/webm"
-          />
-          <source
-            src="/section_wallpaper/buy/refined_videos/1_desktop.webm"
-            type="video/webm"
-          />
-        </video>
+        />
         <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,rgba(241,249,245,0.16)_0%,rgba(241,249,245,0.34)_36%,rgba(241,249,245,0.52)_100%)]" />
       </div>
       <div className="absolute inset-x-0 bottom-[-20vh] z-[3] h-[29vh] overflow-hidden md:h-[31vh]">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 bg-repeat-x md:hidden"
-          style={{
-            backgroundImage: "url('/section_wallpaper/buy/refined_button_mobile.jpg')",
-            backgroundPosition: "center 50%",
-            backgroundRepeat: "repeat-x",
-            backgroundSize: "auto 120%",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 hidden bg-repeat-x md:block"
-          style={{
-            backgroundImage: "url('/section_wallpaper/buy/refined_button_desktop.jpg')",
-            backgroundPosition: "center 50%",
-            backgroundRepeat: "repeat-x",
-            backgroundSize: "auto 120%",
-          }}
-        />
+        <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.32)_0%,rgba(0,0,0,0.18)_32%,rgba(0,0,0,0.36)_100%)]" />
       </div>
 
@@ -318,18 +180,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               className="group relative inline-flex min-h-[70px] min-w-[156px] items-center justify-center overflow-hidden rounded-[26px] border border-black/20 px-5 py-4 text-base font-medium uppercase tracking-[0.28em] text-white shadow-[0_20px_44px_rgba(0,0,0,0.38)] transition-all duration-500 md:min-h-[92px] md:min-w-[420px] md:rounded-[34px] md:px-8 md:text-[1.1rem]"
             >
               <span className="absolute inset-0">
-                <img
-                  src="/section_wallpaper/buy/refined_button_mobile.jpg"
-                  alt=""
-                  aria-hidden="true"
-                  className="h-full w-full object-cover md:hidden"
-                />
-                <img
-                  src="/section_wallpaper/buy/refined_button_desktop.jpg"
-                  alt=""
-                  aria-hidden="true"
-                  className="hidden h-full w-full object-cover md:block"
-                />
+                <span aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
                 <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.42)_100%)] transition-opacity duration-500 group-hover:opacity-80" />
                 <span className="absolute inset-[1px] rounded-[25px] border border-white/18 md:rounded-[33px]" />
               </span>

@@ -3,6 +3,7 @@ import { useEffect, useId, useRef, useState } from "react";
 type Track = {
   id: string;
   title: string;
+  score: string;
   youtubeUrl: string;
   audioSrc?: string;
 };
@@ -11,110 +12,184 @@ const TRACKS: Track[] = [
   {
     id: "01",
     title: "BJ Lips - Love Potion",
+    score: "10/10",
     audioSrc: "/audio/radio/01_bj_lips.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=C51ZecKDYkQ&list=RDIDi6v7GqgsY",
   },
   {
     id: "02",
     title: "Love Potions X Track 10",
+    score: "11/10",
     audioSrc: "/audio/radio/02_love_potions_x_track_10.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=YCXYkcpD5tw",
   },
   {
     id: "03",
     title: "Ecstasy (Remix)",
+    score: "10/10",
     audioSrc: "/audio/radio/03_ecstasy_remix.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=VeS3O47Jv9s&list=RDIDi6v7GqgsY",
   },
   {
     id: "04",
     title: "Love Potions x I'll Do It",
+    score: "7/10",
     audioSrc: "/audio/radio/04_love_potions_x_ill_do_it.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=4YV5Tryq3LU&list=RDIDi6v7GqgsY",
   },
   {
     id: "05",
     title: "Voruyu alkogol (Slowed + Reverb)",
+    score: "8/10",
     audioSrc: "/audio/radio/05_voruyu_alkogol_slowed_reverb.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=z5EXOl9UOnM&list=RDIDi6v7GqgsY",
   },
   {
     id: "06",
     title: "ROMANCEPLANET w/ STAKILLAZ",
+    score: "10/10",
     audioSrc: "/audio/radio/06_romanceplanet_w_stakillaz.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=Kqmzbpa7_6w&list=RDIDi6v7GqgsY",
   },
   {
     id: "07",
     title: "BABYDOLL",
+    score: "6/10",
     audioSrc: "/audio/radio/07_babydoll.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=mCkBsSEG440&list=RDIDi6v7GqgsY",
   },
   {
     id: "08",
     title: "MY JEALOUSY (Slowed)",
+    score: "10/10",
     audioSrc: "/audio/radio/08_my_jealousy_slowed.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=xnFvhn-1wHY",
   },
   {
     id: "09",
     title: "Love Potions x Tipsy (Slowed)",
+    score: "9/10",
     audioSrc: "/audio/radio/09_love_potions_x_tipsy.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=0FbdiUyWYPQ&list=RDIDi6v7GqgsY",
   },
   {
     id: "10",
     title: "Mariah Carey - Obsessed (fvckaron audio)",
+    score: "9/10",
     audioSrc: "/audio/radio/11_mariah_carey_obsessed_fvckaron_audio_slowed_reverb.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=4febO0OejZs&list=RDIDi6v7GqgsY",
   },
   {
     id: "11",
     title: "glamorgeddon (Slowed)",
+    score: "5/10",
     audioSrc: "/audio/radio/10_glamorgeddon_slowed.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=Ekv9FYSqkEI&list=RDIDi6v7GqgsY",
   },
   {
     id: "12",
     title: "Tears/Lipgloss (Remix)",
+    score: "6/10",
     audioSrc: "/audio/radio/12_tears_lipgloss_remix.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=jzJKtDUiTYY&list=RDIDi6v7GqgsY",
   },
   {
     id: "13",
     title: "Britney Manson - FASHION (Slowed)",
+    score: "7/10",
     audioSrc: "/audio/radio/13_britney_manson_fashion_slowed.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=aDRD4OvNvus&list=RDYCXYkcpD5tw",
   },
   {
     id: "14",
     title: "Shy Smith - Soaked",
+    score: "5/10",
     audioSrc: "/audio/radio/14_shy_smith_soaked_slowed_reverb.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=SuNHuNSmMl8&list=RDYCXYkcpD5tw",
   },
   {
     id: "15",
     title: "Love Potions X MY JEALOUSY - bjlips & vivibaby",
-    audioSrc: "/audio/radio/15_Love Potions X MY JEALOUSY - bjlips & vivibaby (mashup).mp3",
+    score: "9/10",
+    audioSrc: "/audio/radio/15_Love Potions X MY JEALOUSY - bjlips & vivibaby (mashup).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=eKpP58Rris8&list=RDYCXYkcpD5tw",
+  },
+  {
+    id: "16",
+    title: "Kazy Lambist - Doing Yoga",
+    score: "5/10",
+    audioSrc: "/audio/radio/16_Kazy Lambist - Doing Yoga.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=wgg74iuPKqs&list=RDYCXYkcpD5tw",
+  },
+  {
+    id: "17",
+    title: "bj lips, princess paparazzi - love potions",
+    score: "10/10",
+    audioSrc: "/audio/radio/17_Love Potions (6arelyhuman Remix).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=3DnGBRPCnv0",
   },
   {
     id: "18",
     title: "Snow Strippers x Adore x Crystal Castles type beat - 'sleez'",
-    audioSrc: "/audio/radio/18_Snow Strippers x Adore x Crystal Castles type beat - 'sleez'.mp3",
+    score: "6/10",
+    audioSrc: "/audio/radio/18_Snow Strippers x Adore x Crystal Castles type beat - 'sleez'.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=mI8SpXlOP1A",
   },
   {
     id: "19",
     title: "Charli xcx - b2b (qyurisuu remix)",
-    audioSrc: "/audio/radio/19_Charli xcx - b2b (qyurisuu remix).mp3",
+    score: "6/10",
+    audioSrc: "/audio/radio/19_Charli xcx - b2b (qyurisuu remix).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=DQ22Uayxc-c",
+  },
+  {
+    id: "20",
+    title: "2000 (slowed)",
+    score: "7/10",
+    audioSrc: "/audio/radio/20_2000 (slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=eifO7vXT_m8",
+  },
+  {
+    id: "21&",
+    title: "Schleini - Liebe (Techno)",
+    score: "8/10",
+    audioSrc: "/audio/radio/21&_Schleini - Liebe (Techno).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=rB3gX_shM8w",
+  },
+  {
+    id: "22",
+    title: "TENSA (Ultra Slowed)",
+    score: "10/10",
+    audioSrc: "/audio/radio/22_TENSA (Ultra Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ZtIA-BclORA",
+  },
+  {
+    id: "23&",
+    title: "Big Boogie - Kush Breath",
+    score: "9/10",
+    audioSrc: "/audio/radio/23&_Big Boogie - Kush Breath (Official Music Video).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=65NvWGZ5AvU",
+  },
+  {
+    id: "24",
+    title: "me pierdo",
+    score: "8/10",
+    audioSrc: "/audio/radio/24_me pierdo.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=FsYfzpg76So",
+  },
+  {
+    id: "25&",
+    title: "Habits (Stay High) x Stereo Love",
+    score: "10/10",
+    audioSrc: "/audio/radio/25&_Habits (Stay High) x Stereo Love (slowed to perfection).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=oawmdHxyiyY",
   },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
   Boolean(track.audioSrc)
 );
+const MISSING_TRACKS = TRACKS.filter((track) => !track.audioSrc);
 const DJ_STINGERS = [
   "/audio/dj/lady/01.m4a",
   "/audio/dj/lady/02.m4a",
@@ -227,6 +302,10 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
+const getTrackDisplayTitle = (track: Track) => `${track.title}${track.audioSrc ? "" : " *"}`;
+const getSpecialSongIntroSrc = (track: Track) =>
+  track.id.includes("&") ? `/audio/dj/special_song/${track.id}.m4a` : null;
+
 const VISUALIZER_BAR_COUNT = 16;
 const VISUALIZER_IDLE_BARS = Array.from({ length: VISUALIZER_BAR_COUNT }, () => 0.14);
 const VISUALIZER_ATTACK = 0.68;
@@ -285,11 +364,14 @@ const RadioPlayer = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [visualizerBars, setVisualizerBars] = useState<number[]>(VISUALIZER_IDLE_BARS);
-  const [isPodCollapsed, setIsPodCollapsed] = useState(false);
+  const [isPodCollapsed, setIsPodCollapsed] = useState(() =>
+    typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false
+  );
   const sliderId = useId();
   const volumeSliderId = useId();
   const currentTrackIndex = playOrder[trackPosition] ?? 0;
   const currentTrack = PLAYABLE_TRACKS[currentTrackIndex] ?? PLAYABLE_TRACKS[0];
+  const missingTrackSummary = MISSING_TRACKS.map((track) => `${track.id}*`).join(", ");
   const sliderProgress = duration > 0 ? `${(currentTime / duration) * 100}%` : "0%";
   const volumeProgress = `${volume * 100}%`;
 
@@ -783,11 +865,13 @@ const RadioPlayer = () => {
     }
 
     previousTrackIdRef.current = currentTrack.id;
+    const specialIntroSrc = getSpecialSongIntroSrc(currentTrack);
     const randomStinger =
       DJ_STINGERS[Math.floor(Math.random() * DJ_STINGERS.length)] ?? DJ_STINGERS[0];
+    const introSrc = specialIntroSrc ?? randomStinger;
     djStingerAudio.pause();
     djStingerAudio.currentTime = 0;
-    djStingerAudio.src = randomStinger;
+    djStingerAudio.src = introSrc;
     djStingerAudio.load();
     void djStingerAudio.play().catch(() => undefined);
   }, [currentTrack]);
@@ -911,21 +995,8 @@ const RadioPlayer = () => {
         </button>
         <div className="relative flex items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] pb-[1.5vh] pl-[2.5vw] pr-[2.5vw] pt-[0.7vw] shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:gap-1.5 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
           <div className="pointer-events-none absolute inset-0">
+            <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <img
-                src="/section_wallpaper/buy/refined_footer_mobile.jpg"
-                alt=""
-                aria-hidden="true"
-                className="h-full w-full object-cover opacity-88 md:hidden"
-              />
-              <img
-                src="/section_wallpaper/buy/refined_footer_desktop.jpg"
-                alt=""
-                aria-hidden="true"
-                className="hidden h-full w-full object-cover opacity-88 md:block"
-              />
-            </div>
           </div>
           <button
             type="button"
@@ -952,13 +1023,23 @@ const RadioPlayer = () => {
             <span className="radio-player-title mb-0.5 text-[28px] tracking-[0.03em] text-white md:text-[34px]">
               RADIO VØSTOK
             </span>
+            <div className="mb-1 flex items-center gap-2">
+              <span className="rounded-full border border-white/30 bg-black/45 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.22em] text-white/90 md:text-[10px]">
+                {currentTrack.score}
+              </span>
+              {missingTrackSummary ? (
+                <span className="text-[8px] uppercase tracking-[0.18em] text-white/72 md:text-[9px]">
+                  {PLAYABLE_TRACKS.length}/{TRACKS.length} loaded · {missingTrackSummary}
+                </span>
+              ) : null}
+            </div>
             <a
               href={currentTrack.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] text-white/82 underline decoration-white/30 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
             >
-              {currentTrack.title}
+              {getTrackDisplayTitle(currentTrack)}
             </a>
             <div className="mb-1 flex h-[10vh] max-h-[52px] min-h-[26px] w-[120px] items-end justify-center gap-[3px] md:w-[150px] md:max-h-[60px]">
               {visualizerBars.map((level, index) => (
@@ -1037,28 +1118,7 @@ const RadioPlayer = () => {
       <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-black/20 text-black backdrop-blur-md">
         <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
           <div className="pointer-events-none absolute inset-0">
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 bg-repeat-x md:hidden"
-              style={{
-                backgroundImage:
-                  "url('/section_wallpaper/buy/refined_footer_mobile.jpg')",
-                backgroundPosition: "center 50%",
-                backgroundRepeat: "repeat-x",
-                backgroundSize: "auto 100%",
-              }}
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 hidden bg-repeat-x md:block"
-              style={{
-                backgroundImage:
-                  "url('/section_wallpaper/buy/refined_footer_desktop.jpg')",
-                backgroundPosition: "center 50%",
-                backgroundRepeat: "repeat-x",
-                backgroundSize: "auto 100%",
-              }}
-            />
+            <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#f5f7f3]/26" />
           </div>
           <div className="relative min-w-0 w-full">
@@ -1069,7 +1129,7 @@ const RadioPlayer = () => {
                 rel="noopener noreferrer"
                 className="truncate pr-3 underline decoration-black/30 underline-offset-[0.22em] transition hover:text-black"
               >
-                {currentTrack.title}
+                {getTrackDisplayTitle(currentTrack)}
               </a>
               <span className="shrink-0">{formatTime(currentTime)} / {formatTime(duration)}</span>
             </div>

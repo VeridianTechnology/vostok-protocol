@@ -126,8 +126,8 @@ const PremiumLifestyleSection = () => {
       <InterestSection
         tabLabel="STAY TUNED"
         lines={["Premium lifestyle", "Are you ready for it", "VØSTOK"]}
-        desktopBackground="/section_wallpaper/interest/refined_images/01_desktop.jpg"
-        mobileBackground="/section_wallpaper/interest/refined_images/01_mobile.jpg"
+        desktopBackground="/section_wallpaper/interest/refined_images/01_desktop.png"
+        mobileBackground="/section_wallpaper/interest/refined_images/01_mobile.png"
         textClassName="text-white"
         overlaySrc="/section_wallpaper/interest/02.png?v=2"
       />

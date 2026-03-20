@@ -171,9 +171,7 @@ const FeatureThumbnails = ({
     ? highlightImage
     : structureImage;
   const intervalRef = useRef<number | null>(null);
-  const flashTimersRef = useRef<number[]>([]);
   const autoAdvanceEnabledRef = useRef(true);
-  const hasFlashedRef = useRef(false);
   const advanceStep = () => {
     setStructureStep((currentStep) => (currentStep >= 7 ? 1 : currentStep + 1));
   };
@@ -236,56 +234,6 @@ const FeatureThumbnails = ({
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
 
-  useEffect(() => {
-    if (!isMobile || !sectionRef.current) {
-      return;
-    }
-
-    const stopTimers = () => {
-      flashTimersRef.current.forEach((timer) => window.clearTimeout(timer));
-      flashTimersRef.current = [];
-    };
-
-    const runQuickFlash = () => {
-      if (hasFlashedRef.current) {
-        return;
-      }
-      hasFlashedRef.current = true;
-      autoAdvanceEnabledRef.current = false;
-      if (intervalRef.current) {
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-
-      const steps = Array.from({ length: 7 }, (_, index) => index + 1);
-      const totalDuration = 1000;
-      const stepDuration = Math.max(80, Math.floor(totalDuration / steps.length));
-
-      steps.forEach((step, index) => {
-        const timer = window.setTimeout(() => {
-          setStructureStep(step);
-        }, index * stepDuration);
-        flashTimersRef.current.push(timer);
-      });
-    };
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          runQuickFlash();
-        }
-      },
-      { threshold: 0.6 }
-    );
-
-    observer.observe(sectionRef.current);
-
-    return () => {
-      observer.disconnect();
-      stopTimers();
-    };
-  }, [isMobile]);
-  
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
       setIsHighlightOn(false);
@@ -395,7 +343,7 @@ const FeatureThumbnails = ({
       {renderStructureSection && (
         <section
           ref={sectionRef}
-          className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden px-6 py-8 md:py-24"
+          className="section-surface relative left-1/2 right-1/2 mt-[10vh] w-screen -translate-x-1/2 overflow-hidden px-6 py-8 md:mt-0 md:py-24"
           onPointerMove={handleParallaxMove}
           onPointerLeave={handleParallaxLeave}
         >
@@ -690,7 +638,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <SectionSideTab label="VØSTOK" className="top-0 md:-top-3" />
-          <div className="relative min-h-[67vh] w-full md:min-h-[101vh]">
+          <div className="relative min-h-[77vh] w-full md:min-h-[101vh]">
           {"desktopVideoSrc" in activeWallpaperSlide ? (
             <video
               key={activeWallpaperSlide.id}
