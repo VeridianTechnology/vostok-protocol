@@ -1,18 +1,14 @@
-import HeroSection from "@/components/HeroSection";
 import { LazySection } from "@/components/LazySection";
 import { useEffect, useRef, useState, lazy } from "react";
-const VideoSection = lazy(() => import("@/components/VideoSection"));
-const FeatureThumbnails = lazy(() => import("@/components/FeatureThumbnails"));
+import FeatureThumbnails from "@/components/FeatureThumbnails";
+import PremiumLifestyleSection from "@/components/PremiumLifestyleSection";
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
-const QuoteSection = lazy(() => import("@/components/QuoteSection"));
-const SpecComparison = lazy(() => import("@/components/SpecComparison"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 import { track } from "@vercel/analytics";
 import { trackOnce } from "@/lib/analytics";
 
 const Index = () => {
-  const [isVideoClosed, setIsVideoClosed] = useState(false);
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
   const [isInstagramEntry, setIsInstagramEntry] = useState(false);
@@ -125,9 +121,6 @@ const Index = () => {
       { id: "section-vostok", event: "section_vostok_view" },
       { id: "section-change-face", event: "section_change_face_view" },
       { id: "section-research", event: "section_research_view" },
-      { id: "section-chapter", event: "section_chapter_view" },
-      { id: "section-quote", event: "section_quote_view" },
-      { id: "section-video", event: "section_video_view" },
       { id: "section-cta", event: "section_cta_view" },
     ];
     const observer = new IntersectionObserver(
@@ -157,32 +150,33 @@ const Index = () => {
   };
 
   return (
-    <main className="min-h-screen bg-background overflow-x-hidden">
+    <main className="min-h-screen overflow-x-hidden bg-background">
       <div id="section-hero">
-          <HeroSection
-            hideWatchPrompt={isVideoClosed}
-            onMobileFlashComplete={() => {
-              trackOnce("hero_flash_complete");
-            }}
-            onRequestBuy={handleRequestBuy}
-            entrySource={
-              isFacebookEntry
-                ? "facebook"
-                : isFourChanEntry
-                  ? "4chan"
-                  : isInstagramEntry
-                    ? "instagram"
-                    : isTikTokEntry
-                      ? "tiktok"
-                      : isRedditEntry
-                        ? "reddit"
-                        : isTwitterEntry
-                          ? "twitter"
-                        : "direct"
-            }
-          />
+        <FeatureThumbnails
+          renderStructureSection={false}
+          renderWallpaperSection
+          entrySource={
+            isFacebookEntry
+              ? "facebook"
+              : isFourChanEntry
+                ? "4chan"
+                : isInstagramEntry
+                  ? "instagram"
+                  : isTikTokEntry
+                    ? "tiktok"
+                    : isRedditEntry
+                      ? "reddit"
+                      : isTwitterEntry
+                        ? "twitter"
+                      : "direct"
+          }
+        />
       </div>
       <div className="divider-line hidden md:block" />
+      <section id="section-premium">
+        <PremiumLifestyleSection />
+      </section>
+      <div className="divider-line" />
       <LazySection id="section-vostok" minHeightClass="min-h-[40vh]">
         <VostokProcess
           entrySource={
@@ -205,6 +199,8 @@ const Index = () => {
       <div className="divider-line" />
       <LazySection id="section-change-face" minHeightClass="min-h-[60vh]">
         <FeatureThumbnails
+          renderStructureSection
+          renderWallpaperSection={false}
           entrySource={
             isFacebookEntry
               ? "facebook"
@@ -241,66 +237,7 @@ const Index = () => {
           }
         />
       </LazySection>
-      <LazySection id="section-chapter" minHeightClass="min-h-[50vh]">
-        <SpecComparison
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                  ? "tiktok"
-                  : isRedditEntry
-                    ? "reddit"
-                    : isTwitterEntry
-                      ? "twitter"
-                      : "direct"
-          }
-        />
-      </LazySection>
       <div className="h-px w-full bg-black/80" />
-      <LazySection id="section-quote" minHeightClass="min-h-0 md:min-h-[20vh]">
-        <QuoteSection
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                  ? "tiktok"
-                  : isRedditEntry
-                    ? "reddit"
-                    : isTwitterEntry
-                      ? "twitter"
-                      : "direct"
-          }
-        />
-      </LazySection>
-      <LazySection id="section-video" minHeightClass="min-h-0 md:min-h-[50vh]">
-        <VideoSection
-          onClosed={() => setIsVideoClosed(true)}
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                  ? "tiktok"
-                  : isRedditEntry
-                    ? "reddit"
-                    : isTwitterEntry
-                      ? "twitter"
-                      : "direct"
-          }
-        />
-      </LazySection>
-      <div className="divider-line" />
       <LazySection id="section-cta" minHeightClass="min-h-[40vh]">
         <CTAFooter
           onRequestBuy={handleRequestBuy}

@@ -2,8 +2,9 @@ import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getImageVariants, toDesktopImage, toMobileImage } from "@/lib/utils";
 import { track } from "@vercel/analytics";
+import SectionSideTab from "@/components/SectionSideTab";
 
-type StageKey = "before" | "20" | "45" | "70" | "100" | "non_ai";
+type StageKey = "20" | "70" | "100" | "non_ai";
 
 type VostokProcessProps = {
   onLoaded?: () => void;
@@ -40,24 +41,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const stages = useMemo(
     () => [
       {
-        key: "before",
-        title: "Before Vostok",
-        icons: ["/Comparison/3z.jpg", "/Comparison/4z.jpg"],
-        text: (
-          <>
-            <p>Like most people, I optimized everything except</p>
-            <p>the structure of the face.</p>
-            <p className="mt-4">Fitness. Style. Grooming.</p>
-            <p className="mt-4">
-              But facial structure remained the one variable
-            </p>
-            <p>left entirely to chance.</p>
-          </>
-        ),
-      },
-      {
         key: "20",
-        title: "20 HOURS",
+        title: "10 HOURS",
         icons: ["/Comparison/5z.jpg", "/Comparison/6z.jpg"],
         text: (
           <>
@@ -75,25 +60,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         ),
       },
       {
-        key: "45",
-        title: "45 HOURS",
-        icons: ["/Comparison/9z.jpg", "/Comparison/10z.jpg"],
-        text: (
-          <>
-            <p className="mt-4">Muscle activation became consistent.</p>
-            <p className="mt-4">Jaw position stabilized.</p>
-            <p>Neck posture improved.</p>
-            <p>Facial tension redistributed.</p>
-            <p className="mt-4">
-              For the first time, the face felt
-            </p>
-            <p>like a system that could be trained.</p>
-          </>
-        ),
-      },
-      {
         key: "70",
-        title: "70 HOURS",
+        title: "45 HOURS",
         icons: ["/Comparison/8z.jpg", "/Comparison/7z.jpg"],
         text: (
           <>
@@ -110,7 +78,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       },
       {
         key: "100",
-        title: "100 HOURS",
+        title: "60 HOURS",
         icons: [
           "/Comparison/1z.jpg",
           "/Comparison/2z.jpg",
@@ -131,7 +99,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         title: "NON-AI PHOTOS",
         icons: [
           "/before/after/before.jpg",
-          "/before/after/me_samui.jpg",
+          "/before/after/2.jpg",
         ],
         text: (
           <>
@@ -160,8 +128,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     []
   );
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
-  const [activeStage, setActiveStage] = useState<StageKey>("before");
-  const [activeImage, setActiveImage] = useState("/Comparison/3z.jpg");
+  const [activeStage, setActiveStage] = useState<StageKey>("20");
+  const [activeImage, setActiveImage] = useState("/Comparison/5z.jpg");
   const [parallaxShift, setParallaxShift] = useState(0);
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
@@ -354,11 +322,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   return (
     <section
       id="vostok-process"
-      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
+      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
       onClick={handleGridShift}
     >
+      <SectionSideTab label="MY PROCESS" />
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 bg-[#b9b9b9]" />
+        <div className="section-surface-fill absolute inset-0" />
         <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/15" />
         <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
         <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/15 blur-[110px]" />
@@ -433,15 +402,18 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 />
               </picture>
             ) : (
-              <img
-                src={activeImage}
-                srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w, ${activeImage} 2000w`}
-                sizes="(max-width: 640px) 100vw, 60vw"
-                alt={`${currentStage.title} comparison`}
-                className="relative z-10 h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
+              <>
+                <img
+                  src={toDesktopImage(activeImage)}
+                  srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                  alt={`${currentStage.title} comparison`}
+                  className="relative z-10 h-full w-full object-cover"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="pointer-events-none absolute inset-0 z-[11] bg-black/20" />
+              </>
             )}
             <m.div
               key={`scan-${scanKey}`}
@@ -521,15 +493,18 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                               />
                             </picture>
                           ) : (
-                            <img
-                              src={icon}
-                              srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
-                              sizes="40px"
-                              alt={`${stage.title} option`}
-                              className="h-full w-full object-cover bg-black"
-                              loading="lazy"
-                              decoding="async"
-                            />
+                            <div className="relative h-full w-full">
+                              <img
+                                src={icon}
+                                srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
+                                sizes="40px"
+                                alt={`${stage.title} option`}
+                                className="h-full w-full object-cover bg-black"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                              <div className="pointer-events-none absolute inset-0 bg-black/20" />
+                            </div>
                           )}
                         </button>
                       );
@@ -540,10 +515,9 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             );
             })}
             <div className="mt-5 border-t border-white/10 pt-4 text-[10px] uppercase tracking-[0.3em] text-chrome/80">
-              <p>20 HOURS · Posture correction: +18%</p>
+              <p>10 HOURS · Posture correction: +18%</p>
               <p className="mt-2">45 HOURS · Jaw engagement: +32%</p>
-              <p className="mt-2">70 HOURS · Facial symmetry: +21%</p>
-              <p className="mt-2">100 HOURS · Structural balance: +37%</p>
+              <p className="mt-2">60 HOURS · Structural balance: +37%</p>
             </div>
           </div>
         </div>

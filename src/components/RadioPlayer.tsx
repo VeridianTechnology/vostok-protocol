@@ -1,0 +1,1090 @@
+import { useEffect, useId, useRef, useState } from "react";
+
+type Track = {
+  id: string;
+  title: string;
+  youtubeUrl: string;
+  audioSrc?: string;
+};
+
+const TRACKS: Track[] = [
+  {
+    id: "01",
+    title: "BJ Lips - Love Potion",
+    audioSrc: "/audio/radio/01_bj_lips.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=C51ZecKDYkQ&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "02",
+    title: "Love Potions X Track 10",
+    audioSrc: "/audio/radio/02_love_potions_x_track_10.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=YCXYkcpD5tw",
+  },
+  {
+    id: "03",
+    title: "Ecstasy (Remix)",
+    audioSrc: "/audio/radio/03_ecstasy_remix.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=VeS3O47Jv9s&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "04",
+    title: "Love Potions x I'll Do It",
+    audioSrc: "/audio/radio/04_love_potions_x_ill_do_it.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=4YV5Tryq3LU&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "05",
+    title: "Voruyu alkogol (Slowed + Reverb)",
+    audioSrc: "/audio/radio/05_voruyu_alkogol_slowed_reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=z5EXOl9UOnM&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "06",
+    title: "ROMANCEPLANET w/ STAKILLAZ",
+    audioSrc: "/audio/radio/06_romanceplanet_w_stakillaz.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Kqmzbpa7_6w&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "07",
+    title: "BABYDOLL",
+    audioSrc: "/audio/radio/07_babydoll.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=mCkBsSEG440&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "08",
+    title: "MY JEALOUSY (Slowed)",
+    audioSrc: "/audio/radio/08_my_jealousy_slowed.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=xnFvhn-1wHY",
+  },
+  {
+    id: "09",
+    title: "Love Potions x Tipsy (Slowed)",
+    audioSrc: "/audio/radio/09_love_potions_x_tipsy.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=0FbdiUyWYPQ&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "10",
+    title: "Mariah Carey - Obsessed (fvckaron audio)",
+    audioSrc: "/audio/radio/11_mariah_carey_obsessed_fvckaron_audio_slowed_reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=4febO0OejZs&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "11",
+    title: "glamorgeddon (Slowed)",
+    audioSrc: "/audio/radio/10_glamorgeddon_slowed.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Ekv9FYSqkEI&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "12",
+    title: "Tears/Lipgloss (Remix)",
+    audioSrc: "/audio/radio/12_tears_lipgloss_remix.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=jzJKtDUiTYY&list=RDIDi6v7GqgsY",
+  },
+  {
+    id: "13",
+    title: "Britney Manson - FASHION (Slowed)",
+    audioSrc: "/audio/radio/13_britney_manson_fashion_slowed.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=aDRD4OvNvus&list=RDYCXYkcpD5tw",
+  },
+  {
+    id: "14",
+    title: "Shy Smith - Soaked",
+    audioSrc: "/audio/radio/14_shy_smith_soaked_slowed_reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=SuNHuNSmMl8&list=RDYCXYkcpD5tw",
+  },
+  {
+    id: "15",
+    title: "Love Potions X MY JEALOUSY - bjlips & vivibaby",
+    audioSrc: "/audio/radio/15_Love Potions X MY JEALOUSY - bjlips & vivibaby (mashup).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=eKpP58Rris8&list=RDYCXYkcpD5tw",
+  },
+  {
+    id: "18",
+    title: "Snow Strippers x Adore x Crystal Castles type beat - 'sleez'",
+    audioSrc: "/audio/radio/18_Snow Strippers x Adore x Crystal Castles type beat - 'sleez'.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=mI8SpXlOP1A",
+  },
+  {
+    id: "19",
+    title: "Charli xcx - b2b (qyurisuu remix)",
+    audioSrc: "/audio/radio/19_Charli xcx - b2b (qyurisuu remix).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=DQ22Uayxc-c",
+  },
+];
+
+const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
+  Boolean(track.audioSrc)
+);
+const DJ_STINGERS = [
+  "/audio/dj/lady/01.m4a",
+  "/audio/dj/lady/02.m4a",
+  "/audio/dj/lady/03.m4a",
+  "/audio/dj/lady/04.m4a",
+  "/audio/dj/lady/05.m4a",
+  "/audio/dj/lady/06.m4a",
+  "/audio/dj/lady/07.m4a",
+  "/audio/dj/lady/08.m4a",
+  "/audio/dj/lady/09.m4a",
+  "/audio/dj/lady/10.m4a",
+] as const;
+const DJ_VOICE_CLIPS = [
+  "/audio/dj/disko/1.m4a",
+  "/audio/dj/disko/2.m4a",
+  "/audio/dj/disko/3.m4a",
+  "/audio/dj/disko/4.m4a",
+  "/audio/dj/disko/5.m4a",
+  "/audio/dj/disko/6.m4a",
+  "/audio/dj/disko/7.m4a",
+  "/audio/dj/disko/8.m4a",
+  "/audio/dj/disko/9.m4a",
+  "/audio/dj/disko/10.m4a",
+  "/audio/dj/disko/11.m4a",
+  "/audio/dj/disko/12.m4a",
+  "/audio/dj/disko/13.m4a",
+  "/audio/dj/disko/14.m4a",
+] as const;
+const DJ_INTERRUPTION_CLIPS = [
+  "/audio/dj/special_interruption/01.m4a",
+  "/audio/dj/interruption/1.m4a",
+  "/audio/dj/interruption/2.m4a",
+  "/audio/dj/interruption/3.m4a",
+  "/audio/dj/interruption/4.m4a",
+  "/audio/dj/interruption/5.m4a",
+  "/audio/dj/interruption/6.m4a",
+  "/audio/dj/interruption/7.m4a",
+  "/audio/dj/interruption/8.m4a",
+  "/audio/dj/interruption/9.m4a",
+  "/audio/dj/interruption/10.m4a",
+] as const;
+const DJ_REWIND_CLIP_PAIRS = [
+  ["/audio/dj/rewind/1.mp3.m4a", "/audio/dj/rewind/1.1.m4a"],
+  ["/audio/dj/rewind/2.mp3.m4a", "/audio/dj/rewind/2.1.m4a"],
+  ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
+] as const;
+const DEFAULT_VOLUME = 0.3;
+const DJ_RESUME_LEAD_MS = 500;
+const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
+const DJ_INTERRUPTION_PREFIX_MS = 300;
+const DJ_INTERRUPT_MIN_LEAD_S = 20;
+const DJ_INTERRUPT_END_BUFFER_S = 18;
+const DJ_INTERRUPT_WINDOW_START = 0.35;
+const DJ_INTERRUPT_WINDOW_END = 0.72;
+const DJ_REWIND_WINDOW_START = 0.72;
+const DJ_REWIND_WINDOW_END = 0.82;
+const DJ_REWIND_SEEK_BACK_S = 10;
+
+const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
+  const indices = Array.from({ length }, (_, index) => index);
+
+  for (let index = indices.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [indices[index], indices[randomIndex]] = [indices[randomIndex], indices[index]];
+  }
+
+  if (
+    pinnedFirstIndex !== undefined &&
+    indices.length > 1 &&
+    indices[0] === pinnedFirstIndex
+  ) {
+    const swapIndex = indices.findIndex((value) => value !== pinnedFirstIndex);
+    if (swapIndex > 0) {
+      [indices[0], indices[swapIndex]] = [indices[swapIndex], indices[0]];
+    }
+  }
+
+  return indices;
+};
+
+const shuffleItems = <T,>(items: readonly T[]) => {
+  const next = [...items];
+
+  for (let index = next.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
+  }
+
+  return next;
+};
+
+const formatTime = (seconds: number) => {
+  if (!Number.isFinite(seconds) || seconds < 0) {
+    return "0:00";
+  }
+  const totalSeconds = Math.floor(seconds);
+  const minutes = Math.floor(totalSeconds / 60);
+  const remainingSeconds = totalSeconds % 60;
+  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
+
+const VISUALIZER_BAR_COUNT = 16;
+const VISUALIZER_IDLE_BARS = Array.from({ length: VISUALIZER_BAR_COUNT }, () => 0.14);
+const VISUALIZER_ATTACK = 0.68;
+const VISUALIZER_DECAY = 0.16;
+const VISUALIZER_MIN_LEVEL = 0.08;
+
+const getVisualizerRanges = (binCount: number) => {
+  const ranges: Array<{ start: number; end: number; weight: number }> = [];
+  const maxIndex = Math.max(1, binCount - 1);
+
+  for (let index = 0; index < VISUALIZER_BAR_COUNT; index += 1) {
+    const startRatio = Math.pow(index / VISUALIZER_BAR_COUNT, 1.9);
+    const endRatio = Math.pow((index + 1) / VISUALIZER_BAR_COUNT, 1.9);
+    const start = Math.min(maxIndex, Math.floor(startRatio * maxIndex));
+    const end = Math.max(start + 1, Math.min(binCount, Math.ceil(endRatio * maxIndex) + 1));
+    const weight = 1 + index / VISUALIZER_BAR_COUNT;
+
+    ranges.push({ start, end, weight });
+  }
+
+  return ranges;
+};
+
+const RadioPlayer = () => {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const djStingerAudioRef = useRef<HTMLAudioElement | null>(null);
+  const djVoiceAudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserMapRef = useRef(new Map<HTMLAudioElement, AnalyserNode>());
+  const sourceNodeMapRef = useRef(new Map<HTMLAudioElement, MediaElementAudioSourceNode>());
+  const animationFrameRef = useRef<number | null>(null);
+  const frequencyDataRef = useRef<Uint8Array | null>(null);
+  const visualizerRangesRef = useRef<Array<{ start: number; end: number; weight: number }> | null>(null);
+  const activeVisualizerAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hasInteractedRef = useRef(false);
+  const shouldAutoplayRef = useRef(false);
+  const previousTrackIdRef = useRef<string | null>(null);
+  const playedTrackIdsRef = useRef<string[]>([]);
+  const djInterruptionOrderRef = useRef<string[]>(shuffleItems(DJ_INTERRUPTION_CLIPS));
+  const djInterruptionIndexRef = useRef(0);
+  const djVoiceOrderRef = useRef<string[]>(shuffleItems(DJ_VOICE_CLIPS));
+  const djVoiceIndexRef = useRef(0);
+  const rewindPairIndexRef = useRef(0);
+  const completedSongCountRef = useRef(0);
+  const pendingRewindRef = useRef(false);
+  const djInterruptTimeoutRef = useRef<number | null>(null);
+  const djResumeTimeoutRef = useRef<number | null>(null);
+  const djPrefixTimeoutRef = useRef<number | null>(null);
+  const visualizerInterruptTimeoutRef = useRef<number | null>(null);
+  const isDjVoiceActiveRef = useRef(false);
+  const [playOrder, setPlayOrder] = useState(() => shuffleIndices(PLAYABLE_TRACKS.length));
+  const [trackPosition, setTrackPosition] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [volume, setVolume] = useState(DEFAULT_VOLUME);
+  const [visualizerBars, setVisualizerBars] = useState<number[]>(VISUALIZER_IDLE_BARS);
+  const [isPodCollapsed, setIsPodCollapsed] = useState(false);
+  const sliderId = useId();
+  const volumeSliderId = useId();
+  const currentTrackIndex = playOrder[trackPosition] ?? 0;
+  const currentTrack = PLAYABLE_TRACKS[currentTrackIndex] ?? PLAYABLE_TRACKS[0];
+  const sliderProgress = duration > 0 ? `${(currentTime / duration) * 100}%` : "0%";
+  const volumeProgress = `${volume * 100}%`;
+
+  const clearDjInterruptTimeout = () => {
+    if (djInterruptTimeoutRef.current) {
+      window.clearTimeout(djInterruptTimeoutRef.current);
+      djInterruptTimeoutRef.current = null;
+    }
+  };
+
+  const clearDjResumeTimeout = () => {
+    if (djResumeTimeoutRef.current) {
+      window.clearTimeout(djResumeTimeoutRef.current);
+      djResumeTimeoutRef.current = null;
+    }
+  };
+
+  const clearDjPrefixTimeout = () => {
+    if (djPrefixTimeoutRef.current) {
+      window.clearTimeout(djPrefixTimeoutRef.current);
+      djPrefixTimeoutRef.current = null;
+    }
+  };
+
+  const clearVisualizerInterruptTimeout = () => {
+    if (visualizerInterruptTimeoutRef.current) {
+      window.clearTimeout(visualizerInterruptTimeoutRef.current);
+      visualizerInterruptTimeoutRef.current = null;
+    }
+  };
+
+  const stopVisualizer = () => {
+    if (animationFrameRef.current) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    clearVisualizerInterruptTimeout();
+    setVisualizerBars(VISUALIZER_IDLE_BARS);
+  };
+
+  const ensureAnalyserForAudio = (audio: HTMLAudioElement) => {
+    const AudioContextCtor = window.AudioContext || (window as typeof window & {
+      webkitAudioContext?: typeof AudioContext;
+    }).webkitAudioContext;
+
+    if (!AudioContextCtor) {
+      return null;
+    }
+
+    if (!audioContextRef.current) {
+      audioContextRef.current = new AudioContextCtor();
+    }
+
+    const existingAnalyser = analyserMapRef.current.get(audio);
+    if (existingAnalyser) {
+      return existingAnalyser;
+    }
+
+    const context = audioContextRef.current;
+    if (!context) {
+      return null;
+    }
+
+    const analyser = context.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.72;
+
+    const source = context.createMediaElementSource(audio);
+    source.connect(analyser);
+    analyser.connect(context.destination);
+
+    analyserMapRef.current.set(audio, analyser);
+    sourceNodeMapRef.current.set(audio, source);
+
+    if (!frequencyDataRef.current) {
+      frequencyDataRef.current = new Uint8Array(analyser.frequencyBinCount);
+      visualizerRangesRef.current = getVisualizerRanges(analyser.frequencyBinCount);
+    }
+
+    return analyser;
+  };
+
+  const startVisualizer = async () => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    if (audioContextRef.current?.state === "suspended") {
+      await audioContextRef.current.resume().catch(() => undefined);
+    }
+
+    const analyser = ensureAnalyserForAudio(audio);
+    const frequencyData = frequencyDataRef.current;
+    const visualizerRanges = visualizerRangesRef.current;
+    if (!analyser || !frequencyData || !visualizerRanges) {
+      return;
+    }
+
+    clearVisualizerInterruptTimeout();
+    activeVisualizerAudioRef.current = audio;
+
+    const draw = () => {
+      const currentVisualizerAudio = activeVisualizerAudioRef.current;
+      if (!currentVisualizerAudio) {
+        animationFrameRef.current = null;
+        setVisualizerBars(VISUALIZER_IDLE_BARS);
+        return;
+      }
+
+      if (currentVisualizerAudio.paused || currentVisualizerAudio.ended) {
+        animationFrameRef.current = null;
+        setVisualizerBars(VISUALIZER_IDLE_BARS);
+        return;
+      }
+
+      analyser.getByteFrequencyData(frequencyData);
+      const nextBars = visualizerRanges.map(({ start, end, weight }, index) => {
+        let weightedSum = 0;
+        let totalWeight = 0;
+
+        for (let offset = start; offset < end; offset += 1) {
+          const value = frequencyData[offset] ?? 0;
+          const positionWeight =
+            1 +
+            ((offset - start) / Math.max(1, end - start)) * 0.6 +
+            index / VISUALIZER_BAR_COUNT;
+          weightedSum += value * positionWeight;
+          totalWeight += positionWeight;
+        }
+
+        const average = totalWeight > 0 ? weightedSum / totalWeight : 0;
+        const normalized = Math.min(1, (average / 255) * weight * 1.05);
+        return Math.max(VISUALIZER_MIN_LEVEL, Math.pow(normalized, 0.9));
+      });
+
+      setVisualizerBars((current) =>
+        current.map((bar, index) => {
+          const target = nextBars[index] ?? VISUALIZER_MIN_LEVEL;
+          const easing = target > bar ? VISUALIZER_ATTACK : VISUALIZER_DECAY;
+          return bar + (target - bar) * easing;
+        })
+      );
+      animationFrameRef.current = window.requestAnimationFrame(draw);
+    };
+
+    if (animationFrameRef.current) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+    }
+    animationFrameRef.current = window.requestAnimationFrame(draw);
+  };
+
+  const showInterruptedVisualizerState = () => {
+    if (animationFrameRef.current) {
+      window.cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    clearVisualizerInterruptTimeout();
+    setVisualizerBars((current) =>
+      current.map((_, index) => (index % 3 === 0 ? 0.72 : index % 2 === 0 ? 0.48 : 0.32))
+    );
+    visualizerInterruptTimeoutRef.current = window.setTimeout(() => {
+      setVisualizerBars(VISUALIZER_IDLE_BARS);
+      visualizerInterruptTimeoutRef.current = null;
+    }, 220);
+  };
+
+  const getNextDjInterruptionClip = () => {
+    const order = djInterruptionOrderRef.current;
+    if (djInterruptionIndexRef.current >= order.length) {
+      djInterruptionOrderRef.current = shuffleItems(DJ_INTERRUPTION_CLIPS);
+      djInterruptionIndexRef.current = 0;
+    }
+
+    const clip =
+      djInterruptionOrderRef.current[djInterruptionIndexRef.current] ?? DJ_INTERRUPTION_CLIPS[0];
+    djInterruptionIndexRef.current += 1;
+    return clip;
+  };
+
+  const getNextDjVoiceClip = () => {
+    const order = djVoiceOrderRef.current;
+    if (djVoiceIndexRef.current >= order.length) {
+      djVoiceOrderRef.current = shuffleItems(DJ_VOICE_CLIPS);
+      djVoiceIndexRef.current = 0;
+    }
+
+    const clip = djVoiceOrderRef.current[djVoiceIndexRef.current] ?? DJ_VOICE_CLIPS[0];
+    djVoiceIndexRef.current += 1;
+    return clip;
+  };
+
+  const getNextRewindPair = () => {
+    const pair =
+      DJ_REWIND_CLIP_PAIRS[rewindPairIndexRef.current] ?? DJ_REWIND_CLIP_PAIRS[0];
+    rewindPairIndexRef.current =
+      (rewindPairIndexRef.current + 1) % DJ_REWIND_CLIP_PAIRS.length;
+    return pair;
+  };
+
+  const scheduleDjVoiceInterrupt = () => {
+    clearDjInterruptTimeout();
+    const audio = audioRef.current;
+    if (!audio || audio.paused || isDjVoiceActiveRef.current) {
+      return;
+    }
+
+    const durationSeconds = Number.isFinite(audio.duration) ? audio.duration : 0;
+    if (durationSeconds <= 0) {
+      return;
+    }
+
+    const isRewindEvent = pendingRewindRef.current;
+    const windowStart = isRewindEvent ? DJ_REWIND_WINDOW_START : DJ_INTERRUPT_WINDOW_START;
+    const windowEnd = isRewindEvent ? DJ_REWIND_WINDOW_END : DJ_INTERRUPT_WINDOW_END;
+    const earliestTime = Math.max(
+      audio.currentTime + DJ_INTERRUPT_MIN_LEAD_S,
+      durationSeconds * windowStart
+    );
+    const latestTime = Math.min(
+      durationSeconds - DJ_INTERRUPT_END_BUFFER_S,
+      durationSeconds * windowEnd
+    );
+
+    if (latestTime <= earliestTime) {
+      return;
+    }
+
+    const targetTime =
+      earliestTime + Math.random() * (latestTime - earliestTime);
+    const delay = Math.max(0, (targetTime - audio.currentTime) * 1000);
+
+    djInterruptTimeoutRef.current = window.setTimeout(() => {
+      const mainAudio = audioRef.current;
+      const djVoiceAudio = djVoiceAudioRef.current;
+      if (!mainAudio || !djVoiceAudio || mainAudio.paused || isDjVoiceActiveRef.current) {
+        return;
+      }
+
+      isDjVoiceActiveRef.current = true;
+      clearDjResumeTimeout();
+      clearDjPrefixTimeout();
+      mainAudio.pause();
+      showInterruptedVisualizerState();
+      djVoiceAudio.pause();
+      djVoiceAudio.currentTime = 0;
+
+      const resumeMainAudio = () => {
+        clearDjResumeTimeout();
+        clearDjPrefixTimeout();
+        isDjVoiceActiveRef.current = false;
+        if (shouldAutoplayRef.current) {
+          void mainAudio.play().catch(() => {
+            setIsPlaying(false);
+          });
+        }
+      };
+
+      const startDjVoiceClip = () => {
+        const scheduleResume = () => {
+          const clipDuration = Number.isFinite(djVoiceAudio.duration) ? djVoiceAudio.duration : 0;
+          const resumeDelay = Math.max(0, clipDuration * 1000 - DJ_RESUME_LEAD_MS);
+          clearDjResumeTimeout();
+          djResumeTimeoutRef.current = window.setTimeout(() => {
+            resumeMainAudio();
+          }, resumeDelay);
+        };
+
+        djVoiceAudio.onloadedmetadata = scheduleResume;
+        djVoiceAudio.onended = () => {
+          resumeMainAudio();
+        };
+        djVoiceAudio.src = getNextDjVoiceClip();
+        djVoiceAudio.load();
+        void djVoiceAudio.play().catch(() => {
+          resumeMainAudio();
+        });
+      };
+
+      const startRewindPair = () => {
+        const [leadClip, followClip] = getNextRewindPair();
+        pendingRewindRef.current = false;
+        mainAudio.currentTime = Math.max(0, mainAudio.currentTime - DJ_REWIND_SEEK_BACK_S);
+
+        const playFollowClip = () => {
+          const scheduleResume = () => {
+            const clipDuration = Number.isFinite(djVoiceAudio.duration) ? djVoiceAudio.duration : 0;
+            const resumeDelay = Math.max(0, clipDuration * 1000 - DJ_RESUME_LEAD_MS);
+            clearDjResumeTimeout();
+            djResumeTimeoutRef.current = window.setTimeout(() => {
+              resumeMainAudio();
+            }, resumeDelay);
+          };
+
+          djVoiceAudio.onloadedmetadata = scheduleResume;
+          djVoiceAudio.onended = () => {
+            resumeMainAudio();
+          };
+          djVoiceAudio.src = followClip;
+          djVoiceAudio.load();
+          void djVoiceAudio.play().catch(() => {
+            resumeMainAudio();
+          });
+        };
+
+        djVoiceAudio.onloadedmetadata = null;
+        djVoiceAudio.onended = null;
+        djVoiceAudio.src = leadClip;
+        djVoiceAudio.load();
+        void djVoiceAudio.play().catch(() => {
+          resumeMainAudio();
+        });
+        djPrefixTimeoutRef.current = window.setTimeout(() => {
+          if (!isDjVoiceActiveRef.current) {
+            return;
+          }
+          djVoiceAudio.pause();
+          djVoiceAudio.currentTime = 0;
+          playFollowClip();
+        }, DJ_INTERRUPTION_PREFIX_MS);
+      };
+
+      if (isRewindEvent) {
+        startRewindPair();
+        return;
+      }
+
+      djVoiceAudio.onloadedmetadata = null;
+      djVoiceAudio.onended = null;
+      djVoiceAudio.src = getNextDjInterruptionClip();
+      djVoiceAudio.load();
+      void djVoiceAudio.play().catch(() => {
+        resumeMainAudio();
+      });
+      djPrefixTimeoutRef.current = window.setTimeout(() => {
+        if (!isDjVoiceActiveRef.current) {
+          return;
+        }
+        djVoiceAudio.pause();
+        djVoiceAudio.currentTime = 0;
+        startDjVoiceClip();
+      }, DJ_INTERRUPTION_PREFIX_MS);
+    }, delay);
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    const djStingerAudio = djStingerAudioRef.current;
+    const djVoiceAudio = djVoiceAudioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    audio.preload = "auto";
+    audio.playsInline = true;
+    if (djStingerAudio) {
+      djStingerAudio.preload = "auto";
+      djStingerAudio.playsInline = true;
+    }
+    if (djVoiceAudio) {
+      djVoiceAudio.preload = "auto";
+      djVoiceAudio.playsInline = true;
+    }
+
+    const syncTime = () => setCurrentTime(audio.currentTime);
+    const syncDuration = () => {
+      setDuration(audio.duration || 0);
+      if (!isDjVoiceActiveRef.current && !audio.paused) {
+        scheduleDjVoiceInterrupt();
+      }
+    };
+    const handlePlay = () => {
+      setIsPlaying(true);
+      void startVisualizer();
+      if (!isDjVoiceActiveRef.current) {
+        scheduleDjVoiceInterrupt();
+      }
+    };
+    const handlePause = () => {
+      setIsPlaying(false);
+      clearDjInterruptTimeout();
+      if (!isDjVoiceActiveRef.current) {
+        stopVisualizer();
+      }
+    };
+    const handleEnded = () => {
+      clearDjInterruptTimeout();
+      completedSongCountRef.current += 1;
+      if (completedSongCountRef.current % 2 === 0) {
+        pendingRewindRef.current = true;
+      }
+      setTrackPosition((current) => {
+        if (current < playOrder.length - 1) {
+          return current + 1;
+        }
+
+        const nextOrder = shuffleIndices(PLAYABLE_TRACKS.length, currentTrackIndex);
+        playedTrackIdsRef.current = [];
+        setPlayOrder(nextOrder);
+        return 0;
+      });
+    };
+
+    audio.addEventListener("timeupdate", syncTime);
+    audio.addEventListener("loadedmetadata", syncDuration);
+    audio.addEventListener("durationchange", syncDuration);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+    audio.addEventListener("ended", handleEnded);
+
+    const tryPlay = () => {
+      if (!shouldAutoplayRef.current) {
+        return;
+      }
+      void audio.play().catch(() => {
+        setIsPlaying(false);
+      });
+    };
+
+    tryPlay();
+
+    const unlockPlayback = () => {
+      if (hasInteractedRef.current || !shouldAutoplayRef.current) {
+        return;
+      }
+      hasInteractedRef.current = true;
+      tryPlay();
+    };
+
+    window.addEventListener("pointerdown", unlockPlayback, { passive: true });
+    window.addEventListener("keydown", unlockPlayback);
+
+    return () => {
+      audio.removeEventListener("timeupdate", syncTime);
+      audio.removeEventListener("loadedmetadata", syncDuration);
+      audio.removeEventListener("durationchange", syncDuration);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("ended", handleEnded);
+      clearDjInterruptTimeout();
+      clearDjResumeTimeout();
+      stopVisualizer();
+      window.removeEventListener("pointerdown", unlockPlayback);
+      window.removeEventListener("keydown", unlockPlayback);
+    };
+  }, [currentTrackIndex, playOrder.length]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+    if (djStingerAudioRef.current) {
+      djStingerAudioRef.current.volume = volume;
+    }
+    if (djVoiceAudioRef.current) {
+      djVoiceAudioRef.current.volume = volume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
+    }
+  }, [volume]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack) {
+      return;
+    }
+
+    audio.load();
+    setCurrentTime(0);
+    setDuration(0);
+
+    if (!shouldAutoplayRef.current) {
+      stopVisualizer();
+      return;
+    }
+
+    void audio.play().catch(() => {
+      setIsPlaying(false);
+    });
+  }, [currentTrack]);
+
+  useEffect(() => {
+    const djStingerAudio = djStingerAudioRef.current;
+    if (!djStingerAudio || !currentTrack) {
+      return;
+    }
+
+    if (previousTrackIdRef.current === null) {
+      previousTrackIdRef.current = currentTrack.id;
+      return;
+    }
+
+    if (previousTrackIdRef.current === currentTrack.id) {
+      return;
+    }
+
+    previousTrackIdRef.current = currentTrack.id;
+    const randomStinger =
+      DJ_STINGERS[Math.floor(Math.random() * DJ_STINGERS.length)] ?? DJ_STINGERS[0];
+    djStingerAudio.pause();
+    djStingerAudio.currentTime = 0;
+    djStingerAudio.src = randomStinger;
+    djStingerAudio.load();
+    void djStingerAudio.play().catch(() => undefined);
+  }, [currentTrack]);
+
+  useEffect(() => {
+    if (!currentTrack) {
+      return;
+    }
+
+    if (!playedTrackIdsRef.current.includes(currentTrack.id)) {
+      playedTrackIdsRef.current.push(currentTrack.id);
+    }
+
+    if (playedTrackIdsRef.current.length > PLAYABLE_TRACKS.length) {
+      playedTrackIdsRef.current = [currentTrack.id];
+    }
+  }, [currentTrack]);
+
+  const handleTogglePlayback = async () => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+
+    if (audio.paused) {
+      shouldAutoplayRef.current = true;
+      await audio.play().catch(() => {
+        setIsPlaying(false);
+      });
+      return;
+    }
+
+    shouldAutoplayRef.current = false;
+    clearDjInterruptTimeout();
+    clearDjResumeTimeout();
+    if (djVoiceAudioRef.current) {
+      djVoiceAudioRef.current.pause();
+      djVoiceAudioRef.current.currentTime = 0;
+    }
+    isDjVoiceActiveRef.current = false;
+    audio.pause();
+    stopVisualizer();
+  };
+
+  const handleSeek = (value: number) => {
+    const audio = audioRef.current;
+    if (!audio) {
+      return;
+    }
+    audio.currentTime = value;
+    setCurrentTime(value);
+  };
+
+  const handleVolumeChange = (value: number) => {
+    const normalizedVolume = Math.min(Math.max(value, 0), 1);
+    setVolume(normalizedVolume);
+
+    if (audioRef.current) {
+      audioRef.current.volume = normalizedVolume;
+    }
+    if (djStingerAudioRef.current) {
+      djStingerAudioRef.current.volume = normalizedVolume;
+    }
+    if (djVoiceAudioRef.current) {
+      djVoiceAudioRef.current.volume = normalizedVolume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
+    }
+  };
+
+  const handlePreviousTrack = () => {
+    setTrackPosition((current) =>
+      current === 0 ? playOrder.length - 1 : current - 1
+    );
+  };
+
+  const handleNextTrack = () => {
+    setTrackPosition((current) => {
+      if (current < playOrder.length - 1) {
+        return current + 1;
+      }
+
+      const nextOrder = shuffleIndices(PLAYABLE_TRACKS.length, currentTrackIndex);
+      playedTrackIdsRef.current = [];
+      setPlayOrder(nextOrder);
+      return 0;
+    });
+  };
+
+  return (
+    <>
+      <audio ref={audioRef} src={currentTrack.audioSrc} />
+      <audio ref={djStingerAudioRef} />
+      <audio ref={djVoiceAudioRef} />
+      <div className="fixed bottom-[36px] right-[8vw] z-[59] flex items-end md:bottom-[42px]">
+        <div
+          className="relative transition-transform duration-[2000ms] ease-in-out"
+          style={{
+            transform: isPodCollapsed ? "translateY(calc(100% - 34px))" : "translateY(0)",
+          }}
+        >
+        <button
+          type="button"
+          onClick={() => setIsPodCollapsed((current) => !current)}
+          aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
+          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[14px] items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_8px_18px_rgba(0,0,0,0.16)] transition hover:bg-white hover:text-black"
+        >
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.75"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-4 w-4"
+          >
+            {isPodCollapsed ? (
+              <path d="m6 15 6-6 6 6" />
+            ) : (
+              <path d="m6 9 6 6 6-6" />
+            )}
+          </svg>
+        </button>
+        <div className="relative flex items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] pb-[1.5vh] pl-[2.5vw] pr-[2.5vw] pt-[0.7vw] shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:gap-1.5 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-0 bg-[#eef2ec]/28" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                src="/section_wallpaper/buy/refined_footer_mobile.jpg"
+                alt=""
+                aria-hidden="true"
+                className="h-full w-full object-cover opacity-88 md:hidden"
+              />
+              <img
+                src="/section_wallpaper/buy/refined_footer_desktop.jpg"
+                alt=""
+                aria-hidden="true"
+                className="hidden h-full w-full object-cover opacity-88 md:block"
+              />
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handlePreviousTrack}
+            aria-label="Previous track"
+            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-black hover:text-white md:h-[26px] md:w-[26px]"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
+            >
+              <path d="M11 19 4 12l7-7" />
+              <path d="M20 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <div className="relative z-[1] flex min-w-0 flex-col items-center px-2 text-center">
+            <span className="radio-player-title mb-0.5 text-[28px] tracking-[0.03em] text-white md:text-[34px]">
+              RADIO VØSTOK
+            </span>
+            <a
+              href={currentTrack.youtubeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] text-white/82 underline decoration-white/30 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
+            >
+              {currentTrack.title}
+            </a>
+            <div className="mb-1 flex h-[10vh] max-h-[52px] min-h-[26px] w-[120px] items-end justify-center gap-[3px] md:w-[150px] md:max-h-[60px]">
+              {visualizerBars.map((level, index) => (
+                <span
+                  key={`${currentTrack.id}-bar-${index}`}
+                  aria-hidden="true"
+                  className="block w-[4px] rounded-full bg-white/95 shadow-[0_0_10px_rgba(255,255,255,0.28)] transition-[height] duration-75 ease-out md:w-[5px]"
+                  style={{
+                    height: `${Math.max(12, level * 100)}%`,
+                  }}
+                />
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={() => void handleTogglePlayback()}
+              aria-label={isPlaying ? "Pause radio" : "Play radio"}
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_20px_rgba(255,255,255,0.2)] transition hover:scale-[1.02] md:h-9 md:w-9"
+            >
+              {isPlaying ? (
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 md:h-4 md:w-4">
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              ) : (
+                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="ml-0.5 h-3.5 w-3.5 md:h-4 md:w-4">
+                  <path d="M8 5.5v13l10-6.5-10-6.5Z" />
+                </svg>
+              )}
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={handleNextTrack}
+            aria-label="Next track"
+            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-black hover:text-white md:h-[26px] md:w-[26px]"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.75"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
+            >
+              <path d="m13 19 7-7-7-7" />
+              <path d="m4 19 7-7-7-7" />
+            </svg>
+          </button>
+
+          <div className="relative z-[1] ml-1 flex h-[80px] w-5 flex-col items-center justify-end gap-[1.8vh] pb-[3vh] pt-[2vh] md:h-[94px] md:w-6">
+            <label htmlFor={volumeSliderId} className="sr-only">
+              Adjust volume
+            </label>
+            <input
+              id={volumeSliderId}
+              type="range"
+              min={0}
+              max={1}
+              step={0.01}
+              value={volume}
+              onChange={(event) => handleVolumeChange(Number(event.target.value))}
+              aria-label="Volume"
+              style={{ ["--radio-volume-progress" as string]: volumeProgress }}
+              className="radio-player-volume mb-[3vh] h-2 w-[52px] cursor-pointer appearance-none rounded-full bg-white/30 md:w-[60px]"
+            />
+          </div>
+
+        </div>
+        </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-black/20 text-black backdrop-blur-md">
+        <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
+          <div className="pointer-events-none absolute inset-0">
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 bg-repeat-x md:hidden"
+              style={{
+                backgroundImage:
+                  "url('/section_wallpaper/buy/refined_footer_mobile.jpg')",
+                backgroundPosition: "center 50%",
+                backgroundRepeat: "repeat-x",
+                backgroundSize: "auto 100%",
+              }}
+            />
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 hidden bg-repeat-x md:block"
+              style={{
+                backgroundImage:
+                  "url('/section_wallpaper/buy/refined_footer_desktop.jpg')",
+                backgroundPosition: "center 50%",
+                backgroundRepeat: "repeat-x",
+                backgroundSize: "auto 100%",
+              }}
+            />
+            <div className="absolute inset-0 bg-[#f5f7f3]/26" />
+          </div>
+          <div className="relative min-w-0 w-full">
+            <div className="mb-0.5 flex items-center justify-between text-[9px] uppercase tracking-[0.18em] text-black/65 md:mb-1 md:text-[11px]">
+              <a
+                href={currentTrack.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="truncate pr-3 underline decoration-black/30 underline-offset-[0.22em] transition hover:text-black"
+              >
+                {currentTrack.title}
+              </a>
+              <span className="shrink-0">{formatTime(currentTime)} / {formatTime(duration)}</span>
+            </div>
+            <div className="flex items-center gap-2 md:gap-3">
+              <label htmlFor={sliderId} className="sr-only">
+                Seek through song
+              </label>
+              <input
+                id={sliderId}
+                type="range"
+                min={0}
+                max={duration || 0}
+                step={0.1}
+                value={Math.min(currentTime, duration || 0)}
+                onChange={(event) => handleSeek(Number(event.target.value))}
+                style={{ ["--radio-progress" as string]: sliderProgress }}
+                className="radio-player-slider h-2 w-full cursor-pointer appearance-none rounded-full bg-white/30 md:h-2.5"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default RadioPlayer;

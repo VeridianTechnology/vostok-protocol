@@ -1,7 +1,8 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trackSafe } from "@/lib/analytics";
+import SectionSideTab from "@/components/SectionSideTab";
 
 type ResearchStudiesProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
@@ -11,6 +12,33 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const isFourChan = entrySource === "4chan";
   const makeFourChanValue = (title: string) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const renderArchedParagraph = (text: string) => {
+    if (text.length < 40) {
+      return <span className="block">{text}</span>;
+    }
+
+    const characters = text.split("");
+    const midpoint = (characters.length - 1) / 2;
+
+    return (
+      <span className="block">
+        {characters.map((character, index) => {
+          const distance = Math.abs(index - midpoint);
+          const normalizedDistance = midpoint === 0 ? 0 : distance / midpoint;
+          const lift = Math.max(0, 2.8 * (1 - normalizedDistance * normalizedDistance));
+          return (
+            <span
+              key={`${text}-${index}`}
+              className="inline-block"
+              style={{ transform: `translateY(${-lift}px)` }}
+            >
+              {character === " " ? "\u00A0" : character}
+            </span>
+          );
+        })}
+      </span>
+    );
+  };
   const fourChanSections = [
     {
       title: "Beauty Is Not Superficial",
@@ -290,8 +318,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   );
   const [activeNarrative, setActiveNarrative] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  const rafRef = useRef<number | null>(null);
   const currentNarrative = narrativeTabs[activeNarrative];
 
   const setNarrative = (index: number) => {
@@ -302,47 +328,23 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
     setActiveNarrative(index);
   };
 
-  const handleParallaxMove = (event: React.PointerEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    if (rafRef.current) {
-      return;
-    }
-    rafRef.current = window.requestAnimationFrame(() => {
-      rafRef.current = null;
-      setParallaxOffset({ x: x * 48, y: y * 32 });
-    });
-  };
-
-  const handleParallaxLeave = () => {
-    if (rafRef.current) {
-      window.cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    setParallaxOffset({ x: 0, y: 0 });
-  };
-
   return (
-    <section
-      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 py-12 md:py-20"
-      onPointerMove={handleParallaxMove}
-      onPointerLeave={handleParallaxLeave}
-    >
+    <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black px-6 pb-[27.5vh] pt-[21vh] md:pb-[30vh] md:pt-[22vh]">
+      <SectionSideTab label="RESEARCH" />
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-[#b9b9b9]" />
-      <div
-        className="absolute inset-0 opacity-60"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(120deg, rgba(0,0,0,0.28) 0 1px, transparent 1px 160px), repeating-linear-gradient(30deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 200px)",
-          transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
-        }}
-      />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/20" />
-        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
-        <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/20 blur-[110px]" />
-        <div className="absolute inset-0 hud-grid opacity-15 pointer-events-none" />
+        <img
+          src="/wallpapers/research/refined_images/reserach_mobile.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover md:hidden"
+        />
+        <img
+          src="/wallpapers/research/refined_images/reserach_desktop.jpg"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 hidden h-full w-full object-cover md:block"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.08)_38%,rgba(0,0,0,0.22)_100%)]" />
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         {isFourChan ? (
@@ -384,12 +386,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         ) : (
           <div className="flex flex-col gap-6">
             <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
-              <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/70 md:text-xs">
-                Research snapshot
-              </p>
-              <h2 className="mt-3 text-2xl font-light tracking-tight text-black md:text-4xl">
-                Why Facial Structure Matters
-              </h2>
               <div className="mt-5">
                 <div className="flex flex-wrap items-center gap-2">
                   {narrativeTabs.map((tab, index) => (
@@ -402,8 +398,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       }}
                       className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
                         index === activeNarrative
-                          ? "border-black/40 bg-black/10 text-black"
-                          : "border-black/10 bg-white/30 text-black/60 hover:text-black"
+                          ? "border-white/45 bg-white/14 text-white"
+                          : "border-white/18 bg-white/10 text-white/72 hover:text-white"
                       }`}
                     >
                       {tab.label}
@@ -419,14 +415,14 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -direction * 30 }}
                       transition={{ duration: 0.45, ease: "easeOut" }}
-                      className="space-y-4 text-sm text-steel md:text-base"
+                      className="space-y-4 text-center text-sm text-white/88 md:text-base"
                     >
                       {currentNarrative.text.map((paragraph) => (
-                        <p key={paragraph}>{paragraph}</p>
+                        <p key={paragraph}>{renderArchedParagraph(paragraph)}</p>
                       ))}
                       {currentNarrative.sources && currentNarrative.sources.length > 0 && (
-                        <div className="pt-3">
-                          <p className="text-[10px] uppercase tracking-[0.35em] text-chrome/80">
+                        <div className="pt-3 text-center">
+                          <p className="text-[10px] uppercase tracking-[0.35em] text-white/70">
                             Sources
                           </p>
                           <ul className="mt-3 space-y-2 text-xs text-steel">

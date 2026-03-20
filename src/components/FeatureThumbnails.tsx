@@ -1,6 +1,7 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
+import SectionSideTab from "@/components/SectionSideTab";
 
 const getThumbVariants = (src: string) => {
   if (!src.endsWith(".jpg") && !src.endsWith(".jpeg")) {
@@ -89,19 +90,75 @@ const features = [
   },
 ];
 
+const wallpaperSlides = [
+  {
+    id: "01",
+    desktopVideoSrc: "/wallpapers/refined_videos/01_desktop.mp4",
+    mobileVideoSrc: "/wallpapers/refined_videos/01_mobile.mp4",
+    caption: "YOUR FACE",
+  },
+  {
+    id: "02",
+    desktopVideoSrc: "/wallpapers/refined_videos/02_desktop.mp4",
+    mobileVideoSrc: "/wallpapers/refined_videos/02_mobile.mp4",
+    caption: "YOUR FACE",
+  },
+  {
+    id: "03",
+    desktopVideoSrc: "/wallpapers/refined_videos/03_desktop.mp4",
+    mobileVideoSrc: "/wallpapers/refined_videos/03_mobile.mp4",
+    caption: "YOUR FACE",
+  },
+  {
+    id: "04",
+    desktopVideoSrc: "/wallpapers/refined_videos/04_desktop.mp4",
+    mobileVideoSrc: "/wallpapers/refined_videos/04_mobile.mp4",
+    caption: "YOUR FACE",
+  },
+  {
+    id: "05",
+    desktopVideoSrc: "/wallpapers/refined_videos/05_desktop.mp4",
+    mobileVideoSrc: "/wallpapers/refined_videos/05_mobile.mp4",
+    caption: "YOUR FACE",
+  },
+] as const;
+
+const wallpaperCovers = [
+  "/wallpapers/covers/01.png",
+  "/wallpapers/covers/02.png",
+  "/wallpapers/covers/03.png",
+  "/wallpapers/covers/04.png",
+  "/wallpapers/covers/05.png",
+] as const;
+
 type FeatureThumbnailsProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
+  renderStructureSection?: boolean;
+  renderWallpaperSection?: boolean;
 };
 
-const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) => {
+const FeatureThumbnails = ({
+  entrySource = "direct",
+  renderStructureSection = true,
+  renderWallpaperSection = true,
+}: FeatureThumbnailsProps) => {
   const isFourChan = entrySource === "4chan";
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
   const [isAngleView, setIsAngleView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [wallpaperSlideIndex, setWallpaperSlideIndex] = useState(0);
+  const [wallpaperCoverIndex, setWallpaperCoverIndex] = useState(() =>
+    Math.floor(Math.random() * wallpaperCovers.length)
+  );
+  const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const wallpaperIntervalRef = useRef<number | null>(null);
+  const wallpaperFlashTimeoutRef = useRef<number | null>(null);
+  const wallpaperAdvanceTimeoutRef = useRef<number | null>(null);
+  const wallpaperAutoAdvanceEnabledRef = useRef(true);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
@@ -136,6 +193,37 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
     return () => {
       if (intervalRef.current) {
         window.clearInterval(intervalRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!wallpaperAutoAdvanceEnabledRef.current) {
+      return;
+    }
+
+    wallpaperIntervalRef.current = window.setInterval(() => {
+      setIsWallpaperFlashVisible(true);
+      wallpaperAdvanceTimeoutRef.current = window.setTimeout(() => {
+        advanceWallpaperSlide("next");
+      }, 90);
+      wallpaperFlashTimeoutRef.current = window.setTimeout(() => {
+        setIsWallpaperFlashVisible(false);
+      }, 180);
+    }, 20000);
+
+    return () => {
+      if (wallpaperIntervalRef.current) {
+        window.clearInterval(wallpaperIntervalRef.current);
+        wallpaperIntervalRef.current = null;
+      }
+      if (wallpaperFlashTimeoutRef.current) {
+        window.clearTimeout(wallpaperFlashTimeoutRef.current);
+        wallpaperFlashTimeoutRef.current = null;
+      }
+      if (wallpaperAdvanceTimeoutRef.current) {
+        window.clearTimeout(wallpaperAdvanceTimeoutRef.current);
+        wallpaperAdvanceTimeoutRef.current = null;
       }
     };
   }, []);
@@ -208,6 +296,8 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
   }, [structureStep, isHighlightOn, isAngleView]);
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
+  const activeWallpaperSlide = wallpaperSlides[wallpaperSlideIndex] ?? wallpaperSlides[0];
+  const activeWallpaperCover = wallpaperCovers[wallpaperCoverIndex] ?? wallpaperCovers[0];
   const activeVariants = getImageVariants(activeImage);
   const isActiveUnlocked = structureStep >= activeFeature.step;
   const defaultDetailTitle = "The Harmony Index Explained";
@@ -237,27 +327,92 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
     setParallaxOffset({ x: 0, y: 0 });
   };
 
+  const getRandomWallpaperCoverIndex = (currentIndex: number) => {
+    if (wallpaperCovers.length <= 1) {
+      return currentIndex;
+    }
+
+    let nextIndex = currentIndex;
+    while (nextIndex === currentIndex) {
+      nextIndex = Math.floor(Math.random() * wallpaperCovers.length);
+    }
+
+    return nextIndex;
+  };
+
+  const advanceWallpaperSlide = (direction: "previous" | "next") => {
+    setWallpaperSlideIndex((current) =>
+      direction === "previous"
+        ? current === 0
+          ? wallpaperSlides.length - 1
+          : current - 1
+        : current === wallpaperSlides.length - 1
+        ? 0
+        : current + 1
+    );
+    setWallpaperCoverIndex((current) => getRandomWallpaperCoverIndex(current));
+  };
+
+  const showPreviousWallpaper = () => {
+    wallpaperAutoAdvanceEnabledRef.current = false;
+    if (wallpaperIntervalRef.current) {
+      window.clearInterval(wallpaperIntervalRef.current);
+      wallpaperIntervalRef.current = null;
+    }
+    if (wallpaperFlashTimeoutRef.current) {
+      window.clearTimeout(wallpaperFlashTimeoutRef.current);
+      wallpaperFlashTimeoutRef.current = null;
+    }
+    if (wallpaperAdvanceTimeoutRef.current) {
+      window.clearTimeout(wallpaperAdvanceTimeoutRef.current);
+      wallpaperAdvanceTimeoutRef.current = null;
+    }
+    setIsWallpaperFlashVisible(false);
+    advanceWallpaperSlide("previous");
+  };
+
+  const showNextWallpaper = () => {
+    wallpaperAutoAdvanceEnabledRef.current = false;
+    if (wallpaperIntervalRef.current) {
+      window.clearInterval(wallpaperIntervalRef.current);
+      wallpaperIntervalRef.current = null;
+    }
+    if (wallpaperFlashTimeoutRef.current) {
+      window.clearTimeout(wallpaperFlashTimeoutRef.current);
+      wallpaperFlashTimeoutRef.current = null;
+    }
+    if (wallpaperAdvanceTimeoutRef.current) {
+      window.clearTimeout(wallpaperAdvanceTimeoutRef.current);
+      wallpaperAdvanceTimeoutRef.current = null;
+    }
+    setIsWallpaperFlashVisible(false);
+    advanceWallpaperSlide("next");
+  };
+
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 bg-white py-8 px-6 md:py-24 overflow-hidden"
-      onPointerMove={handleParallaxMove}
-      onPointerLeave={handleParallaxLeave}
-    >
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-white" />
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
-          }}
-        />
-      </div>
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col lg:flex-row items-start gap-12 lg:gap-16">
-          <div className="w-full lg:flex-[1.25]">
-            <div className="relative rounded-3xl border border-black/10 bg-white/90 p-2 text-black/80 shadow-[0_30px_70px_rgba(0,0,0,0.2)] backdrop-blur-xl md:p-8">
+    <>
+      {renderStructureSection && (
+        <section
+          ref={sectionRef}
+          className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden px-6 py-8 md:py-24"
+          onPointerMove={handleParallaxMove}
+          onPointerLeave={handleParallaxLeave}
+        >
+          <SectionSideTab label="YOUR PROCESS" />
+          <div className="absolute inset-0 -z-10 overflow-hidden">
+            <div className="section-surface-fill absolute inset-0" />
+            <div
+              className="absolute inset-0 opacity-20"
+              style={{
+                transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
+              }}
+            />
+          </div>
+          <div className="mx-auto max-w-7xl">
+            <div className="flex flex-col items-start gap-12 lg:flex-row lg:gap-16">
+              <div className="w-full lg:flex-[1.25]">
+                <div className="relative rounded-3xl border border-black/10 bg-white/90 p-2 text-black/80 shadow-[0_30px_70px_rgba(0,0,0,0.2)] backdrop-blur-xl md:p-8">
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
               <m.div
                 initial={{ opacity: 0 }}
@@ -523,11 +678,114 @@ const FeatureThumbnails = ({ entrySource = "direct" }: FeatureThumbnailsProps) =
                 ))}
               </m.div>
 
+                </div>
+              </div>
+
             </div>
           </div>
-        </div>
-      </div>
-    </section>
+        </section>
+      )}
+
+      {/* Wallpaper section */}
+      {renderWallpaperSection && (
+        <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
+          <SectionSideTab label="VØSTOK" className="top-0 md:-top-3" />
+          <div className="relative min-h-[67vh] w-full md:min-h-[101vh]">
+          {"desktopVideoSrc" in activeWallpaperSlide ? (
+            <video
+              key={activeWallpaperSlide.id}
+              className="absolute inset-0 h-full w-full object-cover"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            >
+              <source
+                media="(max-width: 767px)"
+                src={activeWallpaperSlide.mobileVideoSrc}
+                type="video/mp4"
+              />
+              <source src={activeWallpaperSlide.desktopVideoSrc} type="video/mp4" />
+            </video>
+          ) : (
+            <picture>
+              <source media="(max-width: 767px)" srcSet={activeWallpaperSlide.mobileSrc} />
+              <img
+                key={activeWallpaperSlide.id}
+                src={activeWallpaperSlide.desktopSrc}
+                alt={`Vostok wallpaper ${activeWallpaperSlide.id}`}
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          )}
+          <img
+            key={activeWallpaperCover}
+            src={activeWallpaperCover}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover opacity-20"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
+          <div
+            className={`absolute inset-0 bg-white transition-opacity duration-150 ${
+              isWallpaperFlashVisible ? "opacity-100" : "pointer-events-none opacity-0"
+            }`}
+          />
+          <button
+            type="button"
+            onClick={showPreviousWallpaper}
+            aria-label="Previous wallpaper"
+            className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 md:left-8 md:h-14 md:w-14"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-5 w-5 md:h-6 md:w-6"
+            >
+              <path d="m15 6-6 6 6 6" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={showNextWallpaper}
+            aria-label="Next wallpaper"
+            className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 md:right-8 md:h-14 md:w-14"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-5 w-5 md:h-6 md:w-6"
+            >
+              <path d="m9 6 6 6-6 6" />
+            </svg>
+          </button>
+          <div className="absolute bottom-0 left-0 z-10 pb-[10vh] pl-[10vw]">
+            <p
+              data-text={activeWallpaperSlide.caption}
+              className="wallpaper-title max-w-[18ch] text-[42px] md:max-w-[22ch] md:text-[172px]"
+            >
+              {activeWallpaperSlide.caption}
+            </p>
+          </div>
+          </div>
+        </section>
+      )}
+    </>
   );
 };
 
