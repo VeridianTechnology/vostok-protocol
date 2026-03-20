@@ -195,6 +195,17 @@ const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
   return indices;
 };
 
+const buildRandomPlayState = (length: number, pinnedFirstIndex?: number) => {
+  const order = shuffleIndices(length, pinnedFirstIndex);
+  if (order.length <= 1) {
+    return { playOrder: order, trackPosition: 0 };
+  }
+
+  const offset = Math.floor(Math.random() * order.length);
+  const rotatedOrder = [...order.slice(offset), ...order.slice(0, offset)];
+  return { playOrder: rotatedOrder, trackPosition: 0 };
+};
+
 const shuffleItems = <T,>(items: readonly T[]) => {
   const next = [...items];
 
@@ -266,8 +277,9 @@ const RadioPlayer = () => {
   const djPrefixTimeoutRef = useRef<number | null>(null);
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
   const isDjVoiceActiveRef = useRef(false);
-  const [playOrder, setPlayOrder] = useState(() => shuffleIndices(PLAYABLE_TRACKS.length));
-  const [trackPosition, setTrackPosition] = useState(0);
+  const [{ playOrder, trackPosition }, setPlayState] = useState(() =>
+    buildRandomPlayState(PLAYABLE_TRACKS.length)
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -669,15 +681,13 @@ const RadioPlayer = () => {
       if (completedSongCountRef.current % 2 === 0) {
         pendingRewindRef.current = true;
       }
-      setTrackPosition((current) => {
-        if (current < playOrder.length - 1) {
-          return current + 1;
+      setPlayState((current) => {
+        if (current.trackPosition < current.playOrder.length - 1) {
+          return { ...current, trackPosition: current.trackPosition + 1 };
         }
 
-        const nextOrder = shuffleIndices(PLAYABLE_TRACKS.length, currentTrackIndex);
         playedTrackIdsRef.current = [];
-        setPlayOrder(nextOrder);
-        return 0;
+        return buildRandomPlayState(PLAYABLE_TRACKS.length, currentTrackIndex);
       });
     };
 
@@ -847,21 +857,20 @@ const RadioPlayer = () => {
   };
 
   const handlePreviousTrack = () => {
-    setTrackPosition((current) =>
-      current === 0 ? playOrder.length - 1 : current - 1
-    );
+    setPlayState((current) => ({
+      ...current,
+      trackPosition: current.trackPosition === 0 ? current.playOrder.length - 1 : current.trackPosition - 1,
+    }));
   };
 
   const handleNextTrack = () => {
-    setTrackPosition((current) => {
-      if (current < playOrder.length - 1) {
-        return current + 1;
+    setPlayState((current) => {
+      if (current.trackPosition < current.playOrder.length - 1) {
+        return { ...current, trackPosition: current.trackPosition + 1 };
       }
 
-      const nextOrder = shuffleIndices(PLAYABLE_TRACKS.length, currentTrackIndex);
       playedTrackIdsRef.current = [];
-      setPlayOrder(nextOrder);
-      return 0;
+      return buildRandomPlayState(PLAYABLE_TRACKS.length, currentTrackIndex);
     });
   };
 

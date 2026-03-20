@@ -338,28 +338,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               </span>
             </m.button>
           </div>
-          <a
-            href="https://www.instagram.com/vostok.method/"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Instagram"
-            className="absolute bottom-5 right-3 inline-flex h-8 w-8 items-center justify-center rounded-full border border-black/20 bg-white/90 text-black shadow-[0_10px_24px_rgba(0,0,0,0.2)] backdrop-blur-sm md:bottom-7 md:right-5 md:h-10 md:w-10"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-4 w-4 md:h-5 md:w-5"
-            >
-              <rect x="3" y="3" width="18" height="18" rx="5" />
-              <circle cx="12" cy="12" r="3.5" />
-              <circle cx="17" cy="7" r="1" />
-            </svg>
-          </a>
         </m.div>
       </div>
 
