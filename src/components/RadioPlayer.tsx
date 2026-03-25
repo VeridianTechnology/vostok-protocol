@@ -983,7 +983,7 @@ const RadioPlayer = () => {
           type="button"
           onClick={() => setIsPodCollapsed((current) => !current)}
           aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
-          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[22px] items-center justify-center rounded-full border border-black/35 bg-black text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] transition hover:bg-black hover:text-white"
+          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[26px] items-center justify-center rounded-full border border-black/35 bg-black text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] transition hover:bg-black hover:text-white"
         >
           <svg
             aria-hidden="true"

@@ -135,7 +135,7 @@ const InterestSection = ({
     fadeTimeoutRef.current = window.setTimeout(() => {
       setShowFallbackImage(true);
       fadeTimeoutRef.current = null;
-    }, 750);
+    }, 1000);
   };
 
   const handleBackgroundVideoToggle = () => {
@@ -219,7 +219,7 @@ const InterestSection = ({
                     preload="auto"
                     aria-hidden="true"
                     onEnded={handleBackgroundVideoEnded}
-                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[750ms] [backface-visibility:hidden] [transform:translateZ(0)] ${
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] [backface-visibility:hidden] [transform:translateZ(0)] ${
                       hasVideoEnded ? "opacity-0" : "opacity-100"
                     }`}
                     style={{
@@ -230,7 +230,7 @@ const InterestSection = ({
                     src={mobileBackground}
                     alt=""
                     aria-hidden="true"
-                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[750ms] md:hidden ${
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] md:hidden ${
                       showFallbackImage ? "opacity-100" : "opacity-0"
                     }`}
                     style={{
@@ -243,7 +243,7 @@ const InterestSection = ({
                     src={desktopBackground}
                     alt=""
                     aria-hidden="true"
-                    className={`absolute inset-0 hidden h-full w-full object-cover transition-opacity duration-[750ms] md:block ${
+                    className={`absolute inset-0 hidden h-full w-full object-cover transition-opacity duration-[1000ms] md:block ${
                       showFallbackImage ? "opacity-100" : "opacity-0"
                     }`}
                     style={{
@@ -254,7 +254,7 @@ const InterestSection = ({
                   />
                   <div
                     aria-hidden="true"
-                    className={`absolute inset-0 bg-black transition-opacity duration-[750ms] ${
+                    className={`absolute inset-0 bg-black transition-opacity duration-[1000ms] ${
                       hasVideoEnded && !showFallbackImage ? "opacity-100" : "opacity-0"
                     }`}
                   />
@@ -331,11 +331,23 @@ const InterestSection = ({
 
 const PremiumLifestyleSection = () => {
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null]);
   const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
+  const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false]);
 
   const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
     becomingYouVideoRefs.current[index] = element;
   };
+
+  useEffect(() => {
+    return () => {
+      becomingYouFadeTimeoutsRef.current.forEach((timeout) => {
+        if (timeout) {
+          window.clearTimeout(timeout);
+        }
+      });
+    };
+  }, []);
 
   const handleBecomingYouToggle = () => {
     const nextPausedState = !areBecomingYouVideosPaused;
@@ -351,6 +363,31 @@ const PremiumLifestyleSection = () => {
       }
       void video.play().catch(() => {});
     });
+  };
+
+  const handleBecomingYouVideoEnded = (index: number) => {
+    const video = becomingYouVideoRefs.current[index];
+    if (!video) {
+      return;
+    }
+
+    if (becomingYouFadeTimeoutsRef.current[index]) {
+      window.clearTimeout(becomingYouFadeTimeoutsRef.current[index]!);
+      becomingYouFadeTimeoutsRef.current[index] = null;
+    }
+
+    setBecomingYouVideoFading((current) => current.map((value, currentIndex) => (
+      currentIndex === index ? true : value
+    )));
+
+    becomingYouFadeTimeoutsRef.current[index] = window.setTimeout(() => {
+      video.currentTime = 0;
+      void video.play().catch(() => {});
+      setBecomingYouVideoFading((current) => current.map((value, currentIndex) => (
+        currentIndex === index ? false : value
+      )));
+      becomingYouFadeTimeoutsRef.current[index] = null;
+    }, 2000);
   };
 
   return (
@@ -403,7 +440,14 @@ const PremiumLifestyleSection = () => {
               alt=""
               aria-hidden="true"
               draggable={false}
-              className="pointer-events-none absolute bottom-0 right-0 z-[1] hidden h-[72%] w-auto max-w-none object-contain opacity-80 md:block"
+              className="pointer-events-none absolute bottom-0 right-0 z-0 hidden h-[101%] w-auto max-w-none object-contain md:block"
+            />
+            <img
+              src="/section_wallpaper/explaination/04.png"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[46%] w-auto max-w-none object-contain md:block"
             />
           </>
         }
@@ -422,8 +466,8 @@ const PremiumLifestyleSection = () => {
           onClick={handleBecomingYouToggle}
         >
           <div className="relative z-[1] max-w-[42rem]">
-            <h2 className="mb-4 text-center text-[2rem] font-black uppercase tracking-[0.14em] [color:#fff] [text-shadow:1px_0_0_#000,-1px_0_0_#000,0_1px_0_#000,0_-1px_0_#000] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
-              BECOME
+            <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+              BECØME
             </h2>
             <div className="relative">
               <video
@@ -431,12 +475,18 @@ const PremiumLifestyleSection = () => {
                 className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
-                loop
                 playsInline
                 preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(0)}
               >
                 <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
               </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
+                }`}
+              />
               {areBecomingYouVideosPaused ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
@@ -449,14 +499,14 @@ const PremiumLifestyleSection = () => {
               ) : null}
             </div>
             <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
-              <p className="text-[1rem] leading-[1.7] text-black/48 md:text-[1.15rem]">
+              <p className="text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
                 I&apos;ve developed techniques over two years to refine and build the muscles of
-                the face - like the gym for your face. The results have been outstanding.
+                the face - like the gym for your face.
               </p>
             </div>
           </div>
           <div className="relative z-[1] max-w-[38rem] md:translate-y-[25%] md:justify-self-end">
-            <h2 className="mb-4 text-center text-[2rem] font-black uppercase tracking-[0.14em] [color:#fff] [text-shadow:1px_0_0_#000,-1px_0_0_#000,0_1px_0_#000,0_-1px_0_#000] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+            <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
               DØll
             </h2>
             <div className="relative">
@@ -465,12 +515,18 @@ const PremiumLifestyleSection = () => {
                 className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
-                loop
                 playsInline
                 preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(1)}
               >
                 <source src="/section_wallpaper/explaination/02.mp4" type="video/mp4" />
               </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
+                }`}
+              />
               {areBecomingYouVideosPaused ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
@@ -483,8 +539,14 @@ const PremiumLifestyleSection = () => {
               ) : null}
             </div>
             <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
-              <p className="text-[0.9rem] uppercase tracking-[0.3em] text-black/55 md:text-[1rem]">
-                New techniques.
+              <p className="text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
+                I&apos;ve watched people get way hotter, become incredibly attractive and their
+                best self, in under 20 hours of total work - consistently, across genders and
+                ages.
+              </p>
+              <p className="mt-6 text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
+                As long as you have muscles in your face - and everyone does, you can build out
+                the perfect face.
               </p>
             </div>
           </div>

@@ -14,9 +14,12 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
   const [pointerOffset, setPointerOffset] = useState({ x: 0, y: 0 });
+  const [hasBackgroundVideoEnded, setHasBackgroundVideoEnded] = useState(false);
+  const [showBackgroundFallback, setShowBackgroundFallback] = useState(false);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
+  const backgroundFadeTimeoutRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const clamp = (value: number, min: number, max: number) =>
@@ -28,6 +31,15 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     updateMatch();
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (backgroundFadeTimeoutRef.current) {
+        window.clearTimeout(backgroundFadeTimeoutRef.current);
+        backgroundFadeTimeoutRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -126,6 +138,17 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     goToCheckout();
   };
 
+  const handleBackgroundVideoEnded = () => {
+    setHasBackgroundVideoEnded(true);
+    if (backgroundFadeTimeoutRef.current) {
+      window.clearTimeout(backgroundFadeTimeoutRef.current);
+    }
+    backgroundFadeTimeoutRef.current = window.setTimeout(() => {
+      setShowBackgroundFallback(true);
+      backgroundFadeTimeoutRef.current = null;
+    }, 1000);
+  };
+
   return (
     <section
       ref={sectionRef}
@@ -135,15 +158,40 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
       onPointerLeave={handleParallaxLeave}
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
-        <div className="absolute inset-[-12%] bg-[#d9d9d6]" aria-hidden="true" />
-        <div
-          aria-hidden="true"
-          className="pod-wallpaper-bg absolute bottom-0 left-1/2 z-[1] h-[176%] w-[164%] max-w-none -translate-x-1/2 transition-transform duration-500 ease-out will-change-transform md:h-[186%] md:w-[172%]"
-          style={{
-            transform: `translate3d(calc(-50% + ${pointerOffset.x}px), ${pointerOffset.y}px, 0) scale(1)`,
-          }}
-        />
-        <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,rgba(241,249,245,0.16)_0%,rgba(241,249,245,0.34)_36%,rgba(241,249,245,0.52)_100%)]" />
+        <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
+        <div className="absolute inset-x-0 top-0 bottom-[9vh] overflow-hidden md:bottom-[11vh]">
+          <video
+            aria-hidden="true"
+            onEnded={handleBackgroundVideoEnded}
+            className={`absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-[1000ms] ease-out will-change-transform ${
+              hasBackgroundVideoEnded ? "opacity-0" : "opacity-100"
+            }`}
+            autoPlay
+            muted
+            playsInline
+            preload="metadata"
+            style={{
+              transform: `translate3d(${pointerOffset.x}px, ${pointerOffset.y}px, 0) scaleX(1.2) scaleY(1.04)`,
+            }}
+          >
+            <source src="/section_wallpaper/buy/1.mp4" type="video/mp4" />
+          </video>
+          <img
+            src="/section_wallpaper/buy/02.png"
+            alt=""
+            aria-hidden="true"
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] ${
+              showBackgroundFallback ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div
+            aria-hidden="true"
+            className={`absolute inset-0 bg-black transition-opacity duration-[1000ms] ${
+              hasBackgroundVideoEnded && !showBackgroundFallback ? "opacity-100" : "opacity-0"
+            }`}
+          />
+          <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,rgba(241,249,245,0.14)_0%,rgba(241,249,245,0.26)_36%,rgba(241,249,245,0.4)_100%)]" />
+        </div>
       </div>
       <div className="absolute inset-x-0 bottom-[-20vh] z-[3] h-[29vh] overflow-hidden md:h-[31vh]">
         <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
@@ -177,14 +225,14 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => handleCheckoutClick("footer")}
-              className="group relative inline-flex min-h-[70px] min-w-[156px] items-center justify-center overflow-hidden rounded-[26px] border border-black/20 px-5 py-4 text-base font-medium uppercase tracking-[0.28em] text-white shadow-[0_20px_44px_rgba(0,0,0,0.38)] transition-all duration-500 md:min-h-[92px] md:min-w-[420px] md:rounded-[34px] md:px-8 md:text-[1.1rem]"
-            >
+            className="group relative inline-flex min-h-[70px] min-w-[156px] items-center justify-center overflow-hidden rounded-[26px] border border-black/20 px-5 py-4 text-base font-medium uppercase tracking-[0.28em] text-white shadow-[0_20px_44px_rgba(0,0,0,0.38)] transition-all duration-500 md:min-h-[92px] md:min-w-[420px] md:rounded-[34px] md:px-8 md:text-[1.1rem]"
+          >
               <span className="absolute inset-0">
                 <span aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
                 <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.42)_100%)] transition-opacity duration-500 group-hover:opacity-80" />
                 <span className="absolute inset-[1px] rounded-[25px] border border-white/18 md:rounded-[33px]" />
               </span>
-              <span className="font-tangerine relative z-[1] text-[0.95rem] normal-case tracking-[0.03em] drop-shadow-[0_8px_8px_rgba(0,0,0,1)] md:text-[1.7rem]">
+              <span className="relative z-[1] font-['Tektur'] text-[0.82rem] font-bold uppercase tracking-[0.24em] text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] md:text-[1.18rem]">
                 {isFourChan ? "Neetbux here" : "JØIN THE CLUB"}
               </span>
             </m.button>
