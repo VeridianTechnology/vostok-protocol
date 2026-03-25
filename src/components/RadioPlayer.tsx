@@ -364,9 +364,7 @@ const RadioPlayer = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [visualizerBars, setVisualizerBars] = useState<number[]>(VISUALIZER_IDLE_BARS);
-  const [isPodCollapsed, setIsPodCollapsed] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia("(max-width: 767px)").matches : false
-  );
+  const [isPodCollapsed, setIsPodCollapsed] = useState(true);
   const sliderId = useId();
   const volumeSliderId = useId();
   const currentTrackIndex = playOrder[trackPosition] ?? 0;
@@ -759,6 +757,17 @@ const RadioPlayer = () => {
     };
     const handleEnded = () => {
       clearDjInterruptTimeout();
+      clearDjResumeTimeout();
+      clearDjPrefixTimeout();
+      isDjVoiceActiveRef.current = false;
+      if (djVoiceAudio) {
+        djVoiceAudio.pause();
+        djVoiceAudio.currentTime = 0;
+      }
+      if (djStingerAudio) {
+        djStingerAudio.pause();
+        djStingerAudio.currentTime = 0;
+      }
       completedSongCountRef.current += 1;
       if (completedSongCountRef.current % 2 === 0) {
         pendingRewindRef.current = true;
@@ -967,14 +976,14 @@ const RadioPlayer = () => {
         <div
           className="relative transition-transform duration-[2000ms] ease-in-out"
           style={{
-            transform: isPodCollapsed ? "translateY(calc(100% - 34px))" : "translateY(0)",
+            transform: isPodCollapsed ? "translateY(100%)" : "translateY(0)",
           }}
         >
         <button
           type="button"
           onClick={() => setIsPodCollapsed((current) => !current)}
           aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
-          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[14px] items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_8px_18px_rgba(0,0,0,0.16)] transition hover:bg-white hover:text-black"
+          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[22px] items-center justify-center rounded-full border border-black/35 bg-black text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] transition hover:bg-black hover:text-white"
         >
           <svg
             aria-hidden="true"
@@ -1002,7 +1011,7 @@ const RadioPlayer = () => {
             type="button"
             onClick={handlePreviousTrack}
             aria-label="Previous track"
-            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-black hover:text-white md:h-[26px] md:w-[26px]"
+            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
           >
             <svg
               aria-hidden="true"
@@ -1020,15 +1029,19 @@ const RadioPlayer = () => {
           </button>
 
           <div className="relative z-[1] flex min-w-0 flex-col items-center px-2 text-center">
-            <span className="radio-player-title mb-0.5 text-[28px] tracking-[0.03em] text-white md:text-[34px]">
-              RADIO VØSTOK
-            </span>
+            <div className="relative mb-1 w-full overflow-hidden rounded-full border border-black/15 px-5 py-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.08)]">
+              <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-90" />
+              <div aria-hidden="true" className="absolute inset-0 bg-[#eef2ec]/40" />
+              <span className="radio-player-title relative block text-[22px] tracking-[0.03em] text-black md:text-[26px]">
+                RADIO VØSTOK
+              </span>
+            </div>
             <div className="mb-1 flex items-center gap-2">
-              <span className="rounded-full border border-white/30 bg-black/45 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.22em] text-white/90 md:text-[10px]">
+              <span className="rounded-full border border-black/15 bg-white/70 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.22em] text-black shadow-[inset_0_1px_4px_rgba(255,255,255,0.75)] md:text-[10px]">
                 {currentTrack.score}
               </span>
               {missingTrackSummary ? (
-                <span className="text-[8px] uppercase tracking-[0.18em] text-white/72 md:text-[9px]">
+                <span className="text-[8px] uppercase tracking-[0.18em] text-black/70 md:text-[9px]">
                   {PLAYABLE_TRACKS.length}/{TRACKS.length} loaded · {missingTrackSummary}
                 </span>
               ) : null}
@@ -1037,7 +1050,7 @@ const RadioPlayer = () => {
               href={currentTrack.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] text-white/82 underline decoration-white/30 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
+              className="mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] text-black/80 underline decoration-black/30 underline-offset-[0.22em] transition hover:text-black md:max-w-[18vw] md:text-[10px]"
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
@@ -1046,7 +1059,7 @@ const RadioPlayer = () => {
                 <span
                   key={`${currentTrack.id}-bar-${index}`}
                   aria-hidden="true"
-                  className="block w-[4px] rounded-full bg-white/95 shadow-[0_0_10px_rgba(255,255,255,0.28)] transition-[height] duration-75 ease-out md:w-[5px]"
+                  className="block w-[4px] rounded-full bg-black shadow-[inset_0_1px_4px_rgba(255,255,255,0.7),0_0_10px_rgba(255,255,255,0.22)] transition-[height] duration-75 ease-out md:w-[5px]"
                   style={{
                     height: `${Math.max(12, level * 100)}%`,
                   }}
@@ -1057,7 +1070,7 @@ const RadioPlayer = () => {
               type="button"
               onClick={() => void handleTogglePlayback()}
               aria-label={isPlaying ? "Pause radio" : "Play radio"}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-black shadow-[0_8px_20px_rgba(255,255,255,0.2)] transition hover:scale-[1.02] md:h-9 md:w-9"
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.92),0_8px_20px_rgba(255,255,255,0.2)] transition hover:scale-[1.02] md:h-9 md:w-9"
             >
               {isPlaying ? (
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 md:h-4 md:w-4">
@@ -1076,7 +1089,7 @@ const RadioPlayer = () => {
             type="button"
             onClick={handleNextTrack}
             aria-label="Next track"
-            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white text-black shadow-[0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-black hover:text-white md:h-[26px] md:w-[26px]"
+            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
           >
             <svg
               aria-hidden="true"

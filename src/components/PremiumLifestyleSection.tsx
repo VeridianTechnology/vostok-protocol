@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import SectionSideTab from "@/components/SectionSideTab";
 
 type InterestSectionProps = {
@@ -6,9 +6,39 @@ type InterestSectionProps = {
   lines: string[];
   desktopBackground: string;
   mobileBackground: string;
+  backgroundVideoSrc?: string;
+  fadeToImageOnVideoEnd?: boolean;
+  allowVideoToggle?: boolean;
+  videoPlaybackRate?: number;
+  localizedBottomGlowClassName?: string;
+  headingClassName?: string;
+  sectionClassName?: string;
   textClassName?: string;
   overlaySrc?: string;
+  overlayPosition?: "left" | "right";
+  secondaryOverlaySrc?: string;
+  secondaryOverlayPosition?: "left" | "right";
   useTiledBackground?: boolean;
+  tiledPatternClassName?: string;
+  tiledCenterGlowClassName?: string;
+  mobileBackgroundPosition?: string;
+  desktopBackgroundPosition?: string;
+  mobileBackgroundSize?: string;
+  desktopBackgroundSize?: string;
+  mobileBackgroundScale?: number;
+  desktopBackgroundScale?: number;
+  parallaxRangeX?: number;
+  parallaxRangeY?: number;
+  backgroundOverlayClassName?: string;
+  tabLabelClassName?: string;
+  overlayClassName?: string;
+  secondaryOverlayClassName?: string;
+  firstLineClassName?: string;
+  disableParallax?: boolean;
+  contentClassName?: string;
+  innerContentClassName?: string;
+  decoration?: ReactNode;
+  children?: ReactNode;
 };
 
 const InterestSection = ({
@@ -16,14 +46,110 @@ const InterestSection = ({
   lines,
   desktopBackground,
   mobileBackground,
+  backgroundVideoSrc,
+  fadeToImageOnVideoEnd = false,
+  allowVideoToggle = false,
+  videoPlaybackRate = 1,
+  localizedBottomGlowClassName = "",
+  headingClassName = "",
+  sectionClassName = "",
   textClassName = "text-black",
   overlaySrc,
+  overlayPosition = "right",
+  secondaryOverlaySrc,
+  secondaryOverlayPosition = "right",
   useTiledBackground = false,
+  tiledPatternClassName = "",
+  tiledCenterGlowClassName = "",
+  mobileBackgroundPosition = "center",
+  desktopBackgroundPosition = "center",
+  mobileBackgroundSize = "cover",
+  desktopBackgroundSize = "cover",
+  mobileBackgroundScale = 1.08,
+  desktopBackgroundScale = 1.08,
+  parallaxRangeX = 34,
+  parallaxRangeY = 18,
+  backgroundOverlayClassName = "bg-[linear-gradient(180deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(0,0,0,0.18)_100%)]",
+  tabLabelClassName = "",
+  overlayClassName = "",
+  secondaryOverlayClassName = "",
+  firstLineClassName = "",
+  disableParallax = false,
+  contentClassName = "",
+  innerContentClassName = "",
+  decoration,
+  children,
 }: InterestSectionProps) => {
   const rafRef = useRef<number | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const fadeTimeoutRef = useRef<number | null>(null);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [hasVideoEnded, setHasVideoEnded] = useState(false);
+  const [showFallbackImage, setShowFallbackImage] = useState(false);
+  const [isBackgroundVideoPaused, setIsBackgroundVideoPaused] = useState(false);
+
+  useEffect(() => {
+    if (!videoRef.current) {
+      return;
+    }
+
+    videoRef.current.playbackRate = videoPlaybackRate;
+  }, [videoPlaybackRate, backgroundVideoSrc]);
+
+  useEffect(() => {
+    if (!videoRef.current || !allowVideoToggle) {
+      return;
+    }
+
+    if (isBackgroundVideoPaused) {
+      videoRef.current.pause();
+      return;
+    }
+
+    void videoRef.current.play().catch(() => {});
+  }, [allowVideoToggle, isBackgroundVideoPaused]);
+
+  useEffect(() => {
+    setHasVideoEnded(false);
+    setShowFallbackImage(false);
+
+    if (fadeTimeoutRef.current) {
+      window.clearTimeout(fadeTimeoutRef.current);
+      fadeTimeoutRef.current = null;
+    }
+
+    return () => {
+      if (fadeTimeoutRef.current) {
+        window.clearTimeout(fadeTimeoutRef.current);
+        fadeTimeoutRef.current = null;
+      }
+    };
+  }, [backgroundVideoSrc]);
+
+  const handleBackgroundVideoEnded = () => {
+    if (!fadeToImageOnVideoEnd) {
+      return;
+    }
+
+    setHasVideoEnded(true);
+    fadeTimeoutRef.current = window.setTimeout(() => {
+      setShowFallbackImage(true);
+      fadeTimeoutRef.current = null;
+    }, 750);
+  };
+
+  const handleBackgroundVideoToggle = () => {
+    if (!allowVideoToggle || !backgroundVideoSrc || hasVideoEnded) {
+      return;
+    }
+
+    setIsBackgroundVideoPaused((current) => !current);
+  };
 
   const handleParallaxMove = (event: React.PointerEvent<HTMLElement>) => {
+    if (disableParallax) {
+      return;
+    }
     const rect = event.currentTarget.getBoundingClientRect();
     const x = (event.clientX - rect.left) / rect.width - 0.5;
     const y = (event.clientY - rect.top) / rect.height - 0.5;
@@ -32,7 +158,7 @@ const InterestSection = ({
     }
     rafRef.current = window.requestAnimationFrame(() => {
       rafRef.current = null;
-      setParallaxOffset({ x: x * 34, y: y * 18 });
+      setParallaxOffset({ x: x * parallaxRangeX, y: y * parallaxRangeY });
     });
   };
 
@@ -41,22 +167,26 @@ const InterestSection = ({
       window.cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     }
+    if (disableParallax) {
+      return;
+    }
     setParallaxOffset({ x: 0, y: 0 });
   };
 
   return (
     <section
-      className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black px-6 py-16 md:py-24"
+      className={`section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black px-6 py-16 md:py-24 ${sectionClassName}`}
       onPointerMove={handleParallaxMove}
       onPointerLeave={handleParallaxLeave}
     >
-      <SectionSideTab label={tabLabel} />
+      <SectionSideTab label={tabLabel} labelClassName={tabLabelClassName} />
+      {decoration}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {useTiledBackground ? (
           <>
             <div className="section-surface-fill absolute inset-0" />
             <div
-              className="absolute inset-0 opacity-60"
+              className={`absolute inset-0 opacity-60 ${tiledPatternClassName}`}
               style={{
                 backgroundImage:
                   "repeating-linear-gradient(120deg, rgba(0,0,0,0.28) 0 1px, transparent 1px 160px), repeating-linear-gradient(30deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 200px)",
@@ -64,56 +194,135 @@ const InterestSection = ({
               }}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/20" />
+            {tiledCenterGlowClassName ? (
+              <div aria-hidden="true" className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${tiledCenterGlowClassName}`} />
+            ) : null}
             <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
             <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/20 blur-[110px]" />
             <div className="absolute inset-0 hud-grid opacity-15 pointer-events-none" />
           </>
         ) : (
           <>
-            <div className="absolute inset-[-4%]">
-              <img
-                src={mobileBackground}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full scale-[1.08] object-cover md:hidden"
-                style={{
-                  transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(1.08)`,
-                }}
-              />
-              <img
-                src={desktopBackground}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
-                style={{
-                  transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(1.08)`,
-                }}
-              />
+            <div
+              className={allowVideoToggle ? "absolute inset-0 cursor-pointer" : "absolute inset-0"}
+              onClick={handleBackgroundVideoToggle}
+            >
+              {backgroundVideoSrc ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    src={backgroundVideoSrc}
+                    autoPlay
+                    muted
+                    loop={!fadeToImageOnVideoEnd}
+                    playsInline
+                    preload="auto"
+                    aria-hidden="true"
+                    onEnded={handleBackgroundVideoEnded}
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[750ms] [backface-visibility:hidden] [transform:translateZ(0)] ${
+                      hasVideoEnded ? "opacity-0" : "opacity-100"
+                    }`}
+                    style={{
+                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0)`,
+                    }}
+                  />
+                  <img
+                    src={mobileBackground}
+                    alt=""
+                    aria-hidden="true"
+                    className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[750ms] md:hidden ${
+                      showFallbackImage ? "opacity-100" : "opacity-0"
+                    }`}
+                    style={{
+                      objectPosition: mobileBackgroundPosition,
+                      objectFit: mobileBackgroundSize === "cover" ? "cover" : "fill",
+                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${mobileBackgroundScale})`,
+                    }}
+                  />
+                  <img
+                    src={desktopBackground}
+                    alt=""
+                    aria-hidden="true"
+                    className={`absolute inset-0 hidden h-full w-full object-cover transition-opacity duration-[750ms] md:block ${
+                      showFallbackImage ? "opacity-100" : "opacity-0"
+                    }`}
+                    style={{
+                      objectPosition: desktopBackgroundPosition,
+                      objectFit: desktopBackgroundSize === "cover" ? "cover" : "fill",
+                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${desktopBackgroundScale})`,
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className={`absolute inset-0 bg-black transition-opacity duration-[750ms] ${
+                      hasVideoEnded && !showFallbackImage ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </>
+              ) : (
+                <>
+                  <img
+                    src={mobileBackground}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full scale-[1.08] object-cover md:hidden"
+                    style={{
+                      objectPosition: mobileBackgroundPosition,
+                      objectFit: mobileBackgroundSize === "cover" ? "cover" : "fill",
+                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${mobileBackgroundScale})`,
+                    }}
+                  />
+                  <img
+                    src={desktopBackground}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
+                    style={{
+                      objectPosition: desktopBackgroundPosition,
+                      objectFit: desktopBackgroundSize === "cover" ? "cover" : "fill",
+                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${desktopBackgroundScale})`,
+                    }}
+                  />
+                </>
+              )}
             </div>
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(0,0,0,0.18)_100%)]" />
+            <div className={`absolute inset-0 ${backgroundOverlayClassName}`} />
+            {localizedBottomGlowClassName ? (
+              <div aria-hidden="true" className={`absolute bottom-0 left-1/2 -translate-x-1/2 ${localizedBottomGlowClassName}`} />
+            ) : null}
           </>
         )}
-        {overlaySrc ? (
+        {secondaryOverlaySrc ? (
           <img
-            src={overlaySrc}
+            src={secondaryOverlaySrc}
             alt=""
             aria-hidden="true"
-            className="absolute right-[2vw] top-0 z-[1] hidden h-full w-auto object-contain opacity-95 md:block"
+            draggable={false}
+            className={`absolute top-0 z-[1] hidden h-full w-auto object-contain opacity-95 md:block ${
+              secondaryOverlayPosition === "left" ? "left-[2vw]" : "right-[2vw]"
+            } ${secondaryOverlayClassName}`}
             style={{
-              transform: `translate3d(${parallaxOffset.x * 0.45}px, ${parallaxOffset.y * 0.3}px, 0)`,
+              transform: `translate3d(${parallaxOffset.x * 0.3}px, ${parallaxOffset.y * 0.2}px, 0) scaleX(-1)`,
             }}
           />
         ) : null}
       </div>
-      <div className="mx-auto w-full max-w-6xl">
-        <div className="p-6 md:p-10">
-          <h2 className={`research-impact-title text-center text-[2rem] font-black uppercase leading-[1.02] tracking-[0.08em] md:text-[5.3rem] ${textClassName}`}>
-            {lines.map((line, index) => (
-              <span key={`${tabLabel}-${line}`} className={index === 0 ? "block" : "mt-[0.6em] block"}>
-                {line}
-              </span>
-            ))}
-          </h2>
+      <div className={`mx-auto w-full max-w-6xl ${contentClassName}`}>
+        <div className={`p-6 md:p-10 ${innerContentClassName}`}>
+          {children ?? (
+            <h2
+              className={`research-impact-title select-none text-center text-[2rem] font-black uppercase leading-[1.02] tracking-[0.08em] md:text-[5.3rem] ${textClassName} ${headingClassName}`}
+            >
+              {lines.map((line, index) => (
+                <span
+                  key={`${tabLabel}-${line}`}
+                  className={index === 0 ? `block ${firstLineClassName}` : "mt-[0.9em] block"}
+                >
+                  {line}
+                </span>
+              ))}
+            </h2>
+          )}
         </div>
       </div>
     </section>
@@ -121,23 +330,166 @@ const InterestSection = ({
 };
 
 const PremiumLifestyleSection = () => {
+  const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
+
+  const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
+    becomingYouVideoRefs.current[index] = element;
+  };
+
+  const handleBecomingYouToggle = () => {
+    const nextPausedState = !areBecomingYouVideosPaused;
+    setAreBecomingYouVideosPaused(nextPausedState);
+
+    becomingYouVideoRefs.current.forEach((video) => {
+      if (!video) {
+        return;
+      }
+      if (nextPausedState) {
+        video.pause();
+        return;
+      }
+      void video.play().catch(() => {});
+    });
+  };
+
   return (
     <>
       <InterestSection
         tabLabel="STAY TUNED"
-        lines={["Premium lifestyle", "Are you ready for it", "VØSTOK"]}
-        desktopBackground="/section_wallpaper/interest/refined_images/01_desktop.png"
-        mobileBackground="/section_wallpaper/interest/refined_images/01_mobile.png"
+        lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
+        desktopBackground="/section_wallpaper/interest/06.png?v=1"
+        mobileBackground="/section_wallpaper/interest/06.png?v=1"
+        backgroundVideoSrc="/section_wallpaper/interest/07.mp4"
+        fadeToImageOnVideoEnd
+        allowVideoToggle
+        videoPlaybackRate={1}
+        localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
+        sectionClassName="min-h-[90vh] pt-[5.3rem] pb-[4.8rem] md:pt-[7.95rem] md:pb-[7.45rem]"
         textClassName="text-white"
-        overlaySrc="/section_wallpaper/interest/02.png?v=2"
+        headingClassName="font-['Tektur'] text-[2.45rem] font-black tracking-[0.14em] text-black opacity-90 [text-shadow:0_0_18px_rgba(255,255,255,0.95),0_8px_22px_rgba(255,255,255,0.7)] md:text-[6.55rem]"
+        firstLineClassName="mt-[22vh]"
+        tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
+        mobileBackgroundPosition="65% center"
+        desktopBackgroundPosition="55% 28%"
+        backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
+        secondaryOverlaySrc="/section_wallpaper/interest/02.png?v=2"
+        secondaryOverlayPosition="left"
+        secondaryOverlayClassName="translate-x-[20vw] opacity-70 brightness-[1.04] contrast-[1.06] saturate-[0.9] drop-shadow-[0_18px_48px_rgba(255,255,255,0.16)]"
+        disableParallax
+        contentClassName="flex min-h-[calc(100vh-10.6rem)] -translate-y-[15vh] flex-col justify-end md:min-h-[calc(100vh-15.9rem)]"
+        innerContentClassName="pb-0"
       />
       <InterestSection
-        tabLabel="BECOME YOU"
-        lines={["BECOME YOU"]}
-        desktopBackground="/section_wallpaper/interest/refined_images/02_desktop.jpg"
-        mobileBackground="/section_wallpaper/interest/refined_images/02_mobile.jpg"
-        useTiledBackground
-      />
+        tabLabel="BECOMING YOU"
+        lines={[]}
+        desktopBackground="/section_wallpaper/become_you/01.png"
+        mobileBackground="/section_wallpaper/become_you/01.png"
+        sectionClassName="min-h-[110vh] py-0 md:min-h-[140vh]"
+        contentClassName="flex min-h-[110vh] flex-col justify-start md:min-h-[140vh]"
+        innerContentClassName="py-[7vh] md:py-[5.5vh]"
+        tabLabelClassName="!text-black"
+        decoration={
+          <>
+            <img
+              src="/section_wallpaper/explaination/03.png"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[118%] w-auto max-w-none object-contain md:block"
+            />
+            <img
+              src="/section_wallpaper/explaination/05.png"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="pointer-events-none absolute bottom-0 right-0 z-[1] hidden h-[72%] w-auto max-w-none object-contain opacity-80 md:block"
+            />
+          </>
+        }
+        mobileBackgroundPosition="center"
+        desktopBackgroundPosition="center"
+        mobileBackgroundSize="fill"
+        desktopBackgroundSize="fill"
+        mobileBackgroundScale={1.7}
+        desktopBackgroundScale={1.7}
+        parallaxRangeX={50}
+        parallaxRangeY={50}
+        backgroundOverlayClassName="bg-[linear-gradient(180deg,rgba(255,255,255,0.26)_0%,rgba(255,255,255,0.1)_18%,rgba(255,255,255,0.04)_42%,rgba(0,0,0,0.18)_100%)]"
+      >
+        <div
+          className="relative grid cursor-pointer gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] md:gap-32"
+          onClick={handleBecomingYouToggle}
+        >
+          <div className="relative z-[1] max-w-[42rem]">
+            <h2 className="mb-4 text-center text-[2rem] font-black uppercase tracking-[0.14em] [color:#fff] [text-shadow:1px_0_0_#000,-1px_0_0_#000,0_1px_0_#000,0_-1px_0_#000] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+              BECOME
+            </h2>
+            <div className="relative">
+              <video
+                ref={setBecomingYouVideoRef(0)}
+                className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              >
+                <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+              </video>
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
+              <p className="text-[1rem] leading-[1.7] text-black/48 md:text-[1.15rem]">
+                I&apos;ve developed techniques over two years to refine and build the muscles of
+                the face - like the gym for your face. The results have been outstanding.
+              </p>
+            </div>
+          </div>
+          <div className="relative z-[1] max-w-[38rem] md:translate-y-[25%] md:justify-self-end">
+            <h2 className="mb-4 text-center text-[2rem] font-black uppercase tracking-[0.14em] [color:#fff] [text-shadow:1px_0_0_#000,-1px_0_0_#000,0_1px_0_#000,0_-1px_0_#000] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+              DØll
+            </h2>
+            <div className="relative">
+              <video
+                ref={setBecomingYouVideoRef(1)}
+                className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              >
+                <source src="/section_wallpaper/explaination/02.mp4" type="video/mp4" />
+              </video>
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
+              <p className="text-[0.9rem] uppercase tracking-[0.3em] text-black/55 md:text-[1rem]">
+                New techniques.
+              </p>
+            </div>
+          </div>
+        </div>
+      </InterestSection>
     </>
   );
 };

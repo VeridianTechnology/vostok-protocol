@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { track } from "@vercel/analytics";
 import { trackSafe } from "@/lib/analytics";
-import { getImageVariants, toDesktopImage } from "@/lib/utils";
+import { toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
   onClosed?: () => void;
@@ -10,6 +10,7 @@ type VideoSectionProps = {
 
 const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const overlayVideoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -27,10 +28,9 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         { src: "/website_video_web.webm", type: "video/webm" },
         { src: "/website_video_compress.mp4", type: "video/mp4" },
       ];
+  const overlayVideoSrc = "/section_wallpaper/hero/01.mp4";
   const videoKey = isMobile ? "mobile" : "desktop";
   const posterImage = "/1.jpg";
-  const posterVariants = getImageVariants(posterImage);
-
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
@@ -54,6 +54,14 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
     setIsPlaying(false);
     setHasStarted(false);
     setIsVideoReady(false);
+  }, [videoKey]);
+
+  useEffect(() => {
+    if (!overlayVideoRef.current) {
+      return;
+    }
+    overlayVideoRef.current.currentTime = 0;
+    overlayVideoRef.current.load();
   }, [videoKey]);
 
   const togglePlay = async () => {
@@ -150,43 +158,27 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
             <source key={source.src} src={source.src} type={source.type} />
           ))}
         </video>
+        <video
+          key={`overlay-${videoKey}`}
+          ref={overlayVideoRef}
+          className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:object-contain"
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        >
+          <source src={overlayVideoSrc} type="video/mp4" />
+        </video>
 
         {!hasStarted && (isMobile || !isVideoReady) && (
           <button
             type="button"
             onClick={togglePlay}
             aria-label="Play video"
-            className="absolute inset-0 z-20 flex items-center justify-center"
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black/10"
           >
-            {posterVariants ? (
-              <picture>
-                <source
-                  type="image/avif"
-                  srcSet={`${posterVariants.avif.mobile} 640w, ${posterVariants.avif.desktop} 1600w`}
-                  sizes="100vw"
-                />
-                <source
-                  type="image/webp"
-                  srcSet={`${posterVariants.webp.mobile} 640w, ${posterVariants.webp.desktop} 1600w`}
-                  sizes="100vw"
-                />
-                <img
-                  src={posterVariants.desktop}
-                  srcSet={`${posterVariants.mobile} 640w, ${posterVariants.desktop} 1600w`}
-                  sizes="100vw"
-                  alt="Video preview"
-                  className="video-crop-mobile h-full w-full object-cover"
-                  decoding="async"
-                />
-              </picture>
-            ) : (
-              <img
-                src={posterImage}
-                alt="Video preview"
-                className="video-crop-mobile h-full w-full object-cover"
-                decoding="async"
-              />
-            )}
             <span className="absolute left-1/2 top-1/2 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-black/20 bg-white/60 text-black/70 transition-opacity duration-300 hover:border-black/40 hover:bg-white/80">
               <svg
                 aria-hidden="true"

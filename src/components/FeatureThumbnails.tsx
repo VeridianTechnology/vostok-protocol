@@ -123,14 +123,6 @@ const wallpaperSlides = [
   },
 ] as const;
 
-const wallpaperCovers = [
-  "/wallpapers/covers/01.png",
-  "/wallpapers/covers/02.png",
-  "/wallpapers/covers/03.png",
-  "/wallpapers/covers/04.png",
-  "/wallpapers/covers/05.png",
-] as const;
-
 type FeatureThumbnailsProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
   renderStructureSection?: boolean;
@@ -148,9 +140,6 @@ const FeatureThumbnails = ({
   const [isAngleView, setIsAngleView] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [wallpaperSlideIndex, setWallpaperSlideIndex] = useState(0);
-  const [wallpaperCoverIndex, setWallpaperCoverIndex] = useState(() =>
-    Math.floor(Math.random() * wallpaperCovers.length)
-  );
   const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
@@ -245,7 +234,6 @@ const FeatureThumbnails = ({
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
   const activeWallpaperSlide = wallpaperSlides[wallpaperSlideIndex] ?? wallpaperSlides[0];
-  const activeWallpaperCover = wallpaperCovers[wallpaperCoverIndex] ?? wallpaperCovers[0];
   const activeVariants = getImageVariants(activeImage);
   const isActiveUnlocked = structureStep >= activeFeature.step;
   const defaultDetailTitle = "The Harmony Index Explained";
@@ -275,19 +263,6 @@ const FeatureThumbnails = ({
     setParallaxOffset({ x: 0, y: 0 });
   };
 
-  const getRandomWallpaperCoverIndex = (currentIndex: number) => {
-    if (wallpaperCovers.length <= 1) {
-      return currentIndex;
-    }
-
-    let nextIndex = currentIndex;
-    while (nextIndex === currentIndex) {
-      nextIndex = Math.floor(Math.random() * wallpaperCovers.length);
-    }
-
-    return nextIndex;
-  };
-
   const advanceWallpaperSlide = (direction: "previous" | "next") => {
     setWallpaperSlideIndex((current) =>
       direction === "previous"
@@ -298,7 +273,6 @@ const FeatureThumbnails = ({
         ? 0
         : current + 1
     );
-    setWallpaperCoverIndex((current) => getRandomWallpaperCoverIndex(current));
   };
 
   const showPreviousWallpaper = () => {
@@ -669,15 +643,18 @@ const FeatureThumbnails = ({
               />
             </picture>
           )}
-          <img
-            key={activeWallpaperCover}
-            src={activeWallpaperCover}
-            alt=""
+          <video
+            key="hero-overlay-video"
+            className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover opacity-20"
-            loading="lazy"
-            decoding="async"
-          />
+          >
+            <source src="/section_wallpaper/hero/01.mp4" type="video/mp4" />
+          </video>
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
           <div
             className={`absolute inset-0 bg-white transition-opacity duration-150 ${
@@ -725,7 +702,7 @@ const FeatureThumbnails = ({
           <div className="absolute bottom-0 left-0 z-10 pb-[10vh] pl-[10vw]">
             <p
               data-text={activeWallpaperSlide.caption}
-              className="wallpaper-title max-w-[18ch] text-[42px] md:max-w-[22ch] md:text-[172px]"
+              className="wallpaper-title select-none max-w-[18ch] text-[42px] md:max-w-[22ch] md:text-[172px]"
             >
               {activeWallpaperSlide.caption}
             </p>

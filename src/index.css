@@ -62,8 +62,8 @@
     --obsidian: 0 0% 3%;
     --warm-highlight: 38 40% 60%;
     --section-surface: #F1F9F5;
-    --pod-wallpaper-mobile: url("/section_wallpaper/pod/refined_images/pod_shared_mobile.png");
-    --pod-wallpaper-desktop: url("/section_wallpaper/pod/refined_images/pod_shared_desktop.png");
+    --pod-wallpaper-mobile: url("/section_wallpaper/pod/06.png");
+    --pod-wallpaper-desktop: url("/section_wallpaper/pod/06.png");
 
     --gradient-silver: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 7%) 55%, hsl(0 0% 5%) 100%);
     --gradient-chrome: linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%);
@@ -130,8 +130,8 @@
     background-color: #040606;
     background-image: var(--pod-wallpaper-mobile);
     background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-repeat: repeat;
+    background-size: auto;
   }
 
   @media (min-width: 768px) {
@@ -399,15 +399,11 @@
 
 .radio-player-title {
   font-family: "Tektur", sans-serif;
-  color: #fff;
-  -webkit-text-stroke: 3px #000;
-  paint-order: stroke fill;
+  color: #000;
+  -webkit-text-stroke: 0;
   text-shadow:
-    1px 0 0 #000,
-    -1px 0 0 #000,
-    0 1px 0 #000,
-    0 -1px 0 #000,
-    2px 2px 4px rgba(0, 0, 0, 0.22);
+    0 1px 0 rgba(255, 255, 255, 0.4),
+    0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
 .research-impact-title {
