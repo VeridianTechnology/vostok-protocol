@@ -3,6 +3,7 @@ import SectionSideTab from "@/components/SectionSideTab";
 
 type InterestSectionProps = {
   tabLabel: string;
+  hideTabLabel?: boolean;
   lines: string[];
   desktopBackground: string;
   mobileBackground: string;
@@ -44,6 +45,7 @@ type InterestSectionProps = {
 
 const InterestSection = ({
   tabLabel,
+  hideTabLabel = false,
   lines,
   desktopBackground,
   mobileBackground,
@@ -181,7 +183,7 @@ const InterestSection = ({
       onPointerMove={handleParallaxMove}
       onPointerLeave={handleParallaxLeave}
     >
-      <SectionSideTab label={tabLabel} labelClassName={tabLabelClassName} />
+      {hideTabLabel ? null : <SectionSideTab label={tabLabel} labelClassName={tabLabelClassName} />}
       {decoration}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         {useTiledBackground ? (
@@ -409,28 +411,31 @@ const PremiumLifestyleSection = () => {
     <>
       <InterestSection
         tabLabel="STAY TUNED"
+        hideTabLabel
         lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
         desktopBackground="/section_wallpaper/interest/06.png?v=1"
         mobileBackground="/section_wallpaper/interest/mobile/08.png?v=2"
         localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
-        sectionClassName="min-h-[90vh] pt-[5.3rem] pb-[4.8rem] md:pt-[7.95rem] md:pb-[7.45rem]"
+        sectionClassName="min-h-[64vh] pt-[4.8rem] pb-[4rem] md:min-h-[72vh] md:pt-[6rem] md:pb-[4.8rem]"
         textClassName="text-white"
-        headingClassName="font-['Tektur'] text-[2.45rem] font-black tracking-[0.14em] text-black opacity-90 [text-shadow:0_0_18px_rgba(255,255,255,0.95),0_8px_22px_rgba(255,255,255,0.7)] md:text-[6.55rem]"
-        firstLineClassName="mt-[22vh]"
+        headingClassName="font-['Tektur'] text-[2.1rem] font-black tracking-[0.14em] text-black opacity-90 [text-shadow:0_0_18px_rgba(255,255,255,0.95),0_8px_22px_rgba(255,255,255,0.7)] md:text-[5.7rem]"
+        firstLineClassName="mt-[18vh] md:mt-[16vh]"
         tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
         mobileBackgroundPosition="58% center"
+        mobileBackgroundSize="fill"
         mobileBackgroundScale={0.94}
         desktopBackgroundPosition="55% 28%"
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         secondaryOverlaySrc="/section_wallpaper/interest/02.png?v=2"
         secondaryOverlayPosition="left"
-        secondaryOverlayClassName="translate-x-[20vw] opacity-70 brightness-[1.04] contrast-[1.06] saturate-[0.9] drop-shadow-[0_18px_48px_rgba(255,255,255,0.16)]"
+        secondaryOverlayClassName="translate-x-0 opacity-70 brightness-[1.04] contrast-[1.06] saturate-[0.9] drop-shadow-[0_18px_48px_rgba(255,255,255,0.16)]"
         disableParallax
-        contentClassName="flex min-h-[calc(100vh-10.6rem)] -translate-y-[15vh] flex-col justify-end md:min-h-[calc(100vh-15.9rem)]"
+        contentClassName="flex min-h-[calc(64vh-8.8rem)] -translate-y-[31vh] flex-col justify-end md:min-h-[calc(72vh-10.8rem)] md:-translate-y-[8vh]"
         innerContentClassName="pb-0"
       />
       <InterestSection
         tabLabel="BECOMING YOU"
+        hideTabLabel
         lines={[]}
         desktopBackground="/section_wallpaper/become_you/01.png"
         mobileBackground="/section_wallpaper/become_you/01.png"
@@ -519,8 +524,29 @@ const PremiumLifestyleSection = () => {
                   </div>
                 ) : null}
               </div>
-              <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:rounded-l-none md:px-3 md:py-6">
-                <p className="font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
+              <div className="relative overflow-hidden rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:rounded-l-none md:px-3 md:py-6">
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden"
+                  style={{
+                    backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                    backgroundRepeat: "repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "108px 108px",
+                  }}
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block"
+                  style={{
+                    backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                    backgroundRepeat: "repeat",
+                    backgroundPosition: "center",
+                    backgroundSize: "128px 128px",
+                  }}
+                />
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
+                <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
                   Like the
                   <span className="block">gym for your face.</span>
                 </p>
@@ -560,9 +586,30 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[-7vw] md:w-[44rem] md:max-w-none md:-translate-x-[50vw] md:px-10 md:py-8">
-              <p className="font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[2rem]">
-                The ability to become as hot as you ever wanted to.
+            <div className="relative mt-5 max-w-[38rem] overflow-hidden rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[-7vw] md:w-[44rem] md:max-w-none md:-translate-x-[50vw] md:px-10 md:py-8">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "152px 152px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[2rem]">
+                Become as hot as you want.
               </p>
             </div>
           </div>

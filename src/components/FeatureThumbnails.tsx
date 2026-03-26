@@ -771,7 +771,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
-            className="relative min-h-[77vh] w-full md:min-h-[101vh]"
+            className="relative min-h-[92vh] w-full md:min-h-[101vh]"
             onClick={toggleWallpaperVideoPlayback}
           >
           <div

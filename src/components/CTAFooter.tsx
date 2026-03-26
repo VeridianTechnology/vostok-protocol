@@ -102,30 +102,37 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     <section
       ref={sectionRef}
       id="purchase"
-      className="section-surface relative left-1/2 right-1/2 h-[118svh] min-h-[118svh] w-screen -translate-x-1/2 overflow-hidden pb-[10vh]"
+      className="section-surface relative left-1/2 right-1/2 h-[84svh] min-h-[84svh] w-screen -translate-x-1/2 overflow-hidden pb-[6vh] md:h-[88svh] md:min-h-[88svh] md:pb-[7vh]"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
-        <div className="absolute inset-x-0 top-0 bottom-[9vh] overflow-hidden md:bottom-[11vh]">
+        <div className="absolute inset-x-0 top-0 bottom-[5vh] overflow-hidden md:bottom-[8vh]">
           <img
-            src="/section_wallpaper/buy/03.png"
+            src="/section_wallpaper/buy/05.png"
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover object-top"
+            className="absolute inset-0 h-full w-full object-fill object-center md:hidden"
             style={{
-              transform: "scale(1.06)",
-              transformOrigin: "top center",
+              transform: "none",
             }}
           />
-          <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,rgba(241,249,245,0.14)_0%,rgba(241,249,245,0.26)_36%,rgba(241,249,245,0.4)_100%)]" />
+          <img
+            src="/section_wallpaper/buy/04.png"
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 hidden h-full w-full object-cover object-center md:block"
+            style={{
+              transform: "none",
+            }}
+          />
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-[-20vh] z-[3] h-[29vh] overflow-hidden md:h-[31vh]">
+      <div className="absolute inset-x-0 bottom-[-14vh] z-[3] h-[18vh] overflow-hidden md:bottom-[-15vh] md:h-[21vh]">
         <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.32)_0%,rgba(0,0,0,0.18)_32%,rgba(0,0,0,0.36)_100%)]" />
       </div>
 
-      <div className="absolute inset-x-0 top-0 bottom-[9vh] z-10 text-black/80 md:bottom-[11vh]">
+      <div className="absolute inset-x-0 top-0 bottom-[5vh] z-10 text-black/80 md:bottom-[8vh]">
         <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
