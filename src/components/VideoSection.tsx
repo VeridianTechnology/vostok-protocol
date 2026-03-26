@@ -93,84 +93,91 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
       id="hero-video"
       className="relative w-full bg-white md:border-b md:border-black/40 mt-0 mb-0"
     >
-      <div className="video-frame relative w-full overflow-hidden bg-black">
-        <video
-          key={videoKey}
-          ref={videoRef}
-          className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:[clip-path:inset(12vh_14vw_0_14vw)] md:py-0 md:object-contain md:aspect-auto"
-          poster={toDesktopImage(posterImage)}
-          muted={isMuted}
-          controls
-          controlsList="nodownload noplaybackrate"
-          playsInline
-          preload="metadata"
-          onCanPlay={() => setIsVideoReady(true)}
-          onPlay={() => {
-            setIsPlaying(true);
-            setHasStarted(true);
-            if (!hasTrackedStart.current) {
-              track("start_video");
-              if (entrySource === "facebook") {
-                track("start_video_facebook");
-              }
-              if (entrySource === "4chan") {
-                track("start_video_4chan");
-              }
-              if (entrySource === "instagram") {
-                track("start_video_instagram");
-              }
-              if (entrySource === "twitter") {
-                track("start_video_twitter");
-              }
-              if (entrySource === "tiktok") {
-                track("start_video_tiktok");
-              }
-              hasTrackedStart.current = true;
-            }
-          }}
-          onPause={() => setIsPlaying(false)}
-          onEnded={() => {
-            if (!hasTrackedFinish.current) {
-              track("finish_video");
-              if (entrySource === "facebook") {
-                track("finish_video_facebook");
-              }
-              if (entrySource === "4chan") {
-                track("finish_video_4chan");
-              }
-              if (entrySource === "instagram") {
-                track("finish_video_instagram");
-              }
-              if (entrySource === "twitter") {
-                track("finish_video_twitter");
-              }
-              if (entrySource === "tiktok") {
-                track("finish_video_tiktok");
-              }
-              hasTrackedFinish.current = true;
-            }
-            trackSafe("video_closed");
-            setIsClosed(true);
-            onClosed?.();
-          }}
-        >
-          {videoSources.map((source) => (
-            <source key={source.src} src={source.src} type={source.type} />
-          ))}
-        </video>
-        <video
-          key={`overlay-${videoKey}`}
-          ref={overlayVideoRef}
-          className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:[clip-path:inset(12vh_14vw_0_14vw)] md:object-contain"
-          muted
-          autoPlay
-          loop
-          playsInline
-          preload="metadata"
+      <div className="video-frame relative w-full overflow-hidden bg-black md:px-[14vw] md:pt-[12vh]">
+        <div
           aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 z-[18] hidden h-[24vh] bg-gradient-to-b from-black via-black via-35% to-transparent md:block"
+        />
+        <div
+          className="relative"
+          onClick={hasStarted ? togglePlay : undefined}
         >
-          <source src={overlayVideoSrc} type="video/mp4" />
-        </video>
+          <video
+            key={videoKey}
+            ref={videoRef}
+            className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[66vh] md:py-0 md:object-contain md:aspect-auto"
+            poster={toDesktopImage(posterImage)}
+            muted={isMuted}
+            playsInline
+            preload="metadata"
+            onCanPlay={() => setIsVideoReady(true)}
+            onPlay={() => {
+              setIsPlaying(true);
+              setHasStarted(true);
+              if (!hasTrackedStart.current) {
+                track("start_video");
+                if (entrySource === "facebook") {
+                  track("start_video_facebook");
+                }
+                if (entrySource === "4chan") {
+                  track("start_video_4chan");
+                }
+                if (entrySource === "instagram") {
+                  track("start_video_instagram");
+                }
+                if (entrySource === "twitter") {
+                  track("start_video_twitter");
+                }
+                if (entrySource === "tiktok") {
+                  track("start_video_tiktok");
+                }
+                hasTrackedStart.current = true;
+              }
+            }}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => {
+              if (!hasTrackedFinish.current) {
+                track("finish_video");
+                if (entrySource === "facebook") {
+                  track("finish_video_facebook");
+                }
+                if (entrySource === "4chan") {
+                  track("finish_video_4chan");
+                }
+                if (entrySource === "instagram") {
+                  track("finish_video_instagram");
+                }
+                if (entrySource === "twitter") {
+                  track("finish_video_twitter");
+                }
+                if (entrySource === "tiktok") {
+                  track("finish_video_tiktok");
+                }
+                hasTrackedFinish.current = true;
+              }
+              trackSafe("video_closed");
+              setIsClosed(true);
+              onClosed?.();
+            }}
+          >
+            {videoSources.map((source) => (
+              <source key={source.src} src={source.src} type={source.type} />
+            ))}
+          </video>
+          <video
+            key={`overlay-${videoKey}`}
+            ref={overlayVideoRef}
+            className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:object-contain"
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          >
+            <source src={overlayVideoSrc} type="video/mp4" />
+          </video>
+        </div>
         {!hasStarted && (isMobile || !isVideoReady) && (
           <button
             type="button"
@@ -186,6 +193,26 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
                 fill="currentColor"
               >
                 <path d="M8 5v14l11-7-11-7z" />
+              </svg>
+            </span>
+          </button>
+        )}
+        {hasStarted && !isPlaying && (
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label="Resume video"
+            className="absolute inset-0 z-20 flex items-center justify-center bg-black/10"
+          >
+            <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/45 bg-black/45 text-white shadow-[0_18px_44px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="h-8 w-8"
+              >
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
               </svg>
             </span>
           </button>

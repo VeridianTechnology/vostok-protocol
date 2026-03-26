@@ -411,14 +411,15 @@ const PremiumLifestyleSection = () => {
         tabLabel="STAY TUNED"
         lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
         desktopBackground="/section_wallpaper/interest/06.png?v=1"
-        mobileBackground="/section_wallpaper/interest/06.png?v=1"
+        mobileBackground="/section_wallpaper/interest/mobile/08.png?v=1"
         localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
         sectionClassName="min-h-[90vh] pt-[5.3rem] pb-[4.8rem] md:pt-[7.95rem] md:pb-[7.45rem]"
         textClassName="text-white"
         headingClassName="font-['Tektur'] text-[2.45rem] font-black tracking-[0.14em] text-black opacity-90 [text-shadow:0_0_18px_rgba(255,255,255,0.95),0_8px_22px_rgba(255,255,255,0.7)] md:text-[6.55rem]"
         firstLineClassName="mt-[22vh]"
         tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
-        mobileBackgroundPosition="65% center"
+        mobileBackgroundPosition="58% center"
+        mobileBackgroundScale={0.94}
         desktopBackgroundPosition="55% 28%"
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         secondaryOverlaySrc="/section_wallpaper/interest/02.png?v=2"

@@ -134,6 +134,13 @@ const FeatureThumbnails = ({
   renderStructureSection = true,
   renderWallpaperSection = true,
 }: FeatureThumbnailsProps) => {
+  const WALLPAPER_GLITCH_MIN_DELAY_MS = 5000;
+  const WALLPAPER_GLITCH_MAX_DELAY_MS = 15000;
+  const WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS = 400;
+  const WALLPAPER_GLITCH_BLACKOUT_FADE_OUT_MS = 200;
+  const WALLPAPER_GLITCH_PLAY_MS = 200;
+  const WALLPAPER_GLITCH_REWIND_SECONDS = 3;
+  const WALLPAPER_CAPTION_HIDE_DELAY_MS = 10000;
   const isFourChan = entrySource === "4chan";
   const [structureStep, setStructureStep] = useState(1);
   const [isHighlightOn, setIsHighlightOn] = useState(false);
@@ -141,12 +148,24 @@ const FeatureThumbnails = ({
   const [isMobile, setIsMobile] = useState(false);
   const [wallpaperSlideIndex, setWallpaperSlideIndex] = useState(0);
   const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
+  const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
+  const [isWallpaperCaptionVisible, setIsWallpaperCaptionVisible] = useState(true);
+  const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
+    WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
+  );
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const wallpaperVideoRef = useRef<HTMLVideoElement | null>(null);
+  const wallpaperOverlayVideoRef = useRef<HTMLVideoElement | null>(null);
   const wallpaperIntervalRef = useRef<number | null>(null);
   const wallpaperFlashTimeoutRef = useRef<number | null>(null);
   const wallpaperAdvanceTimeoutRef = useRef<number | null>(null);
+  const wallpaperCaptionTimeoutRef = useRef<number | null>(null);
+  const wallpaperGlitchTimeoutsRef = useRef<number[]>([]);
+  const wallpaperGlitchSequenceTimeoutRef = useRef<number | null>(null);
+  const wallpaperIsUserPausedRef = useRef(false);
+  const wallpaperIsGlitchingRef = useRef(false);
   const wallpaperAutoAdvanceEnabledRef = useRef(true);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
@@ -216,6 +235,19 @@ const FeatureThumbnails = ({
   }, []);
 
   useEffect(() => {
+    wallpaperCaptionTimeoutRef.current = window.setTimeout(() => {
+      setIsWallpaperCaptionVisible(false);
+    }, WALLPAPER_CAPTION_HIDE_DELAY_MS);
+
+    return () => {
+      if (wallpaperCaptionTimeoutRef.current) {
+        window.clearTimeout(wallpaperCaptionTimeoutRef.current);
+        wallpaperCaptionTimeoutRef.current = null;
+      }
+    };
+  }, [WALLPAPER_CAPTION_HIDE_DELAY_MS]);
+
+  useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
     const updateMatch = () => setIsMobile(mediaQuery.matches);
     updateMatch();
@@ -275,6 +307,99 @@ const FeatureThumbnails = ({
     );
   };
 
+  const playWallpaperVideos = async (durationMs?: number) => {
+    const mainVideo = wallpaperVideoRef.current;
+    const overlayVideo = wallpaperOverlayVideoRef.current;
+
+    if (!mainVideo) {
+      return;
+    }
+
+    await Promise.allSettled([
+      mainVideo.play(),
+      overlayVideo ? overlayVideo.play() : Promise.resolve(),
+    ]);
+
+    if (durationMs !== undefined) {
+      await new Promise<void>((resolve) => {
+        const timeoutId = window.setTimeout(resolve, durationMs);
+        wallpaperGlitchTimeoutsRef.current.push(timeoutId);
+      });
+    }
+  };
+
+  const pauseWallpaperVideos = () => {
+    wallpaperVideoRef.current?.pause();
+    wallpaperOverlayVideoRef.current?.pause();
+  };
+
+  const rewindWallpaperVideos = (seconds: number) => {
+    const videos = [wallpaperVideoRef.current, wallpaperOverlayVideoRef.current];
+
+    videos.forEach((video) => {
+      if (!video) {
+        return;
+      }
+
+      video.currentTime = Math.max(0, video.currentTime - seconds);
+    });
+  };
+
+  const clearWallpaperGlitchTimeouts = () => {
+    wallpaperGlitchTimeoutsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    wallpaperGlitchTimeoutsRef.current = [];
+
+    if (wallpaperGlitchSequenceTimeoutRef.current) {
+      window.clearTimeout(wallpaperGlitchSequenceTimeoutRef.current);
+      wallpaperGlitchSequenceTimeoutRef.current = null;
+    }
+  };
+
+  const waitForWallpaperGlitchStep = (durationMs: number) =>
+    new Promise<void>((resolve) => {
+      const timeoutId = window.setTimeout(resolve, durationMs);
+      wallpaperGlitchTimeoutsRef.current.push(timeoutId);
+    });
+
+  const flashWallpaperBlack = async () => {
+    setWallpaperBlackFlashTransitionMs(WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS);
+    setIsWallpaperBlackFlashVisible(true);
+    await waitForWallpaperGlitchStep(WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS);
+    setWallpaperBlackFlashTransitionMs(WALLPAPER_GLITCH_BLACKOUT_FADE_OUT_MS);
+    setIsWallpaperBlackFlashVisible(false);
+    await waitForWallpaperGlitchStep(WALLPAPER_GLITCH_BLACKOUT_FADE_OUT_MS);
+  };
+
+  const scheduleWallpaperGlitch = () => {
+    clearWallpaperGlitchTimeouts();
+
+    const nextDelay =
+      Math.floor(
+        Math.random() * (WALLPAPER_GLITCH_MAX_DELAY_MS - WALLPAPER_GLITCH_MIN_DELAY_MS)
+      ) + WALLPAPER_GLITCH_MIN_DELAY_MS;
+
+    wallpaperGlitchSequenceTimeoutRef.current = window.setTimeout(async () => {
+      const mainVideo = wallpaperVideoRef.current;
+
+      if (!mainVideo || wallpaperIsUserPausedRef.current || wallpaperIsGlitchingRef.current) {
+        scheduleWallpaperGlitch();
+        return;
+      }
+
+      wallpaperIsGlitchingRef.current = true;
+
+      pauseWallpaperVideos();
+      await flashWallpaperBlack();
+      rewindWallpaperVideos(WALLPAPER_GLITCH_REWIND_SECONDS);
+      await playWallpaperVideos();
+
+      wallpaperIsGlitchingRef.current = false;
+      scheduleWallpaperGlitch();
+    }, nextDelay);
+  };
+
   const showPreviousWallpaper = () => {
     wallpaperAutoAdvanceEnabledRef.current = false;
     if (wallpaperIntervalRef.current) {
@@ -290,6 +415,7 @@ const FeatureThumbnails = ({
       wallpaperAdvanceTimeoutRef.current = null;
     }
     setIsWallpaperFlashVisible(false);
+    wallpaperIsUserPausedRef.current = false;
     advanceWallpaperSlide("previous");
   };
 
@@ -308,8 +434,41 @@ const FeatureThumbnails = ({
       wallpaperAdvanceTimeoutRef.current = null;
     }
     setIsWallpaperFlashVisible(false);
+    wallpaperIsUserPausedRef.current = false;
     advanceWallpaperSlide("next");
   };
+
+  const toggleWallpaperVideoPlayback = () => {
+    const mainVideo = wallpaperVideoRef.current;
+    const overlayVideo = wallpaperOverlayVideoRef.current;
+
+    if (!mainVideo) {
+      return;
+    }
+
+    if (mainVideo.paused) {
+      wallpaperIsUserPausedRef.current = false;
+      void playWallpaperVideos();
+      scheduleWallpaperGlitch();
+      return;
+    }
+
+    wallpaperIsUserPausedRef.current = true;
+    clearWallpaperGlitchTimeouts();
+    pauseWallpaperVideos();
+  };
+
+  useEffect(() => {
+    wallpaperIsUserPausedRef.current = false;
+    setIsWallpaperBlackFlashVisible(false);
+    scheduleWallpaperGlitch();
+
+    return () => {
+      clearWallpaperGlitchTimeouts();
+      setIsWallpaperBlackFlashVisible(false);
+      wallpaperIsGlitchingRef.current = false;
+    };
+  }, [wallpaperSlideIndex]);
 
 
   return (
@@ -611,10 +770,33 @@ const FeatureThumbnails = ({
       {/* Wallpaper section */}
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
-          <SectionSideTab label="VØSTOK" className="top-0 md:-top-3" />
-          <div className="relative min-h-[77vh] w-full md:min-h-[101vh]">
+          <div
+            className="relative min-h-[77vh] w-full md:min-h-[101vh]"
+            onClick={toggleWallpaperVideoPlayback}
+          >
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-0 top-[-28px] z-[9] h-36 bg-[linear-gradient(180deg,rgba(0,0,0,0.75)_0%,rgba(0,0,0,0.55)_38%,rgba(0,0,0,0.29)_68%,rgba(0,0,0,0)_100%)] blur-xl"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-[-10%] top-[-28px] z-[9] h-72 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.88)_0%,rgba(0,0,0,0.65)_24%,rgba(0,0,0,0.39)_46%,rgba(0,0,0,0.18)_66%,rgba(0,0,0,0.05)_82%,rgba(0,0,0,0)_100%)] blur-[56px] md:h-[30rem]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-x-[-6%] bottom-[-36px] z-[9] h-72 bg-[linear-gradient(0deg,rgba(0,0,0,0.86)_0%,rgba(0,0,0,0.58)_22%,rgba(0,0,0,0.28)_48%,rgba(0,0,0,0.1)_70%,rgba(0,0,0,0)_100%)] blur-[56px] md:h-[28rem]"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-[-8%] left-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(90deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-56"
+          />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute bottom-[-8%] right-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(270deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-56"
+          />
           {"desktopVideoSrc" in activeWallpaperSlide ? (
             <video
+              ref={wallpaperVideoRef}
               key={activeWallpaperSlide.id}
               className="absolute inset-0 h-full w-full object-cover"
               autoPlay
@@ -644,6 +826,7 @@ const FeatureThumbnails = ({
             </picture>
           )}
           <video
+            ref={wallpaperOverlayVideoRef}
             key="hero-overlay-video"
             className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
             autoPlay
@@ -655,54 +838,25 @@ const FeatureThumbnails = ({
           >
             <source src="/section_wallpaper/hero/01.mp4" type="video/mp4" />
           </video>
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
+          <div className="pointer-events-none absolute inset-0 z-[8] bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
           <div
             className={`absolute inset-0 bg-white transition-opacity duration-150 ${
               isWallpaperFlashVisible ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           />
-          <button
-            type="button"
-            onClick={showPreviousWallpaper}
-            aria-label="Previous wallpaper"
-            className="absolute left-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 md:left-8 md:h-14 md:w-14"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5 md:h-6 md:w-6"
-            >
-              <path d="m15 6-6 6 6 6" />
-            </svg>
-          </button>
-          <button
-            type="button"
-            onClick={showNextWallpaper}
-            aria-label="Next wallpaper"
-            className="absolute right-4 top-1/2 z-10 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/35 text-white backdrop-blur-sm transition hover:bg-black/55 md:right-8 md:h-14 md:w-14"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-5 w-5 md:h-6 md:w-6"
-            >
-              <path d="m9 6 6 6-6 6" />
-            </svg>
-          </button>
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 z-[9] bg-black transition-opacity ${
+              isWallpaperBlackFlashVisible ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
+          />
           <div className="absolute bottom-0 left-0 z-10 pb-[10vh] pl-[10vw]">
             <p
               data-text={activeWallpaperSlide.caption}
-              className="wallpaper-title select-none max-w-[18ch] text-[42px] md:max-w-[22ch] md:text-[172px]"
+              className={`wallpaper-title select-none max-w-[18ch] text-[42px] transition-opacity duration-[3000ms] md:max-w-[22ch] md:text-[172px] ${
+                isWallpaperCaptionVisible ? "opacity-100" : "opacity-0"
+              }`}
             >
               {activeWallpaperSlide.caption}
             </p>

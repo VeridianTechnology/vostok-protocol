@@ -13,12 +13,9 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [hasBackgroundVideoEnded, setHasBackgroundVideoEnded] = useState(false);
-  const [showBackgroundFallback, setShowBackgroundFallback] = useState(false);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
-  const backgroundFadeTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -27,15 +24,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     updateMatch();
     mediaQuery.addEventListener("change", updateMatch);
     return () => mediaQuery.removeEventListener("change", updateMatch);
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      if (backgroundFadeTimeoutRef.current) {
-        window.clearTimeout(backgroundFadeTimeoutRef.current);
-        backgroundFadeTimeoutRef.current = null;
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -110,17 +98,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     goToCheckout();
   };
 
-  const handleBackgroundVideoEnded = () => {
-    setHasBackgroundVideoEnded(true);
-    if (backgroundFadeTimeoutRef.current) {
-      window.clearTimeout(backgroundFadeTimeoutRef.current);
-    }
-    backgroundFadeTimeoutRef.current = window.setTimeout(() => {
-      setShowBackgroundFallback(true);
-      backgroundFadeTimeoutRef.current = null;
-    }, 1000);
-  };
-
   return (
     <section
       ref={sectionRef}
@@ -130,39 +107,15 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[9vh] overflow-hidden md:bottom-[11vh]">
-          <video
-            aria-hidden="true"
-            onEnded={handleBackgroundVideoEnded}
-            className={`absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-[1000ms] ease-out will-change-transform ${
-              hasBackgroundVideoEnded ? "opacity-0" : "opacity-100"
-            }`}
-            autoPlay
-            muted
-            playsInline
-            preload="metadata"
-            style={{
-              transform: "scaleX(1.12) scaleY(1.04)",
-            }}
-          >
-            <source src="/section_wallpaper/buy/1.mp4" type="video/mp4" />
-          </video>
           <img
             src="/section_wallpaper/buy/03.png"
             alt=""
             aria-hidden="true"
-            className={`absolute inset-0 h-full w-full object-fill object-top transition-opacity duration-[1000ms] ${
-              showBackgroundFallback ? "opacity-100" : "opacity-0"
-            }`}
+            className="absolute inset-0 h-full w-full object-cover object-top"
             style={{
-              transform: "scaleX(1.28) scaleY(1.08)",
+              transform: "scale(1.06)",
               transformOrigin: "top center",
             }}
-          />
-          <div
-            aria-hidden="true"
-            className={`absolute inset-0 bg-black transition-opacity duration-[1000ms] ${
-              hasBackgroundVideoEnded && !showBackgroundFallback ? "opacity-100" : "opacity-0"
-            }`}
           />
           <div className="absolute inset-0 z-[2] bg-[linear-gradient(180deg,rgba(241,249,245,0.14)_0%,rgba(241,249,245,0.26)_36%,rgba(241,249,245,0.4)_100%)]" />
         </div>
