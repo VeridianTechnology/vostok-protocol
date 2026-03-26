@@ -29,6 +29,7 @@ type InterestSectionProps = {
   desktopBackgroundScale?: number;
   parallaxRangeX?: number;
   parallaxRangeY?: number;
+  loopBackgroundRight?: boolean;
   backgroundOverlayClassName?: string;
   tabLabelClassName?: string;
   overlayClassName?: string;
@@ -69,6 +70,7 @@ const InterestSection = ({
   desktopBackgroundScale = 1.08,
   parallaxRangeX = 34,
   parallaxRangeY = 18,
+  loopBackgroundRight = false,
   backgroundOverlayClassName = "bg-[linear-gradient(180deg,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(0,0,0,0.18)_100%)]",
   tabLabelClassName = "",
   overlayClassName = "",
@@ -272,17 +274,30 @@ const InterestSection = ({
                       transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${mobileBackgroundScale})`,
                     }}
                   />
-                  <img
-                    src={desktopBackground}
-                    alt=""
-                    aria-hidden="true"
-                    className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
-                    style={{
-                      objectPosition: desktopBackgroundPosition,
-                      objectFit: desktopBackgroundSize === "cover" ? "cover" : "fill",
-                      transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${desktopBackgroundScale})`,
-                    }}
-                  />
+                  {loopBackgroundRight ? (
+                    <div
+                      aria-hidden="true"
+                      className="becoming-you-bg-scroll absolute inset-y-0 left-0 hidden w-[200%] md:block"
+                      style={{
+                        backgroundImage: `url("${desktopBackground}")`,
+                        backgroundPosition: `${desktopBackgroundPosition} center`,
+                        backgroundRepeat: "repeat-x",
+                        backgroundSize: `auto ${desktopBackgroundScale * 100}%`,
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={desktopBackground}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
+                      style={{
+                        objectPosition: desktopBackgroundPosition,
+                        objectFit: desktopBackgroundSize === "cover" ? "cover" : "fill",
+                        transform: `translate3d(${parallaxOffset.x}px, ${parallaxOffset.y}px, 0) scale(${desktopBackgroundScale})`,
+                      }}
+                    />
+                  )}
                 </>
               )}
             </div>
@@ -397,10 +412,6 @@ const PremiumLifestyleSection = () => {
         lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
         desktopBackground="/section_wallpaper/interest/06.png?v=1"
         mobileBackground="/section_wallpaper/interest/06.png?v=1"
-        backgroundVideoSrc="/section_wallpaper/interest/07.mp4"
-        fadeToImageOnVideoEnd
-        allowVideoToggle
-        videoPlaybackRate={1}
         localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
         sectionClassName="min-h-[90vh] pt-[5.3rem] pb-[4.8rem] md:pt-[7.95rem] md:pb-[7.45rem]"
         textClassName="text-white"
@@ -428,6 +439,14 @@ const PremiumLifestyleSection = () => {
         tabLabelClassName="!text-black"
         decoration={
           <>
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden md:block"
+            >
+              <div className="absolute left-[-18vw] top-[16vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
+              <div className="absolute left-[-22vw] top-[48vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
+              <div className="absolute left-[-14vw] top-[80vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
+            </div>
             <img
               src="/section_wallpaper/explaination/03.png"
               alt=""
@@ -457,59 +476,61 @@ const PremiumLifestyleSection = () => {
         desktopBackgroundSize="fill"
         mobileBackgroundScale={1.7}
         desktopBackgroundScale={1.7}
-        parallaxRangeX={50}
-        parallaxRangeY={50}
+        loopBackgroundRight
+        disableParallax
         backgroundOverlayClassName="bg-[linear-gradient(180deg,rgba(255,255,255,0.26)_0%,rgba(255,255,255,0.1)_18%,rgba(255,255,255,0.04)_42%,rgba(0,0,0,0.18)_100%)]"
       >
         <div
-          className="relative grid cursor-pointer gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] md:gap-32"
+          className="relative grid cursor-pointer gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] md:gap-[15vw]"
           onClick={handleBecomingYouToggle}
         >
-          <div className="relative z-[1] max-w-[42rem]">
+          <div className="relative z-[1] max-w-[54.6rem] md:max-w-[73.7rem]">
             <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
               BECØME
             </h2>
-            <div className="relative">
-              <video
-                ref={setBecomingYouVideoRef(0)}
-                className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
-                autoPlay
-                muted
-                playsInline
-                preload="metadata"
-                onEnded={() => handleBecomingYouVideoEnded(0)}
-              >
-                <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
-              </video>
-              <div
-                aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
-                  becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
-                }`}
-              />
-              {areBecomingYouVideosPaused ? (
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
-                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
-                      <rect x="6" y="5" width="4" height="14" rx="1" />
-                      <rect x="14" y="5" width="4" height="14" rx="1" />
-                    </svg>
+            <div className="flex flex-col gap-5 md:-translate-x-[15vw] md:flex-row md:items-stretch md:gap-0">
+              <div className="relative md:w-[32vw] md:min-w-[32vw]">
+                <video
+                  ref={setBecomingYouVideoRef(0)}
+                  className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                  autoPlay
+                  muted
+                  playsInline
+                  preload="metadata"
+                  onEnded={() => handleBecomingYouVideoEnded(0)}
+                >
+                  <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+                </video>
+                <div
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
+                    becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+                {areBecomingYouVideosPaused ? (
+                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                        <rect x="6" y="5" width="4" height="14" rx="1" />
+                        <rect x="14" y="5" width="4" height="14" rx="1" />
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              ) : null}
-            </div>
-            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
-              <p className="text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
-                I&apos;ve developed techniques over two years to refine and build the muscles of
-                the face - like the gym for your face.
-              </p>
+                ) : null}
+              </div>
+              <div className="rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:rounded-l-none md:px-3 md:py-6">
+                <p className="font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
+                  Like the
+                  <span className="block">gym for your face.</span>
+                </p>
+              </div>
             </div>
           </div>
-          <div className="relative z-[1] max-w-[38rem] md:translate-y-[25%] md:justify-self-end">
+          <div className="relative z-[1] max-w-[49.4rem] md:max-w-[66.7rem] md:translate-x-[20vw] md:translate-y-[25%] md:justify-self-end">
             <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
               DØll
             </h2>
-            <div className="relative">
+            <div className="relative md:w-[32vw] md:min-w-[32vw]">
               <video
                 ref={setBecomingYouVideoRef(1)}
                 className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -538,15 +559,9 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-6 md:px-10 md:py-8">
-              <p className="text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
-                I&apos;ve watched people get way hotter, become incredibly attractive and their
-                best self, in under 20 hours of total work - consistently, across genders and
-                ages.
-              </p>
-              <p className="mt-6 text-[0.9rem] uppercase tracking-[0.18em] leading-[2] text-black/55 md:text-[1rem]">
-                As long as you have muscles in your face - and everyone does, you can build out
-                the perfect face.
+            <div className="mt-5 max-w-[38rem] rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.16)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[-7vw] md:w-[44rem] md:max-w-none md:-translate-x-[50vw] md:px-10 md:py-8">
+              <p className="font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[2rem]">
+                The ability to become as hot as you ever wanted to.
               </p>
             </div>
           </div>

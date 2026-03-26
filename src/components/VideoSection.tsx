@@ -93,11 +93,11 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
       id="hero-video"
       className="relative w-full bg-white md:border-b md:border-black/40 mt-0 mb-0"
     >
-      <div className="video-frame relative w-full">
+      <div className="video-frame relative w-full overflow-hidden bg-black">
         <video
           key={videoKey}
           ref={videoRef}
-          className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:py-0 md:object-contain md:aspect-auto"
+          className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[78vh] md:[clip-path:inset(12vh_14vw_0_14vw)] md:py-0 md:object-contain md:aspect-auto"
           poster={toDesktopImage(posterImage)}
           muted={isMuted}
           controls
@@ -161,7 +161,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         <video
           key={`overlay-${videoKey}`}
           ref={overlayVideoRef}
-          className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:object-contain"
+          className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:[clip-path:inset(12vh_14vw_0_14vw)] md:object-contain"
           muted
           autoPlay
           loop
@@ -171,7 +171,6 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         >
           <source src={overlayVideoSrc} type="video/mp4" />
         </video>
-
         {!hasStarted && (isMobile || !isVideoReady) && (
           <button
             type="button"

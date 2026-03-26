@@ -151,6 +151,11 @@
     animation: becoming-you-soft-flash 5000ms ease-in-out forwards;
   }
 
+  .becoming-you-bg-scroll {
+    animation: becoming-you-bg-scroll-right 90s linear infinite;
+    will-change: transform;
+  }
+
   .wallpaper-title {
     position: relative;
     display: inline-block;
@@ -189,6 +194,15 @@
     }
     100% {
       opacity: 0;
+    }
+  }
+
+  @keyframes becoming-you-bg-scroll-right {
+    0% {
+      transform: translate3d(-50%, 0, 0);
+    }
+    100% {
+      transform: translate3d(0, 0, 0);
     }
   }
 
