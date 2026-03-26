@@ -13,17 +13,13 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
-  const [pointerOffset, setPointerOffset] = useState({ x: 0, y: 0 });
   const [hasBackgroundVideoEnded, setHasBackgroundVideoEnded] = useState(false);
   const [showBackgroundFallback, setShowBackgroundFallback] = useState(false);
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const backgroundFadeTimeoutRef = useRef<number | null>(null);
-  const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const clamp = (value: number, min: number, max: number) =>
-    Math.min(Math.max(value, min), max);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -82,30 +78,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     setIsRedirecting(false);
   };
 
-  const handleParallaxMove = (event: React.PointerEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    if (rafRef.current) {
-      return;
-    }
-      rafRef.current = window.requestAnimationFrame(() => {
-      rafRef.current = null;
-      setPointerOffset({
-        x: clamp(x * 270, -270, 270),
-        y: 0,
-      });
-    });
-  };
-
-  const handleParallaxLeave = () => {
-    if (rafRef.current) {
-      window.cancelAnimationFrame(rafRef.current);
-      rafRef.current = null;
-    }
-    setPointerOffset({ x: 0, y: 0 });
-  };
-
   const handleCheckoutClick = (location: "footer" | "footer_secondary") => {
     const goToCheckout = () => {
       if (isDesktop) {
@@ -154,8 +126,6 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
       ref={sectionRef}
       id="purchase"
       className="section-surface relative left-1/2 right-1/2 h-[118svh] min-h-[118svh] w-screen -translate-x-1/2 overflow-hidden pb-[10vh]"
-      onPointerMove={handleParallaxMove}
-      onPointerLeave={handleParallaxLeave}
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
@@ -171,18 +141,22 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
             playsInline
             preload="metadata"
             style={{
-              transform: `translate3d(${pointerOffset.x}px, ${pointerOffset.y}px, 0) scaleX(1.2) scaleY(1.04)`,
+              transform: "scaleX(1.12) scaleY(1.04)",
             }}
           >
             <source src="/section_wallpaper/buy/1.mp4" type="video/mp4" />
           </video>
           <img
-            src="/section_wallpaper/buy/02.png"
+            src="/section_wallpaper/buy/03.png"
             alt=""
             aria-hidden="true"
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] ${
+            className={`absolute inset-0 h-full w-full object-fill object-top transition-opacity duration-[1000ms] ${
               showBackgroundFallback ? "opacity-100" : "opacity-0"
             }`}
+            style={{
+              transform: "scaleX(1.28) scaleY(1.08)",
+              transformOrigin: "top center",
+            }}
           />
           <div
             aria-hidden="true"

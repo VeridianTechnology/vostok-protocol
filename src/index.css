@@ -147,6 +147,10 @@
     line-height: 0.95;
   }
 
+  .becoming-you-soft-flash {
+    animation: becoming-you-soft-flash 5000ms ease-in-out forwards;
+  }
+
   .wallpaper-title {
     position: relative;
     display: inline-block;
@@ -171,6 +175,21 @@
     text-shadow: none;
     transform: translate(2px, -2px);
     pointer-events: none;
+  }
+
+  @keyframes becoming-you-soft-flash {
+    0% {
+      opacity: 0.2;
+    }
+    40% {
+      opacity: 1;
+    }
+    80% {
+      opacity: 0.2;
+    }
+    100% {
+      opacity: 0;
+    }
   }
 
   .header-wordmark {
