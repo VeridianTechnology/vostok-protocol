@@ -411,7 +411,7 @@ const PremiumLifestyleSection = () => {
         tabLabel="STAY TUNED"
         lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
         desktopBackground="/section_wallpaper/interest/06.png?v=1"
-        mobileBackground="/section_wallpaper/interest/mobile/08.png?v=1"
+        mobileBackground="/section_wallpaper/interest/mobile/08.png?v=2"
         localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
         sectionClassName="min-h-[90vh] pt-[5.3rem] pb-[4.8rem] md:pt-[7.95rem] md:pb-[7.45rem]"
         textClassName="text-white"

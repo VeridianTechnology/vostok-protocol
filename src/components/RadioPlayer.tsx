@@ -118,7 +118,7 @@ const TRACKS: Track[] = [
     id: "16",
     title: "Kazy Lambist - Doing Yoga",
     score: "5/10",
-    audioSrc: "/audio/radio/16_Kazy Lambist - Doing Yoga.mp3",
+    audioSrc: "/audio/radio/16_Kazy Lambist - Doing Yoga.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=wgg74iuPKqs&list=RDYCXYkcpD5tw",
   },
   {
@@ -183,6 +183,48 @@ const TRACKS: Track[] = [
     score: "10/10",
     audioSrc: "/audio/radio/25&_Habits (Stay High) x Stereo Love (slowed to perfection).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=oawmdHxyiyY",
+  },
+  {
+    id: "26",
+    title: "Saxo Funk (Super Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/26Saxo Funk (Super Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=A_fVkPSzbeQ",
+  },
+  {
+    id: "27",
+    title: "Lost Sky - Fearless (Ultra Slowed + Reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/27_𝗟𝗼𝘀𝘁 𝗦𝗸𝘆 - 𝗙𝗲𝗮𝗿𝗹𝗲𝘀𝘀 (Ultra Slowed  Reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=qvgi-E6N8FU",
+  },
+  {
+    id: "28",
+    title: "TIKI TIKI",
+    score: "NR",
+    audioSrc: "/audio/radio/28_TIKI TIKI.m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=TIKI+TIKI+slowed",
+  },
+  {
+    id: "29",
+    title: "THUNDER (Super Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/29_THUNDER (Super Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Oy_aY90u1Cc",
+  },
+  {
+    id: "30",
+    title: "Bad Romance // Best Part Only // Slowed + Reverb",
+    score: "NR",
+    audioSrc: "/audio/radio/30_bad romance  best part only  slowed  reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=FPrMZvdS0VI",
+  },
+  {
+    id: "31",
+    title: "Kavkaz (slowed+reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/31_Kavkaz (slowedreverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=TWwGr5z7uFc",
   },
 ];
 
