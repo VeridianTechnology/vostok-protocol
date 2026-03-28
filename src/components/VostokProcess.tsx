@@ -128,14 +128,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
-  const [showAfterVideo, setShowAfterVideo] = useState(false);
   const [isAfterVideoPaused, setIsAfterVideoPaused] = useState(false);
   const [afterVideoDuration, setAfterVideoDuration] = useState(0);
   const [afterVideoCurrentTime, setAfterVideoCurrentTime] = useState(0);
   const parallaxRef = useRef<number | null>(null);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const afterVideoRef = useRef<HTMLVideoElement | null>(null);
-  const afterVideoTimerRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants =
     activeStage === "non_ai" ? null : getImageVariants(activeImage);
@@ -158,13 +156,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   }, [activeStage, activeImage]);
 
   useEffect(() => {
-    if (afterVideoTimerRef.current) {
-      window.clearTimeout(afterVideoTimerRef.current);
-      afterVideoTimerRef.current = null;
-    }
-
     if (!isNonAiAfter) {
-      setShowAfterVideo(false);
       setIsAfterVideoPaused(false);
       setAfterVideoCurrentTime(0);
       setAfterVideoDuration(0);
@@ -176,7 +168,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       return;
     }
 
-    setShowAfterVideo(false);
     setIsAfterVideoPaused(false);
     setAfterVideoCurrentTime(0);
     const video = afterVideoRef.current;
@@ -184,18 +175,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       video.currentTime = 0;
       void video.play().catch(() => undefined);
     }
-
-    afterVideoTimerRef.current = window.setTimeout(() => {
-      setShowAfterVideo(true);
-      afterVideoTimerRef.current = null;
-    }, 1000);
-
-    return () => {
-      if (afterVideoTimerRef.current) {
-        window.clearTimeout(afterVideoTimerRef.current);
-        afterVideoTimerRef.current = null;
-      }
-    };
   }, [isNonAiAfter]);
 
   useEffect(() => {
@@ -732,7 +711,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               <>
                 {isNonAiAfter ? (
                   <>
-                    <div className="absolute inset-0 z-[9] bg-black" />
                     <video
                       ref={afterVideoRef}
                       src={afterVideoSrc}
@@ -759,11 +737,9 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       onEnded={() => {
                         setIsAfterVideoPaused(true);
                       }}
-                      className={`relative z-10 h-full w-full object-cover transition-opacity duration-1000 ${
-                        showAfterVideo ? "opacity-100" : "opacity-0"
-                      }`}
+                      className="relative z-10 h-full w-full object-cover"
                     />
-                    {showAfterVideo && (
+                    {
                       <button
                         type="button"
                         onClick={toggleAfterVideoPlayback}
@@ -788,8 +764,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           </span>
                         )}
                       </button>
-                    )}
-                    {showAfterVideo && (
+                    }
+                    {
                       <div className="absolute inset-x-4 bottom-4 z-[13]">
                         <input
                           type="range"
@@ -808,7 +784,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           className="radio-player-slider h-2 w-full cursor-pointer appearance-none rounded-full bg-white/30"
                         />
                       </div>
-                    )}
+                    }
                   </>
                 ) : (
                   <img
@@ -873,8 +849,11 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           <button
                             key={icon}
                             type="button"
-                            onClick={() => selectStage(stage.key as StageKey, icon)}
-                            className={`h-10 w-10 overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              selectStage(stage.key as StageKey, icon);
+                            }}
+                            className={`relative z-10 h-12 w-12 touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                               activeStage === stage.key && activeImage === icon
                                 ? "border-chrome/60"
                                 : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"

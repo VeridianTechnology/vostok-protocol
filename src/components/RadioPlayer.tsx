@@ -226,6 +226,34 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/31_Kavkaz (slowedreverb).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=TWwGr5z7uFc",
   },
+  {
+    id: "32",
+    title: "Versatile (Hardstylish Remix Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/32_Versatile (Hardstylish Remix Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=Versatile+Hardstylish+Remix+Slowed",
+  },
+  {
+    id: "33",
+    title: "transgender - slowed reverb",
+    score: "NR",
+    audioSrc: "/audio/radio/33_transgender - slowed  reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=transgender+slowed+reverb",
+  },
+  {
+    id: "34",
+    title: "PortwaveShadow lady Slowed Reverb",
+    score: "NR",
+    audioSrc: "/audio/radio/34_PortwaveShadow lady Slowed Reverb.m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=PortwaveShadow+lady+Slowed+Reverb",
+  },
+  {
+    id: "35",
+    title: "And I Have Come for You",
+    score: "NR",
+    audioSrc: "/audio/radio/35_And I Have Come for You.m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=And+I+Have+Come+for+You",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>

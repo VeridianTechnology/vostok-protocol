@@ -719,7 +719,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                A visual guide to building up your face. Yes, like a muscle. Yes, it works.
+                A visual guide to building up your face. Yes, your face. Yes, build it up. Like a muscle.
               </p>
             </div>
 
@@ -1077,7 +1077,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                A visual guide to building up your face. Yes, like a muscle. Yes, it works.
+                A visual guide to building up your face. Yes, your face. Yes, build it up. Like a muscle.
               </p>
             </div>
           </div>
