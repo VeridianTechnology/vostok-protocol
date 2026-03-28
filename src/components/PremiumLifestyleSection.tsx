@@ -349,12 +349,44 @@ const InterestSection = ({
 const PremiumLifestyleSection = () => {
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
+  const areBecomingYouVideosPausedRef = useRef(false);
+  const individuallyPausedBecomingYouVideosRef = useRef([false, false, false, false, false]);
   const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
   const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false, false, false, false]);
+  const [individuallyPausedBecomingYouVideos, setIndividuallyPausedBecomingYouVideos] = useState([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
     becomingYouVideoRefs.current[index] = element;
   };
+
+  useEffect(() => {
+    areBecomingYouVideosPausedRef.current = areBecomingYouVideosPaused;
+  }, [areBecomingYouVideosPaused]);
+
+  useEffect(() => {
+    individuallyPausedBecomingYouVideosRef.current = individuallyPausedBecomingYouVideos;
+  }, [individuallyPausedBecomingYouVideos]);
+
+  useEffect(() => {
+    becomingYouVideoRefs.current.forEach((video, index) => {
+      if (!video) {
+        return;
+      }
+
+      if (areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[index]) {
+        video.pause();
+        return;
+      }
+
+      void video.play().catch(() => {});
+    });
+  }, [areBecomingYouVideosPaused, individuallyPausedBecomingYouVideos]);
 
   useEffect(() => {
     return () => {
@@ -370,16 +402,16 @@ const PremiumLifestyleSection = () => {
     const nextPausedState = !areBecomingYouVideosPaused;
     setAreBecomingYouVideosPaused(nextPausedState);
 
-    becomingYouVideoRefs.current.forEach((video) => {
-      if (!video) {
-        return;
-      }
-      if (nextPausedState) {
-        video.pause();
-        return;
-      }
-      void video.play().catch(() => {});
-    });
+    if (!nextPausedState) {
+      setIndividuallyPausedBecomingYouVideos([false, false, false, false, false]);
+    }
+  };
+
+  const handleBecomingYouVideoToggle = (index: number, event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
+    setIndividuallyPausedBecomingYouVideos((current) => current.map((value, currentIndex) => (
+      currentIndex === index ? !value : value
+    )));
   };
 
   const handleBecomingYouVideoEnded = (index: number) => {
@@ -399,7 +431,9 @@ const PremiumLifestyleSection = () => {
 
     becomingYouFadeTimeoutsRef.current[index] = window.setTimeout(() => {
       video.currentTime = 0;
-      void video.play().catch(() => {});
+      if (!areBecomingYouVideosPausedRef.current && !individuallyPausedBecomingYouVideosRef.current[index]) {
+        void video.play().catch(() => {});
+      }
       setBecomingYouVideoFading((current) => current.map((value, currentIndex) => (
         currentIndex === index ? false : value
       )));
@@ -494,7 +528,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               BECØME
             </h2>
-            <div className="relative">
+            <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(0, event)}>
               <video
                 ref={setBecomingYouVideoRef(0)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -512,7 +546,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -544,7 +578,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               DØll
             </h2>
-            <div className="relative">
+            <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
               <video
                 ref={setBecomingYouVideoRef(1)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -562,7 +596,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -594,7 +628,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="-mb-[8px] pt-[0.5vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               BØY
             </h2>
-            <div className="relative -mt-[1.2vh]">
+            <div className="relative -mt-[1.2vh]" onClick={(event) => handleBecomingYouVideoToggle(2, event)}>
               <video
                 ref={setBecomingYouVideoRef(2)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -612,7 +646,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -643,7 +677,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               WØMAN
             </h2>
-            <div className="relative">
+            <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(3, event)}>
               <video
                 ref={setBecomingYouVideoRef(3)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -661,7 +695,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -692,7 +726,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               FAMØUS
             </h2>
-            <div className="relative">
+            <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(4, event)}>
               <video
                 ref={setBecomingYouVideoRef(4)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -710,7 +744,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -749,7 +783,7 @@ const PremiumLifestyleSection = () => {
             </h2>
             <div className="flex flex-col gap-[3vh] md:-translate-x-[8vw]">
               <div className="flex flex-col gap-[3vh] md:flex-row md:items-stretch md:gap-0">
-                <div className="relative md:w-[32vw] md:min-w-[32vw]">
+                <div className="relative md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(0, event)}>
                   <video
                     ref={setBecomingYouVideoRef(0)}
                     className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -767,7 +801,7 @@ const PremiumLifestyleSection = () => {
                       becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
                     }`}
                   />
-                  {areBecomingYouVideosPaused ? (
+                  {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0] ? (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                       <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -807,7 +841,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               </div>
               <div className="md:translate-y-[20vh]">
-                <div className="relative md:w-[32vw] md:min-w-[32vw]">
+                <div className="relative md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(2, event)}>
                   <video
                     ref={setBecomingYouVideoRef(2)}
                     className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -825,7 +859,7 @@ const PremiumLifestyleSection = () => {
                       becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
                     }`}
                   />
-                  {areBecomingYouVideosPaused ? (
+                  {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2] ? (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                       <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                         <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -869,7 +903,7 @@ const PremiumLifestyleSection = () => {
                   <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">
                     FAMØUS
                   </h2>
-                  <div className="relative mt-[3vh]">
+                  <div className="relative mt-[3vh]" onClick={(event) => handleBecomingYouVideoToggle(4, event)}>
                     <video
                       ref={setBecomingYouVideoRef(4)}
                       className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -887,7 +921,7 @@ const PremiumLifestyleSection = () => {
                         becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
                       }`}
                     />
-                    {areBecomingYouVideosPaused ? (
+                    {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4] ? (
                       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                         <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                           <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -932,7 +966,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="relative z-[9] mb-[3vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:w-[32vw] md:min-w-[32vw] md:-translate-x-[calc(2vw+85px)] md:text-[3.4rem]">
               DØll
             </h2>
-            <div className="relative z-[5] md:w-[32vw] md:min-w-[32vw]">
+            <div className="relative z-[5] md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
               <video
                 ref={setBecomingYouVideoRef(1)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -950,7 +984,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
@@ -991,7 +1025,7 @@ const PremiumLifestyleSection = () => {
             <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">
               WØMAN
             </h2>
-            <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]">
+            <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(3, event)}>
               <video
                 ref={setBecomingYouVideoRef(3)}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
@@ -1009,7 +1043,7 @@ const PremiumLifestyleSection = () => {
                   becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
                 }`}
               />
-              {areBecomingYouVideosPaused ? (
+              {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
                     <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">

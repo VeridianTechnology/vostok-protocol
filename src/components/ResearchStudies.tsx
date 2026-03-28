@@ -333,13 +333,13 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       <SectionSideTab label="RESEARCH" />
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
-          src="/wallpapers/research/refined_images/reserach_mobile.jpg"
+          src="/section_wallpaper/research/01.png"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover md:hidden"
         />
         <img
-          src="/wallpapers/research/refined_images/reserach_desktop.jpg"
+          src="/section_wallpaper/research/01.png"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 hidden h-full w-full object-cover md:block"
@@ -360,7 +360,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                   <TabsTrigger
                     key={section.title}
                     value={makeFourChanValue(section.title)}
-                    className="rounded-full border border-black/10 bg-white/30 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-black/60 data-[state=active]:border-black/40 data-[state=active]:bg-black/10 data-[state=active]:text-black"
+                    className="rounded-full border border-black/10 bg-white/30 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#4b4b4b] data-[state=active]:border-black/30 data-[state=active]:bg-black/5 data-[state=active]:text-[#3f3f3f]"
                   >
                     {section.title}
                   </TabsTrigger>
@@ -398,8 +398,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       }}
                       className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
                         index === activeNarrative
-                          ? "border-white/45 bg-white/14 text-white"
-                          : "border-white/18 bg-white/10 text-white/72 hover:text-white"
+                          ? "border-black/20 bg-white/20 text-[#3f3f3f]"
+                          : "border-black/10 bg-white/12 text-[#5a5a5a] hover:text-[#3f3f3f]"
                       }`}
                     >
                       {tab.label}
@@ -415,14 +415,14 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -direction * 30 }}
                       transition={{ duration: 0.45, ease: "easeOut" }}
-                      className="space-y-4 text-center text-sm text-white/88 md:text-base"
+                      className="space-y-4 text-center text-sm text-[#4a4a4a] md:text-base"
                     >
                       {currentNarrative.text.map((paragraph) => (
                         <p key={paragraph}>{renderArchedParagraph(paragraph)}</p>
                       ))}
                       {currentNarrative.sources && currentNarrative.sources.length > 0 && (
                         <div className="pt-3 text-center">
-                          <p className="text-[10px] uppercase tracking-[0.35em] text-white/70">
+                          <p className="text-[10px] uppercase tracking-[0.35em] text-[#666666]">
                             Sources
                           </p>
                           <ul className="mt-3 space-y-2 text-xs text-steel">
@@ -459,43 +459,43 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                 <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
                   <TabsTrigger
                     value="awareness"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Awareness
                   </TabsTrigger>
                   <TabsTrigger
                     value="authority"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Authority
                   </TabsTrigger>
                   <TabsTrigger
                     value="social"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Social
                   </TabsTrigger>
                   <TabsTrigger
                     value="dating"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Dating
                   </TabsTrigger>
                   <TabsTrigger
                     value="income"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Income
                   </TabsTrigger>
                   <TabsTrigger
                     value="service"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Service
                   </TabsTrigger>
                   <TabsTrigger
                     value="physiology"
-                    className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-steel data-[state=active]:border-white/30 data-[state=active]:bg-white/15 data-[state=active]:text-foreground"
+                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
                   >
                     Physiology
                   </TabsTrigger>
