@@ -128,6 +128,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
+  const [pendingIcon, setPendingIcon] = useState<string | null>(null);
   const [isAfterVideoPaused, setIsAfterVideoPaused] = useState(false);
   const [afterVideoDuration, setAfterVideoDuration] = useState(0);
   const [afterVideoCurrentTime, setAfterVideoCurrentTime] = useState(0);
@@ -144,6 +145,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     setGridShift({ x: nextX, y: nextY });
   };
   const selectStage = (stageKey: StageKey, image: string) => {
+    setPendingIcon(`${stageKey}:${image}`);
     setActiveStage(stageKey);
     setActiveImage(image);
   };
@@ -703,6 +705,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                   sizes="(max-width: 640px) 100vw, 60vw"
                   alt={`${currentStage.title} comparison`}
                   className="relative z-10 h-full w-full object-cover"
+                  onLoad={() => setPendingIcon(null)}
                   loading="lazy"
                   decoding="async"
                 />
@@ -724,6 +727,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       onLoadedMetadata={() => {
                         const video = afterVideoRef.current;
                         setAfterVideoDuration(video?.duration || 0);
+                        setPendingIcon(null);
                       }}
                       onTimeUpdate={() => {
                         const video = afterVideoRef.current;
@@ -799,6 +803,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                     className={`relative z-10 h-full w-full ${
                       activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
                     }`}
+                    onLoad={() => setPendingIcon(null)}
                     loading="lazy"
                     decoding="async"
                   />
@@ -840,6 +845,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                     </p>
                     <div className="grid grid-cols-2 justify-items-center gap-3">
                       {stage.icons.map((icon) => {
+                        const iconKey = `${stage.key}:${icon}`;
+                        const isPendingIcon = pendingIcon === iconKey;
                         const iconThumb = icon.includes("/before/after/")
                           ? null
                           : getThumbVariants(icon);
@@ -853,11 +860,11 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                               event.stopPropagation();
                               selectStage(stage.key as StageKey, icon);
                             }}
-                            className={`relative z-10 h-12 w-12 touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
+                            className={`relative z-10 h-[3.75rem] w-[3.75rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                               activeStage === stage.key && activeImage === icon
-                                ? "border-chrome/60"
+                                ? "border-chrome/60 opacity-100"
                                 : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
-                            }`}
+                            } ${isPendingIcon ? "scale-[1.04] border-white/70 opacity-100 ring-2 ring-white/35 grayscale-0" : ""}`}
                           >
                             {iconThumb ? (
                               <picture>

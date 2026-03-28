@@ -1072,7 +1072,7 @@ const RadioPlayer = () => {
             )}
           </svg>
         </button>
-        <div className="relative flex items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] pb-[1.5vh] pl-[2.5vw] pr-[2.5vw] pt-[0.7vw] shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:gap-1.5 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
+        <div className="relative flex items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] px-4 pb-3 pt-2 shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:gap-1.5 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
           <div className="pointer-events-none absolute inset-0">
             <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
@@ -1124,7 +1124,7 @@ const RadioPlayer = () => {
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
-            <div className="mb-1 flex h-[10vh] max-h-[52px] min-h-[26px] w-[120px] items-end justify-center gap-[3px] md:w-[150px] md:max-h-[60px]">
+            <div className="mb-1 flex h-[52px] min-h-[26px] w-[120px] items-end justify-center gap-[3px] md:w-[150px] md:max-h-[60px]">
               {visualizerBars.map((level, index) => (
                 <span
                   key={`${currentTrack.id}-bar-${index}`}
@@ -1176,7 +1176,7 @@ const RadioPlayer = () => {
             </svg>
           </button>
 
-          <div className="relative z-[1] ml-1 flex h-[80px] w-5 flex-col items-center justify-end gap-[1.8vh] pb-[3vh] pt-[2vh] md:h-[94px] md:w-6">
+          <div className="relative z-[1] ml-1 flex h-[80px] w-5 flex-col items-center justify-end gap-4 pb-5 pt-4 md:h-[94px] md:w-6">
             <label htmlFor={volumeSliderId} className="sr-only">
               Adjust volume
             </label>
@@ -1190,7 +1190,7 @@ const RadioPlayer = () => {
               onChange={(event) => handleVolumeChange(Number(event.target.value))}
               aria-label="Volume"
               style={{ ["--radio-volume-progress" as string]: volumeProgress }}
-              className="radio-player-volume mb-[3vh] h-2 w-[52px] cursor-pointer appearance-none rounded-full bg-white/30 md:w-[60px]"
+              className="radio-player-volume mb-5 h-2 w-[52px] cursor-pointer appearance-none rounded-full bg-white/30 md:w-[60px]"
             />
           </div>
 

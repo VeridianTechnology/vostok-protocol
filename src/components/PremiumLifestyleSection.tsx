@@ -719,7 +719,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                A visual guide to building up your face. Yes, your face. Yes, build it up. Like a muscle.
+                A visual guide to building up your face. Yes, your face. Yes, build it up.
               </p>
             </div>
 
@@ -768,7 +768,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                It&apos;s like Lego for your face. Each workout stacks on the last. Brick by brick, you build.
+                It&apos;s like Lego for your face. Brick by brick, each workout stacks on the last.
               </p>
             </div>
           </div>
@@ -955,7 +955,7 @@ const PremiumLifestyleSection = () => {
                     />
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                     <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                      It&apos;s like Lego for your face. Each workout stacks on the last. Brick by brick, you build.
+                      It&apos;s like Lego for your face. Brick by brick, each workout stacks on the last.
                     </p>
                   </div>
                 </div>
@@ -1077,7 +1077,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                A visual guide to building up your face. Yes, your face. Yes, build it up. Like a muscle.
+                A visual guide to building up your face. Yes, your face. Yes, build it up.
               </p>
             </div>
           </div>
