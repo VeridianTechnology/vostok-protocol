@@ -12,33 +12,12 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const isFourChan = entrySource === "4chan";
   const makeFourChanValue = (title: string) =>
     title.toLowerCase().replace(/[^a-z0-9]+/g, "-");
-  const renderArchedParagraph = (text: string) => {
-    if (text.length < 40) {
-      return <span className="block">{text}</span>;
-    }
-
-    const characters = text.split("");
-    const midpoint = (characters.length - 1) / 2;
-
-    return (
-      <span className="block">
-        {characters.map((character, index) => {
-          const distance = Math.abs(index - midpoint);
-          const normalizedDistance = midpoint === 0 ? 0 : distance / midpoint;
-          const lift = Math.max(0, 2.8 * (1 - normalizedDistance * normalizedDistance));
-          return (
-            <span
-              key={`${text}-${index}`}
-              className="inline-block"
-              style={{ transform: `translateY(${-lift}px)` }}
-            >
-              {character === " " ? "\u00A0" : character}
-            </span>
-          );
-        })}
-      </span>
-    );
-  };
+  const isNarrativeCallout = (text: string) =>
+    text === "Why it matters:" ||
+    text === "The logic:" ||
+    text === "Studies:" ||
+    text === "You see the problem." ||
+    text === "This is not fair. This is simply true.";
   const fourChanSections = [
     {
       title: "Beauty Is Not Superficial",
@@ -175,108 +154,155 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       {
         label: "The Financial & Bureaucratic Bypass",
         text: [
-          "Why it matters:",
-          "Looking good isn't vanity, it's a financial hedge. When your face signals trust and competence before you speak, you pay less, wait less, and navigate bureaucracy with friction that others mistake for luck.",
-          "The logic:",
-          "Facial structure is not superficial. Human perception is wired to reward symmetry, bone structure, and facial balance within milliseconds. This biological shortcut translates into real-world currency.",
-          "I save money because of it. People give me discounts without asking. I get faster service at counters. I deal with less hassle. Once, someone was so disoriented by the interaction that they handed me back more change than I was owed. That's not charm, it's the halo effect playing out in cash.",
-          "When you look like the person people instinctively trust, institutions treat you differently. You spend less, you keep more, and you move through systems that are designed to slow others down.",
+          "Why it matters, looking good lowers friction. When your face signals trust and competence immediately, people move faster, hesitate less, and treat you like less of a risk. In a world ruled by first impressions, that difference compounds.",
+          "The logic, beauty is not a trivial preference. People make fast, automatic judgments from faces, and attractiveness spills into assumptions about competence, warmth, and value. That bias has measurable economic effects, including a documented beauty premium in work that depends on human interaction.",
         ],
         sources: [
           {
-            label: "Maxims or Myths of Beauty? (meta-analysis, 2000) - PubMed",
-            href: "https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com",
+            label: "Willis, J., & Todorov, A. (2006). First impressions: Making up your mind after a 100-ms exposure to a face. Psychological Science.",
+            href: "https://pubmed.ncbi.nlm.nih.gov/16866745/",
           },
           {
-            label: "What is Beautiful is Good (classic halo-effect study) - PDF",
-            href: "https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com",
+            label: "Lin, C., Keles, U., & Adolphs, R. (2021). Four dimensions characterize attributions from faces using a representative set of English trait words. Nature Communications.",
+            href: "https://www.nature.com/articles/s41467-021-25500-y",
+          },
+          {
+            label: "Ritchie, K. L., Palermo, R., & Rhodes, G. (2017). Forming impressions of facial attractiveness is mandatory. Scientific Reports.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5428706/",
+          },
+          {
+            label: "Hamermesh, D. S., & Biddle, J. E. (1994). Beauty and the Labor Market. NBER Working Paper 4518.",
+            href: "https://www.nber.org/papers/w4518",
+          },
+          {
+            label: "Stinebrickner, R., Stinebrickner, T. R., & Sullivan, P. J. (2019). Beauty, Job Tasks, and Wages. Journal of Labor Economics.",
+            href: "https://www.nber.org/papers/w24479",
           },
         ],
       },
       {
         label: "The Dating Market Efficiencies",
         text: [
-          "Doors open. Literally and figuratively. The attractive man is waved through security checkpoints while the other is searched. He is pulled over and released with a warning; the other receives a ticket. Studies in jurisprudence have shown that physically appealing defendants receive lighter sentences for the same crimes. The law, supposedly blind, is not blind at all—it is human, and humans are weak to a well-proportioned face.",
-          "This is not fair. This is simply true.",
+          "Dating should not feel like labor. When your appearance is working for you, pursuit becomes selection. You stop forcing interest and move through dating with more calm, leverage, and less anxiety.",
+          "Attraction is not negotiated from scratch. People form impressions from faces quickly, and physical attractiveness strongly shapes romantic interest in early encounters. Judgments of facial attractiveness are also influenced by cues like symmetry, averageness, and sexually dimorphic structure, which helps explain why some people generate immediate attention before they have said much at all. In practice, better looks can shift the starting position toward more openness, more forgiveness, and less resistance.",
         ],
         sources: [
           {
-            label: "Efran (1974) physical appearance and judgments of guilt",
-            href: "https://www.sciencedirect.com/science/article/abs/pii/0092656674900440?utm_source=chatgpt.com",
+            label: "Willis, J., & Todorov, A. (2006). First impressions: Making up your mind after a 100-ms exposure to a face. Psychological Science.",
+            href: "https://pubmed.ncbi.nlm.nih.gov/16866745/",
           },
           {
-            label: "Mazzella & Feingold (1994) meta-analysis",
-            href: "https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1559-1816.1994.tb01552.x?utm_source=chatgpt.com",
+            label: "Eastwick, P. W., Finkel, E. J., Mochon, D., & Ariely, D. (2007). Selective versus unselective romantic desire: Not all reciprocity is created equal. Psychological Science.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5519305/",
           },
           {
-            label: "Beaver et al. (2019) attractiveness bias review",
-            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/?utm_source=chatgpt.com",
+            label: "Rhodes, G. (2006). The evolutionary psychology of facial beauty. Annual Review of Psychology.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3130383/",
+          },
+          {
+            label: "Walter, K. V., Conroy-Beam, D., & Buss, D. M. (2020). Sex differences in mate preferences across 45 countries: A large-scale replication. Psychological Science.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10684645/",
+          },
+          {
+            label: "Hitsch, G. J., Hortaçsu, A., & Ariely, D. (2010). What makes you click? Mate preferences in online dating. Quantitative Marketing and Economics.",
+            href: "https://www.nber.org/papers/w13072",
           },
         ],
       },
       {
         label: "Radical Self-Respect (The Internal Shift)",
         text: [
-          "In social spaces, the dynamic is even more pronounced. The attractive man does not approach; he is approached. Women manufacture reasons to stand near him, to brush against him, to ask him questions to which they already know the answers. It is not manipulation; it is magnetism. His presence alters the geometry of a room. People orient toward him like flowers to a sun they do not consciously see.",
-          "Dating, for him, is not a hunt. It is a selection process. His options are not limited by his job, his car, or his wit—though those help—but by the simple, brutal arithmetic of his jawline and cheekbones. His potential partners forgive awkwardness. They forgive silence. They forgive mistakes they would hold against another man for years.",
+          "Looksmaxxing is not vanity. Treating your appearance as a project is one of the clearest forms of self-respect. When you stop neglecting how you present yourself, you start holding yourself to a higher standard everywhere else.",
+          "Appearance changes expectations, and expectations change behavior. Attractive people are often treated as more capable, more social, and more valuable, which can create a feedback loop: better treatment, better self-perception, better conduct. Over time, presentation stops being cosmetic and becomes behavioral. What begins as appearance can harden into discipline, dignity, and self-respect.",
         ],
         sources: [
           {
-            label: "Duchenne smile research",
-            href: "https://akjournals.com/downloadpdf/journals/1126/5/1/article-p183.pdf?utm_source=chatgpt.com",
+            label: "Snyder, M., Tanke, E. D., & Berscheid, E. (1977). Social perception and interpersonal behavior: On the self-fulfilling nature of social stereotypes. Journal of Personality and Social Psychology.",
+            href: "https://faculty.washington.edu/jdb/345/345%20Articles/Snyder%20et%20al.%20%281977%29.pdf",
           },
           {
-            label: "EMG studies on attractiveness",
-            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3269167/?utm_source=chatgpt.com",
+            label: "Zebrowitz, L. A. (2008). Social psychological face perception: Why appearance matters. Social and Personality Psychology Compass.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2811283/",
           },
           {
-            label: "Good-looking people are not what we think (Feingold, 1992)",
-            href: "https://www.semanticscholar.org/paper/Good-looking-people-are-not-what-we-think.-Feingold/7a30a68c4d9534e12231a7ac95fe86c867c77566?utm_source=chatgpt.com",
+            label: "Griffin, A. M., & Langlois, J. H. (2006). Stereotype directionality and attractiveness stereotyping: Is beauty good or is ugly bad? Social Cognition.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1447532/",
           },
         ],
       },
       {
         label: "Social Hierarchy & The Confidence Dividend",
         text: [
-          "But it does not stop at romance.",
-          "Careers are built on this currency. The attractive man is hired faster, promoted sooner, and paid more over his lifetime. This is not opinion; this is longitudinal data. He is perceived as more competent, more intelligent, more capable—even when his resume is identical to the man sitting across from him. His face is a resume of its own, scanned and judged in milliseconds before a single word is spoken.",
-          "He receives better service. Waiters remember his name. Bartenders pour heavier. Strangers smile. The world, for him, is slightly warmer, slightly softer, slightly more forgiving.",
+          "Social status is not just ego. It changes how you move through the world. Looking better can raise your position in the social hierarchy, and that elevation, handled with humility, creates confidence that compounds over time.",
+          "Appearance shapes status judgments quickly. Attractive faces are often assumed to be more competent, more socially skilled, and more worthy of attention, which changes how people respond from the start. That response can create a feedback loop: better treatment leads to stronger self-perception, which improves presence, which then improves treatment again. Confidence is not built in isolation. It is built through repeated social reinforcement.",
         ],
         sources: [
           {
-            label: "Beauty and the Labor Market (Hamermesh & Biddle, 1994)",
-            href: "https://www.nber.org/papers/w4518?utm_source=chatgpt.com",
+            label: "Dion, K., Berscheid, E., & Walster, E. (1972). What is beautiful is good. Journal of Personality and Social Psychology.",
+            href: "https://psycnet.apa.org/record/1973-05802-001",
           },
           {
-            label: "Why Beauty Matters (Mobius & Rosenblat, 2006)",
-            href: "https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com",
+            label: "Judge, T. A., Hurst, C., & Simon, L. S. (2009). Does it pay to be smart, attractive, or confident (or all three)? Relationships among general mental ability, physical attractiveness, core self-evaluations, and income. Journal of Applied Psychology.",
+            href: "https://www.apa.org/pubs/journals/releases/apl943742.pdf",
           },
           {
-            label: "Ruffle & Shtudiner (2015) callbacks",
-            href: "https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927?utm_source=chatgpt.com",
+            label: "Wu, R., Yang, M., et al. (2021). How boosting self-perceived attractiveness reduces consumers’ choice uncertainty. Journal of Marketing Research.",
+            href: "https://journals.sagepub.com/doi/10.1177/00222437211033179",
           },
           {
-            label: "Judge, Hurst & Simon (2009) lifetime earnings",
-            href: "https://www.apa.org/pubs/journals/releases/apl943742.pdf?utm_source=chatgpt.com",
-          },
-          {
-            label: "Observers’ facial EMG responses and service warmth",
-            href: "https://www.sciencedirect.com/science/article/pii/S1090513899000367?utm_source=chatgpt.com",
+            label: "Gulati, A., et al. (2024). What is beautiful is still good: the attractiveness halo effect in the era of beauty filters. Royal Society Open Science.",
+            href: "https://royalsocietypublishing.org/doi/10.1098/rsos.240882",
           },
         ],
       },
       {
         label: "Career Optionality & Asset Monetization",
         text: [
-          "And then something strange happens.",
-          "Because the world expects more from him, he begins to expect more from himself. He dresses better. He speaks more carefully. He holds doors. He becomes the man everyone assumed he was. The expectation becomes the reality. Beauty, in this way, is not just a gift given at birth—it is a loan that accrues interest, compounding into character over time.",
+          "Even if you never model, having the option to monetize your looks changes your career calculus. It gives you leverage, an exit option, and credibility, especially if you are selling a course built on visible transformation.",
+          "Appearance has measurable economic value. Attractive people are often hired faster, evaluated more favorably, and paid more over time, even when qualifications are otherwise similar. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they can improve the starting position.",
+        ],
+        sources: [
+          {
+            label: "Hamermesh, D. S., & Biddle, J. E. (1994). Beauty and the Labor Market. American Economic Review / NBER Working Paper 4518.",
+            href: "https://www.nber.org/papers/w4518",
+          },
+          {
+            label: "Mobius, M. M., & Rosenblat, T. S. (2006). Why Beauty Matters. American Economic Review, 96(1), 222–235.",
+            href: "https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com",
+          },
+          {
+            label: "Ruffle, B. J., & Shtudiner, Z. (2015). Are Good-Looking People More Employable? Management Science, 61(8), 1760–1776.",
+            href: "https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927",
+          },
+          {
+            label: "Judge, T. A., Hurst, C., & Simon, L. S. (2009). Does It Pay to Be Smart, Attractive, or Confident (or All Three)? Relationships among General Mental Ability, Physical Attractiveness, Core Self-Evaluations, and Income. Journal of Applied Psychology, 94(3), 742–755.",
+            href: "https://doi.org/10.1037/a0015497",
+          },
         ],
       },
       {
         label: "The Halo Effect: Family & Authority",
         text: [
-          "You see the problem.",
-          "If you were born without it, you have been navigating the world on hard mode without ever being told. You have been invisible when you should have been seen. You have been passed over when you should have been chosen. You have been spoken down to when you should have been respected. And you have internalized all of it as something wrong with you, rather than something wrong with the wiring of the species.",
+          "If the halo effect is real, and the evidence says it is, then looks are not just aesthetic. They are leverage. Appearance changes how institutions read you before you speak, and that can affect outcomes in systems where small biases carry real consequences.",
+          "People make fast judgments from faces, and those judgments do not stay confined to first impressions. In legal settings, physical attractiveness has been linked to more lenient judgments and better criminal-justice outcomes, while broader halo-effect research shows attractive faces are often seen as more competent, trustworthy, and socially desirable. In practice, better looks can shift the starting position toward less suspicion, more benefit of the doubt, and softer treatment.",
+        ],
+        sources: [
+          {
+            label: "Efran, M. G. (1974). The effect of physical appearance on the judgment of guilt, interpersonal attraction, and severity of recommended punishment in a simulated jury task. Journal of Research in Personality.",
+            href: "https://www.sciencedirect.com/science/article/pii/0092656674900440",
+          },
+          {
+            label: "Mazzella, R., & Feingold, A. (1994). The Effects of Physical Attractiveness, Race, Socioeconomic Status, and Gender of Defendants and Victims on Judgments of Mock Jurors: A Meta-Analysis. Journal of Applied Social Psychology.",
+            href: "https://onlinelibrary.wiley.com/doi/10.1111/j.1559-1816.1994.tb01552.x",
+          },
+          {
+            label: "Beaver, K. M., Boccio, C. M., Smith, S., & Ferguson, C. J. (2019). Physical attractiveness and criminal justice processing: results from a longitudinal sample of youth and young adults. Psychiatry, Psychology and Law.",
+            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/",
+          },
+          {
+            label: "Gulati, A., et al. (2024). What is beautiful is still good: the attractiveness halo effect in the era of beauty filters. Royal Society Open Science.",
+            href: "https://royalsocietypublishing.org/doi/10.1098/rsos.240882",
+          },
         ],
       },
     ],
@@ -362,7 +388,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                         setNarrative(index);
                         trackSafe("research_story_tab_change", { tab: tab.label });
                       }}
-                      className={`rounded-full border px-4 py-2 text-[10px] uppercase tracking-[0.3em] transition ${
+                      className={`max-w-full rounded-full border px-4 py-2 text-center text-[10px] uppercase leading-[1.35] tracking-[0.3em] whitespace-normal [overflow-wrap:anywhere] [hyphens:auto] transition ${
                         index === activeNarrative
                           ? "border-black/20 bg-white/20 text-[#3f3f3f]"
                           : "border-black/10 bg-white/12 text-[#5a5a5a] hover:text-[#3f3f3f]"
@@ -384,29 +410,45 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       className="space-y-4 text-center text-sm text-[#4a4a4a] md:text-base"
                     >
                       {currentNarrative.text.map((paragraph) => (
-                        <p key={paragraph}>{renderArchedParagraph(paragraph)}</p>
+                        <p
+                          key={paragraph}
+                          className={
+                            isNarrativeCallout(paragraph)
+                              ? "my-8 text-[1.14rem] font-bold leading-tight text-[#2f2f2f] md:text-[1.24rem]"
+                              : undefined
+                          }
+                        >
+                          {isNarrativeCallout(paragraph) ? (
+                            <span className="block">{paragraph}</span>
+                          ) : (
+                            <span className="block">{paragraph}</span>
+                          )}
+                        </p>
                       ))}
                       {currentNarrative.sources && currentNarrative.sources.length > 0 && (
                         <div className="pt-3 text-center">
                           <p className="text-[10px] uppercase tracking-[0.35em] text-[#666666]">
                             Sources
                           </p>
-                          <ul className="mt-3 space-y-2 text-xs text-steel">
-                            {currentNarrative.sources.map((source) => (
-                              <li key={source.href}>
-                                {source.label}
-                                {" "}
-                                <a
-                                  href={source.href}
-                                  className="text-ice underline-offset-4 hover:underline"
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Link
-                                </a>
-                              </li>
-                            ))}
-                          </ul>
+                          <div className="mt-3 text-xs leading-relaxed text-steel">
+                            <p className="whitespace-normal break-words">
+                              {currentNarrative.sources.map((source, index) => (
+                                <span key={source.href}>
+                                  {index > 0 ? ", " : ""}
+                                  {source.label}
+                                  {" "}
+                                  <a
+                                    href={source.href}
+                                    className="text-blue-700 underline-offset-4 hover:underline"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    Link
+                                  </a>
+                                </span>
+                              ))}
+                            </p>
+                          </div>
                         </div>
                       )}
                     </m.div>
@@ -415,319 +457,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-black/10 bg-white/16 p-6 shadow-[0_24px_70px_rgba(0,0,0,0.32)] backdrop-blur-xl md:p-8">
-              <Tabs
-                defaultValue="awareness"
-                onValueChange={(value) => {
-                  trackSafe("research_tab_change", { tab: value, variant: "studies" });
-                }}
-              >
-                <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
-                  <TabsTrigger
-                    value="awareness"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Awareness
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="authority"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Authority
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="social"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Social
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="dating"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Dating
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="income"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Income
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="service"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Service
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="physiology"
-                    className="rounded-full border border-black/10 bg-white/10 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#5a5a5a] data-[state=active]:border-black/20 data-[state=active]:bg-white/20 data-[state=active]:text-[#3f3f3f]"
-                  >
-                    Physiology
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="awareness" className="mt-6">
-                  <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                    Beauty operates below conscious awareness
-                  </h3>
-                  <ul className="mt-4 space-y-3 text-sm text-steel">
-                    <li>
-                      Maxims or Myths of Beauty? (meta-analysis, 2000)
-                      {" "}
-                      <a
-                        href="https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com"
-                        className="text-ice underline-offset-4 hover:underline"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        PubMed
-                      </a>
-                    </li>
-                    <li>
-                      What is Beautiful is Good (classic halo-effect study)
-                      {" "}
-                      <a
-                        href="https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com"
-                        className="text-ice underline-offset-4 hover:underline"
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        PDF
-                      </a>
-                    </li>
-                  </ul>
-                </TabsContent>
-
-          <TabsContent value="authority" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Attractive people are treated better by authorities
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Efran (1974) physical appearance reduces judgment of guilt
-                {" "}
-                <a
-                  href="https://www.sciencedirect.com/science/article/abs/pii/0092656674900440?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  ScienceDirect
-                </a>
-              </li>
-              <li>
-                Mazzella &amp; Feingold (1994 meta-analysis)
-                {" "}
-                <a
-                  href="https://onlinelibrary.wiley.com/doi/abs/10.1111/j.1559-1816.1994.tb01552.x?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Wiley
-                </a>
-              </li>
-              <li>
-                Beaver et al. (2019 review) on legal perception bias
-                {" "}
-                <a
-                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PMC
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="social" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Social attention and approach behavior
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Duchenne smile research
-                {" "}
-                <a
-                  href="https://akjournals.com/downloadpdf/journals/1126/5/1/article-p183.pdf?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PDF
-                </a>
-              </li>
-              <li>
-                EMG studies on attractiveness
-                {" "}
-                <a
-                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC3269167/?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PMC
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="dating" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Dating opportunities and social leniency
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Good-looking people are not what we think (Feingold, 1992)
-                {" "}
-                <a
-                  href="https://www.semanticscholar.org/paper/Good-looking-people-are-not-what-we-think.-Feingold/7a30a68c4d9534e12231a7ac95fe86c867c77566?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Semantic Scholar
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="income" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Hiring, income, and promotion ("beauty premium")
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Beauty and the Labor Market (Hamermesh &amp; Biddle, 1994)
-                {" "}
-                <a
-                  href="https://www.nber.org/papers/w4518?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  NBER
-                </a>
-              </li>
-              <li>
-                Why Beauty Matters (Mobius &amp; Rosenblat, 2006)
-                {" "}
-                <a
-                  href="https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  AEA
-                </a>
-              </li>
-              <li>
-                Ruffle &amp; Shtudiner (2015) callbacks
-                {" "}
-                <a
-                  href="https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Management Science
-                </a>
-              </li>
-              <li>
-                Judge, Hurst &amp; Simon (2009) lifetime earnings
-                {" "}
-                <a
-                  href="https://www.apa.org/pubs/journals/releases/apl943742.pdf?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PDF
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="service" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Attractive people elicit more positive service
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Observers’ facial EMG responses show reduced negative emotion activity
-                {" "}
-                <a
-                  href="https://www.sciencedirect.com/science/article/pii/S1090513899000367?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  ScienceDirect
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-
-          <TabsContent value="physiology" className="mt-6">
-            <h3 className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-              Facial structure can change
-            </h3>
-            <ul className="mt-4 space-y-3 text-sm text-steel">
-              <li>
-                Facial exercise study (JAMA Dermatology, 2018)
-                {" "}
-                <a
-                  href="https://jamanetwork.com/journals/jamadermatology/fullarticle/2666801?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  JAMA
-                </a>
-              </li>
-              <li>
-                Masticatory muscle studies (Kiliaridis, 1986; 1995)
-                {" "}
-                <a
-                  href="https://pubmed.ncbi.nlm.nih.gov/3465055/?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  PubMed
-                </a>
-              </li>
-              <li>
-                Kiliaridis (1995) jaw adaptation
-                {" "}
-                <a
-                  href="https://actaorthop.org/actaodontologica/article/download/39557/44744?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Acta
-                </a>
-              </li>
-              <li>
-                Soft-diet model (Kono et al., 2017)
-                {" "}
-                <a
-                  href="https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00567/full?utm_source=chatgpt.com"
-                  className="text-ice underline-offset-4 hover:underline"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Frontiers
-                </a>
-              </li>
-            </ul>
-          </TabsContent>
-        </Tabs>
-      </div>
     </div>
   )}
 </div>

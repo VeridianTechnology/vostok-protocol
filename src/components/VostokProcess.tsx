@@ -129,6 +129,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
   const [pendingIcon, setPendingIcon] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const [isAfterVideoPaused, setIsAfterVideoPaused] = useState(false);
   const [afterVideoDuration, setAfterVideoDuration] = useState(0);
   const [afterVideoCurrentTime, setAfterVideoCurrentTime] = useState(0);
@@ -139,16 +140,49 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const activeVariants =
     activeStage === "non_ai" ? null : getImageVariants(activeImage);
   const isNonAiAfter = activeStage === "non_ai" && activeImage === "/Comparison/1.JPG";
+  const showMobileLoadingOverlay = isMobile && pendingIcon !== null;
   const handleGridShift = () => {
     const nextX = Math.round((Math.random() - 0.5) * 120);
     const nextY = Math.round((Math.random() - 0.5) * 120);
     setGridShift({ x: nextX, y: nextY });
   };
   const selectStage = (stageKey: StageKey, image: string) => {
-    setPendingIcon(`${stageKey}:${image}`);
+    if (activeStage === stageKey && activeImage === image) {
+      return;
+    }
+
+    const nextKey = `${stageKey}:${image}`;
+    const nextImageSrc = stageKey === "non_ai" ? image : toMobileImage(image);
+
+    if (!isMobile) {
+      setPendingIcon(null);
+      setActiveStage(stageKey);
+      setActiveImage(image);
+      return;
+    }
+
+    const preloadImage = new window.Image();
+    preloadImage.decoding = "async";
+    preloadImage.src = nextImageSrc;
+
     setActiveStage(stageKey);
     setActiveImage(image);
+
+    if (preloadImage.complete) {
+      setPendingIcon(null);
+      return;
+    }
+
+    setPendingIcon(nextKey);
   };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateMatch = () => setIsMobile(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
 
   useEffect(() => {
     setScanKey((current) => current + 1);
@@ -706,6 +740,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                   alt={`${currentStage.title} comparison`}
                   className="relative z-10 h-full w-full object-cover"
                   onLoad={() => setPendingIcon(null)}
+                  onError={() => setPendingIcon(null)}
                   loading="lazy"
                   decoding="async"
                 />
@@ -740,6 +775,9 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       }}
                       onEnded={() => {
                         setIsAfterVideoPaused(true);
+                      }}
+                      onError={() => {
+                        setPendingIcon(null);
                       }}
                       className="relative z-10 h-full w-full object-cover"
                     />
@@ -804,12 +842,24 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
                     }`}
                     onLoad={() => setPendingIcon(null)}
+                    onError={() => setPendingIcon(null)}
                     loading="lazy"
                     decoding="async"
                   />
                 )}
                 <div className="pointer-events-none absolute inset-0 z-[11] bg-black/20" />
               </>
+            )}
+            {showMobileLoadingOverlay && (
+              <div className="pointer-events-none absolute inset-0 z-[21] flex flex-col items-center justify-center gap-4 bg-black">
+                <span
+                  aria-hidden="true"
+                  className="h-10 w-10 animate-spin rounded-full border-2 border-white/25 border-t-white"
+                />
+                <p className="text-[11px] uppercase tracking-[0.3em] text-white/85">
+                  Loading...
+                </p>
+              </div>
             )}
             <m.div
               key={`scan-${scanKey}`}
