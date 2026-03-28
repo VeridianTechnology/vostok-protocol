@@ -383,7 +383,7 @@ const getTrackDisplayTitle = (track: Track) => `${track.title}${track.audioSrc ?
 const getSpecialSongIntroSrc = (track: Track) =>
   track.id.includes("&") ? `/audio/dj/special_song/${track.id}.m4a` : null;
 
-const VISUALIZER_BAR_COUNT = 16;
+const VISUALIZER_BAR_COUNT = 13;
 const VISUALIZER_IDLE_BARS = Array.from({ length: VISUALIZER_BAR_COUNT }, () => 0.14);
 const VISUALIZER_ATTACK = 0.68;
 const VISUALIZER_DECAY = 0.16;
@@ -1157,7 +1157,7 @@ const RadioPlayer = () => {
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
-            <div className="mb-1 flex h-[52px] min-h-[26px] w-[120px] items-end justify-center gap-[3px] md:w-[150px] md:max-h-[60px]">
+            <div className="mb-1 flex h-[52px] min-h-[26px] w-[99px] items-end justify-center gap-[3px] md:w-[125px] md:max-h-[60px]">
               {visualizerBars.map((level, index) => (
                 <span
                   key={`${currentTrack.id}-bar-${index}`}

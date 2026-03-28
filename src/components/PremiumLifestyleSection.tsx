@@ -1,6 +1,9 @@
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import SectionSideTab from "@/components/SectionSideTab";
 
+const getExplanationVideoSrc = (src: string, isMobile: boolean) =>
+  src.replace(/\.mp4$/i, isMobile ? "_mobile.mp4" : "_desktop.mp4");
+
 type InterestSectionProps = {
   tabLabel: string;
   hideTabLabel?: boolean;
@@ -351,6 +354,7 @@ const PremiumLifestyleSection = () => {
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
   const areBecomingYouVideosPausedRef = useRef(false);
   const individuallyPausedBecomingYouVideosRef = useRef([false, false, false, false, false]);
+  const [isMobile, setIsMobile] = useState(false);
   const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
   const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false, false, false, false]);
   const [individuallyPausedBecomingYouVideos, setIndividuallyPausedBecomingYouVideos] = useState([
@@ -364,6 +368,14 @@ const PremiumLifestyleSection = () => {
   const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
     becomingYouVideoRefs.current[index] = element;
   };
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateMatch = () => setIsMobile(mediaQuery.matches);
+    updateMatch();
+    mediaQuery.addEventListener("change", updateMatch);
+    return () => mediaQuery.removeEventListener("change", updateMatch);
+  }, []);
 
   useEffect(() => {
     areBecomingYouVideosPausedRef.current = areBecomingYouVideosPaused;
@@ -538,7 +550,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(0)}
               >
-                <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -588,7 +600,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(1)}
               >
-                <source src="/section_wallpaper/explaination/02.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -638,7 +650,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(2)}
               >
-                <source src="/section_wallpaper/explaination/03.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -687,7 +699,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(3)}
               >
-                <source src="/section_wallpaper/explaination/06.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -736,7 +748,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(4)}
               >
-                <source src="/section_wallpaper/explaination/04.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -793,7 +805,7 @@ const PremiumLifestyleSection = () => {
                     preload="metadata"
                     onEnded={() => handleBecomingYouVideoEnded(0)}
                   >
-                    <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+                    <source src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} type="video/mp4" />
                   </video>
                   <div
                     aria-hidden="true"
@@ -851,7 +863,7 @@ const PremiumLifestyleSection = () => {
                     preload="metadata"
                     onEnded={() => handleBecomingYouVideoEnded(2)}
                   >
-                    <source src="/section_wallpaper/explaination/03.mp4" type="video/mp4" />
+                    <source src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} type="video/mp4" />
                   </video>
                   <div
                     aria-hidden="true"
@@ -913,7 +925,7 @@ const PremiumLifestyleSection = () => {
                       preload="metadata"
                       onEnded={() => handleBecomingYouVideoEnded(4)}
                     >
-                      <source src="/section_wallpaper/explaination/04.mp4" type="video/mp4" />
+                      <source src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} type="video/mp4" />
                     </video>
                     <div
                       aria-hidden="true"
@@ -976,7 +988,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(1)}
               >
-                <source src="/section_wallpaper/explaination/02.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -1035,7 +1047,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(3)}
               >
-                <source src="/section_wallpaper/explaination/06.mp4" type="video/mp4" />
+                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
