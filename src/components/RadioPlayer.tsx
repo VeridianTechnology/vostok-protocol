@@ -1103,7 +1103,7 @@ const RadioPlayer = () => {
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
       <audio ref={djVoiceAudioRef} />
-      <div className="fixed bottom-[36px] right-[8vw] z-[59] flex items-end md:bottom-[42px]">
+      <div className="fixed inset-x-0 bottom-[36px] z-[59] flex justify-center items-end md:inset-x-auto md:bottom-[42px] md:right-[8vw] md:justify-start">
         <div
           className="relative transition-transform duration-[2000ms] ease-in-out"
           style={{
