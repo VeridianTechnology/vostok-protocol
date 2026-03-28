@@ -254,6 +254,13 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/35_And I Have Come for You.m4a",
     youtubeUrl: "https://www.youtube.com/results?search_query=And+I+Have+Come+for+You",
   },
+  {
+    id: "36",
+    title: "VIDA NOTURNA (Slowed Reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/36_VIDA NOTURNA (Slowed Reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=VIDA+NOTURNA+Slowed+Reverb",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -1020,6 +1027,19 @@ const RadioPlayer = () => {
   };
 
   const handlePreviousTrack = () => {
+    shouldAutoplayRef.current = true;
+    clearDjInterruptTimeout();
+    clearDjResumeTimeout();
+    clearDjPrefixTimeout();
+    isDjVoiceActiveRef.current = false;
+    if (djVoiceAudioRef.current) {
+      djVoiceAudioRef.current.pause();
+      djVoiceAudioRef.current.currentTime = 0;
+    }
+    if (djStingerAudioRef.current) {
+      djStingerAudioRef.current.pause();
+      djStingerAudioRef.current.currentTime = 0;
+    }
     setPlayState((current) => ({
       ...current,
       trackPosition: current.trackPosition === 0 ? current.playOrder.length - 1 : current.trackPosition - 1,
@@ -1027,6 +1047,19 @@ const RadioPlayer = () => {
   };
 
   const handleNextTrack = () => {
+    shouldAutoplayRef.current = true;
+    clearDjInterruptTimeout();
+    clearDjResumeTimeout();
+    clearDjPrefixTimeout();
+    isDjVoiceActiveRef.current = false;
+    if (djVoiceAudioRef.current) {
+      djVoiceAudioRef.current.pause();
+      djVoiceAudioRef.current.currentTime = 0;
+    }
+    if (djStingerAudioRef.current) {
+      djStingerAudioRef.current.pause();
+      djStingerAudioRef.current.currentTime = 0;
+    }
     setPlayState((current) => {
       if (current.trackPosition < current.playOrder.length - 1) {
         return { ...current, trackPosition: current.trackPosition + 1 };

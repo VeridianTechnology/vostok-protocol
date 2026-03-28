@@ -108,7 +108,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[6vh]">
           <img
-            src="/section_wallpaper/buy/05.png"
+            src="/section_wallpaper/buy/06_mobile.png"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-fill object-center md:hidden"
