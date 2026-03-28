@@ -102,11 +102,11 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     <section
       ref={sectionRef}
       id="purchase"
-      className="section-surface relative left-1/2 right-1/2 h-[84svh] min-h-[84svh] w-screen -translate-x-1/2 overflow-hidden pb-[6vh] md:h-[88svh] md:min-h-[88svh] md:pb-[7vh]"
+      className="section-surface relative left-1/2 right-1/2 h-[56svh] min-h-[56svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[68svh] md:min-h-[68svh] md:pb-[5vh]"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
-        <div className="absolute inset-x-0 top-0 bottom-[5vh] overflow-hidden md:bottom-[8vh]">
+        <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[6vh]">
           <img
             src="/section_wallpaper/buy/05.png"
             alt=""
@@ -127,12 +127,12 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
           />
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-[-14vh] z-[3] h-[18vh] overflow-hidden md:bottom-[-15vh] md:h-[21vh]">
+      <div className="absolute inset-x-0 bottom-[-6vh] z-[3] h-[8vh] overflow-hidden md:bottom-[-10vh] md:h-[15vh]">
         <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.32)_0%,rgba(0,0,0,0.18)_32%,rgba(0,0,0,0.36)_100%)]" />
       </div>
 
-      <div className="absolute inset-x-0 top-0 bottom-[5vh] z-10 text-black/80 md:bottom-[8vh]">
+      <div className="absolute inset-x-0 top-0 bottom-[2vh] z-10 text-black/80 md:bottom-[6vh]">
         <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

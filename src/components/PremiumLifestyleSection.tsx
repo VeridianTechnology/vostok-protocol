@@ -348,9 +348,9 @@ const InterestSection = ({
 
 const PremiumLifestyleSection = () => {
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
-  const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null]);
+  const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
   const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
-  const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false]);
+  const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false, false, false, false]);
 
   const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
     becomingYouVideoRefs.current[index] = element;
@@ -415,22 +415,22 @@ const PremiumLifestyleSection = () => {
         lines={["UGLY", "", "", "PEOPLE", "", "", "CAN'T BE HAPPY"]}
         desktopBackground="/section_wallpaper/interest/06.png?v=1"
         mobileBackground="/section_wallpaper/interest/mobile/08.png?v=2"
-        localizedBottomGlowClassName="h-[5vh] w-[58vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.42)_0%,rgba(104,170,255,0.24)_42%,rgba(74,135,230,0.12)_68%,rgba(74,135,230,0)_100%)] blur-[18px]"
-        sectionClassName="min-h-[64vh] pt-[4.8rem] pb-[4rem] md:min-h-[72vh] md:pt-[6rem] md:pb-[4.8rem]"
+        localizedBottomGlowClassName="bottom-[-1vh] h-[8vh] w-[78vw] min-w-[18rem] max-w-[44rem] rounded-t-[999px] bg-[radial-gradient(circle_at_center,rgba(136,196,255,0.52)_0%,rgba(104,170,255,0.34)_38%,rgba(74,135,230,0.18)_62%,rgba(74,135,230,0)_100%)] blur-[24px] md:bottom-0 md:h-[5vh] md:w-[58vw] md:blur-[18px]"
+        sectionClassName="min-h-[64vh] -mb-[10vh] pt-[4.8rem] pb-0 md:mb-0 md:min-h-[60vh] md:pt-[5.2rem] md:pb-[3.8rem]"
         textClassName="text-white"
         headingClassName="font-['Tektur'] text-[2.1rem] font-black tracking-[0.14em] text-black opacity-90 [text-shadow:0_0_18px_rgba(255,255,255,0.95),0_8px_22px_rgba(255,255,255,0.7)] md:text-[5.7rem]"
         firstLineClassName="mt-[18vh] md:mt-[16vh]"
         tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
         mobileBackgroundPosition="58% center"
-        mobileBackgroundSize="fill"
-        mobileBackgroundScale={0.94}
+        mobileBackgroundSize="cover"
+        mobileBackgroundScale={1.18}
         desktopBackgroundPosition="55% 28%"
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         secondaryOverlaySrc="/section_wallpaper/interest/02.png?v=2"
         secondaryOverlayPosition="left"
-        secondaryOverlayClassName="translate-x-0 opacity-70 brightness-[1.04] contrast-[1.06] saturate-[0.9] drop-shadow-[0_18px_48px_rgba(255,255,255,0.16)]"
+        secondaryOverlayClassName="-translate-x-[34vw] opacity-70 brightness-[1.04] contrast-[1.06] saturate-[0.9] drop-shadow-[0_18px_48px_rgba(255,255,255,0.16)]"
         disableParallax
-        contentClassName="flex min-h-[calc(64vh-8.8rem)] -translate-y-[31vh] flex-col justify-end md:min-h-[calc(72vh-10.8rem)] md:-translate-y-[8vh]"
+        contentClassName="flex min-h-[calc(64vh-8.8rem)] -translate-y-[21vh] flex-col justify-end md:min-h-[calc(60vh-9rem)] md:-translate-y-[6vh]"
         innerContentClassName="pb-0"
       />
       <InterestSection
@@ -439,9 +439,9 @@ const PremiumLifestyleSection = () => {
         lines={[]}
         desktopBackground="/section_wallpaper/become_you/01.png"
         mobileBackground="/section_wallpaper/become_you/01.png"
-        sectionClassName="min-h-[110vh] py-0 md:min-h-[140vh]"
-        contentClassName="flex min-h-[110vh] flex-col justify-start md:min-h-[140vh]"
-        innerContentClassName="py-[7vh] md:py-[5.5vh]"
+        sectionClassName="min-h-[110vh] py-0 md:min-h-[200vh]"
+        contentClassName="flex min-h-[110vh] -translate-y-[8vh] flex-col justify-start md:min-h-[200vh] md:translate-y-0"
+        innerContentClassName="pt-[3vh] pb-[3vh] md:py-[5.5vh]"
         tabLabelClassName="!text-black"
         decoration={
           <>
@@ -458,21 +458,21 @@ const PremiumLifestyleSection = () => {
               alt=""
               aria-hidden="true"
               draggable={false}
-              className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[118%] w-auto max-w-none object-contain md:block"
+              className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[38%] w-auto max-w-none object-contain md:block"
             />
             <img
               src="/section_wallpaper/explaination/05.png"
               alt=""
               aria-hidden="true"
               draggable={false}
-              className="pointer-events-none absolute bottom-0 right-0 z-0 hidden h-[101%] w-auto max-w-none object-contain md:block"
+              className="pointer-events-none absolute bottom-0 right-[-50px] z-0 hidden h-[74%] w-auto max-w-none object-contain md:block"
             />
             <img
               src="/section_wallpaper/explaination/04.png"
               alt=""
               aria-hidden="true"
               draggable={false}
-              className="pointer-events-none absolute right-0 top-0 z-0 hidden h-[46%] w-auto max-w-none object-contain md:block"
+              className="pointer-events-none absolute right-0 top-0 z-[8] hidden h-[34%] w-auto max-w-none object-contain md:block"
             />
           </>
         }
@@ -487,80 +487,67 @@ const PremiumLifestyleSection = () => {
         backgroundOverlayClassName="bg-[linear-gradient(180deg,rgba(255,255,255,0.26)_0%,rgba(255,255,255,0.1)_18%,rgba(255,255,255,0.04)_42%,rgba(0,0,0,0.18)_100%)]"
       >
         <div
-          className="relative grid cursor-pointer gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] md:gap-[15vw]"
+          className="relative cursor-pointer md:hidden"
           onClick={handleBecomingYouToggle}
         >
-          <div className="relative z-[1] max-w-[54.6rem] md:max-w-[73.7rem]">
-            <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+          <div className="flex flex-col gap-[3vh]">
+            <h2 className="text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               BECØME
             </h2>
-            <div className="flex flex-col gap-5 md:-translate-x-[15vw] md:flex-row md:items-stretch md:gap-0">
-              <div className="relative md:w-[32vw] md:min-w-[32vw]">
-                <video
-                  ref={setBecomingYouVideoRef(0)}
-                  className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
-                  autoPlay
-                  muted
-                  playsInline
-                  preload="metadata"
-                  onEnded={() => handleBecomingYouVideoEnded(0)}
-                >
-                  <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
-                </video>
-                <div
-                  aria-hidden="true"
-                  className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
-                    becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
-                  }`}
-                />
-                {areBecomingYouVideosPaused ? (
-                  <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
-                      <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
-                        <rect x="6" y="5" width="4" height="14" rx="1" />
-                        <rect x="14" y="5" width="4" height="14" rx="1" />
-                      </svg>
-                    </div>
+            <div className="relative">
+              <video
+                ref={setBecomingYouVideoRef(0)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(0)}
+              >
+                <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
                   </div>
-                ) : null}
-              </div>
-              <div className="relative overflow-hidden rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:rounded-l-none md:px-3 md:py-6">
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden"
-                  style={{
-                    backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
-                    backgroundRepeat: "repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "108px 108px",
-                  }}
-                />
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block"
-                  style={{
-                    backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
-                    backgroundRepeat: "repeat",
-                    backgroundPosition: "center",
-                    backgroundSize: "128px 128px",
-                  }}
-                />
-                <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
-                <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
-                  Like the
-                  <span className="block">gym for your face.</span>
-                </p>
-              </div>
+                </div>
+              ) : null}
             </div>
-          </div>
-          <div className="relative z-[1] max-w-[49.4rem] md:max-w-[66.7rem] md:translate-x-[20vw] md:translate-y-[25%] md:justify-self-end">
-            <h2 className="mb-4 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.22]"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "108px 108px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
+                Like the
+                <span className="block">gym for your face.</span>
+              </p>
+            </div>
+
+            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               DØll
             </h2>
-            <div className="relative md:w-[32vw] md:min-w-[32vw]">
+            <div className="relative">
               <video
                 ref={setBecomingYouVideoRef(1)}
-                className="w-full rounded-[28px] border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
                 playsInline
@@ -571,7 +558,7 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 rounded-[28px] bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
                   becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
                 }`}
               />
@@ -586,7 +573,395 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative mt-5 max-w-[38rem] overflow-hidden rounded-[24px] border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[-7vw] md:w-[44rem] md:max-w-none md:-translate-x-[50vw] md:px-10 md:py-8">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18]"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
+                <span className="block">BECOME</span>
+                <span className="block">as hot as you want.</span>
+              </p>
+            </div>
+
+            <h2 className="-mb-[8px] pt-[0.5vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+              BØY
+            </h2>
+            <div className="relative -mt-[1.2vh]">
+              <video
+                ref={setBecomingYouVideoRef(2)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(2)}
+              >
+                <source src="/section_wallpaper/explaination/03.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="relative -mt-[1.2vh] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18]"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
+                Get those photos like your Grandfather had. Classic.
+              </p>
+            </div>
+
+            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+              WØMAN
+            </h2>
+            <div className="relative">
+              <video
+                ref={setBecomingYouVideoRef(3)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(3)}
+              >
+                <source src="/section_wallpaper/explaination/06.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18]"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
+                A visual guide to building up your face. Yes, like a muscle. Yes, it works.
+              </p>
+            </div>
+
+            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+              FAMØUS
+            </h2>
+            <div className="relative">
+              <video
+                ref={setBecomingYouVideoRef(4)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(4)}
+              >
+                <source src="/section_wallpaper/explaination/04.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18]"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
+                It&apos;s like Lego for your face. Each workout stacks on the last. Brick by brick, you build.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          className="relative hidden cursor-pointer md:grid md:grid-cols-[minmax(0,1fr)_minmax(0,0.92fr)] md:gap-[6vw]"
+          onClick={handleBecomingYouToggle}
+        >
+          <div className="relative z-[1] max-w-[54.6rem] md:max-w-[73.7rem]">
+            <h2 className="mb-[3vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">
+              BECØME
+            </h2>
+            <div className="flex flex-col gap-[3vh] md:-translate-x-[8vw]">
+              <div className="flex flex-col gap-[3vh] md:flex-row md:items-stretch md:gap-0">
+                <div className="relative md:w-[32vw] md:min-w-[32vw]">
+                  <video
+                    ref={setBecomingYouVideoRef(0)}
+                    className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                    autoPlay
+                    muted
+                    playsInline
+                    preload="metadata"
+                    onEnded={() => handleBecomingYouVideoEnded(0)}
+                  >
+                    <source src="/section_wallpaper/explaination/01.mp4" type="video/mp4" />
+                  </video>
+                  <div
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                      becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                  {areBecomingYouVideosPaused ? (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                          <rect x="6" y="5" width="4" height="14" rx="1" />
+                          <rect x="14" y="5" width="4" height="14" rx="1" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+                <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:px-3 md:py-6">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden"
+                    style={{
+                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                      backgroundRepeat: "repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "108px 108px",
+                    }}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block"
+                    style={{
+                      backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                      backgroundRepeat: "repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "128px 128px",
+                    }}
+                  />
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
+                  <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
+                    Like the
+                    <span className="block">gym for your face.</span>
+                  </p>
+                </div>
+              </div>
+              <div className="md:translate-y-[20vh]">
+                <div className="relative md:w-[32vw] md:min-w-[32vw]">
+                  <video
+                    ref={setBecomingYouVideoRef(2)}
+                    className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                    autoPlay
+                    muted
+                    playsInline
+                    preload="metadata"
+                    onEnded={() => handleBecomingYouVideoEnded(2)}
+                  >
+                    <source src="/section_wallpaper/explaination/03.mp4" type="video/mp4" />
+                  </video>
+                  <div
+                    aria-hidden="true"
+                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                      becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                  {areBecomingYouVideosPaused ? (
+                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                      <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                          <rect x="6" y="5" width="4" height="14" rx="1" />
+                          <rect x="14" y="5" width="4" height="14" rx="1" />
+                        </svg>
+                      </div>
+                    </div>
+                  ) : null}
+                  <h2 className="pointer-events-none absolute bottom-[calc(-1.2rem+5vh)] right-[-2.4rem] z-[6] hidden font-['Tektur'] text-[3.2rem] font-black uppercase leading-none tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:[writing-mode:vertical-rl] md:[text-orientation:mixed]">
+                    BØY
+                  </h2>
+                </div>
+                <div className="relative mt-[3vh] max-w-[38rem] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[15px] md:w-[32vw] md:max-w-none md:px-10 md:py-8">
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
+                    style={{
+                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                      backgroundRepeat: "repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "116px 116px",
+                    }}
+                  />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
+                  style={{
+                    backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                      backgroundRepeat: "repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "152px 152px",
+                    }}
+                  />
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+                  <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
+                    Get those photos like your Grandfather had. Classic.
+                  </p>
+                </div>
+                <div className="md:w-[32vw] md:min-w-[32vw]">
+                  <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">
+                    FAMØUS
+                  </h2>
+                  <div className="relative mt-[3vh]">
+                    <video
+                      ref={setBecomingYouVideoRef(4)}
+                      className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                      autoPlay
+                      muted
+                      playsInline
+                      preload="metadata"
+                      onEnded={() => handleBecomingYouVideoEnded(4)}
+                    >
+                      <source src="/section_wallpaper/explaination/04.mp4" type="video/mp4" />
+                    </video>
+                    <div
+                      aria-hidden="true"
+                      className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                        becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                    {areBecomingYouVideosPaused ? (
+                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                          <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                            <rect x="6" y="5" width="4" height="14" rx="1" />
+                            <rect x="14" y="5" width="4" height="14" rx="1" />
+                          </svg>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                  <div className="relative mt-[3vh] max-w-[38rem] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mb-[10vh] md:w-full md:max-w-none md:px-0 md:py-8">
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
+                      style={{
+                        backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                        backgroundRepeat: "repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "116px 116px",
+                      }}
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
+                      style={{
+                        backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                        backgroundRepeat: "repeat",
+                        backgroundPosition: "center",
+                        backgroundSize: "152px 152px",
+                      }}
+                    />
+                    <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+                    <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
+                      It&apos;s like Lego for your face. Each workout stacks on the last. Brick by brick, you build.
+                    </p>
+                  </div>
+                </div>
+            </div>
+            </div>
+          </div>
+          <div className="relative z-[1] max-w-[49.4rem] md:z-[1] md:max-w-[66.7rem] md:translate-x-[1vw] md:translate-y-[9%] md:justify-self-end">
+            <h2 className="relative z-[9] mb-[3vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:w-[32vw] md:min-w-[32vw] md:-translate-x-[calc(2vw+85px)] md:text-[3.4rem]">
+              DØll
+            </h2>
+            <div className="relative z-[5] md:w-[32vw] md:min-w-[32vw]">
+              <video
+                ref={setBecomingYouVideoRef(1)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(1)}
+              >
+                <source src="/section_wallpaper/explaination/02.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="relative z-[1] mt-[3vh] max-w-[38rem] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:mt-[calc(-16vw+18vh-15px)] md:w-[calc(32vw-3px)] md:max-w-none md:-translate-x-[calc(31.5vw+3px)] md:px-10 md:py-8">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
@@ -608,8 +983,67 @@ const PremiumLifestyleSection = () => {
                 }}
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
-              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[2rem]">
-                Become as hot as you want.
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-right md:text-[2rem]">
+                <span className="block">BECOME</span>
+                <span className="block">as hot as you want.</span>
+              </p>
+            </div>
+            <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">
+              WØMAN
+            </h2>
+            <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]">
+              <video
+                ref={setBecomingYouVideoRef(3)}
+                className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+                autoPlay
+                muted
+                playsInline
+                preload="metadata"
+                onEnded={() => handleBecomingYouVideoEnded(3)}
+              >
+                <source src="/section_wallpaper/explaination/06.mp4" type="video/mp4" />
+              </video>
+              <div
+                aria-hidden="true"
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                  becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
+                }`}
+              />
+              {areBecomingYouVideosPaused ? (
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/70 bg-black/45 text-white shadow-[0_14px_32px_rgba(0,0,0,0.25)]">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-7 w-7">
+                      <rect x="6" y="5" width="4" height="14" rx="1" />
+                      <rect x="14" y="5" width="4" height="14" rx="1" />
+                    </svg>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+            <div className="relative z-[7] mt-[3vh] max-w-[38rem] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] md:w-[32vw] md:min-w-[32vw] md:max-w-none md:px-10 md:py-8">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "116px 116px",
+                }}
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
+                style={{
+                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                  backgroundRepeat: "repeat",
+                  backgroundPosition: "center",
+                  backgroundSize: "152px 152px",
+                }}
+              />
+              <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
+                A visual guide to building up your face. Yes, like a muscle. Yes, it works.
               </p>
             </div>
           </div>

@@ -196,28 +196,6 @@ const Index = () => {
           }
         />
       </LazySection>
-      <div className="divider-line" />
-      <LazySection id="section-change-face" minHeightClass="min-h-[60vh]">
-        <FeatureThumbnails
-          renderStructureSection
-          renderWallpaperSection={false}
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                    ? "tiktok"
-                    : isRedditEntry
-                      ? "reddit"
-                      : isTwitterEntry
-                        ? "twitter"
-                      : "direct"
-          }
-        />
-      </LazySection>
       <LazySection id="section-research" minHeightClass="min-h-[50vh]">
         <ResearchStudies
           entrySource={

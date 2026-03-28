@@ -851,7 +851,7 @@ const FeatureThumbnails = ({
             }`}
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
-          <div className="absolute bottom-0 left-0 z-10 pb-[10vh] pl-[10vw]">
+          <div className="absolute left-1/2 top-[40vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[10vh] md:pl-[10vw]">
             <p
               data-text={activeWallpaperSlide.caption}
               className={`wallpaper-title select-none max-w-[18ch] text-[42px] transition-opacity duration-[3000ms] md:max-w-[22ch] md:text-[172px] ${
