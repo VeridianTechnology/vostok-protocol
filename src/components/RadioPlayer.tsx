@@ -314,6 +314,7 @@ const DJ_REWIND_CLIP_PAIRS = [
   ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
 ] as const;
 const DEFAULT_VOLUME = 0.3;
+const DJ_STINGER_VOLUME_MULTIPLIER = 0.5;
 const DJ_RESUME_LEAD_MS = 500;
 const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
 const DJ_INTERRUPTION_PREFIX_MS = 300;
@@ -383,7 +384,7 @@ const getTrackDisplayTitle = (track: Track) => `${track.title}${track.audioSrc ?
 const getSpecialSongIntroSrc = (track: Track) =>
   track.id.includes("&") ? `/audio/dj/special_song/${track.id}.m4a` : null;
 
-const VISUALIZER_BAR_COUNT = 13;
+const VISUALIZER_BAR_COUNT = 11;
 const VISUALIZER_IDLE_BARS = Array.from({ length: VISUALIZER_BAR_COUNT }, () => 0.14);
 const VISUALIZER_ATTACK = 0.68;
 const VISUALIZER_DECAY = 0.16;
@@ -416,7 +417,8 @@ const RadioPlayer = () => {
   const animationFrameRef = useRef<number | null>(null);
   const frequencyDataRef = useRef<Uint8Array | null>(null);
   const visualizerRangesRef = useRef<Array<{ start: number; end: number; weight: number }> | null>(null);
-  const activeVisualizerAudioRef = useRef<HTMLAudioElement | null>(null);
+  const visualizerPhaseRef = useRef(0);
+  const visualizerFlatFramesRef = useRef(0);
   const hasInteractedRef = useRef(false);
   const shouldAutoplayRef = useRef(false);
   const previousTrackIdRef = useRef<string | null>(null);
@@ -484,6 +486,7 @@ const RadioPlayer = () => {
       animationFrameRef.current = null;
     }
     clearVisualizerInterruptTimeout();
+    visualizerFlatFramesRef.current = 0;
     setVisualizerBars(VISUALIZER_IDLE_BARS);
   };
 
@@ -547,29 +550,36 @@ const RadioPlayer = () => {
     }
 
     clearVisualizerInterruptTimeout();
-    activeVisualizerAudioRef.current = audio;
+    if (animationFrameRef.current) {
+      return;
+    }
 
     const draw = () => {
-      const currentVisualizerAudio = activeVisualizerAudioRef.current;
-      if (!currentVisualizerAudio) {
-        animationFrameRef.current = null;
+      const currentAudio = audioRef.current;
+      const currentAnalyser = currentAudio ? ensureAnalyserForAudio(currentAudio) : null;
+      const currentFrequencyData = frequencyDataRef.current;
+      const currentVisualizerRanges = visualizerRangesRef.current;
+
+      if (!currentAudio || !currentAnalyser || !currentFrequencyData || !currentVisualizerRanges) {
         setVisualizerBars(VISUALIZER_IDLE_BARS);
+        animationFrameRef.current = window.requestAnimationFrame(draw);
         return;
       }
 
-      if (currentVisualizerAudio.paused || currentVisualizerAudio.ended) {
-        animationFrameRef.current = null;
+      if (currentAudio.paused || currentAudio.ended || isDjVoiceActiveRef.current) {
+        visualizerFlatFramesRef.current = 0;
         setVisualizerBars(VISUALIZER_IDLE_BARS);
+        animationFrameRef.current = window.requestAnimationFrame(draw);
         return;
       }
 
-      analyser.getByteFrequencyData(frequencyData);
-      const nextBars = visualizerRanges.map(({ start, end, weight }, index) => {
+      currentAnalyser.getByteFrequencyData(currentFrequencyData);
+      const nextBars = currentVisualizerRanges.map(({ start, end, weight }, index) => {
         let weightedSum = 0;
         let totalWeight = 0;
 
         for (let offset = start; offset < end; offset += 1) {
-          const value = frequencyData[offset] ?? 0;
+          const value = currentFrequencyData[offset] ?? 0;
           const positionWeight =
             1 +
             ((offset - start) / Math.max(1, end - start)) * 0.6 +
@@ -583,9 +593,27 @@ const RadioPlayer = () => {
         return Math.max(VISUALIZER_MIN_LEVEL, Math.pow(normalized, 0.9));
       });
 
+      const totalEnergy = nextBars.reduce((sum, value) => sum + value, 0);
+      const nearIdleEnergy = VISUALIZER_MIN_LEVEL * VISUALIZER_BAR_COUNT + 0.12;
+      const shouldUseFallback = totalEnergy <= nearIdleEnergy;
+      visualizerFlatFramesRef.current = shouldUseFallback
+        ? visualizerFlatFramesRef.current + 1
+        : 0;
+
+      const targetBars =
+        visualizerFlatFramesRef.current > 12
+          ? nextBars.map((_, index) => {
+              const phase = visualizerPhaseRef.current + index * 0.55;
+              const wave = (Math.sin(phase) + 1) * 0.5;
+              return 0.18 + wave * 0.56;
+            })
+          : nextBars;
+
+      visualizerPhaseRef.current += 0.12;
+
       setVisualizerBars((current) =>
         current.map((bar, index) => {
-          const target = nextBars[index] ?? VISUALIZER_MIN_LEVEL;
+          const target = targetBars[index] ?? VISUALIZER_MIN_LEVEL;
           const easing = target > bar ? VISUALIZER_ATTACK : VISUALIZER_DECAY;
           return bar + (target - bar) * easing;
         })
@@ -593,9 +621,6 @@ const RadioPlayer = () => {
       animationFrameRef.current = window.requestAnimationFrame(draw);
     };
 
-    if (animationFrameRef.current) {
-      window.cancelAnimationFrame(animationFrameRef.current);
-    }
     animationFrameRef.current = window.requestAnimationFrame(draw);
   };
 
@@ -828,9 +853,6 @@ const RadioPlayer = () => {
     const handlePause = () => {
       setIsPlaying(false);
       clearDjInterruptTimeout();
-      if (!isDjVoiceActiveRef.current) {
-        stopVisualizer();
-      }
     };
     const handleEnded = () => {
       clearDjInterruptTimeout();
@@ -897,7 +919,6 @@ const RadioPlayer = () => {
       audio.removeEventListener("ended", handleEnded);
       clearDjInterruptTimeout();
       clearDjResumeTimeout();
-      stopVisualizer();
       window.removeEventListener("pointerdown", unlockPlayback);
       window.removeEventListener("keydown", unlockPlayback);
     };
@@ -908,7 +929,7 @@ const RadioPlayer = () => {
       audioRef.current.volume = volume;
     }
     if (djStingerAudioRef.current) {
-      djStingerAudioRef.current.volume = volume;
+      djStingerAudioRef.current.volume = volume * DJ_STINGER_VOLUME_MULTIPLIER;
     }
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.volume = volume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
@@ -926,7 +947,6 @@ const RadioPlayer = () => {
     setDuration(0);
 
     if (!shouldAutoplayRef.current) {
-      stopVisualizer();
       return;
     }
 
@@ -934,6 +954,14 @@ const RadioPlayer = () => {
       setIsPlaying(false);
     });
   }, [currentTrack]);
+
+  useEffect(() => {
+    void startVisualizer();
+
+    return () => {
+      stopVisualizer();
+    };
+  }, []);
 
   useEffect(() => {
     const djStingerAudio = djStingerAudioRef.current;
@@ -1019,7 +1047,7 @@ const RadioPlayer = () => {
       audioRef.current.volume = normalizedVolume;
     }
     if (djStingerAudioRef.current) {
-      djStingerAudioRef.current.volume = normalizedVolume;
+      djStingerAudioRef.current.volume = normalizedVolume * DJ_STINGER_VOLUME_MULTIPLIER;
     }
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.volume = normalizedVolume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
@@ -1157,7 +1185,7 @@ const RadioPlayer = () => {
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
-            <div className="mb-1 flex h-[52px] min-h-[26px] w-[99px] items-end justify-center gap-[3px] md:w-[125px] md:max-h-[60px]">
+            <div className="mb-1 flex h-[52px] min-h-[26px] w-[83px] items-end justify-center gap-[3px] md:w-[105px] md:max-h-[60px]">
               {visualizerBars.map((level, index) => (
                 <span
                   key={`${currentTrack.id}-bar-${index}`}
