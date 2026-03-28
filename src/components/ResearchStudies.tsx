@@ -173,27 +173,28 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const narrativeTabs = useMemo(
     () => [
       {
-        label: "Foundation",
+        label: "The Financial & Bureaucratic Bypass",
         text: [
-          "Facial structure is not superficial.",
-          "Human perception is highly sensitive to symmetry, bone structure, and facial balance.",
-          "Research consistently shows that facial structure influences trust, attraction, leadership perception, and social outcomes.",
-          "Beauty is not random.",
-          "It is structural.",
+          "Why it matters:",
+          "Looking good isn't vanity, it's a financial hedge. When your face signals trust and competence before you speak, you pay less, wait less, and navigate bureaucracy with friction that others mistake for luck.",
+          "The logic:",
+          "Facial structure is not superficial. Human perception is wired to reward symmetry, bone structure, and facial balance within milliseconds. This biological shortcut translates into real-world currency.",
+          "I save money because of it. People give me discounts without asking. I get faster service at counters. I deal with less hassle. Once, someone was so disoriented by the interaction that they handed me back more change than I was owed. That's not charm, it's the halo effect playing out in cash.",
+          "When you look like the person people instinctively trust, institutions treat you differently. You spend less, you keep more, and you move through systems that are designed to slow others down.",
         ],
         sources: [
           {
-            label: "Maxims or Myths of Beauty? (meta-analysis, 2000)",
+            label: "Maxims or Myths of Beauty? (meta-analysis, 2000) - PubMed",
             href: "https://pubmed.ncbi.nlm.nih.gov/10825783/?utm_source=chatgpt.com",
           },
           {
-            label: "What is Beautiful is Good (classic halo-effect study)",
+            label: "What is Beautiful is Good (classic halo-effect study) - PDF",
             href: "https://www4.uwsp.edu/psych/s/389/dion72.pdf?utm_source=chatgpt.com",
           },
         ],
       },
       {
-        label: "Doors",
+        label: "The Dating Market Efficiencies",
         text: [
           "Doors open. Literally and figuratively. The attractive man is waved through security checkpoints while the other is searched. He is pulled over and released with a warning; the other receives a ticket. Studies in jurisprudence have shown that physically appealing defendants receive lighter sentences for the same crimes. The law, supposedly blind, is not blind at all—it is human, and humans are weak to a well-proportioned face.",
           "This is not fair. This is simply true.",
@@ -214,7 +215,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         ],
       },
       {
-        label: "Gravity",
+        label: "Radical Self-Respect (The Internal Shift)",
         text: [
           "In social spaces, the dynamic is even more pronounced. The attractive man does not approach; he is approached. Women manufacture reasons to stand near him, to brush against him, to ask him questions to which they already know the answers. It is not manipulation; it is magnetism. His presence alters the geometry of a room. People orient toward him like flowers to a sun they do not consciously see.",
           "Dating, for him, is not a hunt. It is a selection process. His options are not limited by his job, his car, or his wit—though those help—but by the simple, brutal arithmetic of his jawline and cheekbones. His potential partners forgive awkwardness. They forgive silence. They forgive mistakes they would hold against another man for years.",
@@ -235,7 +236,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         ],
       },
       {
-        label: "Career",
+        label: "Social Hierarchy & The Confidence Dividend",
         text: [
           "But it does not stop at romance.",
           "Careers are built on this currency. The attractive man is hired faster, promoted sooner, and paid more over his lifetime. This is not opinion; this is longitudinal data. He is perceived as more competent, more intelligent, more capable—even when his resume is identical to the man sitting across from him. His face is a resume of its own, scanned and judged in milliseconds before a single word is spoken.",
@@ -265,52 +266,17 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         ],
       },
       {
-        label: "Return",
+        label: "Career Optionality & Asset Monetization",
         text: [
           "And then something strange happens.",
           "Because the world expects more from him, he begins to expect more from himself. He dresses better. He speaks more carefully. He holds doors. He becomes the man everyone assumed he was. The expectation becomes the reality. Beauty, in this way, is not just a gift given at birth—it is a loan that accrues interest, compounding into character over time.",
         ],
       },
       {
-        label: "Problem",
+        label: "The Halo Effect: Family & Authority",
         text: [
           "You see the problem.",
           "If you were born without it, you have been navigating the world on hard mode without ever being told. You have been invisible when you should have been seen. You have been passed over when you should have been chosen. You have been spoken down to when you should have been respected. And you have internalized all of it as something wrong with you, rather than something wrong with the wiring of the species.",
-        ],
-      },
-      {
-        label: "Question",
-        text: [
-          "So let me ask you:",
-          "How many opportunities have slipped through your hands because of the way light falls across your face?",
-          "How many conversations have ended before they began because your bone structure did not signal safety, strength, or symmetry?",
-          "How many times have you watched a man with less to offer walk away with what should have been yours, simply because his face opened doors that yours kept closed?",
-        ],
-      },
-      {
-        label: "Choice",
-        text: [
-          "And if the research is correct—if muscle can influence bone, if tension can reshape structure, if the face is not fixed but fluid—then what are you willing to endure to change it?",
-          "Because the exercises hurt. They are boring. They take months.",
-          "But so does regret.",
-        ],
-        sources: [
-          {
-            label: "Facial exercise study (JAMA Dermatology, 2018)",
-            href: "https://jamanetwork.com/journals/jamadermatology/fullarticle/2666801?utm_source=chatgpt.com",
-          },
-          {
-            label: "Masticatory muscle studies (Kiliaridis, 1986; 1995)",
-            href: "https://pubmed.ncbi.nlm.nih.gov/3465055/?utm_source=chatgpt.com",
-          },
-          {
-            label: "Kiliaridis (1995) jaw adaptation",
-            href: "https://actaorthop.org/actaodontologica/article/download/39557/44744?utm_source=chatgpt.com",
-          },
-          {
-            label: "Soft-diet model (Kono et al., 2017)",
-            href: "https://www.frontiersin.org/journals/physiology/articles/10.3389/fphys.2017.00567/full?utm_source=chatgpt.com",
-          },
         ],
       },
     ],
@@ -329,7 +295,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   };
 
   return (
-    <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black px-6 pb-[27.5vh] pt-[21vh] md:pb-[30vh] md:pt-[22vh]">
+    <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black px-6 pb-[15.5vh] pt-[9vh] md:pb-[30vh] md:pt-[22vh]">
       <SectionSideTab label="RESEARCH" />
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img

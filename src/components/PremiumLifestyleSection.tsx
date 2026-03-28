@@ -557,7 +557,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 pt-7 pb-5 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.22]"
@@ -575,7 +575,7 @@ const PremiumLifestyleSection = () => {
               </p>
             </div>
 
-            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+            <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               DØll
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
@@ -625,7 +625,7 @@ const PremiumLifestyleSection = () => {
               </p>
             </div>
 
-            <h2 className="-mb-[8px] pt-[0.5vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+            <h2 className="-mb-[8px] pt-0 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               BØY
             </h2>
             <div className="relative -mt-[1.2vh]" onClick={(event) => handleBecomingYouVideoToggle(2, event)}>
@@ -674,7 +674,7 @@ const PremiumLifestyleSection = () => {
               </p>
             </div>
 
-            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+            <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               WØMAN
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(3, event)}>
@@ -723,7 +723,7 @@ const PremiumLifestyleSection = () => {
               </p>
             </div>
 
-            <h2 className="pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
+            <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               FAMØUS
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(4, event)}>

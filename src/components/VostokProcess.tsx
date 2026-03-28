@@ -637,7 +637,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   return (
     <section
       id="vostok-process"
-      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[10vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
+      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[7vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
       onClick={handleGridShift}
     >
       <SectionSideTab label="MY PROCESS" />
