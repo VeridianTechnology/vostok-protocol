@@ -1185,7 +1185,7 @@ const RadioPlayer = () => {
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
-            <div className="mb-1 flex h-[52px] min-h-[26px] w-[83px] items-end justify-center gap-[3px] md:w-[105px] md:max-h-[60px]">
+            <div className="mb-1 hidden h-[52px] min-h-[26px] w-[83px] items-end justify-center gap-[3px] md:flex md:w-[105px] md:max-h-[60px]">
               {visualizerBars.map((level, index) => (
                 <span
                   key={`${currentTrack.id}-bar-${index}`}

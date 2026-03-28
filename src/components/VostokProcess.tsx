@@ -910,7 +910,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                               event.stopPropagation();
                               selectStage(stage.key as StageKey, icon);
                             }}
-                            className={`relative z-10 h-[3.75rem] w-[3.75rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
+                            className={`relative z-10 h-[4.5rem] w-[4.5rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                               activeStage === stage.key && activeImage === icon
                                 ? "border-chrome/60 opacity-100"
                                 : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
