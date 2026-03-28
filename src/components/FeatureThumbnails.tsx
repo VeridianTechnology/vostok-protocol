@@ -150,6 +150,8 @@ const FeatureThumbnails = ({
   const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
   const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
   const [isWallpaperCaptionVisible, setIsWallpaperCaptionVisible] = useState(true);
+  const [isWallpaperPlaying, setIsWallpaperPlaying] = useState(true);
+  const [isWallpaperUserPaused, setIsWallpaperUserPaused] = useState(false);
   const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
   );
@@ -319,6 +321,7 @@ const FeatureThumbnails = ({
       mainVideo.play(),
       overlayVideo ? overlayVideo.play() : Promise.resolve(),
     ]);
+    setIsWallpaperPlaying(!mainVideo.paused);
 
     if (durationMs !== undefined) {
       await new Promise<void>((resolve) => {
@@ -331,6 +334,7 @@ const FeatureThumbnails = ({
   const pauseWallpaperVideos = () => {
     wallpaperVideoRef.current?.pause();
     wallpaperOverlayVideoRef.current?.pause();
+    setIsWallpaperPlaying(false);
   };
 
   const rewindWallpaperVideos = (seconds: number) => {
@@ -448,19 +452,23 @@ const FeatureThumbnails = ({
 
     if (mainVideo.paused) {
       wallpaperIsUserPausedRef.current = false;
+      setIsWallpaperUserPaused(false);
       void playWallpaperVideos();
       scheduleWallpaperGlitch();
       return;
     }
 
     wallpaperIsUserPausedRef.current = true;
+    setIsWallpaperUserPaused(true);
     clearWallpaperGlitchTimeouts();
     pauseWallpaperVideos();
   };
 
   useEffect(() => {
     wallpaperIsUserPausedRef.current = false;
+    setIsWallpaperUserPaused(false);
     setIsWallpaperBlackFlashVisible(false);
+    setIsWallpaperPlaying(true);
     scheduleWallpaperGlitch();
 
     return () => {
@@ -804,6 +812,8 @@ const FeatureThumbnails = ({
               loop
               playsInline
               preload="metadata"
+              onPlay={() => setIsWallpaperPlaying(true)}
+              onPause={() => setIsWallpaperPlaying(false)}
             >
               <source
                 media="(max-width: 767px)"
@@ -839,6 +849,21 @@ const FeatureThumbnails = ({
             <source src="/section_wallpaper/hero/01.mp4" type="video/mp4" />
           </video>
           <div className="pointer-events-none absolute inset-0 z-[8] bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
+          {!isWallpaperPlaying && isWallpaperUserPaused && (
+            <div className="pointer-events-none absolute inset-0 z-[12] flex items-center justify-center bg-black/10">
+              <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/45 bg-black/45 text-white shadow-[0_18px_44px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="h-8 w-8"
+                >
+                  <rect x="6" y="5" width="4" height="14" rx="1" />
+                  <rect x="14" y="5" width="4" height="14" rx="1" />
+                </svg>
+              </span>
+            </div>
+          )}
           <div
             className={`absolute inset-0 bg-white transition-opacity duration-150 ${
               isWallpaperFlashVisible ? "opacity-100" : "pointer-events-none opacity-0"

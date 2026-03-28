@@ -103,7 +103,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       },
       {
         key: "non_ai",
-        title: "NON-AI PHOTOS",
+        title: "BEFORE / AFTER",
         icons: [
           "/before/after/before.jpg",
           "/Comparison/1.JPG",
@@ -163,6 +163,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
 
     const nextKey = `${stageKey}:${image}`;
     const nextImageSrc = stageKey === "non_ai" ? image : toMobileImage(image);
+    const isNonAiAfterSelection = stageKey === "non_ai" && image === "/Comparison/1.JPG";
 
     if (!isMobile) {
       pendingSelectionRef.current = null;
@@ -172,12 +173,35 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       return;
     }
 
-    const preloadImage = new window.Image();
-    preloadImage.decoding = "async";
-    preloadImage.src = nextImageSrc;
+    pendingSelectionRef.current = nextKey;
+    setPendingIcon(nextKey);
 
     setActiveStage(stageKey);
     setActiveImage(image);
+
+    if (isNonAiAfterSelection) {
+      const preloadVideo = document.createElement("video");
+      preloadVideo.preload = "metadata";
+      preloadVideo.playsInline = true;
+      preloadVideo.muted = true;
+      preloadVideo.src = afterVideoSrc;
+
+      if (preloadVideo.readyState >= 1) {
+        pendingSelectionRef.current = null;
+        setPendingIcon(null);
+        return;
+      }
+
+      const handleVideoReady = () => clearPendingSelection(nextKey);
+      preloadVideo.addEventListener("loadedmetadata", handleVideoReady, { once: true });
+      preloadVideo.addEventListener("error", handleVideoReady, { once: true });
+      preloadVideo.load();
+      return;
+    }
+
+    const preloadImage = new window.Image();
+    preloadImage.decoding = "async";
+    preloadImage.src = nextImageSrc;
 
     if (preloadImage.complete) {
       pendingSelectionRef.current = null;
@@ -185,8 +209,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       return;
     }
 
-    pendingSelectionRef.current = nextKey;
-    setPendingIcon(nextKey);
+    preloadImage.onload = () => clearPendingSelection(nextKey);
+    preloadImage.onerror = () => clearPendingSelection(nextKey);
   };
 
   useEffect(() => {
