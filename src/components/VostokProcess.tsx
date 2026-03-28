@@ -136,11 +136,21 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const parallaxRef = useRef<number | null>(null);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const afterVideoRef = useRef<HTMLVideoElement | null>(null);
+  const pendingSelectionRef = useRef<string | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants =
     activeStage === "non_ai" ? null : getImageVariants(activeImage);
   const isNonAiAfter = activeStage === "non_ai" && activeImage === "/Comparison/1.JPG";
   const showMobileLoadingOverlay = isMobile && pendingIcon !== null;
+  const activeSelectionKey = `${activeStage}:${activeImage}`;
+  const clearPendingSelection = (selectionKey: string) => {
+    if (pendingSelectionRef.current !== selectionKey) {
+      return;
+    }
+
+    pendingSelectionRef.current = null;
+    setPendingIcon(null);
+  };
   const handleGridShift = () => {
     const nextX = Math.round((Math.random() - 0.5) * 120);
     const nextY = Math.round((Math.random() - 0.5) * 120);
@@ -155,6 +165,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     const nextImageSrc = stageKey === "non_ai" ? image : toMobileImage(image);
 
     if (!isMobile) {
+      pendingSelectionRef.current = null;
       setPendingIcon(null);
       setActiveStage(stageKey);
       setActiveImage(image);
@@ -169,10 +180,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     setActiveImage(image);
 
     if (preloadImage.complete) {
+      pendingSelectionRef.current = null;
       setPendingIcon(null);
       return;
     }
 
+    pendingSelectionRef.current = nextKey;
     setPendingIcon(nextKey);
   };
 
@@ -739,8 +752,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                   sizes="(max-width: 640px) 100vw, 60vw"
                   alt={`${currentStage.title} comparison`}
                   className="relative z-10 h-full w-full object-cover"
-                  onLoad={() => setPendingIcon(null)}
-                  onError={() => setPendingIcon(null)}
+                  onLoad={() => clearPendingSelection(activeSelectionKey)}
+                  onError={() => clearPendingSelection(activeSelectionKey)}
                   loading="lazy"
                   decoding="async"
                 />
@@ -762,7 +775,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       onLoadedMetadata={() => {
                         const video = afterVideoRef.current;
                         setAfterVideoDuration(video?.duration || 0);
-                        setPendingIcon(null);
+                        clearPendingSelection(activeSelectionKey);
                       }}
                       onTimeUpdate={() => {
                         const video = afterVideoRef.current;
@@ -777,7 +790,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                         setIsAfterVideoPaused(true);
                       }}
                       onError={() => {
-                        setPendingIcon(null);
+                        clearPendingSelection(activeSelectionKey);
                       }}
                       className="relative z-10 h-full w-full object-cover"
                     />
@@ -841,8 +854,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                     className={`relative z-10 h-full w-full ${
                       activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
                     }`}
-                    onLoad={() => setPendingIcon(null)}
-                    onError={() => setPendingIcon(null)}
+                    onLoad={() => clearPendingSelection(activeSelectionKey)}
+                    onError={() => clearPendingSelection(activeSelectionKey)}
                     loading="lazy"
                     decoding="async"
                   />
@@ -902,13 +915,23 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           : getThumbVariants(icon);
                         const iconMobile = toMobileImage(icon);
                         const iconDesktop = toDesktopImage(icon);
+                        const handleIconSelection = () => {
+                          selectStage(stage.key as StageKey, icon);
+                        };
                         return (
                           <button
                             key={icon}
                             type="button"
+                            onPointerUp={(event) => {
+                              event.stopPropagation();
+                              handleIconSelection();
+                            }}
                             onClick={(event) => {
                               event.stopPropagation();
-                              selectStage(stage.key as StageKey, icon);
+                              if (event.detail !== 0) {
+                                return;
+                              }
+                              handleIconSelection();
                             }}
                             className={`relative z-10 h-[4.5rem] w-[4.5rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                               activeStage === stage.key && activeImage === icon

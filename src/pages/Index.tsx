@@ -1,7 +1,7 @@
 import { LazySection } from "@/components/LazySection";
 import { useEffect, useRef, useState, lazy } from "react";
 import FeatureThumbnails from "@/components/FeatureThumbnails";
-import PremiumLifestyleSection from "@/components/PremiumLifestyleSection";
+const PremiumLifestyleSection = lazy(() => import("@/components/PremiumLifestyleSection"));
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
@@ -173,11 +173,19 @@ const Index = () => {
         />
       </div>
       <div className="divider-line hidden md:block" />
-      <section id="section-premium">
+      <LazySection
+        id="section-premium"
+        minHeightClass="min-h-[95svh] md:min-h-[90vh]"
+        loaderLabel="Loading Lifestyle"
+      >
         <PremiumLifestyleSection />
-      </section>
+      </LazySection>
       <div className="divider-line" />
-      <LazySection id="section-vostok" minHeightClass="min-h-[40vh]">
+      <LazySection
+        id="section-vostok"
+        minHeightClass="min-h-[40vh]"
+        loaderLabel="Loading Process"
+      >
         <VostokProcess
           entrySource={
             isFacebookEntry
@@ -196,7 +204,11 @@ const Index = () => {
           }
         />
       </LazySection>
-      <LazySection id="section-research" minHeightClass="min-h-[50vh]">
+      <LazySection
+        id="section-research"
+        minHeightClass="min-h-[50vh]"
+        loaderLabel="Loading Research"
+      >
         <ResearchStudies
           entrySource={
             isFacebookEntry
@@ -216,7 +228,11 @@ const Index = () => {
         />
       </LazySection>
       <div className="h-px w-full bg-black/80" />
-      <LazySection id="section-cta" minHeightClass="min-h-[40vh]">
+      <LazySection
+        id="section-cta"
+        minHeightClass="min-h-[40vh]"
+        loaderLabel="Loading Checkout"
+      >
         <CTAFooter
           onRequestBuy={handleRequestBuy}
           entrySource={
