@@ -103,13 +103,13 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     <section
       ref={sectionRef}
       id="purchase"
-      className="section-surface relative left-1/2 right-1/2 h-[66svh] min-h-[66svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[68svh] md:min-h-[68svh] md:pb-[5vh]"
+      className="section-surface relative left-1/2 right-1/2 h-[73svh] min-h-[73svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[68svh] md:min-h-[68svh] md:pb-[5vh]"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[6vh]">
           <img
-            src="/section_wallpaper/buy/06_mobile.png"
+            src="/section_wallpaper/buy/07_mobile.png"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-fill object-center md:hidden"

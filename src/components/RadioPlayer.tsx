@@ -308,6 +308,16 @@ const DJ_INTERRUPTION_CLIPS = [
   "/audio/dj/interruption/9.m4a",
   "/audio/dj/interruption/10.m4a",
 ] as const;
+const DJ_RANDOM_CLIPS = [
+  "/audio/dj/random/1.m4a",
+  "/audio/dj/random/2.m4a",
+  "/audio/dj/random/3.m4a",
+  "/audio/dj/random/4.m4a",
+  "/audio/dj/random/5.m4a",
+  "/audio/dj/random/6.m4a",
+  "/audio/dj/random/7.m4a",
+  "/audio/dj/random/8.m4a",
+] as const;
 const DJ_REWIND_CLIP_PAIRS = [
   ["/audio/dj/rewind/1.mp3.m4a", "/audio/dj/rewind/1.1.m4a"],
   ["/audio/dj/rewind/2.mp3.m4a", "/audio/dj/rewind/2.1.m4a"],
@@ -317,7 +327,8 @@ const DEFAULT_VOLUME = 0.3;
 const DJ_STINGER_VOLUME_MULTIPLIER = 0.5;
 const DJ_RESUME_LEAD_MS = 500;
 const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
-const DJ_INTERRUPTION_PREFIX_MS = 300;
+const DJ_RANDOM_VOLUME_MULTIPLIER = 0.7;
+const DJ_INTERRUPTION_PREFIX_MS = 700;
 const DJ_INTERRUPT_MIN_LEAD_S = 20;
 const DJ_INTERRUPT_END_BUFFER_S = 18;
 const DJ_INTERRUPT_WINDOW_START = 0.35;
@@ -325,6 +336,10 @@ const DJ_INTERRUPT_WINDOW_END = 0.72;
 const DJ_REWIND_WINDOW_START = 0.72;
 const DJ_REWIND_WINDOW_END = 0.82;
 const DJ_REWIND_SEEK_BACK_S = 10;
+const DJ_RANDOM_MIN_DELAY_MS = 2 * 60 * 1000;
+const DJ_RANDOM_MAX_DELAY_MS = 5 * 60 * 1000;
+const DJ_RANDOM_WINDOW_START = 0.25;
+const DJ_RANDOM_WINDOW_END = 0.75;
 
 const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
   const indices = Array.from({ length }, (_, index) => index);
@@ -411,6 +426,7 @@ const RadioPlayer = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const djStingerAudioRef = useRef<HTMLAudioElement | null>(null);
   const djVoiceAudioRef = useRef<HTMLAudioElement | null>(null);
+  const djRandomAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserMapRef = useRef(new Map<HTMLAudioElement, AnalyserNode>());
   const sourceNodeMapRef = useRef(new Map<HTMLAudioElement, MediaElementAudioSourceNode>());
@@ -427,12 +443,15 @@ const RadioPlayer = () => {
   const djInterruptionIndexRef = useRef(0);
   const djVoiceOrderRef = useRef<string[]>(shuffleItems(DJ_VOICE_CLIPS));
   const djVoiceIndexRef = useRef(0);
+  const djRandomOrderRef = useRef<string[]>(shuffleItems(DJ_RANDOM_CLIPS));
+  const djRandomIndexRef = useRef(0);
   const rewindPairIndexRef = useRef(0);
   const completedSongCountRef = useRef(0);
   const pendingRewindRef = useRef(false);
   const djInterruptTimeoutRef = useRef<number | null>(null);
   const djResumeTimeoutRef = useRef<number | null>(null);
   const djPrefixTimeoutRef = useRef<number | null>(null);
+  const djRandomTimeoutRef = useRef<number | null>(null);
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
   const isDjVoiceActiveRef = useRef(false);
   const [{ playOrder, trackPosition }, setPlayState] = useState(() =>
@@ -470,6 +489,13 @@ const RadioPlayer = () => {
     if (djPrefixTimeoutRef.current) {
       window.clearTimeout(djPrefixTimeoutRef.current);
       djPrefixTimeoutRef.current = null;
+    }
+  };
+
+  const clearDjRandomTimeout = () => {
+    if (djRandomTimeoutRef.current) {
+      window.clearTimeout(djRandomTimeoutRef.current);
+      djRandomTimeoutRef.current = null;
     }
   };
 
@@ -672,6 +698,50 @@ const RadioPlayer = () => {
     return pair;
   };
 
+  const getNextDjRandomClip = () => {
+    const order = djRandomOrderRef.current;
+    if (djRandomIndexRef.current >= order.length) {
+      djRandomOrderRef.current = shuffleItems(DJ_RANDOM_CLIPS);
+      djRandomIndexRef.current = 0;
+    }
+
+    const clip = djRandomOrderRef.current[djRandomIndexRef.current] ?? DJ_RANDOM_CLIPS[0];
+    djRandomIndexRef.current += 1;
+    return clip;
+  };
+
+  const scheduleDjRandomOverlay = () => {
+    clearDjRandomTimeout();
+    djRandomTimeoutRef.current = window.setTimeout(() => {
+      const mainAudio = audioRef.current;
+      const djRandomAudio = djRandomAudioRef.current;
+      if (!mainAudio || !djRandomAudio || mainAudio.paused || isDjVoiceActiveRef.current) {
+        scheduleDjRandomOverlay();
+        return;
+      }
+
+      const durationSeconds = Number.isFinite(mainAudio.duration) ? mainAudio.duration : 0;
+      if (durationSeconds > 0) {
+        const progress = mainAudio.currentTime / durationSeconds;
+        const isWithinWindow =
+          progress >= DJ_RANDOM_WINDOW_START &&
+          progress <= DJ_RANDOM_WINDOW_END &&
+          mainAudio.currentTime >= DJ_INTERRUPT_MIN_LEAD_S &&
+          durationSeconds - mainAudio.currentTime >= DJ_INTERRUPT_END_BUFFER_S;
+
+        if (isWithinWindow) {
+          djRandomAudio.pause();
+          djRandomAudio.currentTime = 0;
+          djRandomAudio.src = getNextDjRandomClip();
+          djRandomAudio.load();
+          void djRandomAudio.play().catch(() => undefined);
+        }
+      }
+
+      scheduleDjRandomOverlay();
+    }, DJ_RANDOM_MIN_DELAY_MS + Math.random() * (DJ_RANDOM_MAX_DELAY_MS - DJ_RANDOM_MIN_DELAY_MS));
+  };
+
   const scheduleDjVoiceInterrupt = () => {
     clearDjInterruptTimeout();
     const audio = audioRef.current;
@@ -821,6 +891,7 @@ const RadioPlayer = () => {
     const audio = audioRef.current;
     const djStingerAudio = djStingerAudioRef.current;
     const djVoiceAudio = djVoiceAudioRef.current;
+    const djRandomAudio = djRandomAudioRef.current;
     if (!audio) {
       return;
     }
@@ -834,6 +905,10 @@ const RadioPlayer = () => {
     if (djVoiceAudio) {
       djVoiceAudio.preload = "auto";
       djVoiceAudio.playsInline = true;
+    }
+    if (djRandomAudio) {
+      djRandomAudio.preload = "auto";
+      djRandomAudio.playsInline = true;
     }
 
     const syncTime = () => setCurrentTime(audio.currentTime);
@@ -849,19 +924,26 @@ const RadioPlayer = () => {
       if (!isDjVoiceActiveRef.current) {
         scheduleDjVoiceInterrupt();
       }
+      scheduleDjRandomOverlay();
     };
     const handlePause = () => {
       setIsPlaying(false);
       clearDjInterruptTimeout();
+      clearDjRandomTimeout();
     };
     const handleEnded = () => {
       clearDjInterruptTimeout();
       clearDjResumeTimeout();
       clearDjPrefixTimeout();
+      clearDjRandomTimeout();
       isDjVoiceActiveRef.current = false;
       if (djVoiceAudio) {
         djVoiceAudio.pause();
         djVoiceAudio.currentTime = 0;
+      }
+      if (djRandomAudio) {
+        djRandomAudio.pause();
+        djRandomAudio.currentTime = 0;
       }
       if (djStingerAudio) {
         djStingerAudio.pause();
@@ -919,6 +1001,8 @@ const RadioPlayer = () => {
       audio.removeEventListener("ended", handleEnded);
       clearDjInterruptTimeout();
       clearDjResumeTimeout();
+      clearDjPrefixTimeout();
+      clearDjRandomTimeout();
       window.removeEventListener("pointerdown", unlockPlayback);
       window.removeEventListener("keydown", unlockPlayback);
     };
@@ -933,6 +1017,9 @@ const RadioPlayer = () => {
     }
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.volume = volume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
+    }
+    if (djRandomAudioRef.current) {
+      djRandomAudioRef.current.volume = volume * DJ_RANDOM_VOLUME_MULTIPLIER;
     }
   }, [volume]);
 
@@ -1021,9 +1108,14 @@ const RadioPlayer = () => {
     shouldAutoplayRef.current = false;
     clearDjInterruptTimeout();
     clearDjResumeTimeout();
+    clearDjRandomTimeout();
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.pause();
       djVoiceAudioRef.current.currentTime = 0;
+    }
+    if (djRandomAudioRef.current) {
+      djRandomAudioRef.current.pause();
+      djRandomAudioRef.current.currentTime = 0;
     }
     isDjVoiceActiveRef.current = false;
     audio.pause();
@@ -1059,10 +1151,15 @@ const RadioPlayer = () => {
     clearDjInterruptTimeout();
     clearDjResumeTimeout();
     clearDjPrefixTimeout();
+    clearDjRandomTimeout();
     isDjVoiceActiveRef.current = false;
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.pause();
       djVoiceAudioRef.current.currentTime = 0;
+    }
+    if (djRandomAudioRef.current) {
+      djRandomAudioRef.current.pause();
+      djRandomAudioRef.current.currentTime = 0;
     }
     if (djStingerAudioRef.current) {
       djStingerAudioRef.current.pause();
@@ -1079,10 +1176,15 @@ const RadioPlayer = () => {
     clearDjInterruptTimeout();
     clearDjResumeTimeout();
     clearDjPrefixTimeout();
+    clearDjRandomTimeout();
     isDjVoiceActiveRef.current = false;
     if (djVoiceAudioRef.current) {
       djVoiceAudioRef.current.pause();
       djVoiceAudioRef.current.currentTime = 0;
+    }
+    if (djRandomAudioRef.current) {
+      djRandomAudioRef.current.pause();
+      djRandomAudioRef.current.currentTime = 0;
     }
     if (djStingerAudioRef.current) {
       djStingerAudioRef.current.pause();
@@ -1103,6 +1205,7 @@ const RadioPlayer = () => {
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
       <audio ref={djVoiceAudioRef} />
+      <audio ref={djRandomAudioRef} />
       <div className="fixed inset-x-0 bottom-[36px] z-[59] flex justify-center items-end md:inset-x-auto md:bottom-[42px] md:right-[8vw] md:justify-start">
         <div
           className="relative transition-transform duration-[2000ms] ease-in-out"
