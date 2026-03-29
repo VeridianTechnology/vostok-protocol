@@ -946,15 +946,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                           <button
                             key={icon}
                             type="button"
-                            onPointerUp={(event) => {
-                              event.stopPropagation();
-                              handleIconSelection();
-                            }}
                             onClick={(event) => {
                               event.stopPropagation();
-                              if (event.detail !== 0) {
-                                return;
-                              }
                               handleIconSelection();
                             }}
                             className={`relative z-10 h-[4.5rem] w-[4.5rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${

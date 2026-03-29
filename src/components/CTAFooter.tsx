@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { track } from "@vercel/analytics";
 import SectionSideTab from "@/components/SectionSideTab";
 
@@ -13,7 +14,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
-  const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
+  const gumroadUrl = "https://vostokmethod.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -174,9 +175,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         </m.div>
       </div>
 
-      {isRedirecting && isDesktop && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-6">
-          <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-obsidian/95 p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
+      {isRedirecting && isDesktop && createPortal(
+        <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 px-6">
+          <div className="relative flex h-full w-full items-center justify-center bg-obsidian/95 p-6 text-center">
+            <div className="relative w-full max-w-md rounded-2xl border border-white/10 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
             <button
               type="button"
               onClick={closeRedirect}
@@ -202,8 +204,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
             </p>
             <h3 className="mt-4 text-xl font-light text-foreground">Redirecting</h3>
             <p className="mt-2 text-sm text-steel">Counting down {countdown}...</p>
+            </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );

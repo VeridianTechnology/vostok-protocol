@@ -364,6 +364,8 @@ const PremiumLifestyleSection = () => {
     false,
     false,
   ]);
+  const becomingYouFadeDurationMs = isMobile ? 450 : 2000;
+  const becomingYouRestartDelayMs = isMobile ? 220 : 2000;
 
   const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
     becomingYouVideoRefs.current[index] = element;
@@ -450,7 +452,7 @@ const PremiumLifestyleSection = () => {
         currentIndex === index ? false : value
       )));
       becomingYouFadeTimeoutsRef.current[index] = null;
-    }, 2000);
+    }, becomingYouRestartDelayMs);
   };
 
   return (
@@ -554,9 +556,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -604,9 +607,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -654,9 +658,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -703,9 +708,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -752,9 +758,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -809,9 +816,10 @@ const PremiumLifestyleSection = () => {
                   </video>
                   <div
                     aria-hidden="true"
-                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                       becomingYouVideoFading[0] ? "opacity-100" : "opacity-0"
                     }`}
+                    style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
                   />
                   {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0] ? (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -867,9 +875,10 @@ const PremiumLifestyleSection = () => {
                   </video>
                   <div
                     aria-hidden="true"
-                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                    className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                       becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"
                     }`}
+                    style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
                   />
                   {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2] ? (
                     <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -929,9 +938,10 @@ const PremiumLifestyleSection = () => {
                     </video>
                     <div
                       aria-hidden="true"
-                      className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                      className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                         becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"
                       }`}
+                      style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
                     />
                     {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4] ? (
                       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -992,9 +1002,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -1051,9 +1062,10 @@ const PremiumLifestyleSection = () => {
               </video>
               <div
                 aria-hidden="true"
-                className={`pointer-events-none absolute inset-0 bg-white transition-opacity duration-[2000ms] ${
+                className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
                   becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"
                 }`}
+                style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
               />
               {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3] ? (
                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
