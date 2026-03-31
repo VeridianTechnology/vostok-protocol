@@ -8,6 +8,40 @@ type ResearchStudiesProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
+type NarrativeTab = {
+  label: string;
+  text: string[];
+  splitIntroTextCount?: number;
+  topTitle?: string;
+  sources?: Array<{
+    label: string;
+    href: string;
+  }>;
+  image?: {
+    desktopSrc: string;
+    mobileSrc: string;
+    alt: string;
+    frameClassName?: string;
+    imageClassName?: string;
+  };
+  inlineImages?: Array<{
+    beforeText: string;
+    desktopSrc: string;
+    mobileSrc: string;
+    alt: string;
+    caption?: string;
+    splitLayout?: boolean;
+    splitLayoutText?: string[];
+    frameClassName?: string;
+    imageClassName?: string;
+  }>;
+  postscripts?: Array<{
+    afterText: string;
+    title?: string;
+    paragraphs: string[];
+  }>;
+};
+
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const isFourChan = entrySource === "4chan";
   const makeFourChanValue = (title: string) =>
@@ -18,6 +52,43 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
     text === "Studies:" ||
     text === "You see the problem." ||
     text === "This is not fair. This is simply true.";
+  const getNarrativeMicroTitle = (text: string) => {
+    if (
+      text ===
+      "Appearance has measurable economic value. Attractive people are hired faster, evaluated more favorably, and paid more over time, even when qualifications are identical. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they improve the starting position."
+    ) {
+      return "Your Looks Determine More than Half Your Social Value";
+    }
+    if (
+      text ===
+      "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance."
+    ) {
+      return "Good Looking Men get Elected";
+    }
+    if (
+      text ===
+      "Looksmaxxing is not vanity. Treating your appearance as a project is one of the clearest forms of self-respect. When you stop neglecting how you present yourself, you start holding yourself to a higher standard everywhere else."
+    ) {
+      return null;
+    }
+    return null;
+  };
+  const isAnimalBeautyHeading = (text: string) =>
+    text === "Ten animal species where the male is the more beautiful gender";
+  const isAnimalBeautyItem = (text: string) =>
+    [
+      "Peacock - iridescent blue-green train with eye-spot feathers",
+      "Mandarin duck - ornate crest, orange sails, purple breast",
+      "Bird of paradise - elaborate plumes and complex courtship displays",
+      "Dragonfly - many species show metallic blues, reds in males",
+      "Lion - thick mane signals fitness and deters rivals",
+      "Elephant seal - massive size and bulbous nose signal dominance",
+      "Guppy - males are brightly colored; females are drab",
+      "Pheasant - long tail, metallic plumage",
+      "Scarlet macaw - males often have brighter, more saturated feathers",
+      "Mandrill - male's red/blue facial coloration and size far outshine females",
+    ].includes(text);
+  const isBoldNarrativeLine = (text: string) => text === "Vostok is different.";
   const fourChanSections = [
     {
       title: "Beauty Is Not Superficial",
@@ -149,42 +220,19 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       ],
     },
   ];
-  const narrativeTabs = useMemo(
+  const narrativeTabs = useMemo<NarrativeTab[]>(
     () => [
       {
-        label: "The Financial & Bureaucratic Bypass",
-        text: [
-          "Why it matters, looking good lowers friction. When your face signals trust and competence immediately, people move faster, hesitate less, and treat you like less of a risk. In a world ruled by first impressions, that difference compounds.",
-          "The logic, beauty is not a trivial preference. People make fast, automatic judgments from faces, and attractiveness spills into assumptions about competence, warmth, and value. That bias has measurable economic effects, including a documented beauty premium in work that depends on human interaction.",
-        ],
-        sources: [
-          {
-            label: "Willis, J., & Todorov, A. (2006). First impressions: Making up your mind after a 100-ms exposure to a face. Psychological Science.",
-            href: "https://pubmed.ncbi.nlm.nih.gov/16866745/",
-          },
-          {
-            label: "Lin, C., Keles, U., & Adolphs, R. (2021). Four dimensions characterize attributions from faces using a representative set of English trait words. Nature Communications.",
-            href: "https://www.nature.com/articles/s41467-021-25500-y",
-          },
-          {
-            label: "Ritchie, K. L., Palermo, R., & Rhodes, G. (2017). Forming impressions of facial attractiveness is mandatory. Scientific Reports.",
-            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC5428706/",
-          },
-          {
-            label: "Hamermesh, D. S., & Biddle, J. E. (1994). Beauty and the Labor Market. NBER Working Paper 4518.",
-            href: "https://www.nber.org/papers/w4518",
-          },
-          {
-            label: "Stinebrickner, R., Stinebrickner, T. R., & Sullivan, P. J. (2019). Beauty, Job Tasks, and Wages. Journal of Labor Economics.",
-            href: "https://www.nber.org/papers/w24479",
-          },
-        ],
-      },
-      {
-        label: "The Dating Market Efficiencies",
+        label: "The Face Card Never Lies",
+        topTitle: "The Face Card Never Lies",
         text: [
           "Dating should not feel like labor. When your appearance is working for you, pursuit becomes selection. You stop forcing interest and move through dating with more calm, leverage, and less anxiety.",
-          "Attraction is not negotiated from scratch. People form impressions from faces quickly, and physical attractiveness strongly shapes romantic interest in early encounters. Judgments of facial attractiveness are also influenced by cues like symmetry, averageness, and sexually dimorphic structure, which helps explain why some people generate immediate attention before they have said much at all. In practice, better looks can shift the starting position toward more openness, more forgiveness, and less resistance.",
+          "Attraction is not negotiated from scratch. People form impressions from faces quickly, and physical attractiveness strongly shapes romantic interest in early encounters. Judgments of facial attractiveness are influenced by cues like symmetry, averageness, and sexually dimorphic structure, which helps explain why some people generate immediate attention before they have said much at all. In practice, better looks shift the starting position toward more openness, more forgiveness, and less resistance.",
+          "But this dynamic is especially acute among women. Female hierarchy, with the exception of seniority-motherhood, grandmother status, formal authority like a boss-is overwhelmingly structured around looks. Women know this implicitly. Look at any group photo of women. The prettiest ones are almost always positioned in the center. It is not coincidence. It is a visual reckoning of status that happens without a word spoken.",
+          "Yes, personality matters. Yes, upbringing shapes character. But the face card reveals everything. While society obsesses over weight-and weight does matter-the face remains the final arbiter of who is considered prettiest by the group. A fit body can be built in the gym. A commanding face requires something else.",
+          "If you want to advance in your social circle, you need a better face. This is not vanity. It is strategy. And the method I am presenting is the most effective way for a woman to move up among her peers.",
+          "But be careful. When your face improves, your social position shifts. You may find that your current friends-comfortable with the old hierarchy-do not know how to handle the new you. You may have to find a new group. You will also begin re-evaluating your relationships, because you can now attract a higher caliber of man. What once felt like settling now feels like compromise. And once you see the difference, you cannot unsee it.",
+          "That is the cost of leveling up. Worth it.",
         ],
         sources: [
           {
@@ -207,13 +255,57 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
             label: "Hitsch, G. J., Hortaçsu, A., & Ariely, D. (2010). What makes you click? Mate preferences in online dating. Quantitative Marketing and Economics.",
             href: "https://www.nber.org/papers/w13072",
           },
+          {
+            label: "Anderson, C., Hildreth, J. A. D., & Howland, L. (2015). Is the desire for status a fundamental human motive? A review of the empirical literature. Psychological Bulletin.",
+            href: "https://pubmed.ncbi.nlm.nih.gov/25774679/",
+          },
+          {
+            label: "Buss, D. M. (1989). Sex differences in human mate preferences: Evolutionary hypotheses tested in 37 cultures. Behavioral and Brain Sciences.",
+            href: "https://www.cambridge.org/core/journals/behavioral-and-brain-sciences/article/sex-differences-in-human-mate-preferences-evolutionary-hypotheses-tested-in-37-cultures/DEAD4D5E1FD4FC13CBAF034BA5E8CB5D",
+          },
+          {
+            label: "Vaillancourt, T. (2013). Do human females use indirect aggression as an intrasexual competition strategy? Philosophical Transactions of the Royal Society B.",
+            href: "https://royalsocietypublishing.org/doi/10.1098/rstb.2013.0078",
+          },
+          {
+            label: "Puts, D. A. (2016). Human sexual selection. Current Opinion in Psychology.",
+            href: "https://www.sciencedirect.com/science/article/abs/pii/S2352250X16300273",
+          },
         ],
       },
       {
-        label: "Radical Self-Respect (The Internal Shift)",
+        label: "The Masculine Aesthetic Advantage",
+        topTitle:
+          "The Man Must be Better Looking or at Par with the Woman for the Relationship to be Happy.",
+        image: {
+          desktopSrc: "/section_wallpaper/research/refined_images/05_desktop.jpg",
+          mobileSrc: "/section_wallpaper/research/refined_images/05_mobile.jpg",
+          alt: "Masculine aesthetic advantage illustration used in the research section",
+          frameClassName:
+            "mx-auto mb-3 w-full max-w-[28rem] overflow-hidden rounded-[1.4rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:mb-4 md:max-w-[58rem]",
+          imageClassName: "block h-auto w-full object-cover",
+        },
+        postscripts: [
+          {
+            afterText:
+              "If you doubt, look at the species where the male is the ornamented sex. Beauty there serves as both invitation and deterrent. It says: I have resources, I have genetics, I am not worth challenging. The same dynamic plays out in human interaction, quiet but constant.",
+            paragraphs: [
+              "If a man irritates you, there is a simple test. Ask to take a photo with him. Then, afterward, compliment his looks. Watch him grow uneasy-squeamish, even. His brain will short-circuit. Why is this guy, who is clearly better looking than me, complimenting me?",
+              "That is the total proof. You are better looking and nicer than him. There is no angle for him to attack. No insecurity to project. No comeback that doesn't make him look small.",
+              "It works the same way size works in a physical confrontation. Men see a bigger guy-broader shoulders, thicker arms, visible mass-and they instinctively recalibrate. They do not want to fight. The risk is too high. The outcome is too certain. They may grumble, posture, or quietly seethe, but they do not engage. The visual signal alone ends the negotiation before it begins.",
+              "A better face operates on the same primal circuit. When a man sees someone clearly above him in facial aesthetics-sharper jaw, stronger cheekbones, lifted brow, symmetrical structure-his hindbrain sends the same message: Do not compete. You will lose. Height, for all its cultural weight, does not trigger this same automatic deference. A tall man with a forgettable face still gets challenged. A shorter man with a commanding face rarely does.",
+              "Men do not want to compete with a guy who clearly outranks them in the face. They see it. They register it. And once they do, they leave you alone. Not from fear-from recognition. The hierarchy is settled. No words needed.",
+              "You won. He knows it. Now move on.",
+            ],
+          },
+        ],
         text: [
           "Looksmaxxing is not vanity. Treating your appearance as a project is one of the clearest forms of self-respect. When you stop neglecting how you present yourself, you start holding yourself to a higher standard everywhere else.",
-          "Appearance changes expectations, and expectations change behavior. Attractive people are often treated as more capable, more social, and more valuable, which can create a feedback loop: better treatment, better self-perception, better conduct. Over time, presentation stops being cosmetic and becomes behavioral. What begins as appearance can harden into discipline, dignity, and self-respect.",
+          "Appearance changes expectations, and expectations change behavior. Attractive people are often treated as more capable, more social, and more valuable, which creates a feedback loop: better treatment, better self-perception, better conduct. Over time, presentation stops being cosmetic and becomes behavioral. What begins as appearance can harden into discipline, dignity, and self-respect.",
+          "But there is another layer. Across the animal kingdom, males are often the more beautiful sex: the peacock with its iridescent blue-green train and eye-spot feathers, the mandarin duck with its ornate crest, orange sails, and purple breast, the bird of paradise with its elaborate plumes and courtship displays, the dragonfly flashing metallic blues and reds, the lion with his thick mane, the elephant seal with his sheer mass and bulbous nose, the guppy with bright color against drab females, the pheasant with metallic plumage and a long tail, the scarlet macaw with richer saturation, and the mandrill whose red-blue facial coloration and size far outshine the female. Evolution built male beauty to attract mates and to signal dominance that reduces conflict.",
+          "When you become the better-looking male, something counterintuitive happens. Other men do not attack you; they give you space. Male-male harassment drops because your face signals high status before confrontation becomes necessary. You spend less time proving yourself, less money on dates that go nowhere. Women, attracted to the signal, begin to approach. The energy you once wasted chasing now flows toward you.",
+          "This is not fantasy. It is biology.",
+          "If you doubt, look at the species where the male is the ornamented sex. Beauty there serves as both invitation and deterrent. It says: I have resources, I have genetics, I am not worth challenging. The same dynamic plays out in human interaction, quiet but constant.",
         ],
         sources: [
           {
@@ -228,38 +320,67 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
             label: "Griffin, A. M., & Langlois, J. H. (2006). Stereotype directionality and attractiveness stereotyping: Is beauty good or is ugly bad? Social Cognition.",
             href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC1447532/",
           },
-        ],
-      },
-      {
-        label: "Social Hierarchy & The Confidence Dividend",
-        text: [
-          "Social status is not just ego. It changes how you move through the world. Looking better can raise your position in the social hierarchy, and that elevation, handled with humility, creates confidence that compounds over time.",
-          "Appearance shapes status judgments quickly. Attractive faces are often assumed to be more competent, more socially skilled, and more worthy of attention, which changes how people respond from the start. That response can create a feedback loop: better treatment leads to stronger self-perception, which improves presence, which then improves treatment again. Confidence is not built in isolation. It is built through repeated social reinforcement.",
-        ],
-        sources: [
           {
-            label: "Dion, K., Berscheid, E., & Walster, E. (1972). What is beautiful is good. Journal of Personality and Social Psychology.",
-            href: "https://psycnet.apa.org/record/1973-05802-001",
+            label: "Andersson, M. (1994). Sexual Selection. Princeton University Press. (Foundational text on male ornamentation)",
+            href: "https://press.princeton.edu/books/paperback/9780691000572/sexual-selection",
           },
           {
-            label: "Judge, T. A., Hurst, C., & Simon, L. S. (2009). Does it pay to be smart, attractive, or confident (or all three)? Relationships among general mental ability, physical attractiveness, core self-evaluations, and income. Journal of Applied Psychology.",
-            href: "https://www.apa.org/pubs/journals/releases/apl943742.pdf",
-          },
-          {
-            label: "Wu, R., Yang, M., et al. (2021). How boosting self-perceived attractiveness reduces consumers’ choice uncertainty. Journal of Marketing Research.",
-            href: "https://journals.sagepub.com/doi/10.1177/00222437211033179",
-          },
-          {
-            label: "Gulati, A., et al. (2024). What is beautiful is still good: the attractiveness halo effect in the era of beauty filters. Royal Society Open Science.",
-            href: "https://royalsocietypublishing.org/doi/10.1098/rsos.240882",
+            label: "Zahavi, A. (1975). Mate selection-a selection for a handicap. Journal of Theoretical Biology. (Handicap principle: male beauty signals fitness despite cost)",
+            href: "https://www.sciencedirect.com/science/article/abs/pii/0022519375902113",
           },
         ],
       },
       {
-        label: "Career Optionality & Asset Monetization",
+        label: "Looks and Leverage",
+        splitIntroTextCount: 2,
+        postscripts: [
+          {
+            afterText:
+              "It's not just politics. In corporate settings, looks play a massive role in who gets promoted to power positions. The \"Chad and Stacy\" effect is real: when two candidates are equally qualified, the better-looking one is disproportionately chosen. If you want career gains, whether climbing the corporate ladder, securing investors, or positioning yourself as an authority, you cannot afford to ignore your face. With looks comes not only modeling income but also access to positions of power. You must look the part and be the part.",
+            title: "The Conclusion",
+            paragraphs: [
+              "The evidence is clear. Your face affects your income, your status, and your trajectory. It shapes how quickly you're hired, how far you rise, and how seriously you're taken before you say a single word. From the boardroom to the ballot box, the pattern holds: the better-looking candidate wins disproportionately.",
+              "So what do you do about it?",
+              "Botox freezes. Fillers inflate. Bonesmashing risks permanent damage. Surgery carves bone but leaves scars-literal and financial. These are shortcuts with trade-offs.",
+              "Vostok is different.",
+              "It works with your biology, not against it. Every technique is natural, targeting the muscles that shape your face from within. You build the structure, refine the angles, lift the features-without needles, without knives, without risking your face for results that often look artificial.",
+              "This is the fountain of youth, miniaturized. Stronger orbicularis oculi lifts the eyes, erasing tiredness. Developed zygomaticus pulls the cheeks up and out, restoring the architecture of youth. A trained platysma tightens the jawline, reversing what you thought was aging but was actually underdevelopment. You don't just look younger. You look like the best version of yourself-the one that was always waiting beneath the surface.",
+              "And it's simple. Pick a chapter. Work the muscle. See the change.",
+              "Vostok is not the hardest path. It's the most direct. Two years of development, one protocol, thousands of hours refining what actually works. No filler. No cope. Just facial engineering that delivers.",
+              "If you want the promotion, the presence, the power-you cannot afford to ignore your face.",
+              "If you want the face that commands the room-Vostok is the way.",
+            ],
+          },
+        ],
+        image: {
+          desktopSrc: "/section_wallpaper/research/refined_images/02_desktop.jpg",
+          mobileSrc: "/section_wallpaper/research/refined_images/02_mobile.jpg",
+          alt: "Portrait study used in the looks and leverage research section",
+        },
+        inlineImages: [
+          {
+            beforeText:
+              "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
+            desktopSrc: "/section_wallpaper/research/refined_images/03_desktop.jpg",
+            mobileSrc: "/section_wallpaper/research/refined_images/03_mobile.jpg",
+            alt: "Historical leadership collage used in the power and appearance argument",
+            caption:
+              "You think if these men had been ugly, they would have been elected or would have had people follow them? Of course not. They were the uber chads of their day.",
+            splitLayout: true,
+            splitLayoutText: [
+              "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
+              "It's not just politics. In corporate settings, looks play a massive role in who gets promoted to power positions. The \"Chad and Stacy\" effect is real: when two candidates are equally qualified, the better-looking one is disproportionately chosen. If you want career gains, whether climbing the corporate ladder, securing investors, or positioning yourself as an authority, you cannot afford to ignore your face. With looks comes not only modeling income but also access to positions of power. You must look the part and be the part.",
+            ],
+            frameClassName:
+              "w-full max-w-[24rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:max-w-[38rem]",
+            imageClassName: "block h-auto w-full object-cover",
+          },
+        ],
         text: [
-          "Even if you never model, having the option to monetize your looks changes your career calculus. It gives you leverage, an exit option, and credibility, especially if you are selling a course built on visible transformation.",
-          "Appearance has measurable economic value. Attractive people are often hired faster, evaluated more favorably, and paid more over time, even when qualifications are otherwise similar. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they can improve the starting position.",
+          "Appearance has measurable economic value. Attractive people are hired faster, evaluated more favorably, and paid more over time, even when qualifications are identical. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they improve the starting position.",
+          "Social status is not just ego. It changes how you move through the world. Looking better raises your position in the social hierarchy, and that elevation, handled with humility, creates confidence that compounds. Appearance shapes status judgments quickly: attractive faces are assumed more competent, more socially skilled, and more worthy of attention. That response creates a feedback loop: better treatment improves self-perception, which improves presence, which invites more positive responses.",
+          "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
+          "It's not just politics. In corporate settings, looks play a massive role in who gets promoted to power positions. The \"Chad and Stacy\" effect is real: when two candidates are equally qualified, the better-looking one is disproportionately chosen. If you want career gains, whether climbing the corporate ladder, securing investors, or positioning yourself as an authority, you cannot afford to ignore your face. With looks comes not only modeling income but also access to positions of power. You must look the part and be the part.",
         ],
         sources: [
           {
@@ -268,40 +389,27 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           },
           {
             label: "Mobius, M. M., & Rosenblat, T. S. (2006). Why Beauty Matters. American Economic Review, 96(1), 222–235.",
-            href: "https://www.aeaweb.org/articles?id=10.1257%2F000282806776157515&utm_source=chatgpt.com",
+            href: "https://www.aeaweb.org/articles?id=10.1257/000282806776157515",
           },
           {
             label: "Ruffle, B. J., & Shtudiner, Z. (2015). Are Good-Looking People More Employable? Management Science, 61(8), 1760–1776.",
             href: "https://pubsonline.informs.org/doi/10.1287/mnsc.2014.1927",
           },
           {
-            label: "Judge, T. A., Hurst, C., & Simon, L. S. (2009). Does It Pay to Be Smart, Attractive, or Confident (or All Three)? Relationships among General Mental Ability, Physical Attractiveness, Core Self-Evaluations, and Income. Journal of Applied Psychology, 94(3), 742–755.",
+            label: "Judge, T. A., Hurst, C., & Simon, L. S. (2009). Does It Pay to Be Smart, Attractive, or Confident (or All Three)? Journal of Applied Psychology, 94(3), 742–755.",
             href: "https://doi.org/10.1037/a0015497",
           },
-        ],
-      },
-      {
-        label: "The Halo Effect: Family & Authority",
-        text: [
-          "If the halo effect is real, and the evidence says it is, then looks are not just aesthetic. They are leverage. Appearance changes how institutions read you before you speak, and that can affect outcomes in systems where small biases carry real consequences.",
-          "People make fast judgments from faces, and those judgments do not stay confined to first impressions. In legal settings, physical attractiveness has been linked to more lenient judgments and better criminal-justice outcomes, while broader halo-effect research shows attractive faces are often seen as more competent, trustworthy, and socially desirable. In practice, better looks can shift the starting position toward less suspicion, more benefit of the doubt, and softer treatment.",
-        ],
-        sources: [
           {
-            label: "Efran, M. G. (1974). The effect of physical appearance on the judgment of guilt, interpersonal attraction, and severity of recommended punishment in a simulated jury task. Journal of Research in Personality.",
-            href: "https://www.sciencedirect.com/science/article/pii/0092656674900440",
+            label: "Dion, K., Berscheid, E., & Walster, E. (1972). What is beautiful is good. Journal of Personality and Social Psychology.",
+            href: "https://psycnet.apa.org/record/1973-05802-001",
           },
           {
-            label: "Mazzella, R., & Feingold, A. (1994). The Effects of Physical Attractiveness, Race, Socioeconomic Status, and Gender of Defendants and Victims on Judgments of Mock Jurors: A Meta-Analysis. Journal of Applied Social Psychology.",
-            href: "https://onlinelibrary.wiley.com/doi/10.1111/j.1559-1816.1994.tb01552.x",
+            label: "Todorov, A., et al. (2005). Inferences of Competence from Faces Predict Election Outcomes. Science, 308(5728), 1623–1626.",
+            href: "https://www.science.org/doi/10.1126/science.1110589",
           },
           {
-            label: "Beaver, K. M., Boccio, C. M., Smith, S., & Ferguson, C. J. (2019). Physical attractiveness and criminal justice processing: results from a longitudinal sample of youth and young adults. Psychiatry, Psychology and Law.",
-            href: "https://pmc.ncbi.nlm.nih.gov/articles/PMC6762156/",
-          },
-          {
-            label: "Gulati, A., et al. (2024). What is beautiful is still good: the attractiveness halo effect in the era of beauty filters. Royal Society Open Science.",
-            href: "https://royalsocietypublishing.org/doi/10.1098/rsos.240882",
+            label: "Berggren, N., Jordahl, H., & Poutvaara, P. (2010). The looks of a winner: Beauty and electoral success. Journal of Public Economics, 94(1–2), 8–15.",
+            href: "https://www.sciencedirect.com/science/article/pii/S0047272709001161",
           },
         ],
       },
@@ -311,6 +419,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const [activeNarrative, setActiveNarrative] = useState(0);
   const [direction, setDirection] = useState(0);
   const currentNarrative = narrativeTabs[activeNarrative];
+  const introTextCount = currentNarrative.splitIntroTextCount ?? 0;
+  const introParagraphs = currentNarrative.text.slice(0, introTextCount);
+  const remainingParagraphs = currentNarrative.text.slice(introTextCount);
 
   const setNarrative = (index: number) => {
     if (index === activeNarrative) {
@@ -340,19 +451,19 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         {isFourChan ? (
-          <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
+          <div className="rounded-3xl border border-white/10 bg-[rgba(42,42,46,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
             <Tabs
               defaultValue={makeFourChanValue(fourChanSections[0].title)}
               onValueChange={(value) => {
                 trackSafe("research_tab_change", { tab: value, variant: "4chan" });
               }}
             >
-              <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-chrome/70">
+              <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-white/70 md:justify-center">
                 {fourChanSections.map((section) => (
                   <TabsTrigger
                     key={section.title}
                     value={makeFourChanValue(section.title)}
-                    className="rounded-full border border-black/10 bg-white/30 px-4 py-2 text-[10px] uppercase tracking-[0.3em] text-[#4b4b4b] data-[state=active]:border-black/30 data-[state=active]:bg-black/5 data-[state=active]:text-[#3f3f3f]"
+                    className="rounded-none border-2 border-[#b89648] bg-[rgba(32,32,36,0.82)] px-5 py-3 text-[12px] font-semibold uppercase tracking-[0.24em] text-white/76 shadow-[0_10px_24px_rgba(0,0,0,0.22)] data-[state=active]:border-[#f1d27a] data-[state=active]:bg-[rgba(95,76,24,0.28)] data-[state=active]:text-white md:px-6 md:py-3.5 md:text-[13px]"
                   >
                     {section.title}
                   </TabsTrigger>
@@ -364,7 +475,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                   value={makeFourChanValue(section.title)}
                   className="mt-5"
                 >
-                  <div className="rounded-2xl border border-black/10 bg-white/60 p-5 text-sm text-steel md:text-base">
+                  <div className="rounded-2xl border border-white/10 bg-[rgba(28,28,32,0.72)] p-5 text-sm text-white/88 md:text-base">
                     {section.body.map((line) => (
                       <p key={line} className="mt-4 first:mt-0">
                         {line}
@@ -377,9 +488,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <div className="rounded-3xl border border-black/10 bg-white/20 p-6 shadow-[0_28px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl md:p-10">
+            <div className="rounded-3xl border border-white/10 bg-[rgba(42,42,46,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
               <div className="mt-5">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2 md:justify-center">
                   {narrativeTabs.map((tab, index) => (
                     <button
                       key={tab.label}
@@ -388,10 +499,10 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                         setNarrative(index);
                         trackSafe("research_story_tab_change", { tab: tab.label });
                       }}
-                      className={`max-w-full rounded-full border px-4 py-2 text-center text-[10px] uppercase leading-[1.35] tracking-[0.3em] whitespace-normal [overflow-wrap:anywhere] [hyphens:auto] transition ${
+                      className={`max-w-full rounded-none border-2 px-5 py-3 text-center text-[12px] font-semibold uppercase leading-[1.35] tracking-[0.22em] whitespace-normal [overflow-wrap:anywhere] [hyphens:auto] shadow-[0_10px_24px_rgba(0,0,0,0.22)] transition md:px-6 md:py-3.5 md:text-[13px] ${
                         index === activeNarrative
-                          ? "border-black/20 bg-white/20 text-[#3f3f3f]"
-                          : "border-black/10 bg-white/12 text-[#5a5a5a] hover:text-[#3f3f3f]"
+                          ? "border-[#f1d27a] bg-[rgba(95,76,24,0.28)] text-white"
+                          : "border-[#b89648] bg-[rgba(32,32,36,0.82)] text-white/72 hover:border-[#d6b865] hover:text-white/92"
                       }`}
                     >
                       {tab.label}
@@ -407,30 +518,206 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -direction * 30 }}
                       transition={{ duration: 0.45, ease: "easeOut" }}
-                      className="space-y-4 text-center text-sm text-[#4a4a4a] md:text-base"
+                      className="space-y-4 text-center text-sm text-white/88 md:text-base"
                     >
-                      {currentNarrative.text.map((paragraph) => (
-                        <p
-                          key={paragraph}
-                          className={
-                            isNarrativeCallout(paragraph)
-                              ? "my-8 text-[1.14rem] font-bold leading-tight text-[#2f2f2f] md:text-[1.24rem]"
-                              : undefined
-                          }
-                        >
-                          {isNarrativeCallout(paragraph) ? (
-                            <span className="block">{paragraph}</span>
-                          ) : (
-                            <span className="block">{paragraph}</span>
+                      {currentNarrative.topTitle ? (
+                        <div className="mb-4 flex w-full justify-center md:mb-5">
+                          <p className="max-w-[58rem] text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                            {currentNarrative.topTitle}
+                          </p>
+                        </div>
+                      ) : null}
+                      {currentNarrative.image ? (
+                        <div className="mb-6 md:mb-8">
+                          <div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-8">
+                            <div
+                              className={
+                                currentNarrative.image.frameClassName ??
+                                "w-full max-w-[14rem] flex-none overflow-hidden rounded-[1.4rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:max-w-[18rem]"
+                              }
+                            >
+                              <picture>
+                                <source
+                                  media="(max-width: 767px)"
+                                  srcSet={currentNarrative.image.mobileSrc}
+                                />
+                                <source srcSet={currentNarrative.image.desktopSrc} />
+                                <img
+                                  src={currentNarrative.image.desktopSrc}
+                                  alt={currentNarrative.image.alt}
+                                  className={
+                                    currentNarrative.image.imageClassName ??
+                                    "block h-auto max-h-[18rem] w-full object-cover md:max-h-[24rem]"
+                                  }
+                                  loading="lazy"
+                                />
+                              </picture>
+                            </div>
+                            {introParagraphs.length > 0 ? (
+                              <div className="flex-1 space-y-4 text-left">
+                                {introParagraphs.map((paragraph) => (
+                                  <div key={paragraph}>
+                                    {getNarrativeMicroTitle(paragraph) ? (
+                                      <div className="mb-3 flex w-full justify-center">
+                                        <p className="block text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                                          {getNarrativeMicroTitle(paragraph)}
+                                        </p>
+                                      </div>
+                                    ) : null}
+                                    <p>
+                                      <span className="block">{paragraph}</span>
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      ) : null}
+                      {(currentNarrative.image ? remainingParagraphs : currentNarrative.text).map((paragraph) => (
+                        <div key={paragraph}>
+                          {getNarrativeMicroTitle(paragraph) &&
+                          !currentNarrative.inlineImages?.some(
+                            (image) =>
+                              image.splitLayout &&
+                              (image.beforeText === paragraph ||
+                                image.splitLayoutText?.includes(paragraph)),
+                          ) ? (
+                            <p className="mb-3 mt-6 text-left text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:mt-7 md:text-[0.86rem]">
+                              {getNarrativeMicroTitle(paragraph)}
+                            </p>
+                          ) : null}
+                          {currentNarrative.inlineImages
+                            ?.filter((image) => image.beforeText === paragraph)
+                            .map((image) => (
+                              image.splitLayout ? (
+                                <div
+                                  key={`${image.desktopSrc}-${paragraph}`}
+                                  className="my-6 flex flex-col items-center gap-6 md:my-8 md:flex-row md:items-start md:gap-8"
+                                >
+                                  <div
+                                    className={
+                                      image.frameClassName ??
+                                      "w-full max-w-[20rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:max-w-[31rem]"
+                                    }
+                                  >
+                                    <picture>
+                                      <source media="(max-width: 767px)" srcSet={image.mobileSrc} />
+                                      <source srcSet={image.desktopSrc} />
+                                      <img
+                                        src={image.desktopSrc}
+                                        alt={image.alt}
+                                        className={image.imageClassName ?? "block h-auto w-full object-cover"}
+                                        loading="lazy"
+                                      />
+                                    </picture>
+                                    {image.caption ? (
+                                      <p className="px-4 pb-4 pt-3 text-center text-[0.83rem] font-medium leading-relaxed text-white/82 md:px-6 md:pb-5 md:text-[0.95rem]">
+                                        {image.caption}
+                                      </p>
+                                    ) : null}
+                                  </div>
+                                  <div className="flex-1 text-left">
+                                    <div className="space-y-4">
+                                      {(image.splitLayoutText ?? [paragraph]).map((text) => (
+                                        <div key={text}>
+                                          {getNarrativeMicroTitle(text) ? (
+                                            <p className="mb-3 text-left text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                                              {getNarrativeMicroTitle(text)}
+                                            </p>
+                                          ) : null}
+                                          <p>
+                                            <span className="block">{text}</span>
+                                          </p>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div
+                                  key={`${image.desktopSrc}-${paragraph}`}
+                                  className={
+                                    image.frameClassName ??
+                                    "mx-auto my-6 w-full max-w-[20rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:my-8 md:max-w-[31rem]"
+                                  }
+                                >
+                                  <picture>
+                                    <source media="(max-width: 767px)" srcSet={image.mobileSrc} />
+                                    <source srcSet={image.desktopSrc} />
+                                    <img
+                                      src={image.desktopSrc}
+                                      alt={image.alt}
+                                      className={image.imageClassName ?? "block h-auto w-full object-cover"}
+                                      loading="lazy"
+                                    />
+                                  </picture>
+                                  {image.caption ? (
+                                    <p className="px-4 pb-4 pt-3 text-center text-[0.83rem] font-medium leading-relaxed text-white/82 md:px-6 md:pb-5 md:text-[0.95rem]">
+                                      {image.caption}
+                                    </p>
+                                  ) : null}
+                                </div>
+                              )
+                            ))}
+                          {currentNarrative.inlineImages?.some(
+                            (image) =>
+                              image.splitLayout &&
+                              (image.beforeText === paragraph ||
+                                image.splitLayoutText?.includes(paragraph)),
+                          ) ? null : (
+                          <p
+                            className={
+                              isNarrativeCallout(paragraph)
+                                ? "my-8 text-[1.14rem] font-bold leading-tight text-white md:text-[1.24rem]"
+                                : isAnimalBeautyHeading(paragraph)
+                                  ? "mt-6 text-left text-[1rem] font-semibold leading-snug text-white md:mt-7 md:text-[1.05rem]"
+                                  : isAnimalBeautyItem(paragraph)
+                                    ? "mt-1 text-left leading-snug text-white/88"
+                                    : undefined
+                            }
+                          >
+                            {isNarrativeCallout(paragraph) ? (
+                              <span className="block">{paragraph}</span>
+                            ) : (
+                              <span className="block">{paragraph}</span>
+                            )}
+                          </p>
                           )}
-                        </p>
+                          {currentNarrative.postscripts
+                            ?.filter((postscript) => postscript.afterText === paragraph)
+                            .map((postscript) => (
+                              <div key={postscript.afterText} className="mt-7">
+                                <div className="mx-auto h-px w-full max-w-[42rem] bg-[linear-gradient(90deg,rgba(241,210,122,0)_0%,rgba(241,210,122,0.95)_18%,rgba(241,210,122,0.95)_82%,rgba(241,210,122,0)_100%)]" />
+                                <div className="mt-4 space-y-2.5 md:space-y-3">
+                                  {postscript.title ? (
+                                    <p className="mb-1 text-center text-[0.84rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.92rem]">
+                                      {postscript.title}
+                                    </p>
+                                  ) : null}
+                                  {postscript.paragraphs.map((postscriptParagraph) => (
+                                    <p
+                                      key={postscriptParagraph}
+                                      className={
+                                        isBoldNarrativeLine(postscriptParagraph)
+                                          ? "text-[1rem] font-bold leading-tight text-white md:text-[1.08rem]"
+                                          : undefined
+                                      }
+                                    >
+                                      <span className="block">{postscriptParagraph}</span>
+                                    </p>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                        </div>
                       ))}
                       {currentNarrative.sources && currentNarrative.sources.length > 0 && (
                         <div className="pt-3 text-center">
-                          <p className="text-[10px] uppercase tracking-[0.35em] text-[#666666]">
+                          <p className="text-[10px] uppercase tracking-[0.35em] text-white/60">
                             Sources
                           </p>
-                          <div className="mt-3 text-xs leading-relaxed text-steel">
+                          <div className="mt-3 text-xs leading-relaxed text-white/78">
                             <p className="whitespace-normal break-words">
                               {currentNarrative.sources.map((source, index) => (
                                 <span key={source.href}>
@@ -439,7 +726,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                                   {" "}
                                   <a
                                     href={source.href}
-                                    className="text-blue-700 underline-offset-4 hover:underline"
+                                    className="text-white underline underline-offset-4 hover:text-white/85"
                                     target="_blank"
                                     rel="noreferrer"
                                   >
