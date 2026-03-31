@@ -487,9 +487,9 @@ const PremiumLifestyleSection = () => {
         lines={[]}
         desktopBackground="/section_wallpaper/become_you/01.png"
         mobileBackground="/section_wallpaper/become_you/01.png"
-        sectionClassName="min-h-[105vh] py-0 md:min-h-[200vh]"
-        contentClassName="flex min-h-[105vh] -translate-y-[8vh] flex-col justify-start md:min-h-[200vh] md:translate-y-0"
-        innerContentClassName="pt-[3vh] pb-[3vh] md:py-[5.5vh]"
+        sectionClassName="min-h-[78vh] py-0 md:min-h-[200vh]"
+        contentClassName="flex min-h-[78vh] -translate-y-[4vh] flex-col justify-start md:min-h-[200vh] md:translate-y-0"
+        innerContentClassName="pt-0 pb-[2vh] md:py-[5.5vh]"
         tabLabelClassName="!text-black"
         decoration={
           <>
