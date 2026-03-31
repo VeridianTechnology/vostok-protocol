@@ -21,6 +21,7 @@ type NarrativeTab = {
     desktopSrc: string;
     mobileSrc: string;
     alt: string;
+    caption?: string;
     frameClassName?: string;
     imageClassName?: string;
   };
@@ -225,10 +226,21 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       {
         label: "The Face Card Never Lies",
         topTitle: "The Face Card Never Lies",
+        image: {
+          desktopSrc: "/section_wallpaper/research/refined_images/06_desktop.jpg",
+          mobileSrc: "/section_wallpaper/research/refined_images/06_mobile.jpg",
+          alt: "Face card illustration used in the dating-market research section",
+          caption:
+            "The prettiest ones are almost always positioned in the center. It is not coincidence. It is a visual reckoning of status that happens without a word spoken.",
+          frameClassName:
+            "mx-auto mb-4 w-full max-w-[26rem] overflow-hidden rounded-[1.4rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:mb-5 md:max-w-[54rem]",
+          imageClassName: "block h-auto w-full object-cover",
+        },
+        topTitle: "The Center of the Frame",
         text: [
           "Dating should not feel like labor. When your appearance is working for you, pursuit becomes selection. You stop forcing interest and move through dating with more calm, leverage, and less anxiety.",
           "Attraction is not negotiated from scratch. People form impressions from faces quickly, and physical attractiveness strongly shapes romantic interest in early encounters. Judgments of facial attractiveness are influenced by cues like symmetry, averageness, and sexually dimorphic structure, which helps explain why some people generate immediate attention before they have said much at all. In practice, better looks shift the starting position toward more openness, more forgiveness, and less resistance.",
-          "But this dynamic is especially acute among women. Female hierarchy, with the exception of seniority-motherhood, grandmother status, formal authority like a boss-is overwhelmingly structured around looks. Women know this implicitly. Look at any group photo of women. The prettiest ones are almost always positioned in the center. It is not coincidence. It is a visual reckoning of status that happens without a word spoken.",
+          "But this dynamic is especially acute among women. Female hierarchy, with the exception of seniority-motherhood, grandmother status, formal authority like a boss-is overwhelmingly structured around looks. Women know this implicitly.",
           "Yes, personality matters. Yes, upbringing shapes character. But the face card reveals everything. While society obsesses over weight-and weight does matter-the face remains the final arbiter of who is considered prettiest by the group. A fit body can be built in the gym. A commanding face requires something else.",
           "If you want to advance in your social circle, you need a better face. This is not vanity. It is strategy. And the method I am presenting is the most effective way for a woman to move up among her peers.",
           "But be careful. When your face improves, your social position shifts. You may find that your current friends-comfortable with the old hierarchy-do not know how to handle the new you. You may have to find a new group. You will also begin re-evaluating your relationships, because you can now attract a higher caliber of man. What once felt like settling now feels like compromise. And once you see the difference, you cannot unsee it.",
@@ -458,7 +470,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                 trackSafe("research_tab_change", { tab: value, variant: "4chan" });
               }}
             >
-              <TabsList className="h-auto w-full flex-wrap justify-start gap-2 bg-transparent p-0 text-white/70 md:justify-center">
+              <TabsList className="h-auto w-full flex-wrap justify-center gap-2 bg-transparent p-0 text-white/70">
                 {fourChanSections.map((section) => (
                   <TabsTrigger
                     key={section.title}
@@ -490,7 +502,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           <div className="flex flex-col gap-6">
             <div className="rounded-3xl border border-white/10 bg-[rgba(42,42,46,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
               <div className="mt-5">
-                <div className="flex flex-wrap items-center gap-2 md:justify-center">
+                <div className="flex flex-wrap items-center justify-center gap-2">
                   {narrativeTabs.map((tab, index) => (
                     <button
                       key={tab.label}
@@ -520,13 +532,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       transition={{ duration: 0.45, ease: "easeOut" }}
                       className="space-y-4 text-center text-sm text-white/88 md:text-base"
                     >
-                      {currentNarrative.topTitle ? (
-                        <div className="mb-4 flex w-full justify-center md:mb-5">
-                          <p className="max-w-[58rem] text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
-                            {currentNarrative.topTitle}
-                          </p>
-                        </div>
-                      ) : null}
                       {currentNarrative.image ? (
                         <div className="mb-6 md:mb-8">
                           <div className="flex flex-col items-center gap-6 md:flex-row md:items-start md:gap-8">
@@ -552,9 +557,28 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                                   loading="lazy"
                                 />
                               </picture>
+                              {currentNarrative.image.caption ? (
+                                <p className="px-4 pb-4 pt-3 text-center text-[0.83rem] font-medium leading-relaxed text-white/82 md:px-6 md:pb-5 md:text-[0.95rem]">
+                                  {currentNarrative.image.caption}
+                                </p>
+                              ) : null}
                             </div>
+                            {introParagraphs.length === 0 && currentNarrative.topTitle ? (
+                              <div className="mb-1 flex w-full justify-center md:hidden">
+                                <p className="max-w-[58rem] text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                                  {currentNarrative.topTitle}
+                                </p>
+                              </div>
+                            ) : null}
                             {introParagraphs.length > 0 ? (
                               <div className="flex-1 space-y-4 text-left">
+                                {currentNarrative.topTitle ? (
+                                  <div className="mb-4 flex w-full justify-center md:mb-5">
+                                    <p className="max-w-[58rem] text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                                      {currentNarrative.topTitle}
+                                    </p>
+                                  </div>
+                                ) : null}
                                 {introParagraphs.map((paragraph) => (
                                   <div key={paragraph}>
                                     {getNarrativeMicroTitle(paragraph) ? (
@@ -572,6 +596,13 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                               </div>
                             ) : null}
                           </div>
+                          {introParagraphs.length === 0 && currentNarrative.topTitle ? (
+                            <div className="mt-4 hidden w-full justify-center md:flex">
+                              <p className="max-w-[58rem] text-center text-[0.8rem] font-semibold uppercase tracking-[0.18em] text-[#f1d27a] md:text-[0.86rem]">
+                                {currentNarrative.topTitle}
+                              </p>
+                            </div>
+                          ) : null}
                         </div>
                       ) : null}
                       {(currentNarrative.image ? remainingParagraphs : currentNarrative.text).map((paragraph) => (
