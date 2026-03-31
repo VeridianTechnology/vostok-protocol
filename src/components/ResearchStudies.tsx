@@ -222,7 +222,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
     },
   ];
   const narrativeTabs = useMemo<NarrativeTab[]>(
-    () => [
+    () => {
+      const tabs: NarrativeTab[] = [
       {
         label: "The Face Card Never Lies",
         topTitle: "The Face Card Never Lies",
@@ -425,7 +426,18 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           },
         ],
       },
-    ],
+      ];
+
+      const tabOrder = [
+        "Looks and Leverage",
+        "The Face Card Never Lies",
+        "The Masculine Aesthetic Advantage",
+      ];
+
+      return tabs.sort(
+        (a, b) => tabOrder.indexOf(a.label) - tabOrder.indexOf(b.label),
+      );
+    },
     [],
   );
   const [activeNarrative, setActiveNarrative] = useState(0);
