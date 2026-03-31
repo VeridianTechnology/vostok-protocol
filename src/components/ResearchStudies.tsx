@@ -442,6 +442,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   );
   const [activeNarrative, setActiveNarrative] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [expandedSourceTab, setExpandedSourceTab] = useState<string | null>(null);
   const currentNarrative = narrativeTabs[activeNarrative];
   const introTextCount = currentNarrative.splitIntroTextCount ?? 0;
   const introParagraphs = currentNarrative.text.slice(0, introTextCount);
@@ -453,6 +454,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
     }
     setDirection(index > activeNarrative ? 1 : -1);
     setActiveNarrative(index);
+    setExpandedSourceTab(null);
   };
 
   return (
@@ -757,10 +759,28 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       ))}
                       {currentNarrative.sources && currentNarrative.sources.length > 0 && (
                         <div className="pt-3 text-center">
-                          <p className="text-[10px] uppercase tracking-[0.35em] text-white/60">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setExpandedSourceTab((current) =>
+                                current === currentNarrative.label ? null : currentNarrative.label,
+                              )
+                            }
+                            className="mx-auto flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.35em] text-white/60 md:hidden"
+                          >
+                            <span>Sources</span>
+                            <span className="text-[0.7rem] tracking-normal">
+                              {expandedSourceTab === currentNarrative.label ? "−" : "+"}
+                            </span>
+                          </button>
+                          <p className="hidden text-[10px] uppercase tracking-[0.35em] text-white/60 md:block">
                             Sources
                           </p>
-                          <div className="mt-3 text-xs leading-relaxed text-white/78">
+                          <div
+                            className={`mt-3 text-xs leading-relaxed text-white/78 ${
+                              expandedSourceTab === currentNarrative.label ? "block" : "hidden"
+                            } md:block`}
+                          >
                             <p className="whitespace-normal break-words">
                               {currentNarrative.sources.map((source, index) => (
                                 <span key={source.href}>

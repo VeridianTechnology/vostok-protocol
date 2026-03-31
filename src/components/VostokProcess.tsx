@@ -708,7 +708,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   return (
     <section
       id="vostok-process"
-      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[7vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
+      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[3vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
       onClick={handleGridShift}
     >
       <SectionSideTab label="MY PROCESS" />
@@ -735,7 +735,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         </m.div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
       </div>
-      <p className="relative z-10 mb-6 text-center text-2xl font-black uppercase tracking-[0.28em] text-black md:mb-8 md:text-4xl">
+      <p className="relative z-10 mb-3 text-center text-2xl font-black uppercase tracking-[0.28em] text-black md:mb-8 md:text-4xl">
         Vostok Facio-Cranial
         <br />
         Muscularization Process

@@ -538,7 +538,7 @@ const PremiumLifestyleSection = () => {
           className="relative cursor-pointer md:hidden"
           onClick={handleBecomingYouToggle}
         >
-          <div className="flex flex-col gap-[3vh]">
+          <div className="flex flex-col gap-[2vh]">
             <h2 className="text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
               BECØME
             </h2>
@@ -572,7 +572,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 pt-7 pb-5 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 pt-5 pb-4 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.22]"
@@ -623,7 +623,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-5 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
@@ -674,7 +674,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative -mt-[1.2vh] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+            <div className="relative -mt-[1.2vh] overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-5 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
@@ -724,7 +724,7 @@ const PremiumLifestyleSection = () => {
                 </div>
               ) : null}
             </div>
-            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-7 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
+            <div className="relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] px-8 py-5 text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px]">
               <div
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
