@@ -16,7 +16,6 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const [isVideoReady, setIsVideoReady] = useState(false);
   const hasTrackedStart = useRef(false);
   const hasTrackedFinish = useRef(false);
   const videoSources = isMobile
@@ -31,6 +30,8 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   const overlayVideoSrc = "/section_wallpaper/hero/01.mp4";
   const videoKey = isMobile ? "mobile" : "desktop";
   const posterImage = "/1.jpg";
+  const mobileHeroImage = "/section_wallpaper/mobile/refined_images/vostok_mobile.jpg";
+  const mobileHeroImageWebp = "/section_wallpaper/mobile/refined_images/vostok_mobile.webp";
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.muted = isMuted;
@@ -53,7 +54,6 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
     videoRef.current.load();
     setIsPlaying(false);
     setHasStarted(false);
-    setIsVideoReady(false);
   }, [videoKey]);
 
   useEffect(() => {
@@ -100,85 +100,100 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
         />
         <div
           className="relative"
-          onClick={hasStarted ? togglePlay : undefined}
+          onClick={!isMobile && hasStarted ? togglePlay : undefined}
         >
-          <video
-            key={videoKey}
-            ref={videoRef}
-            className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[66vh] md:py-0 md:object-contain md:aspect-auto"
-            poster={toDesktopImage(posterImage)}
-            muted={isMuted}
-            playsInline
-            preload="metadata"
-            onCanPlay={() => setIsVideoReady(true)}
-            onPlay={() => {
-              setIsPlaying(true);
-              setHasStarted(true);
-              if (!hasTrackedStart.current) {
-                track("start_video");
-                if (entrySource === "facebook") {
-                  track("start_video_facebook");
-                }
-                if (entrySource === "4chan") {
-                  track("start_video_4chan");
-                }
-                if (entrySource === "instagram") {
-                  track("start_video_instagram");
-                }
-                if (entrySource === "twitter") {
-                  track("start_video_twitter");
-                }
-                if (entrySource === "tiktok") {
-                  track("start_video_tiktok");
-                }
-                hasTrackedStart.current = true;
-              }
-            }}
-            onPause={() => setIsPlaying(false)}
-            onEnded={() => {
-              if (!hasTrackedFinish.current) {
-                track("finish_video");
-                if (entrySource === "facebook") {
-                  track("finish_video_facebook");
-                }
-                if (entrySource === "4chan") {
-                  track("finish_video_4chan");
-                }
-                if (entrySource === "instagram") {
-                  track("finish_video_instagram");
-                }
-                if (entrySource === "twitter") {
-                  track("finish_video_twitter");
-                }
-                if (entrySource === "tiktok") {
-                  track("finish_video_tiktok");
-                }
-                hasTrackedFinish.current = true;
-              }
-              trackSafe("video_closed");
-              setIsClosed(true);
-              onClosed?.();
-            }}
-          >
-            {videoSources.map((source) => (
-              <source key={source.src} src={source.src} type={source.type} />
-            ))}
-          </video>
-          <video
-            key={`overlay-${videoKey}`}
-            ref={overlayVideoRef}
-            className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:object-contain"
-            muted
-            autoPlay
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden="true"
-          >
-            <source src={overlayVideoSrc} type="video/mp4" />
-          </video>
+          {isMobile ? (
+            <picture>
+              <source srcSet={mobileHeroImageWebp} type="image/webp" />
+              <img
+                src={mobileHeroImage}
+                alt="Vostok Method hero"
+                className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
+          ) : (
+            <>
+              <video
+                key={videoKey}
+                ref={videoRef}
+                className="video-crop-mobile relative z-10 w-full aspect-video object-cover py-0 md:h-[66vh] md:py-0 md:object-contain md:aspect-auto"
+                poster={toDesktopImage(posterImage)}
+                muted={isMuted}
+                playsInline
+                preload="metadata"
+                onPlay={() => {
+                  setIsPlaying(true);
+                  setHasStarted(true);
+                  if (!hasTrackedStart.current) {
+                    track("start_video");
+                    if (entrySource === "facebook") {
+                      track("start_video_facebook");
+                    }
+                    if (entrySource === "4chan") {
+                      track("start_video_4chan");
+                    }
+                    if (entrySource === "instagram") {
+                      track("start_video_instagram");
+                    }
+                    if (entrySource === "twitter") {
+                      track("start_video_twitter");
+                    }
+                    if (entrySource === "tiktok") {
+                      track("start_video_tiktok");
+                    }
+                    hasTrackedStart.current = true;
+                  }
+                }}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => {
+                  if (!hasTrackedFinish.current) {
+                    track("finish_video");
+                    if (entrySource === "facebook") {
+                      track("finish_video_facebook");
+                    }
+                    if (entrySource === "4chan") {
+                      track("finish_video_4chan");
+                    }
+                    if (entrySource === "instagram") {
+                      track("finish_video_instagram");
+                    }
+                    if (entrySource === "twitter") {
+                      track("finish_video_twitter");
+                    }
+                    if (entrySource === "tiktok") {
+                      track("finish_video_tiktok");
+                    }
+                    hasTrackedFinish.current = true;
+                  }
+                  trackSafe("video_closed");
+                  setIsClosed(true);
+                  onClosed?.();
+                }}
+              >
+                {videoSources.map((source) => (
+                  <source key={source.src} src={source.src} type={source.type} />
+                ))}
+              </video>
+              <video
+                key={`overlay-${videoKey}`}
+                ref={overlayVideoRef}
+                className="pointer-events-none absolute inset-0 z-[11] h-full w-full object-cover opacity-20 md:object-contain"
+                muted
+                autoPlay
+                loop
+                playsInline
+                preload="metadata"
+                aria-hidden="true"
+              >
+                <source src={overlayVideoSrc} type="video/mp4" />
+              </video>
+            </>
+          )}
         </div>
-        {!hasStarted && (isMobile || !isVideoReady) && (
+        {!isMobile && !hasStarted && (
           <button
             type="button"
             onClick={togglePlay}
@@ -197,7 +212,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
             </span>
           </button>
         )}
-        {hasStarted && !isPlaying && (
+        {!isMobile && hasStarted && !isPlaying && (
           <button
             type="button"
             onClick={togglePlay}

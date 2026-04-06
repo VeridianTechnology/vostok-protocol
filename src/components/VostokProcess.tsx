@@ -38,7 +38,8 @@ const getThumbVariants = (src: string) => {
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const isFourChan = entrySource === "4chan";
   const isTwitter = entrySource === "twitter";
-  const afterVideoSrc = "/Comparison/main1.mp4";
+  const nonAiBeforeSrc = "/before/after/before.jpg";
+  const nonAiAfterSrc = "/Comparison/after.JPG";
   const stages = useMemo(
     () => [
       {
@@ -105,8 +106,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         key: "non_ai",
         title: "BEFORE / AFTER",
         icons: [
-          "/before/after/before.jpg",
-          "/Comparison/1.JPG",
+          nonAiBeforeSrc,
+          nonAiAfterSrc,
         ],
         text: (
           <>
@@ -119,7 +120,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         ),
       },
     ],
-    []
+    [nonAiAfterSrc, nonAiBeforeSrc]
   );
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("20");
@@ -130,17 +131,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [focusPulse, setFocusPulse] = useState(false);
   const [pendingIcon, setPendingIcon] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
-  const [isAfterVideoPaused, setIsAfterVideoPaused] = useState(false);
-  const [afterVideoDuration, setAfterVideoDuration] = useState(0);
-  const [afterVideoCurrentTime, setAfterVideoCurrentTime] = useState(0);
   const parallaxRef = useRef<number | null>(null);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
-  const afterVideoRef = useRef<HTMLVideoElement | null>(null);
   const pendingSelectionRef = useRef<string | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const activeVariants =
     activeStage === "non_ai" ? null : getImageVariants(activeImage);
-  const isNonAiAfter = activeStage === "non_ai" && activeImage === "/Comparison/1.JPG";
   const showMobileLoadingOverlay = isMobile && pendingIcon !== null;
   const activeSelectionKey = `${activeStage}:${activeImage}`;
   const clearPendingSelection = (selectionKey: string) => {
@@ -162,8 +158,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     }
 
     const nextKey = `${stageKey}:${image}`;
-    const nextImageSrc = stageKey === "non_ai" ? image : toMobileImage(image);
-    const isNonAiAfterSelection = stageKey === "non_ai" && image === "/Comparison/1.JPG";
+    const nextImageSrc = toMobileImage(image);
 
     if (!isMobile) {
       pendingSelectionRef.current = null;
@@ -179,26 +174,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     setActiveStage(stageKey);
     setActiveImage(image);
 
-    if (isNonAiAfterSelection) {
-      const preloadVideo = document.createElement("video");
-      preloadVideo.preload = "metadata";
-      preloadVideo.playsInline = true;
-      preloadVideo.muted = true;
-      preloadVideo.src = afterVideoSrc;
-
-      if (preloadVideo.readyState >= 1) {
-        pendingSelectionRef.current = null;
-        setPendingIcon(null);
-        return;
-      }
-
-      const handleVideoReady = () => clearPendingSelection(nextKey);
-      preloadVideo.addEventListener("loadedmetadata", handleVideoReady, { once: true });
-      preloadVideo.addEventListener("error", handleVideoReady, { once: true });
-      preloadVideo.load();
-      return;
-    }
-
     const preloadImage = new window.Image();
     preloadImage.decoding = "async";
     preloadImage.src = nextImageSrc;
@@ -212,6 +187,24 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     preloadImage.onload = () => clearPendingSelection(nextKey);
     preloadImage.onerror = () => clearPendingSelection(nextKey);
   };
+
+  useEffect(() => {
+    const preloadImage = (src: string) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.loading = "eager";
+      image.src = src;
+    };
+
+    [
+      nonAiBeforeSrc,
+      toMobileImage(nonAiBeforeSrc),
+      toDesktopImage(nonAiBeforeSrc),
+      nonAiAfterSrc,
+      toMobileImage(nonAiAfterSrc),
+      toDesktopImage(nonAiAfterSrc),
+    ].forEach(preloadImage);
+  }, [nonAiAfterSrc, nonAiBeforeSrc]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -229,60 +222,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   }, [activeStage, activeImage]);
 
   useEffect(() => {
-    if (!isNonAiAfter) {
-      setIsAfterVideoPaused(false);
-      setAfterVideoCurrentTime(0);
-      setAfterVideoDuration(0);
-      const video = afterVideoRef.current;
-      if (video) {
-        video.pause();
-        video.currentTime = 0;
-      }
-      return;
-    }
-
-    setIsAfterVideoPaused(false);
-    setAfterVideoCurrentTime(0);
-    const video = afterVideoRef.current;
-    if (video) {
-      video.currentTime = 0;
-      void video.play().catch(() => undefined);
-    }
-  }, [isNonAiAfter]);
-
-  useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
-
-  const toggleAfterVideoPlayback = () => {
-    const video = afterVideoRef.current;
-    if (!video) {
-      return;
-    }
-
-    if (video.paused || video.ended) {
-      if (video.ended) {
-        video.currentTime = 0;
-        setAfterVideoCurrentTime(0);
-      }
-      setIsAfterVideoPaused(false);
-      void video.play().catch(() => undefined);
-      return;
-    }
-
-    video.pause();
-    setIsAfterVideoPaused(true);
-  };
-
-  const handleAfterVideoSeek = (value: number) => {
-    const video = afterVideoRef.current;
-    if (!video) {
-      return;
-    }
-
-    video.currentTime = value;
-    setAfterVideoCurrentTime(value);
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -784,106 +725,19 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               </picture>
             ) : (
               <>
-                {isNonAiAfter ? (
-                  <>
-                    <video
-                      ref={afterVideoRef}
-                      src={afterVideoSrc}
-                      autoPlay
-                      muted
-                      playsInline
-                      preload="auto"
-                      onPlay={() => {
-                        setIsAfterVideoPaused(false);
-                      }}
-                      onLoadedMetadata={() => {
-                        const video = afterVideoRef.current;
-                        setAfterVideoDuration(video?.duration || 0);
-                        clearPendingSelection(activeSelectionKey);
-                      }}
-                      onTimeUpdate={() => {
-                        const video = afterVideoRef.current;
-                        setAfterVideoCurrentTime(video?.currentTime || 0);
-                      }}
-                      onPause={() => {
-                        if (!afterVideoRef.current?.ended) {
-                          setIsAfterVideoPaused(true);
-                        }
-                      }}
-                      onEnded={() => {
-                        setIsAfterVideoPaused(true);
-                      }}
-                      onError={() => {
-                        clearPendingSelection(activeSelectionKey);
-                      }}
-                      className="relative z-10 h-full w-full object-cover"
-                    />
-                    {
-                      <button
-                        type="button"
-                        onClick={toggleAfterVideoPlayback}
-                        aria-label={isAfterVideoPaused ? "Play video" : "Pause video"}
-                        className="absolute inset-0 z-[12]"
-                      >
-                        {isAfterVideoPaused && (
-                          <span className="absolute bottom-10 left-4 inline-flex h-14 w-14 items-center justify-center rounded-full border border-white/25 bg-black/60 text-white shadow-[0_12px_28px_rgba(0,0,0,0.35)]">
-                            <svg
-                              aria-hidden="true"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.8"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="h-6 w-6"
-                            >
-                              <path d="M10 9v6" />
-                              <path d="M14 9v6" />
-                            </svg>
-                          </span>
-                        )}
-                      </button>
-                    }
-                    {
-                      <div className="absolute inset-x-4 bottom-4 z-[13]">
-                        <input
-                          type="range"
-                          min={0}
-                          max={afterVideoDuration || 0}
-                          step={0.01}
-                          value={Math.min(afterVideoCurrentTime, afterVideoDuration || 0)}
-                          onChange={(event) => handleAfterVideoSeek(Number(event.target.value))}
-                          aria-label="Video timeline"
-                          style={{
-                            ["--radio-progress" as string]:
-                              afterVideoDuration > 0
-                                ? `${(afterVideoCurrentTime / afterVideoDuration) * 100}%`
-                                : "0%",
-                          }}
-                          className="radio-player-slider h-2 w-full cursor-pointer appearance-none rounded-full bg-white/30"
-                        />
-                      </div>
-                    }
-                  </>
-                ) : (
-                  <img
-                    src={activeStage === "non_ai" ? activeImage : toDesktopImage(activeImage)}
-                    srcSet={
-                      activeStage === "non_ai"
-                        ? `${activeImage} 1600w`
-                        : `${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w`
-                    }
-                    sizes="(max-width: 640px) 100vw, 60vw"
-                    alt={`${currentStage.title} comparison`}
-                    className={`relative z-10 h-full w-full ${
-                      activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
-                    }`}
-                    onLoad={() => clearPendingSelection(activeSelectionKey)}
-                    onError={() => clearPendingSelection(activeSelectionKey)}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                )}
+                <img
+                  src={toDesktopImage(activeImage)}
+                  srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w`}
+                  sizes="(max-width: 640px) 100vw, 60vw"
+                  alt={`${currentStage.title} comparison`}
+                  className={`relative z-10 h-full w-full ${
+                    activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
+                  }`}
+                  onLoad={() => clearPendingSelection(activeSelectionKey)}
+                  onError={() => clearPendingSelection(activeSelectionKey)}
+                  loading="lazy"
+                  decoding="async"
+                />
                 <div className="pointer-events-none absolute inset-0 z-[11] bg-black/20" />
               </>
             )}
@@ -911,7 +765,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             />
           </div>
         </div>
-        <div className="md:w-2/5">
+        <div className="relative z-30 md:w-2/5">
           <div
             className={`w-full rounded-2xl border border-white/15 bg-black/70 p-5 text-white shadow-[0_24px_60px_rgba(0,0,0,0.55)] transition-shadow duration-500 md:h-full md:p-6 ${
               focusPulse ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
@@ -934,9 +788,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       {stage.icons.map((icon) => {
                         const iconKey = `${stage.key}:${icon}`;
                         const isPendingIcon = pendingIcon === iconKey;
-                        const iconThumb = icon.includes("/before/after/")
-                          ? null
-                          : getThumbVariants(icon);
+                        const iconThumb =
+                          icon.includes("/before/after/") || icon === "/Comparison/after.JPG"
+                            ? null
+                            : getThumbVariants(icon);
                         const iconMobile = toMobileImage(icon);
                         const iconDesktop = toDesktopImage(icon);
                         const handleIconSelection = () => {
@@ -947,6 +802,11 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                             key={icon}
                             type="button"
                             onClick={(event) => {
+                              event.stopPropagation();
+                              handleIconSelection();
+                            }}
+                            onTouchEnd={(event) => {
+                              event.preventDefault();
                               event.stopPropagation();
                               handleIconSelection();
                             }}
@@ -986,7 +846,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                                   sizes="40px"
                                   alt={`${stage.title} option`}
                                   className="h-full w-full object-cover bg-black"
-                                  loading="lazy"
+                                  loading={stage.key === "non_ai" ? "eager" : "lazy"}
                                   decoding="async"
                                 />
                                 <div className="pointer-events-none absolute inset-0 bg-black/20" />
