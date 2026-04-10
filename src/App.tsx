@@ -7,6 +7,7 @@ const App = () => (
   <MotionProvider>
     <Index />
     <RadioPlayer />
+    <div aria-hidden="true" className="viewport-vignette" />
     <ChatbaseWidget />
   </MotionProvider>
 );

@@ -134,8 +134,8 @@ const FeatureThumbnails = ({
   renderStructureSection = true,
   renderWallpaperSection = true,
 }: FeatureThumbnailsProps) => {
-  const mobileHeroImage = "/section_wallpaper/mobile/refined_images/vostok_mobile.jpg";
-  const mobileHeroImageWebp = "/section_wallpaper/mobile/refined_images/vostok_mobile.webp";
+  const mobileHeroImage = "/section_wallpaper/hero/mobile.png";
+  const desktopHeroImage = "/section_wallpaper/hero/final1_desktop.jpg";
   const MOBILE_HERO_FLASH_MIN_DELAY_MS = 9000;
   const MOBILE_HERO_FLASH_MAX_DELAY_MS = 18000;
   const MOBILE_HERO_FLASH_ON_MS = 85;
@@ -159,7 +159,6 @@ const FeatureThumbnails = ({
   const [isMobileHeroFlashVisible, setIsMobileHeroFlashVisible] = useState(false);
   const [isMobileHeroTextFlashVisible, setIsMobileHeroTextFlashVisible] = useState(false);
   const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
-  const [isWallpaperCaptionVisible, setIsWallpaperCaptionVisible] = useState(true);
   const [isWallpaperPlaying, setIsWallpaperPlaying] = useState(true);
   const [isWallpaperUserPaused, setIsWallpaperUserPaused] = useState(false);
   const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
@@ -247,19 +246,6 @@ const FeatureThumbnails = ({
       }
     };
   }, [isMobile]);
-
-  useEffect(() => {
-    wallpaperCaptionTimeoutRef.current = window.setTimeout(() => {
-      setIsWallpaperCaptionVisible(false);
-    }, WALLPAPER_CAPTION_HIDE_DELAY_MS);
-
-    return () => {
-      if (wallpaperCaptionTimeoutRef.current) {
-        window.clearTimeout(wallpaperCaptionTimeoutRef.current);
-        wallpaperCaptionTimeoutRef.current = null;
-      }
-    };
-  }, [WALLPAPER_CAPTION_HIDE_DELAY_MS]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -883,37 +869,23 @@ const FeatureThumbnails = ({
           />
           {"desktopVideoSrc" in activeWallpaperSlide ? (
             isMobile ? (
-              <picture>
-                <source srcSet={mobileHeroImageWebp} type="image/webp" />
-                <img
-                  src={mobileHeroImage}
-                  alt="Vostok hero"
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading="eager"
-                  fetchPriority="high"
-                  decoding="async"
-                />
-              </picture>
-            ) : (
-            <video
-              ref={wallpaperVideoRef}
-              key={activeWallpaperSlide.id}
-              className="absolute inset-0 h-full w-full object-cover"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              onPlay={() => setIsWallpaperPlaying(true)}
-              onPause={() => setIsWallpaperPlaying(false)}
-            >
-              <source
-                media="(max-width: 767px)"
-                src={activeWallpaperSlide.mobileVideoSrc}
-                type="video/mp4"
+              <img
+                src={mobileHeroImage}
+                alt="Vostok hero"
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
-              <source src={activeWallpaperSlide.desktopVideoSrc} type="video/mp4" />
-            </video>
+            ) : (
+              <img
+                src={desktopHeroImage}
+                alt="Vostok hero"
+                className="absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
+              />
             )
           ) : (
             <picture>
@@ -929,19 +901,11 @@ const FeatureThumbnails = ({
             </picture>
           )}
           {!isMobile && (
-            <video
-              ref={wallpaperOverlayVideoRef}
-              key="hero-overlay-video"
-              className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-20"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-hidden="true"
-            >
-              <source src="/section_wallpaper/hero/01.mp4" type="video/mp4" />
-            </video>
+            <div aria-hidden="true" className="hero-tv-noise absolute inset-0 z-[7]">
+              <div className="hero-tv-noise__grain absolute inset-0" />
+              <div className="hero-tv-noise__scan absolute inset-0" />
+              <div className="hero-tv-noise__glitch absolute inset-0" />
+            </div>
           )}
           <div className="pointer-events-none absolute inset-0 z-[8] bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
           {!isMobile && !isWallpaperPlaying && isWallpaperUserPaused && (
@@ -959,13 +923,13 @@ const FeatureThumbnails = ({
               </span>
             </div>
           )}
-          <div
-            className={`absolute inset-0 bg-white transition-opacity duration-150 ${
-              isWallpaperFlashVisible || isMobileHeroFlashVisible
-                ? "opacity-100"
-                : "pointer-events-none opacity-0"
-            }`}
-          />
+          {isMobile && (
+            <div
+              className={`absolute inset-0 bg-white transition-opacity duration-150 ${
+                isMobileHeroFlashVisible ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
+            />
+          )}
           <div
             aria-hidden="true"
             className={`pointer-events-none absolute inset-0 z-[9] bg-black transition-opacity ${
@@ -973,6 +937,24 @@ const FeatureThumbnails = ({
             }`}
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
+          {!isMobile && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute left-1/2 top-[58%] z-[9] h-[30vh] w-[18vw] -translate-x-1/2 -translate-y-1/2"
+            >
+              <div className="absolute left-[32%] top-0 h-full w-px bg-black/95 shadow-[0_0_18px_rgba(0,0,0,0.95)]" />
+              <div className="absolute left-1/2 top-[-8%] h-[116%] w-px -translate-x-1/2 bg-black/98 shadow-[0_0_22px_rgba(0,0,0,0.98)]" />
+              <div className="absolute right-[32%] top-[6%] h-[88%] w-px bg-black/95 shadow-[0_0_18px_rgba(0,0,0,0.95)]" />
+              <div className="absolute left-[32%] top-1/2 h-[22vh] w-[18px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
+              <div className="absolute left-1/2 top-1/2 h-[24vh] w-[20px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.11)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
+              <div className="absolute right-[32%] top-1/2 h-[20vh] w-[18px] translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
+            </div>
+          )}
+          {!isMobile && (
+            <p className="pointer-events-none absolute left-[10.25vw] top-[9vh] z-10 font-['Tektur'] text-[1.5rem] font-black uppercase tracking-[0.28em] text-white [text-shadow:0_4px_18px_rgba(0,0,0,0.72)]">
+              VØSTOK
+            </p>
+          )}
           <div className="absolute left-1/2 top-[40vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[10vh] md:pl-[10vw]">
             {isMobile && (
               <>
@@ -997,14 +979,14 @@ const FeatureThumbnails = ({
               </>
             )}
             {!isMobile && (
-              <p
-                data-text={activeWallpaperSlide.caption}
-                className={`wallpaper-title select-none max-w-[18ch] text-[42px] transition-opacity duration-[3000ms] md:max-w-[22ch] md:text-[172px] ${
-                  isWallpaperCaptionVisible ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                {activeWallpaperSlide.caption}
-              </p>
+              <>
+                <p
+                  className="pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:pl-1 md:text-[1.6rem]"
+                >
+                  <span className="block">"Gaze upon the truth</span>
+                  <span className="mt-2 block pl-[2.9rem]">And the truth... shall set you free"</span>
+                </p>
+              </>
             )}
           </div>
           </div>

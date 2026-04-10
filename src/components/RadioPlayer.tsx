@@ -323,7 +323,7 @@ const DJ_REWIND_CLIP_PAIRS = [
   ["/audio/dj/rewind/2.mp3.m4a", "/audio/dj/rewind/2.1.m4a"],
   ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
 ] as const;
-const DEFAULT_VOLUME = 0.3;
+const DEFAULT_VOLUME = 1;
 const DJ_STINGER_VOLUME_MULTIPLIER = 0.5;
 const DJ_RESUME_LEAD_MS = 500;
 const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
@@ -452,6 +452,8 @@ const RadioPlayer = () => {
   const djResumeTimeoutRef = useRef<number | null>(null);
   const djPrefixTimeoutRef = useRef<number | null>(null);
   const djRandomTimeoutRef = useRef<number | null>(null);
+  const scrollPlayerTimeoutRef = useRef<number | null>(null);
+  const lastScrollYRef = useRef(0);
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
   const isDjVoiceActiveRef = useRef(false);
   const [{ playOrder, trackPosition }, setPlayState] = useState(() =>
@@ -463,13 +465,12 @@ const RadioPlayer = () => {
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [visualizerBars, setVisualizerBars] = useState<number[]>(VISUALIZER_IDLE_BARS);
   const [isPodCollapsed, setIsPodCollapsed] = useState(true);
+  const [isScrollPlayerVisible, setIsScrollPlayerVisible] = useState(false);
   const sliderId = useId();
-  const volumeSliderId = useId();
   const currentTrackIndex = playOrder[trackPosition] ?? 0;
   const currentTrack = PLAYABLE_TRACKS[currentTrackIndex] ?? PLAYABLE_TRACKS[0];
   const missingTrackSummary = MISSING_TRACKS.map((track) => `${track.id}*`).join(", ");
   const sliderProgress = duration > 0 ? `${(currentTime / duration) * 100}%` : "0%";
-  const volumeProgress = `${volume * 100}%`;
 
   const clearDjInterruptTimeout = () => {
     if (djInterruptTimeoutRef.current) {
@@ -496,6 +497,13 @@ const RadioPlayer = () => {
     if (djRandomTimeoutRef.current) {
       window.clearTimeout(djRandomTimeoutRef.current);
       djRandomTimeoutRef.current = null;
+    }
+  };
+
+  const clearScrollPlayerTimeout = () => {
+    if (scrollPlayerTimeoutRef.current) {
+      window.clearTimeout(scrollPlayerTimeoutRef.current);
+      scrollPlayerTimeoutRef.current = null;
     }
   };
 
@@ -914,28 +922,23 @@ const RadioPlayer = () => {
     const syncTime = () => setCurrentTime(audio.currentTime);
     const syncDuration = () => {
       setDuration(audio.duration || 0);
-      if (!isDjVoiceActiveRef.current && !audio.paused) {
-        scheduleDjVoiceInterrupt();
-      }
     };
     const handlePlay = () => {
       setIsPlaying(true);
-      void startVisualizer();
-      if (!isDjVoiceActiveRef.current) {
-        scheduleDjVoiceInterrupt();
-      }
       scheduleDjRandomOverlay();
     };
     const handlePause = () => {
       setIsPlaying(false);
       clearDjInterruptTimeout();
       clearDjRandomTimeout();
+      stopVisualizer();
     };
     const handleEnded = () => {
       clearDjInterruptTimeout();
       clearDjResumeTimeout();
       clearDjPrefixTimeout();
       clearDjRandomTimeout();
+      stopVisualizer();
       isDjVoiceActiveRef.current = false;
       if (djVoiceAudio) {
         djVoiceAudio.pause();
@@ -1091,6 +1094,40 @@ const RadioPlayer = () => {
     }
   }, [currentTrack]);
 
+  useEffect(() => {
+    lastScrollYRef.current = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const isScrollingDown = currentScrollY > lastScrollYRef.current;
+      lastScrollYRef.current = currentScrollY;
+
+      if (currentScrollY <= 0) {
+        clearScrollPlayerTimeout();
+        setIsScrollPlayerVisible(false);
+        return;
+      }
+
+      if (!isScrollingDown) {
+        return;
+      }
+
+      setIsScrollPlayerVisible(true);
+      clearScrollPlayerTimeout();
+      scrollPlayerTimeoutRef.current = window.setTimeout(() => {
+        setIsScrollPlayerVisible(false);
+        scrollPlayerTimeoutRef.current = null;
+      }, 15000);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearScrollPlayerTimeout();
+    };
+  }, []);
+
   const handleTogglePlayback = async () => {
     const audio = audioRef.current;
     if (!audio) {
@@ -1129,21 +1166,6 @@ const RadioPlayer = () => {
     }
     audio.currentTime = value;
     setCurrentTime(value);
-  };
-
-  const handleVolumeChange = (value: number) => {
-    const normalizedVolume = Math.min(Math.max(value, 0), 1);
-    setVolume(normalizedVolume);
-
-    if (audioRef.current) {
-      audioRef.current.volume = normalizedVolume;
-    }
-    if (djStingerAudioRef.current) {
-      djStingerAudioRef.current.volume = normalizedVolume * DJ_STINGER_VOLUME_MULTIPLIER;
-    }
-    if (djVoiceAudioRef.current) {
-      djVoiceAudioRef.current.volume = normalizedVolume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
-    }
   };
 
   const handlePreviousTrack = () => {
@@ -1206,7 +1228,12 @@ const RadioPlayer = () => {
       <audio ref={djStingerAudioRef} />
       <audio ref={djVoiceAudioRef} />
       <audio ref={djRandomAudioRef} />
-      <div className="fixed inset-x-0 bottom-[36px] z-[59] flex justify-center items-end md:inset-x-auto md:bottom-[42px] md:right-[8vw] md:justify-start">
+      <div
+        className={`fixed inset-x-0 z-[59] flex justify-center items-end transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start ${
+          isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
+        }`}
+        style={{ transitionDuration: "2000ms" }}
+      >
         <div
           className="relative transition-transform duration-[2000ms] ease-in-out"
           style={{
@@ -1241,39 +1268,8 @@ const RadioPlayer = () => {
             <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
           </div>
-          <button
-            type="button"
-            onClick={handlePreviousTrack}
-            aria-label="Previous track"
-            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
-            >
-              <path d="M11 19 4 12l7-7" />
-              <path d="M20 19l-7-7 7-7" />
-            </svg>
-          </button>
-
           <div className="relative z-[1] flex min-w-0 flex-col items-center px-2 text-center">
-            <div className="relative mb-1 w-full overflow-hidden rounded-full border border-black/15 px-5 py-1.5 shadow-[0_8px_20px_rgba(0,0,0,0.08)]">
-              <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-90" />
-              <div aria-hidden="true" className="absolute inset-0 bg-[#eef2ec]/40" />
-              <span className="radio-player-title relative block text-[22px] tracking-[0.03em] text-black md:text-[26px]">
-                RADIO VØSTOK
-              </span>
-            </div>
             <div className="mb-1 flex items-center gap-2">
-              <span className="rounded-full border border-black/15 bg-white/70 px-2.5 py-0.5 text-[9px] uppercase tracking-[0.22em] text-black shadow-[inset_0_1px_4px_rgba(255,255,255,0.75)] md:text-[10px]">
-                {currentTrack.score}
-              </span>
               {missingTrackSummary ? (
                 <span className="text-[8px] uppercase tracking-[0.18em] text-black/70 md:text-[9px]">
                   {PLAYABLE_TRACKS.length}/{TRACKS.length} loaded · {missingTrackSummary}
@@ -1288,18 +1284,26 @@ const RadioPlayer = () => {
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
-            <div className="mb-1 hidden h-[52px] min-h-[26px] w-[83px] items-end justify-center gap-[3px] md:flex md:w-[105px] md:max-h-[60px]">
-              {visualizerBars.map((level, index) => (
-                <span
-                  key={`${currentTrack.id}-bar-${index}`}
-                  aria-hidden="true"
-                  className="block w-[4px] rounded-full bg-black shadow-[inset_0_1px_4px_rgba(255,255,255,0.7),0_0_10px_rgba(255,255,255,0.22)] transition-[height] duration-75 ease-out md:w-[5px]"
-                  style={{
-                    height: `${Math.max(12, level * 100)}%`,
-                  }}
-                />
-              ))}
-            </div>
+            <button
+              type="button"
+              onClick={handleNextTrack}
+              aria-label="Next track"
+              className="mb-2 inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
+              >
+                <path d="m13 19 7-7-7-7" />
+                <path d="m4 19 7-7-7-7" />
+              </svg>
+            </button>
             <button
               type="button"
               onClick={() => void handleTogglePlayback()}
@@ -1318,51 +1322,18 @@ const RadioPlayer = () => {
               )}
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={handleNextTrack}
-            aria-label="Next track"
-            className="relative z-[1] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
-          >
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.75"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
-            >
-              <path d="m13 19 7-7-7-7" />
-              <path d="m4 19 7-7-7-7" />
-            </svg>
-          </button>
-
-          <div className="relative z-[1] ml-1 flex h-[80px] w-5 flex-col items-center justify-end gap-4 pb-5 pt-4 md:h-[94px] md:w-6">
-            <label htmlFor={volumeSliderId} className="sr-only">
-              Adjust volume
-            </label>
-            <input
-              id={volumeSliderId}
-              type="range"
-              min={0}
-              max={1}
-              step={0.01}
-              value={volume}
-              onChange={(event) => handleVolumeChange(Number(event.target.value))}
-              aria-label="Volume"
-              style={{ ["--radio-volume-progress" as string]: volumeProgress }}
-              className="radio-player-volume mb-5 h-2 w-[52px] cursor-pointer appearance-none rounded-full bg-white/30 md:w-[60px]"
-            />
-          </div>
-
         </div>
         </div>
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-[60] border-t border-black/20 text-black backdrop-blur-md">
+      <div
+        className={`fixed inset-x-0 bottom-0 z-[60] border-t border-black/20 text-black backdrop-blur-md transition-all ease-in-out ${
+          isScrollPlayerVisible
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none translate-y-full opacity-0"
+        }`}
+        style={{ transitionDuration: "2000ms" }}
+      >
         <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
           <div className="pointer-events-none absolute inset-0">
             <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-90" />

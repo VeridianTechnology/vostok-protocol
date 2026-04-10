@@ -182,6 +182,88 @@
     pointer-events: none;
   }
 
+  .viewport-vignette {
+    position: fixed;
+    inset: -14px;
+    z-index: 61;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0px, rgba(0, 0, 0, 0.62) 5px, rgba(0, 0, 0, 0.4) 18px, rgba(0, 0, 0, 0) 38px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.8) 0px, rgba(0, 0, 0, 0.62) 5px, rgba(0, 0, 0, 0.4) 18px, rgba(0, 0, 0, 0) 38px),
+      linear-gradient(270deg, rgba(0, 0, 0, 0.8) 0px, rgba(0, 0, 0, 0.62) 5px, rgba(0, 0, 0, 0.4) 18px, rgba(0, 0, 0, 0) 38px),
+      linear-gradient(0deg, rgba(0, 0, 0, 0.76) 0px, rgba(0, 0, 0, 0.58) 5px, rgba(0, 0, 0, 0.4) 18px, rgba(0, 0, 0, 0) 42px);
+    filter: blur(14px);
+  }
+
+  .hero-tv-noise {
+    pointer-events: none;
+    overflow: hidden;
+    mix-blend-mode: screen;
+    opacity: 0.42;
+  }
+
+  .hero-tv-noise__grain {
+    opacity: 0.18;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.16) 0 1px, transparent 1.2px),
+      radial-gradient(circle at 72% 44%, rgba(255, 255, 255, 0.12) 0 1px, transparent 1.2px),
+      radial-gradient(circle at 48% 76%, rgba(255, 255, 255, 0.1) 0 1px, transparent 1.4px),
+      repeating-radial-gradient(circle at center, rgba(255, 255, 255, 0.06) 0 1px, transparent 1px 3px);
+    background-size: 180px 180px, 220px 220px, 260px 260px, 140px 140px;
+    animation:
+      hero-tv-grain-shift 1.25s steps(6) infinite,
+      hero-tv-noise-breathe 7.5s ease-in-out infinite;
+  }
+
+  .hero-tv-noise__scan {
+    opacity: 0.26;
+    background-image:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.07) 18%,
+        rgba(0, 0, 0, 0.24) 50%,
+        rgba(255, 255, 255, 0.08) 82%,
+        transparent 100%
+      ),
+      repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.045) 0 1px,
+        rgba(0, 0, 0, 0.02) 1px 3px,
+        transparent 3px 6px
+      );
+    background-size: 100% 18vh, 100% 6px;
+    background-repeat: no-repeat, repeat;
+    animation:
+      hero-tv-scan-drift 11s linear infinite,
+      hero-tv-noise-breathe 8.6s ease-in-out infinite reverse;
+  }
+
+  .hero-tv-noise__glitch {
+    opacity: 0.14;
+    background-image:
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 42%,
+        rgba(255, 255, 255, 0.18) 48%,
+        rgba(0, 0, 0, 0.4) 51%,
+        transparent 56%,
+        transparent 100%
+      ),
+      linear-gradient(
+        180deg,
+        transparent 0%,
+        transparent 70%,
+        rgba(255, 255, 255, 0.16) 73%,
+        rgba(0, 0, 0, 0.34) 76%,
+        transparent 80%,
+        transparent 100%
+      );
+    background-size: 100% 100%, 100% 100%;
+    animation: hero-tv-spazz 9.5s steps(1) infinite;
+  }
+
   @keyframes becoming-you-soft-flash {
     0% {
       opacity: 0.2;
@@ -203,6 +285,81 @@
     }
     100% {
       transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes hero-tv-noise-breathe {
+    0%, 100% {
+      opacity: 0.12;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.28;
+      transform: scale(1.015);
+    }
+  }
+
+  @keyframes hero-tv-grain-shift {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    25% {
+      transform: translate3d(-1.5%, 1%, 0);
+    }
+    50% {
+      transform: translate3d(1.2%, -1.4%, 0);
+    }
+    75% {
+      transform: translate3d(-0.8%, 1.6%, 0);
+    }
+    100% {
+      transform: translate3d(0.6%, -0.8%, 0);
+    }
+  }
+
+  @keyframes hero-tv-scan-drift {
+    0% {
+      background-position: 0 -28vh, 0 0;
+    }
+    32% {
+      background-position: 0 12vh, 0 0;
+    }
+    58% {
+      background-position: 0 48vh, 0 0;
+    }
+    74% {
+      background-position: 0 34vh, 0 0;
+    }
+    100% {
+      background-position: 0 105vh, 0 0;
+    }
+  }
+
+  @keyframes hero-tv-spazz {
+    0%, 78%, 100% {
+      opacity: 0.06;
+      transform: translate3d(0, 0, 0) skewX(0deg);
+      filter: none;
+    }
+    79% {
+      opacity: 0.22;
+      transform: translate3d(0, -1.5%, 0) skewX(-12deg);
+      filter: blur(0.6px);
+    }
+    80% {
+      opacity: 0.3;
+      transform: translate3d(0, 2.2%, 0) skewX(14deg);
+      filter: blur(1px);
+    }
+    81% {
+      opacity: 0.12;
+      transform: translate3d(0, -0.8%, 0) skewX(-4deg);
+      filter: blur(0.3px);
+    }
+    86% {
+      opacity: 0.18;
+      transform: translate3d(0, 1.1%, 0) skewX(8deg);
+      filter: blur(0.5px);
     }
   }
 
