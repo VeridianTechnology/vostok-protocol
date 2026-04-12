@@ -35,6 +35,24 @@ const getThumbVariants = (src: string) => {
   };
 };
 
+const getIconPreviewVariants = (src: string) => {
+  if (src === "/before/after/before.jpg") {
+    return {
+      mobile: "/before/after/before_thumb_mobile.jpg",
+      desktop: "/before/after/before_thumb_desktop.jpg",
+    };
+  }
+
+  if (src === "/Comparison/after.JPG") {
+    return {
+      mobile: "/before/after/2_mobile.jpg",
+      desktop: "/before/after/2_desktop.jpg",
+    };
+  }
+
+  return null;
+};
+
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const isFourChan = entrySource === "4chan";
   const isTwitter = entrySource === "twitter";
@@ -790,6 +808,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                         const iconKey = `${stage.key}:${icon}`;
                         const isPendingIcon = pendingIcon === iconKey;
                         const iconThumb = getThumbVariants(icon);
+                        const iconPreview = getIconPreviewVariants(icon);
                         const iconVariants = getImageVariants(icon);
                         const iconMobile = toMobileImage(icon);
                         const iconDesktop = toDesktopImage(icon);
@@ -863,8 +882,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                                   </picture>
                                 ) : (
                                   <img
-                                    src={icon}
-                                    srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
+                                    src={iconPreview ? (isMobile ? iconPreview.mobile : iconPreview.desktop) : icon}
+                                    srcSet={
+                                      iconPreview
+                                        ? `${iconPreview.mobile} 96w, ${iconPreview.desktop} 128w`
+                                        : `${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`
+                                    }
                                     sizes="40px"
                                     alt={`${stage.title} option`}
                                     className="h-full w-full object-cover bg-black"

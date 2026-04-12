@@ -954,6 +954,13 @@ const FeatureThumbnails = ({
               <div className="hero-tv-noise__glitch absolute inset-0" />
             </div>
           )}
+          {isMobile && (
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[7]">
+              <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%]" />
+              <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%]" />
+              <div className="mobile-hero-rain-shelter absolute inset-x-0 top-0 h-[22vh]" />
+            </div>
+          )}
           {!isMobile && (
             <div
               aria-hidden="true"
@@ -1023,17 +1030,24 @@ const FeatureThumbnails = ({
                       : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
                   }`}
                 >
-                  ヴォストク
+                  <span className="block">VØSTØKMETHØD</span>
+                  <span className="block">.com</span>
                 </p>
-                <p
-                  className={`pointer-events-none absolute left-1/2 top-[31vh] w-full -translate-x-1/2 px-8 text-center text-[34px] font-medium uppercase tracking-[0.12em] text-white transition-all duration-100 ${
+                <div
+                  className={`pointer-events-none absolute left-1/2 top-[31vh] flex w-full -translate-x-1/2 justify-center px-8 text-[34px] font-medium text-white transition-all duration-100 ${
                     isMobileHeroTextFlashVisible
                       ? "scale-[1.02] drop-shadow-[0_0_18px_rgba(255,255,255,0.95)]"
                       : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
                   }`}
                 >
-                  YOUR TIME
-                </p>
+                  <span className="inline-flex items-end gap-[0.06em]">
+                    <span className="inline-block -rotate-[7.5deg] translate-y-[0.4rem]">ヴ</span>
+                    <span className="inline-block -rotate-[4.5deg] translate-y-[0.18rem]">ォ</span>
+                    <span className="inline-block -rotate-[1.5deg] translate-y-[0.04rem]">ス</span>
+                    <span className="inline-block rotate-[1.5deg] translate-y-[0.04rem]">ト</span>
+                    <span className="inline-block rotate-[4.5deg] translate-y-[0.18rem]">ク</span>
+                  </span>
+                </div>
               </>
             )}
             {!isMobile && (

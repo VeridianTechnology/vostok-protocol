@@ -264,6 +264,66 @@
     animation: hero-tv-spazz 9.5s steps(1) infinite;
   }
 
+  .mobile-hero-rain-pane {
+    opacity: 0.3;
+    overflow: hidden;
+  }
+
+  .mobile-hero-rain-pane::before,
+  .mobile-hero-rain-pane::after {
+    content: "";
+    position: absolute;
+    inset: -18% -26%;
+    background-repeat: repeat;
+    transform: rotate(10deg);
+    mix-blend-mode: screen;
+  }
+
+  .mobile-hero-rain-pane::before {
+    opacity: 0.34;
+    background-image:
+      repeating-linear-gradient(
+        180deg,
+        rgba(214, 228, 255, 0.26) 0 8px,
+        rgba(214, 228, 255, 0.1) 8px 14px,
+        transparent 14px 92px
+      ),
+      repeating-linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.16) 0 6px,
+        transparent 6px 72px
+      );
+    background-size: 72px 260px, 108px 320px;
+    animation: mobile-hero-rain-fall-a 4.8s linear infinite;
+  }
+
+  .mobile-hero-rain-pane::after {
+    opacity: 0.14;
+    filter: blur(0.7px);
+    background-image: repeating-linear-gradient(
+      180deg,
+      rgba(188, 214, 255, 0.2) 0 10px,
+      transparent 10px 110px
+    );
+    background-size: 94px 360px;
+    animation: mobile-hero-rain-fall-b 6.4s linear infinite;
+  }
+
+  .mobile-hero-rain-pane--left {
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.78) 68%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  .mobile-hero-rain-pane--right {
+    mask-image: linear-gradient(270deg, rgba(0, 0, 0, 0.92) 0%, rgba(0, 0, 0, 0.78) 68%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  .mobile-hero-rain-shelter {
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.64) 0%, rgba(0, 0, 0, 0.28) 48%, rgba(0, 0, 0, 0) 100%),
+      radial-gradient(circle at top center, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0) 100%);
+    opacity: 0.88;
+  }
+
   .system-glitch-overlay {
     pointer-events: none;
     background:
@@ -372,6 +432,24 @@
     }
     100% {
       background-position: 0 105vh, 0 0;
+    }
+  }
+
+  @keyframes mobile-hero-rain-fall-a {
+    0% {
+      background-position: 0 -260px, 36px -320px;
+    }
+    100% {
+      background-position: 0 260px, 36px 320px;
+    }
+  }
+
+  @keyframes mobile-hero-rain-fall-b {
+    0% {
+      background-position: 22px -360px;
+    }
+    100% {
+      background-position: 22px 360px;
     }
   }
 

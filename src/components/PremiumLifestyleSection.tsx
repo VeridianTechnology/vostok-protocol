@@ -479,7 +479,7 @@ const PremiumLifestyleSection = () => {
       >
         <div className="pointer-events-none mx-auto max-w-[24rem] text-center md:hidden">
           <p className="text-[2.15rem] font-medium uppercase leading-[1.05] tracking-[0.12em] text-white drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]">
-            <span className="block">The age of excellence has begun</span>
+            <span className="block">YOUR SPRING, HAS SPRUNG</span>
           </p>
         </div>
         <div className="pointer-events-none hidden max-w-[36rem] md:block">
@@ -511,14 +511,16 @@ const PremiumLifestyleSection = () => {
           />
         }
         disableParallax
-        contentClassName="flex min-h-[108vh] items-end justify-center md:min-h-[112vh] md:max-w-none md:justify-start"
-        innerContentClassName="relative z-10 flex w-full justify-center pb-[10vh] pt-0 md:pl-[10vw] md:justify-start"
+        contentClassName="flex min-h-[108vh] items-start justify-center md:min-h-[112vh] md:max-w-none md:items-end md:justify-start"
+        innerContentClassName="relative z-10 flex w-full justify-center pb-0 pt-[30vh] md:pb-[10vh] md:pt-0 md:pl-[10vw] md:justify-start"
       >
         <div className="pointer-events-none mx-auto max-w-[21rem] text-center md:hidden">
           <p className="font-quote text-[1.45rem] italic leading-[1.45] tracking-[0.04em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)]">
-            <span className="block">You. Yes you. Can be good looking.</span>
-            <span className="mt-3 block">Can stun people. Can have the face of a lifetime.</span>
-            <span className="mt-3 block">You. Yes you. Can be perfect.</span>
+            <span className="block">This... this has been waiting for you.</span>
+            <span className="block h-[1.45em]" aria-hidden="true" />
+            <span className="block">Destiny... has chosen you.</span>
+            <span className="block h-[1.45em]" aria-hidden="true" />
+            <span className="block">It is time, that you are... exposed to... the truth.</span>
           </p>
         </div>
         <div className="pointer-events-none hidden max-w-[40rem] md:block">
@@ -580,7 +582,6 @@ const PremiumLifestyleSection = () => {
         desktopBackgroundSize="fill"
         mobileBackgroundScale={1.7}
         desktopBackgroundScale={1.7}
-        loopBackgroundRight
         disableParallax
         backgroundOverlayClassName="bg-[linear-gradient(180deg,rgba(255,255,255,0.26)_0%,rgba(255,255,255,0.1)_18%,rgba(255,255,255,0.04)_42%,rgba(0,0,0,0.18)_100%)]"
       >
@@ -635,13 +636,12 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                Like the
-                <span className="block">gym for your face.</span>
+                BECØME COOL
               </p>
             </div>
 
             <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">
-              DØll
+              BECØME ALIVE
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
               <video
@@ -686,8 +686,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                <span className="block">BECOME</span>
-                <span className="block">as hot as you want.</span>
+                Smooth Dynamics
               </p>
             </div>
 
@@ -737,7 +736,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                Get those photos like your Grandfather had. Classic.
+                BECØME BØY
               </p>
             </div>
 
@@ -787,7 +786,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                A visual guide to building up your face. Yes, your face. Yes, build it up.
+                BECØME WØMAN
               </p>
             </div>
 
@@ -837,7 +836,7 @@ const PremiumLifestyleSection = () => {
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                It&apos;s like Lego for your face. Brick by brick, each workout stacks on the last.
+                BECØME YØU
               </p>
             </div>
           </div>
