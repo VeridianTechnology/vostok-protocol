@@ -164,6 +164,7 @@ const FeatureThumbnails = ({
   const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
   );
+  const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -177,6 +178,10 @@ const FeatureThumbnails = ({
   const wallpaperGlitchSequenceTimeoutRef = useRef<number | null>(null);
   const mobileHeroFlashTimeoutsRef = useRef<number[]>([]);
   const mobileHeroFlashSequenceTimeoutRef = useRef<number | null>(null);
+  const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
+  const systemGlitchDoTimeoutRef = useRef<number | null>(null);
+  const systemGlitchSystemTimeoutRef = useRef<number | null>(null);
+  const systemGlitchClearTimeoutRef = useRef<number | null>(null);
   const wallpaperIsUserPausedRef = useRef(false);
   const wallpaperIsGlitchingRef = useRef(false);
   const wallpaperAutoAdvanceEnabledRef = useRef(true);
@@ -318,6 +323,27 @@ const FeatureThumbnails = ({
       setIsMobileHeroTextFlashVisible(false);
     };
   }, [isMobile]);
+
+  const clearSystemGlitchTimeouts = () => {
+    if (systemGlitchCopyTimeoutRef.current) {
+      window.clearTimeout(systemGlitchCopyTimeoutRef.current);
+      systemGlitchCopyTimeoutRef.current = null;
+    }
+    if (systemGlitchDoTimeoutRef.current) {
+      window.clearTimeout(systemGlitchDoTimeoutRef.current);
+      systemGlitchDoTimeoutRef.current = null;
+    }
+    if (systemGlitchSystemTimeoutRef.current) {
+      window.clearTimeout(systemGlitchSystemTimeoutRef.current);
+      systemGlitchSystemTimeoutRef.current = null;
+    }
+    if (systemGlitchClearTimeoutRef.current) {
+      window.clearTimeout(systemGlitchClearTimeoutRef.current);
+      systemGlitchClearTimeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => clearSystemGlitchTimeouts, []);
 
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
@@ -527,6 +553,27 @@ const FeatureThumbnails = ({
     setIsWallpaperUserPaused(true);
     clearWallpaperGlitchTimeouts();
     pauseWallpaperVideos();
+  };
+
+  const triggerSystemGlitch = () => {
+    clearSystemGlitchTimeouts();
+    setSystemGlitchWord("КОПИРОВАТЬ");
+
+    systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
+      setSystemGlitchWord(null);
+    }, 220);
+
+    systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
+      setSystemGlitchWord("ДЕЛАЙ");
+    }, 320);
+
+    systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
+      setSystemGlitchWord("СБОЙ СИСТЕМЫ");
+    }, 640);
+
+    systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
+      setSystemGlitchWord(null);
+    }, 920);
   };
 
   useEffect(() => {
@@ -844,7 +891,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
-            className="relative min-h-[92vh] w-full md:min-h-[101vh]"
+            className="relative min-h-[108vh] w-full md:min-h-[112vh]"
             onClick={!isMobile ? toggleWallpaperVideoPlayback : undefined}
           >
           <div
@@ -907,6 +954,12 @@ const FeatureThumbnails = ({
               <div className="hero-tv-noise__glitch absolute inset-0" />
             </div>
           )}
+          {!isMobile && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-[7] bg-[linear-gradient(180deg,rgba(118,155,255,0.045)_0%,rgba(88,132,235,0.035)_38%,rgba(46,92,196,0.05)_100%)]"
+            />
+          )}
           <div className="pointer-events-none absolute inset-0 z-[8] bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
           {!isMobile && !isWallpaperPlaying && isWallpaperUserPaused && (
             <div className="pointer-events-none absolute inset-0 z-[12] flex items-center justify-center bg-black/10">
@@ -938,24 +991,29 @@ const FeatureThumbnails = ({
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
           {!isMobile && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute left-1/2 top-[58%] z-[9] h-[30vh] w-[18vw] -translate-x-1/2 -translate-y-1/2"
+            <p
+              className="pointer-events-none absolute left-[10.25vw] top-[7vh] z-10 font-['Tektur'] text-[1.5rem] font-black uppercase tracking-[0.28em] text-white [text-shadow:0_4px_18px_rgba(0,0,0,0.72)]"
             >
-              <div className="absolute left-[32%] top-0 h-full w-px bg-black/95 shadow-[0_0_18px_rgba(0,0,0,0.95)]" />
-              <div className="absolute left-1/2 top-[-8%] h-[116%] w-px -translate-x-1/2 bg-black/98 shadow-[0_0_22px_rgba(0,0,0,0.98)]" />
-              <div className="absolute right-[32%] top-[6%] h-[88%] w-px bg-black/95 shadow-[0_0_18px_rgba(0,0,0,0.95)]" />
-              <div className="absolute left-[32%] top-1/2 h-[22vh] w-[18px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
-              <div className="absolute left-1/2 top-1/2 h-[24vh] w-[20px] -translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.11)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
-              <div className="absolute right-[32%] top-1/2 h-[20vh] w-[18px] translate-x-1/2 -translate-y-1/2 bg-[radial-gradient(circle,rgba(255,255,255,0.22)_0%,rgba(255,255,255,0.1)_28%,rgba(255,255,255,0)_72%)] blur-[11px]" />
-            </div>
-          )}
-          {!isMobile && (
-            <p className="pointer-events-none absolute left-[10.25vw] top-[9vh] z-10 font-['Tektur'] text-[1.5rem] font-black uppercase tracking-[0.28em] text-white [text-shadow:0_4px_18px_rgba(0,0,0,0.72)]">
-              VØSTOK
+              VOSTOK
             </p>
           )}
-          <div className="absolute left-1/2 top-[40vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[10vh] md:pl-[10vw]">
+          {!isMobile && (
+            <button
+              type="button"
+              onClick={triggerSystemGlitch}
+              className="absolute right-[5vw] top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-5 py-3 font-['Tektur'] text-[0.8rem] font-bold uppercase tracking-[0.22em] text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/45"
+            >
+              Trigger Glitch
+            </button>
+          )}
+          {systemGlitchWord && (
+            <div className="system-glitch-overlay fixed inset-0 z-[90] flex items-center justify-center">
+              <span data-text={systemGlitchWord} className="system-glitch-word">
+                {systemGlitchWord}
+              </span>
+            </div>
+          )}
+          <div className="absolute left-1/2 top-[44vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[12vh] md:pl-[10vw]">
             {isMobile && (
               <>
                 <p
@@ -965,26 +1023,26 @@ const FeatureThumbnails = ({
                       : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
                   }`}
                 >
-                  Vostok Method
+                  ヴォストク
                 </p>
                 <p
-                  className={`pointer-events-none absolute left-1/2 top-[31vh] w-full -translate-x-1/2 px-8 text-center text-[34px] font-medium tracking-[0.12em] text-white transition-all duration-100 ${
+                  className={`pointer-events-none absolute left-1/2 top-[31vh] w-full -translate-x-1/2 px-8 text-center text-[34px] font-medium uppercase tracking-[0.12em] text-white transition-all duration-100 ${
                     isMobileHeroTextFlashVisible
                       ? "scale-[1.02] drop-shadow-[0_0_18px_rgba(255,255,255,0.95)]"
                       : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
                   }`}
                 >
-                  男を奮い立たせる
+                  YOUR TIME
                 </p>
               </>
             )}
             {!isMobile && (
               <>
                 <p
-                  className="pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:pl-1 md:text-[1.6rem]"
+                  className="pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:-ml-[7.5vw] md:text-[1.6rem]"
                 >
-                  <span className="block">"Gaze upon the truth</span>
-                  <span className="mt-2 block pl-[2.9rem]">And the truth... shall set you free"</span>
+                  <span className="block">Gaze upon the truth.</span>
+                  <span className="mt-2 block pl-[2.9rem]">And the truth... shall set you free.</span>
                 </p>
               </>
             )}

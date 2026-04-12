@@ -54,7 +54,7 @@ describe("VostokProcess", () => {
   });
 
   it("uses the responsive before/after after image variants on desktop and mobile", () => {
-    const { rerender } = render(<VostokProcess />);
+    const { unmount } = render(<VostokProcess />);
 
     const mobileAfterButton = screen.getAllByRole("button", { name: "BEFORE / AFTER option" })[1];
     fireEvent.click(mobileAfterButton, { detail: 1 });
@@ -62,12 +62,14 @@ describe("VostokProcess", () => {
     const mobileImage = screen.getByAltText("BEFORE / AFTER comparison");
     expect(mobileImage).toHaveAttribute("src", "/Comparison/after_mobile.JPG");
 
+    unmount();
+
     Object.defineProperty(window, "matchMedia", {
       writable: true,
       value: mockMatchMedia(false),
     });
 
-    rerender(<VostokProcess />);
+    render(<VostokProcess />);
 
     const desktopAfterButton = screen.getAllByRole("button", { name: "BEFORE / AFTER option" })[1];
     fireEvent.click(desktopAfterButton, { detail: 1 });

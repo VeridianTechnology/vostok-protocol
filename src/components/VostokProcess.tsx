@@ -135,6 +135,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const pendingSelectionRef = useRef<string | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
+  const isNonAiAfter = activeStage === "non_ai" && activeImage === nonAiAfterSrc;
   const activeVariants =
     activeStage === "non_ai" ? null : getImageVariants(activeImage);
   const showMobileLoadingOverlay = isMobile && pendingIcon !== null;
@@ -726,7 +727,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             ) : (
               <>
                 <img
-                  src={toDesktopImage(activeImage)}
+                  src={isMobile ? toMobileImage(activeImage) : toDesktopImage(activeImage)}
                   srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w`}
                   sizes="(max-width: 640px) 100vw, 60vw"
                   alt={`${currentStage.title} comparison`}
@@ -788,10 +789,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                       {stage.icons.map((icon) => {
                         const iconKey = `${stage.key}:${icon}`;
                         const isPendingIcon = pendingIcon === iconKey;
-                        const iconThumb =
-                          icon.includes("/before/after/") || icon === "/Comparison/after.JPG"
-                            ? null
-                            : getThumbVariants(icon);
+                        const iconThumb = getThumbVariants(icon);
+                        const iconVariants = getImageVariants(icon);
                         const iconMobile = toMobileImage(icon);
                         const iconDesktop = toDesktopImage(icon);
                         const handleIconSelection = () => {
@@ -840,15 +839,39 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                               </picture>
                             ) : (
                               <div className="relative h-full w-full">
-                                <img
-                                  src={icon}
-                                  srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
-                                  sizes="40px"
-                                  alt={`${stage.title} option`}
-                                  className="h-full w-full object-cover bg-black"
-                                  loading={stage.key === "non_ai" ? "eager" : "lazy"}
-                                  decoding="async"
-                                />
+                                {iconVariants ? (
+                                  <picture>
+                                    <source
+                                      type="image/avif"
+                                      srcSet={`${iconVariants.avif.mobile} 96w, ${iconVariants.avif.desktop} 128w`}
+                                      sizes="40px"
+                                    />
+                                    <source
+                                      type="image/webp"
+                                      srcSet={`${iconVariants.webp.mobile} 96w, ${iconVariants.webp.desktop} 128w`}
+                                      sizes="40px"
+                                    />
+                                    <img
+                                      src={iconVariants.desktop}
+                                      srcSet={`${iconVariants.mobile} 96w, ${iconVariants.desktop} 128w`}
+                                      sizes="40px"
+                                      alt={`${stage.title} option`}
+                                      className="h-full w-full object-cover bg-black"
+                                      loading={stage.key === "non_ai" ? "eager" : "lazy"}
+                                      decoding="async"
+                                    />
+                                  </picture>
+                                ) : (
+                                  <img
+                                    src={icon}
+                                    srcSet={`${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`}
+                                    sizes="40px"
+                                    alt={`${stage.title} option`}
+                                    className="h-full w-full object-cover bg-black"
+                                    loading={stage.key === "non_ai" ? "eager" : "lazy"}
+                                    decoding="async"
+                                  />
+                                )}
                                 <div className="pointer-events-none absolute inset-0 bg-black/20" />
                               </div>
                             )}
