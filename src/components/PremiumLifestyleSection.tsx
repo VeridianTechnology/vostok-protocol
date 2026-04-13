@@ -430,7 +430,7 @@ const PremiumLifestyleSection = ({
   }, [areBecomingYouVideosPaused, individuallyPausedBecomingYouVideos, isBecomingYouActive]);
 
   useEffect(() => {
-    becomingYouVideoRefs.current.forEach((video) => {
+    becomingYouVideoRefs.current.forEach((video, index) => {
       if (!video) {
         return;
       }
@@ -442,6 +442,7 @@ const PremiumLifestyleSection = ({
 
       if (!isBecomingYouActive) {
         video.pause();
+        video.removeAttribute("src");
         sources.forEach((source) => {
           source.removeAttribute("src");
         });
@@ -449,13 +450,24 @@ const PremiumLifestyleSection = ({
         return;
       }
 
+      let activeVideoSrc: string | null = null;
       sources.forEach((source) => {
         const videoSrc = source.getAttribute("data-video-src");
         if (videoSrc) {
+          activeVideoSrc = activeVideoSrc ?? videoSrc;
           source.setAttribute("src", videoSrc);
         }
       });
+
+      if (activeVideoSrc) {
+        video.setAttribute("src", activeVideoSrc);
+      }
+
       video.load();
+
+      if (!areBecomingYouVideosPausedRef.current && !individuallyPausedBecomingYouVideosRef.current[index]) {
+        void video.play().catch(() => {});
+      }
     });
   }, [isBecomingYouActive, isMobile]);
 
@@ -571,7 +583,7 @@ const PremiumLifestyleSection = ({
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         disableParallax
         contentClassName="flex min-h-[calc(108vh-8.8rem)] flex-col items-center justify-center md:min-h-[calc(140vh-10rem)] md:max-w-none md:items-start md:justify-end"
-        innerContentClassName="flex w-full items-center justify-center px-[6vw] pb-[10vh] pt-[14vh] md:items-end md:justify-start md:px-0 md:pb-[10vh] md:pl-[10vw] md:pt-0"
+        innerContentClassName="flex w-full items-center justify-center px-[6vw] pb-[15vh] pt-[9vh] md:items-end md:justify-start md:px-0 md:pb-[10vh] md:pl-[10vw] md:pt-0"
       >
         <div className="pointer-events-none mx-auto max-w-[24rem] text-center md:hidden">
           <p className="text-[2.15rem] font-medium uppercase leading-[1.05] tracking-[0.12em] text-white drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]">
@@ -594,7 +606,7 @@ const PremiumLifestyleSection = ({
         lines={[]}
         desktopBackground="/section_wallpaper/wall/2_desktop.jpg?v=1"
         mobileBackground="/section_wallpaper/wall/3.png?v=1"
-        sectionClassName="min-h-[108vh] py-0 md:min-h-[140vh]"
+        sectionClassName="min-h-[94vh] py-0 md:min-h-[140vh]"
         mobileBackgroundPosition="center"
         mobileBackgroundSize="cover"
         mobileBackgroundScale={1.08}
@@ -610,8 +622,8 @@ const PremiumLifestyleSection = ({
           />
         }
         disableParallax
-        contentClassName="flex min-h-[108vh] items-start justify-center md:min-h-[140vh] md:max-w-none md:items-end md:justify-start"
-        innerContentClassName="relative z-10 flex w-full justify-center pb-0 pt-[30vh] md:pb-[10vh] md:pt-0 md:pl-[10vw] md:justify-start"
+        contentClassName="flex min-h-[94vh] items-start justify-center md:min-h-[140vh] md:max-w-none md:items-end md:justify-start"
+        innerContentClassName="relative z-10 flex w-full justify-center pb-0 pt-[15vh] md:pb-[10vh] md:pt-0 md:pl-[10vw] md:justify-start"
       >
         <div ref={wallGlitchTargetRef}>
           <div className="pointer-events-none mx-auto max-w-[21rem] text-center md:hidden">

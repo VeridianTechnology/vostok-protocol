@@ -162,6 +162,7 @@ const FeatureThumbnails = ({
   const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
   const [isMobileHeroFlashVisible, setIsMobileHeroFlashVisible] = useState(false);
   const [isMobileHeroTextFlashVisible, setIsMobileHeroTextFlashVisible] = useState(false);
+  const [isMobileHeroRainVisible, setIsMobileHeroRainVisible] = useState(false);
   const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
   const [isWallpaperPlaying, setIsWallpaperPlaying] = useState(true);
   const [isWallpaperUserPaused, setIsWallpaperUserPaused] = useState(false);
@@ -284,6 +285,7 @@ const FeatureThumbnails = ({
     if (!isMobile) {
       setIsMobileHeroFlashVisible(false);
       setIsMobileHeroTextFlashVisible(false);
+      setIsMobileHeroRainVisible(false);
       hasPlayedMobileHeroThunderSequenceRef.current = false;
       return;
     }
@@ -325,11 +327,16 @@ const FeatureThumbnails = ({
         setIsMobileHeroTextFlashVisible(false);
       }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS + MOBILE_HERO_SECOND_FLASH_ON_MS);
 
+      const rainRevealTimeout = window.setTimeout(() => {
+        setIsMobileHeroRainVisible(true);
+      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS + MOBILE_HERO_SECOND_FLASH_ON_MS + 120);
+
       mobileHeroFlashTimeoutsRef.current.push(
         firstOnTimeout,
         firstOffTimeout,
         secondOnTimeout,
-        secondOffTimeout
+        secondOffTimeout,
+        rainRevealTimeout
       );
     }, nextDelay);
   };
@@ -341,6 +348,7 @@ const FeatureThumbnails = ({
       clearMobileHeroFlashTimeouts();
       setIsMobileHeroFlashVisible(false);
       setIsMobileHeroTextFlashVisible(false);
+      setIsMobileHeroRainVisible(false);
     };
   }, [isMobile]);
 
@@ -873,7 +881,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
-            className="relative min-h-[108vh] w-full md:min-h-[140vh]"
+            className="relative min-h-[98vh] w-full md:min-h-[140vh]"
             onClick={!isMobile ? toggleWallpaperVideoPlayback : undefined}
           >
           <div
@@ -937,7 +945,12 @@ const FeatureThumbnails = ({
             </div>
           )}
           {isMobile && (
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[9]">
+            <div
+              aria-hidden="true"
+              className={`pointer-events-none absolute inset-0 z-[9] transition-opacity duration-700 ${
+                isMobileHeroRainVisible ? "opacity-100" : "opacity-0"
+              }`}
+            >
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%]" />
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%]" />
               <div className="mobile-hero-rain-shelter absolute inset-x-0 top-0 h-[22vh]" />

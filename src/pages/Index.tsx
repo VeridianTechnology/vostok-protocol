@@ -378,7 +378,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background">
-      <section id="section-hero" className="min-h-[108vh] md:min-h-[140vh]">
+      <section id="section-hero" className="min-h-[98vh] md:min-h-[140vh]">
         <FeatureThumbnails
           renderStructureSection={false}
           renderWallpaperSection
@@ -392,7 +392,7 @@ const Index = () => {
           messianicSectionId={undefined}
         />
       </section>
-      <section id="section-wall" className="min-h-[108vh] md:min-h-[140vh]">
+      <section id="section-wall" className="min-h-[94vh] md:min-h-[140vh]">
         <PremiumLifestyleSection
           visibleSections={["wall"]}
           wallSectionId={undefined}

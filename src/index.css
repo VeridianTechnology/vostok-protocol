@@ -366,6 +366,16 @@
     animation: system-glitch-split-b 520ms steps(1) forwards;
   }
 
+  @media (max-width: 767px) {
+    .system-glitch-word {
+      display: block;
+      width: min(92vw, 24rem);
+      text-align: center;
+      font-size: clamp(2.8rem, 11vw, 4.5rem);
+      letter-spacing: 0.14em;
+    }
+  }
+
   @keyframes becoming-you-soft-flash {
     0% {
       opacity: 0.2;

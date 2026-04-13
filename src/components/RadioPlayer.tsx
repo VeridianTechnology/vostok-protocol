@@ -926,6 +926,7 @@ const RadioPlayer = () => {
     const handlePlay = () => {
       setIsPlaying(true);
       scheduleDjRandomOverlay();
+      void startVisualizer();
     };
     const handlePause = () => {
       setIsPlaying(false);
@@ -1046,8 +1047,6 @@ const RadioPlayer = () => {
   }, [currentTrack]);
 
   useEffect(() => {
-    void startVisualizer();
-
     return () => {
       stopVisualizer();
     };
