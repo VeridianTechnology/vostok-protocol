@@ -265,7 +265,7 @@
   }
 
   .mobile-hero-rain-pane {
-    opacity: 0.3;
+    opacity: 0.48;
     overflow: hidden;
   }
 
@@ -280,33 +280,23 @@
   }
 
   .mobile-hero-rain-pane::before {
-    opacity: 0.34;
+    opacity: 0.62;
     background-image:
-      repeating-linear-gradient(
-        180deg,
-        rgba(214, 228, 255, 0.26) 0 8px,
-        rgba(214, 228, 255, 0.1) 8px 14px,
-        transparent 14px 92px
-      ),
-      repeating-linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.16) 0 6px,
-        transparent 6px 72px
-      );
-    background-size: 72px 260px, 108px 320px;
-    animation: mobile-hero-rain-fall-a 4.8s linear infinite;
+      radial-gradient(ellipse 1.4px 8px at 12px 16px, rgba(225, 236, 255, 0.9) 0%, rgba(225, 236, 255, 0.4) 58%, transparent 100%),
+      radial-gradient(ellipse 1.2px 7px at 46px 58px, rgba(225, 236, 255, 0.74) 0%, rgba(225, 236, 255, 0.24) 58%, transparent 100%),
+      radial-gradient(ellipse 1.3px 9px at 74px 28px, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.22) 58%, transparent 100%);
+    background-size: 92px 188px;
+    animation: mobile-hero-rain-fall-a 7.2s linear infinite;
   }
 
   .mobile-hero-rain-pane::after {
-    opacity: 0.14;
-    filter: blur(0.7px);
-    background-image: repeating-linear-gradient(
-      180deg,
-      rgba(188, 214, 255, 0.2) 0 10px,
-      transparent 10px 110px
-    );
-    background-size: 94px 360px;
-    animation: mobile-hero-rain-fall-b 6.4s linear infinite;
+    opacity: 0.28;
+    filter: blur(0.55px);
+    background-image:
+      radial-gradient(ellipse 1.1px 6px at 20px 24px, rgba(201, 222, 255, 0.7) 0%, rgba(201, 222, 255, 0.24) 60%, transparent 100%),
+      radial-gradient(ellipse 1px 5px at 62px 76px, rgba(201, 222, 255, 0.62) 0%, rgba(201, 222, 255, 0.2) 60%, transparent 100%);
+    background-size: 84px 170px;
+    animation: mobile-hero-rain-fall-b 9.4s linear infinite;
   }
 
   .mobile-hero-rain-pane--left {
@@ -322,6 +312,18 @@
       linear-gradient(180deg, rgba(0, 0, 0, 0.64) 0%, rgba(0, 0, 0, 0.28) 48%, rgba(0, 0, 0, 0) 100%),
       radial-gradient(circle at top center, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.08) 48%, rgba(0, 0, 0, 0) 100%);
     opacity: 0.88;
+  }
+
+  .vostok-process-icon--tap {
+    animation: vostok-process-icon-tap 260ms ease-out forwards;
+  }
+
+  .vostok-process-icon__flash {
+    opacity: 0;
+  }
+
+  .vostok-process-icon__flash--active {
+    animation: vostok-process-icon-flash 260ms ease-out forwards;
   }
 
   .system-glitch-overlay {
@@ -437,19 +439,43 @@
 
   @keyframes mobile-hero-rain-fall-a {
     0% {
-      background-position: 0 -260px, 36px -320px;
+      background-position: 0 -188px;
     }
     100% {
-      background-position: 0 260px, 36px 320px;
+      background-position: 0 188px;
     }
   }
 
   @keyframes mobile-hero-rain-fall-b {
     0% {
-      background-position: 22px -360px;
+      background-position: 0 -170px;
     }
     100% {
-      background-position: 22px 360px;
+      background-position: 0 170px;
+    }
+  }
+
+  @keyframes vostok-process-icon-tap {
+    0% {
+      transform: scale(1);
+    }
+    35% {
+      transform: scale(0.86);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes vostok-process-icon-flash {
+    0% {
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.88;
+    }
+    100% {
+      opacity: 0;
     }
   }
 

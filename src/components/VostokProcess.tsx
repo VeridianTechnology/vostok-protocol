@@ -45,8 +45,8 @@ const getIconPreviewVariants = (src: string) => {
 
   if (src === "/Comparison/after.JPG") {
     return {
-      mobile: "/before/after/2_mobile.jpg",
-      desktop: "/before/after/2_desktop.jpg",
+      mobile: "/Comparison/1_thumb_mobile.JPG",
+      desktop: "/Comparison/1_thumb_desktop.JPG",
     };
   }
 
@@ -148,10 +148,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
   const [pendingIcon, setPendingIcon] = useState<string | null>(null);
+  const [flashIconKey, setFlashIconKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const parallaxRef = useRef<number | null>(null);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const pendingSelectionRef = useRef<string | null>(null);
+  const flashTimeoutRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const isNonAiAfter = activeStage === "non_ai" && activeImage === nonAiAfterSrc;
   const activeVariants =
@@ -243,6 +245,13 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
+
+  useEffect(() => () => {
+    if (flashTimeoutRef.current) {
+      window.clearTimeout(flashTimeoutRef.current);
+      flashTimeoutRef.current = null;
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -813,6 +822,16 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                         const iconMobile = toMobileImage(icon);
                         const iconDesktop = toDesktopImage(icon);
                         const handleIconSelection = () => {
+                          if (isMobile) {
+                            setFlashIconKey(iconKey);
+                            if (flashTimeoutRef.current) {
+                              window.clearTimeout(flashTimeoutRef.current);
+                            }
+                            flashTimeoutRef.current = window.setTimeout(() => {
+                              setFlashIconKey((current) => (current === iconKey ? null : current));
+                              flashTimeoutRef.current = null;
+                            }, 260);
+                          }
                           selectStage(stage.key as StageKey, icon);
                         };
                         return (
@@ -828,11 +847,13 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                               event.stopPropagation();
                               handleIconSelection();
                             }}
-                            className={`relative z-10 h-[4.5rem] w-[4.5rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
+                            className={`relative z-10 h-[3.25rem] w-[3.25rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
                               activeStage === stage.key && activeImage === icon
                                 ? "border-chrome/60 opacity-100"
                                 : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
-                            } ${isPendingIcon ? "scale-[1.04] border-white/70 opacity-100 ring-2 ring-white/35 grayscale-0" : ""}`}
+                            } ${isPendingIcon ? "scale-[1.04] border-white/70 opacity-100 ring-2 ring-white/35 grayscale-0" : ""} ${
+                              flashIconKey === iconKey ? "vostok-process-icon--tap" : ""
+                            }`}
                           >
                             {iconThumb ? (
                               <picture>
@@ -898,6 +919,12 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                                 <div className="pointer-events-none absolute inset-0 bg-black/20" />
                               </div>
                             )}
+                            <div
+                              aria-hidden="true"
+                              className={`vostok-process-icon__flash pointer-events-none absolute inset-0 z-[2] bg-white ${
+                                flashIconKey === iconKey ? "vostok-process-icon__flash--active" : ""
+                              }`}
+                            />
                           </button>
                         );
                       })}

@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { getImageVariants } from "@/lib/utils";
 import SectionSideTab from "@/components/SectionSideTab";
 
@@ -136,10 +137,14 @@ const FeatureThumbnails = ({
 }: FeatureThumbnailsProps) => {
   const mobileHeroImage = "/section_wallpaper/hero/mobile.png";
   const desktopHeroImage = "/section_wallpaper/hero/final1_desktop.jpg";
+  const mobileHeroThunderSrc = "/audio/effect/thunder.m4a";
+  const MOBILE_HERO_THUNDER_VOLUME = 0.15;
   const MOBILE_HERO_FLASH_MIN_DELAY_MS = 9000;
   const MOBILE_HERO_FLASH_MAX_DELAY_MS = 18000;
-  const MOBILE_HERO_FLASH_ON_MS = 85;
-  const MOBILE_HERO_FLASH_GAP_MS = 95;
+  const MOBILE_HERO_THUNDER_LEAD_IN_MS = 300;
+  const MOBILE_HERO_FIRST_FLASH_ON_MS = 400;
+  const MOBILE_HERO_SECOND_FLASH_ON_MS = 700;
+  const MOBILE_HERO_FLASH_GAP_MS = 1000;
   const WALLPAPER_GLITCH_MIN_DELAY_MS = 5000;
   const WALLPAPER_GLITCH_MAX_DELAY_MS = 15000;
   const WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS = 400;
@@ -185,6 +190,8 @@ const FeatureThumbnails = ({
   const wallpaperIsUserPausedRef = useRef(false);
   const wallpaperIsGlitchingRef = useRef(false);
   const wallpaperAutoAdvanceEnabledRef = useRef(true);
+  const mobileHeroThunderAudioRef = useRef<HTMLAudioElement | null>(null);
+  const hasPlayedMobileHeroThunderSequenceRef = useRef(false);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
@@ -270,6 +277,11 @@ const FeatureThumbnails = ({
       window.clearTimeout(mobileHeroFlashSequenceTimeoutRef.current);
       mobileHeroFlashSequenceTimeoutRef.current = null;
     }
+
+    if (mobileHeroThunderAudioRef.current) {
+      mobileHeroThunderAudioRef.current.pause();
+      mobileHeroThunderAudioRef.current.currentTime = 0;
+    }
   };
 
   const scheduleMobileHeroFlash = () => {
@@ -278,6 +290,11 @@ const FeatureThumbnails = ({
     if (!isMobile) {
       setIsMobileHeroFlashVisible(false);
       setIsMobileHeroTextFlashVisible(false);
+      hasPlayedMobileHeroThunderSequenceRef.current = false;
+      return;
+    }
+
+    if (hasPlayedMobileHeroThunderSequenceRef.current) {
       return;
     }
 
@@ -287,26 +304,35 @@ const FeatureThumbnails = ({
       ) + MOBILE_HERO_FLASH_MIN_DELAY_MS;
 
     mobileHeroFlashSequenceTimeoutRef.current = window.setTimeout(() => {
-      setIsMobileHeroFlashVisible(true);
-      setIsMobileHeroTextFlashVisible(true);
+      hasPlayedMobileHeroThunderSequenceRef.current = true;
+      if (mobileHeroThunderAudioRef.current) {
+        mobileHeroThunderAudioRef.current.volume = MOBILE_HERO_THUNDER_VOLUME;
+        mobileHeroThunderAudioRef.current.currentTime = 0;
+        void mobileHeroThunderAudioRef.current.play().catch(() => {});
+      }
+
+      const firstOnTimeout = window.setTimeout(() => {
+        setIsMobileHeroFlashVisible(true);
+        setIsMobileHeroTextFlashVisible(true);
+      }, MOBILE_HERO_THUNDER_LEAD_IN_MS);
 
       const firstOffTimeout = window.setTimeout(() => {
         setIsMobileHeroFlashVisible(false);
         setIsMobileHeroTextFlashVisible(false);
-      }, MOBILE_HERO_FLASH_ON_MS);
+      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS);
 
       const secondOnTimeout = window.setTimeout(() => {
         setIsMobileHeroFlashVisible(true);
         setIsMobileHeroTextFlashVisible(true);
-      }, MOBILE_HERO_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS);
+      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS);
 
       const secondOffTimeout = window.setTimeout(() => {
         setIsMobileHeroFlashVisible(false);
         setIsMobileHeroTextFlashVisible(false);
-        scheduleMobileHeroFlash();
-      }, MOBILE_HERO_FLASH_ON_MS * 2 + MOBILE_HERO_FLASH_GAP_MS);
+      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS + MOBILE_HERO_SECOND_FLASH_ON_MS);
 
       mobileHeroFlashTimeoutsRef.current.push(
+        firstOnTimeout,
         firstOffTimeout,
         secondOnTimeout,
         secondOffTimeout
@@ -344,6 +370,17 @@ const FeatureThumbnails = ({
   };
 
   useEffect(() => clearSystemGlitchTimeouts, []);
+
+  const triggerSystemGlitchWord = (
+    word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ",
+    durationMs = 520
+  ) => {
+    clearSystemGlitchTimeouts();
+    setSystemGlitchWord(word);
+    systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
+      setSystemGlitchWord(null);
+    }, durationMs);
+  };
 
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
@@ -575,6 +612,30 @@ const FeatureThumbnails = ({
       setSystemGlitchWord(null);
     }, 920);
   };
+
+  useEffect(() => {
+    const handleSystemGlitch = (
+      event: Event
+    ) => {
+      if (isMobile) {
+        return;
+      }
+
+      const customEvent = event as CustomEvent<{
+        word?: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
+      }>;
+      const word = customEvent.detail?.word;
+
+      if (!word) {
+        return;
+      }
+
+      triggerSystemGlitchWord(word);
+    };
+
+    window.addEventListener("vostok:system-glitch", handleSystemGlitch);
+    return () => window.removeEventListener("vostok:system-glitch", handleSystemGlitch);
+  }, [isMobile]);
 
   useEffect(() => {
     wallpaperIsUserPausedRef.current = false;
@@ -955,7 +1016,7 @@ const FeatureThumbnails = ({
             </div>
           )}
           {isMobile && (
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[7]">
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[9]">
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%]" />
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%]" />
               <div className="mobile-hero-rain-shelter absolute inset-x-0 top-0 h-[22vh]" />
@@ -1013,13 +1074,7 @@ const FeatureThumbnails = ({
               Trigger Glitch
             </button>
           )}
-          {systemGlitchWord && (
-            <div className="system-glitch-overlay fixed inset-0 z-[90] flex items-center justify-center">
-              <span data-text={systemGlitchWord} className="system-glitch-word">
-                {systemGlitchWord}
-              </span>
-            </div>
-          )}
+          <audio ref={mobileHeroThunderAudioRef} src={mobileHeroThunderSrc} preload="auto" />
           <div className="absolute left-1/2 top-[44vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[12vh] md:pl-[10vw]">
             {isMobile && (
               <>
@@ -1064,6 +1119,16 @@ const FeatureThumbnails = ({
           </div>
         </section>
       )}
+      {systemGlitchWord && typeof document !== "undefined"
+        ? createPortal(
+            <div className="system-glitch-overlay fixed inset-0 z-[90] flex items-center justify-center">
+              <span data-text={systemGlitchWord} className="system-glitch-word">
+                {systemGlitchWord}
+              </span>
+            </div>,
+            document.body
+          )
+        : null}
     </>
   );
 };

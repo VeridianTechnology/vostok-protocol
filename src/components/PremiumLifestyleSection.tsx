@@ -5,6 +5,7 @@ const getExplanationVideoSrc = (src: string, isMobile: boolean) =>
   src.replace(/\.mp4$/i, isMobile ? "_mobile.mp4" : "_desktop.mp4");
 
 type InterestSectionProps = {
+  sectionId?: string;
   tabLabel: string;
   hideTabLabel?: boolean;
   lines: string[];
@@ -47,6 +48,7 @@ type InterestSectionProps = {
 };
 
 const InterestSection = ({
+  sectionId,
   tabLabel,
   hideTabLabel = false,
   lines,
@@ -182,6 +184,7 @@ const InterestSection = ({
 
   return (
     <section
+      id={sectionId}
       className={`section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black px-6 py-16 md:py-24 ${sectionClassName}`}
       onPointerMove={handleParallaxMove}
       onPointerLeave={handleParallaxLeave}
@@ -223,7 +226,7 @@ const InterestSection = ({
                     muted
                     loop={!fadeToImageOnVideoEnd}
                     playsInline
-                    preload="auto"
+                    preload="metadata"
                     aria-hidden="true"
                     onEnded={handleBackgroundVideoEnded}
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] [backface-visibility:hidden] [transform:translateZ(0)] ${
@@ -349,7 +352,24 @@ const InterestSection = ({
   );
 };
 
-const PremiumLifestyleSection = () => {
+type PremiumLifestyleSectionKey = "messianic" | "wall" | "becoming";
+
+type PremiumLifestyleSectionProps = {
+  visibleSections?: PremiumLifestyleSectionKey[];
+  messianicSectionId?: string;
+  wallSectionId?: string;
+  becomingSectionId?: string;
+  isBecomingYouActive?: boolean;
+};
+
+const PremiumLifestyleSection = ({
+  visibleSections = ["messianic", "wall", "becoming"],
+  messianicSectionId = "messianic-section",
+  wallSectionId = "wall-section",
+  becomingSectionId,
+  isBecomingYouActive = true,
+}: PremiumLifestyleSectionProps) => {
+  const visibleSectionSet = new Set(visibleSections);
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
   const areBecomingYouVideosPausedRef = useRef(false);
@@ -393,6 +413,11 @@ const PremiumLifestyleSection = () => {
         return;
       }
 
+      if (!isBecomingYouActive) {
+        video.pause();
+        return;
+      }
+
       if (areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[index]) {
         video.pause();
         return;
@@ -400,7 +425,37 @@ const PremiumLifestyleSection = () => {
 
       void video.play().catch(() => {});
     });
-  }, [areBecomingYouVideosPaused, individuallyPausedBecomingYouVideos]);
+  }, [areBecomingYouVideosPaused, individuallyPausedBecomingYouVideos, isBecomingYouActive]);
+
+  useEffect(() => {
+    becomingYouVideoRefs.current.forEach((video) => {
+      if (!video) {
+        return;
+      }
+
+      const sources = Array.from(video.querySelectorAll("source[data-video-src]"));
+      if (!sources.length) {
+        return;
+      }
+
+      if (!isBecomingYouActive) {
+        video.pause();
+        sources.forEach((source) => {
+          source.removeAttribute("src");
+        });
+        video.load();
+        return;
+      }
+
+      sources.forEach((source) => {
+        const videoSrc = source.getAttribute("data-video-src");
+        if (videoSrc) {
+          source.setAttribute("src", videoSrc);
+        }
+      });
+      video.load();
+    });
+  }, [isBecomingYouActive, isMobile]);
 
   useEffect(() => {
     return () => {
@@ -457,7 +512,9 @@ const PremiumLifestyleSection = () => {
 
   return (
     <>
+      {visibleSectionSet.has("messianic") ? (
       <InterestSection
+        sectionId={messianicSectionId}
         tabLabel="STAY TUNED"
         hideTabLabel
         lines={[]}
@@ -489,7 +546,10 @@ const PremiumLifestyleSection = () => {
           </p>
         </div>
       </InterestSection>
+      ) : null}
+      {visibleSectionSet.has("wall") ? (
       <InterestSection
+        sectionId={wallSectionId}
         tabLabel="WALL"
         hideTabLabel
         lines={[]}
@@ -533,7 +593,10 @@ const PremiumLifestyleSection = () => {
           </p>
         </div>
       </InterestSection>
+      ) : null}
+      {visibleSectionSet.has("becoming") ? (
       <InterestSection
+        sectionId={becomingSectionId}
         tabLabel="BECOMING YOU"
         hideTabLabel
         lines={[]}
@@ -603,7 +666,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(0)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -653,7 +716,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(1)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -703,7 +766,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(2)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -753,7 +816,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(3)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -803,7 +866,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(4)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -861,7 +924,7 @@ const PremiumLifestyleSection = () => {
                     preload="metadata"
                     onEnded={() => handleBecomingYouVideoEnded(0)}
                   >
-                    <source src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} type="video/mp4" />
+                    <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile) : undefined} type="video/mp4" />
                   </video>
                   <div
                     aria-hidden="true"
@@ -920,7 +983,7 @@ const PremiumLifestyleSection = () => {
                     preload="metadata"
                     onEnded={() => handleBecomingYouVideoEnded(2)}
                   >
-                    <source src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} type="video/mp4" />
+                    <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile) : undefined} type="video/mp4" />
                   </video>
                   <div
                     aria-hidden="true"
@@ -983,7 +1046,7 @@ const PremiumLifestyleSection = () => {
                       preload="metadata"
                       onEnded={() => handleBecomingYouVideoEnded(4)}
                     >
-                      <source src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} type="video/mp4" />
+                      <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile) : undefined} type="video/mp4" />
                     </video>
                     <div
                       aria-hidden="true"
@@ -1047,7 +1110,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(1)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -1107,7 +1170,7 @@ const PremiumLifestyleSection = () => {
                 preload="metadata"
                 onEnded={() => handleBecomingYouVideoEnded(3)}
               >
-                <source src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} type="video/mp4" />
+                <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} src={isBecomingYouActive ? getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile) : undefined} type="video/mp4" />
               </video>
               <div
                 aria-hidden="true"
@@ -1156,6 +1219,7 @@ const PremiumLifestyleSection = () => {
           </div>
         </div>
       </InterestSection>
+      ) : null}
     </>
   );
 };

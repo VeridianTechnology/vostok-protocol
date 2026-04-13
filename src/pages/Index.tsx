@@ -8,6 +8,18 @@ const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 import { track } from "@vercel/analytics";
 import { trackOnce } from "@/lib/analytics";
 
+const orderedSectionIds = [
+  "section-hero",
+  "section-messianic",
+  "section-wall",
+  "section-become",
+  "section-vostok",
+  "section-research",
+  "section-cta",
+] as const;
+
+const PREVIOUS_SECTION_GRACE_MS = 1400;
+
 const Index = () => {
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
@@ -15,9 +27,16 @@ const Index = () => {
   const [isTikTokEntry, setIsTikTokEntry] = useState(false);
   const [isRedditEntry, setIsRedditEntry] = useState(false);
   const [isTwitterEntry, setIsTwitterEntry] = useState(false);
+  const [activeSectionId, setActiveSectionId] =
+    useState<(typeof orderedSectionIds)[number]>("section-hero");
+  const [graceSectionId, setGraceSectionId] =
+    useState<(typeof orderedSectionIds)[number] | null>(null);
   const stayTimerRef = useRef<number | null>(null);
   const stay60TimerRef = useRef<number | null>(null);
   const scrollRafRef = useRef<number | null>(null);
+  const previousSectionGraceTimeoutRef = useRef<number | null>(null);
+  const activeSectionIdRef = useRef<(typeof orderedSectionIds)[number]>("section-hero");
+  const visibleSectionsRef = useRef<Map<string, number>>(new Map());
   useEffect(() => {
     trackOnce("page_view");
     const params = new URLSearchParams(window.location.search);
@@ -75,6 +94,18 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
+    return () => {
+      if (previousSectionGraceTimeoutRef.current) {
+        window.clearTimeout(previousSectionGraceTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    activeSectionIdRef.current = activeSectionId;
+  }, [activeSectionId]);
+
+  useEffect(() => {
     const handleScroll = () => {
       if (scrollRafRef.current) {
         return;
@@ -116,6 +147,63 @@ const Index = () => {
     if (!("IntersectionObserver" in window)) {
       return;
     }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            visibleSectionsRef.current.set(entry.target.id, entry.intersectionRatio);
+          } else {
+            visibleSectionsRef.current.delete(entry.target.id);
+          }
+        });
+
+        let nextSectionId: (typeof orderedSectionIds)[number] | null = null;
+        let nextRatio = -1;
+        orderedSectionIds.forEach((id) => {
+          const ratio = visibleSectionsRef.current.get(id);
+          if (ratio !== undefined && ratio > nextRatio) {
+            nextRatio = ratio;
+            nextSectionId = id;
+          }
+        });
+
+        if (nextSectionId && nextSectionId !== activeSectionIdRef.current) {
+          if (previousSectionGraceTimeoutRef.current) {
+            window.clearTimeout(previousSectionGraceTimeoutRef.current);
+            previousSectionGraceTimeoutRef.current = null;
+          }
+          const previousActiveSectionId = activeSectionIdRef.current;
+          setGraceSectionId(previousActiveSectionId);
+          previousSectionGraceTimeoutRef.current = window.setTimeout(() => {
+            setGraceSectionId((currentGraceSectionId) =>
+              currentGraceSectionId === previousActiveSectionId ? null : currentGraceSectionId
+            );
+            previousSectionGraceTimeoutRef.current = null;
+          }, PREVIOUS_SECTION_GRACE_MS);
+          setActiveSectionId(nextSectionId);
+        }
+      },
+      {
+        threshold: [0.1, 0.25, 0.4, 0.55, 0.7, 0.85],
+        rootMargin: "-10% 0px -10% 0px",
+      }
+    );
+
+    orderedSectionIds.forEach((id) => {
+      const node = document.getElementById(id);
+      if (node) {
+        observer.observe(node);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) {
+      return;
+    }
     const targets: Array<{ id: string; event: string }> = [
       { id: "section-hero", event: "section_hero_view" },
       { id: "section-vostok", event: "section_vostok_view" },
@@ -145,112 +233,170 @@ const Index = () => {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) {
+      return;
+    }
+
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+    let observer: IntersectionObserver | null = null;
+    const seenIds = new Set<string>();
+    const glitchTargets: Array<{
+      id: string;
+      word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
+    }> = [
+      { id: "section-hero", word: "КОПИРОВАТЬ" },
+      { id: "section-messianic", word: "ДЕЛАЙ" },
+      { id: "section-wall", word: "СБОЙ СИСТЕМЫ" },
+    ];
+
+    const connectObserver = () => {
+      observer?.disconnect();
+      observer = null;
+
+      if (!desktopQuery.matches) {
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+            const id = entry.target.id;
+            const target = glitchTargets.find((item) => item.id === id);
+            if (!target || seenIds.has(id)) {
+              return;
+            }
+
+            seenIds.add(id);
+            window.dispatchEvent(
+              new CustomEvent("vostok:system-glitch", {
+                detail: { word: target.word },
+              })
+            );
+          });
+        },
+        { threshold: 0.55 }
+      );
+
+      glitchTargets.forEach(({ id }) => {
+        const node = document.getElementById(id);
+        if (node && !seenIds.has(id)) {
+          observer?.observe(node);
+        }
+      });
+    };
+
+    connectObserver();
+    desktopQuery.addEventListener("change", connectObserver);
+
+    return () => {
+      desktopQuery.removeEventListener("change", connectObserver);
+      observer?.disconnect();
+    };
+  }, []);
+
   const handleRequestBuy = (continueToCheckout: () => void) => {
     continueToCheckout();
   };
 
+  const entrySource = isFacebookEntry
+    ? "facebook"
+    : isFourChanEntry
+      ? "4chan"
+      : isInstagramEntry
+        ? "instagram"
+        : isTikTokEntry
+          ? "tiktok"
+          : isRedditEntry
+            ? "reddit"
+            : isTwitterEntry
+              ? "twitter"
+              : "direct";
+  const activeSectionIndex = orderedSectionIds.indexOf(activeSectionId);
+  const shouldRenderSection = (id: (typeof orderedSectionIds)[number]) => {
+    const sectionIndex = orderedSectionIds.indexOf(id);
+    return (
+      id === activeSectionId ||
+      sectionIndex === activeSectionIndex + 1 ||
+      id === graceSectionId
+    );
+  };
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-background">
-      <div id="section-hero">
-        <FeatureThumbnails
-          renderStructureSection={false}
-          renderWallpaperSection
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                    ? "tiktok"
-                    : isRedditEntry
-                      ? "reddit"
-                      : isTwitterEntry
-                        ? "twitter"
-                      : "direct"
-          }
-        />
-      </div>
+      <section id="section-hero" className="min-h-[108vh] md:min-h-[112vh]">
+        {shouldRenderSection("section-hero") ? (
+          <FeatureThumbnails
+            renderStructureSection={false}
+            renderWallpaperSection
+            entrySource={entrySource}
+          />
+        ) : null}
+      </section>
       <div className="divider-line hidden md:block" />
       <LazySection
-        id="section-premium"
-        minHeightClass="min-h-[95svh] md:min-h-[90vh]"
+        id="section-messianic"
+        minHeightClass="min-h-[108vh] md:min-h-[112vh]"
         loaderLabel="Loading Lifestyle"
+        shouldRender={shouldRenderSection("section-messianic")}
       >
-        <PremiumLifestyleSection />
+        <PremiumLifestyleSection
+          visibleSections={["messianic"]}
+          messianicSectionId={undefined}
+        />
+      </LazySection>
+      <LazySection
+        id="section-wall"
+        minHeightClass="min-h-[108vh] md:min-h-[112vh]"
+        loaderLabel="Loading Wall"
+        shouldRender={shouldRenderSection("section-wall")}
+      >
+        <PremiumLifestyleSection
+          visibleSections={["wall"]}
+          wallSectionId={undefined}
+        />
+      </LazySection>
+      <LazySection
+        id="section-become"
+        minHeightClass="min-h-[78vh] md:min-h-[200vh]"
+        loaderLabel="Loading Become"
+        shouldRender={shouldRenderSection("section-become")}
+      >
+        <PremiumLifestyleSection
+          visibleSections={["becoming"]}
+          becomingSectionId={undefined}
+          isBecomingYouActive={activeSectionId === "section-become"}
+        />
       </LazySection>
       <div className="divider-line" />
       <LazySection
         id="section-vostok"
         minHeightClass="min-h-[40vh]"
         loaderLabel="Loading Process"
+        shouldRender={shouldRenderSection("section-vostok")}
       >
-        <VostokProcess
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                    ? "tiktok"
-                    : isRedditEntry
-                      ? "reddit"
-                      : isTwitterEntry
-                        ? "twitter"
-                      : "direct"
-          }
-        />
+        <VostokProcess entrySource={entrySource} />
       </LazySection>
       <LazySection
         id="section-research"
         minHeightClass="min-h-[50vh]"
         loaderLabel="Loading Research"
+        shouldRender={shouldRenderSection("section-research")}
       >
-        <ResearchStudies
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                    ? "tiktok"
-                    : isRedditEntry
-                      ? "reddit"
-                      : isTwitterEntry
-                        ? "twitter"
-                      : "direct"
-          }
-        />
+        <ResearchStudies entrySource={entrySource} />
       </LazySection>
       <div className="h-px w-full bg-black/80" />
       <LazySection
         id="section-cta"
         minHeightClass="min-h-[40vh]"
         loaderLabel="Loading Checkout"
+        shouldRender={shouldRenderSection("section-cta")}
       >
-        <CTAFooter
-          onRequestBuy={handleRequestBuy}
-          entrySource={
-            isFacebookEntry
-              ? "facebook"
-              : isFourChanEntry
-                ? "4chan"
-                : isInstagramEntry
-                  ? "instagram"
-                  : isTikTokEntry
-                    ? "tiktok"
-                    : isRedditEntry
-                      ? "reddit"
-                      : isTwitterEntry
-                        ? "twitter"
-                      : "direct"
-          }
-        />
+        <CTAFooter onRequestBuy={handleRequestBuy} entrySource={entrySource} />
       </LazySection>
     </main>
   );

@@ -7,6 +7,7 @@ type LazySectionProps = {
   minHeightClass?: string;
   loaderLabel?: string;
   eager?: boolean;
+  shouldRender?: boolean;
   children: ReactNode;
 };
 
@@ -15,13 +16,14 @@ export const LazySection = ({
   minHeightClass,
   loaderLabel,
   eager = false,
+  shouldRender = true,
   children,
 }: LazySectionProps) => {
   const ref = useRef<HTMLDivElement | null>(null);
   const [active, setActive] = useState(eager);
 
   useEffect(() => {
-    if (!ref.current || active) {
+    if (!ref.current || active || !shouldRender) {
       return;
     }
     const rootMargin = window.matchMedia("(max-width: 767px)").matches
@@ -40,11 +42,12 @@ export const LazySection = ({
     );
     observer.observe(ref.current);
     return () => observer.disconnect();
-  }, [active]);
+  }, [active, shouldRender]);
 
   return (
     <section id={id} ref={ref} className={cn(minHeightClass)}>
-      {active ? (
+      {shouldRender ? (
+        active ? (
         <Suspense
           fallback={<SectionLoader label={loaderLabel} minHeightClass={minHeightClass} />}
         >
@@ -52,7 +55,8 @@ export const LazySection = ({
         </Suspense>
       ) : (
         <SectionLoader label={loaderLabel} minHeightClass={minHeightClass} />
-      )}
+        )
+      ) : null}
     </section>
   );
 };
