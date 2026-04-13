@@ -684,6 +684,45 @@
   .font-quote {
     font-family: var(--font-quote);
   }
+  .hero-quote-glow {
+    position: relative;
+    isolation: isolate;
+    text-shadow:
+      6px 3px 0 rgba(0, 0, 0, 0.92),
+      6px 3px 14px rgba(0, 0, 0, 0.6),
+      0 0 20px rgba(236, 244, 255, 0.16),
+      0 0 34px rgba(160, 210, 255, 0.08);
+    filter: drop-shadow(0 0 14px rgba(216, 231, 255, 0.08));
+  }
+  .hero-quote-glow > span {
+    position: relative;
+    transform-origin: center;
+    will-change: transform, text-shadow;
+  }
+  .hero-quote-glow > span:nth-of-type(odd) {
+    transform: perspective(900px) rotateX(1.2deg) rotateY(-1.4deg) scaleX(1.012);
+    text-shadow:
+      6px 3px 0 rgba(0, 0, 0, 0.92),
+      6px 3px 14px rgba(0, 0, 0, 0.6),
+      0 0 20px rgba(255, 255, 255, 0.14),
+      -0.7px 0 0 rgba(168, 222, 255, 0.18),
+      0.7px 0 0 rgba(255, 214, 240, 0.12);
+  }
+  .hero-quote-glow > span:nth-of-type(even) {
+    transform: perspective(900px) rotateX(-1deg) rotateY(1.2deg) scaleX(0.996);
+    text-shadow:
+      6px 3px 0 rgba(0, 0, 0, 0.92),
+      6px 3px 14px rgba(0, 0, 0, 0.6),
+      0 0 16px rgba(255, 255, 255, 0.12),
+      -0.5px 0 0 rgba(178, 226, 255, 0.14),
+      0.5px 0 0 rgba(255, 220, 238, 0.1);
+  }
+  .hero-quote-glow > span:nth-of-type(2) {
+    transform: perspective(900px) rotateX(-1.1deg) rotateY(1.5deg) scaleX(0.992) translateX(0.015em);
+  }
+  .hero-quote-glow > span:nth-of-type(3) {
+    transform: perspective(900px) rotateX(1.4deg) rotateY(-1.7deg) scaleX(1.015) translateX(0.025em);
+  }
   .font-tangerine {
     font-family: "Tangerine", cursive;
     font-weight: 700;

@@ -11,53 +11,11 @@ type VostokProcessProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
-const getThumbVariants = (src: string) => {
-  if (!src.endsWith(".jpg") && !src.endsWith(".jpeg")) {
-    return null;
-  }
-  const match = src.match(/(\.jpe?g)$/i);
-  if (!match) {
-    return null;
-  }
-  const ext = match[1];
-  const base = src.slice(0, -ext.length);
-  return {
-    mobile: {
-      jpg: `${base}_thumb_mobile${ext}`,
-      avif: `${base}_thumb_mobile.avif`,
-      webp: `${base}_thumb_mobile.webp`,
-    },
-    desktop: {
-      jpg: `${base}_thumb_desktop${ext}`,
-      avif: `${base}_thumb_desktop.avif`,
-      webp: `${base}_thumb_desktop.webp`,
-    },
-  };
-};
-
-const getIconPreviewVariants = (src: string) => {
-  if (src === "/before/after/before.jpg") {
-    return {
-      mobile: "/before/after/before_thumb_mobile.jpg",
-      desktop: "/before/after/before_thumb_desktop.jpg",
-    };
-  }
-
-  if (src === "/Comparison/after.JPG") {
-    return {
-      mobile: "/Comparison/1_thumb_mobile.JPG",
-      desktop: "/Comparison/1_thumb_desktop.JPG",
-    };
-  }
-
-  return null;
-};
-
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const isFourChan = entrySource === "4chan";
   const isTwitter = entrySource === "twitter";
   const nonAiBeforeSrc = "/before/after/before.jpg";
-  const nonAiAfterSrc = "/Comparison/after.JPG";
+  const nonAiAfterSrc = "/Comparison/1.JPG";
   const stages = useMemo(
     () => [
       {
@@ -122,7 +80,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
       },
       {
         key: "non_ai",
-        title: "BEFORE / AFTER",
+        title: "BEFORE",
         icons: [
           nonAiBeforeSrc,
           nonAiAfterSrc,
@@ -148,12 +106,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [scanKey, setScanKey] = useState(0);
   const [focusPulse, setFocusPulse] = useState(false);
   const [pendingIcon, setPendingIcon] = useState<string | null>(null);
-  const [flashIconKey, setFlashIconKey] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
   const parallaxRef = useRef<number | null>(null);
   const imageFrameRef = useRef<HTMLDivElement | null>(null);
   const pendingSelectionRef = useRef<string | null>(null);
-  const flashTimeoutRef = useRef<number | null>(null);
   const currentStage = stages.find((stage) => stage.key === activeStage) ?? stages[0];
   const isNonAiAfter = activeStage === "non_ai" && activeImage === nonAiAfterSrc;
   const activeVariants =
@@ -245,13 +201,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
-
-  useEffect(() => () => {
-    if (flashTimeoutRef.current) {
-      window.clearTimeout(flashTimeoutRef.current);
-      flashTimeoutRef.current = null;
-    }
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -808,128 +757,60 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                     isActiveStage ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
                   }`}
                 >
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                      {stage.title}
-                    </p>
-                    <div className="grid grid-cols-2 justify-items-center gap-3">
-                      {stage.icons.map((icon) => {
-                        const iconKey = `${stage.key}:${icon}`;
-                        const isPendingIcon = pendingIcon === iconKey;
-                        const iconThumb = getThumbVariants(icon);
-                        const iconPreview = getIconPreviewVariants(icon);
-                        const iconVariants = getImageVariants(icon);
-                        const iconMobile = toMobileImage(icon);
-                        const iconDesktop = toDesktopImage(icon);
-                        const handleIconSelection = () => {
-                          if (isMobile) {
-                            setFlashIconKey(iconKey);
-                            if (flashTimeoutRef.current) {
-                              window.clearTimeout(flashTimeoutRef.current);
-                            }
-                            flashTimeoutRef.current = window.setTimeout(() => {
-                              setFlashIconKey((current) => (current === iconKey ? null : current));
-                              flashTimeoutRef.current = null;
-                            }, 260);
-                          }
-                          selectStage(stage.key as StageKey, icon);
-                        };
-                        return (
-                          <button
-                            key={icon}
-                            type="button"
-                            onClick={(event) => {
-                              event.stopPropagation();
-                              handleIconSelection();
-                            }}
-                            onTouchEnd={(event) => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                              handleIconSelection();
-                            }}
-                            className={`relative z-10 h-[3.25rem] w-[3.25rem] touch-manipulation overflow-hidden rounded border bg-black transition-all md:h-20 md:w-20 ${
-                              activeStage === stage.key && activeImage === icon
-                                ? "border-chrome/60 opacity-100"
-                                : "border-white/10 opacity-50 grayscale hover:border-white/30 hover:opacity-80"
-                            } ${isPendingIcon ? "scale-[1.04] border-white/70 opacity-100 ring-2 ring-white/35 grayscale-0" : ""} ${
-                              flashIconKey === iconKey ? "vostok-process-icon--tap" : ""
-                            }`}
-                          >
-                            {iconThumb ? (
-                              <picture>
-                                <source
-                                  type="image/avif"
-                                  srcSet={`${iconThumb.mobile.avif} 96w, ${iconThumb.desktop.avif} 128w`}
-                                  sizes="40px"
-                                />
-                                <source
-                                  type="image/webp"
-                                  srcSet={`${iconThumb.mobile.webp} 96w, ${iconThumb.desktop.webp} 128w`}
-                                  sizes="40px"
-                                />
-                                <img
-                                  src={iconThumb.desktop.jpg}
-                                  srcSet={`${iconThumb.mobile.jpg} 96w, ${iconThumb.desktop.jpg} 128w`}
-                                  sizes="40px"
-                                  alt={`${stage.title} option`}
-                                  className="h-full w-full object-cover bg-black"
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              </picture>
-                            ) : (
-                              <div className="relative h-full w-full">
-                                {iconVariants ? (
-                                  <picture>
-                                    <source
-                                      type="image/avif"
-                                      srcSet={`${iconVariants.avif.mobile} 96w, ${iconVariants.avif.desktop} 128w`}
-                                      sizes="40px"
-                                    />
-                                    <source
-                                      type="image/webp"
-                                      srcSet={`${iconVariants.webp.mobile} 96w, ${iconVariants.webp.desktop} 128w`}
-                                      sizes="40px"
-                                    />
-                                    <img
-                                      src={iconVariants.desktop}
-                                      srcSet={`${iconVariants.mobile} 96w, ${iconVariants.desktop} 128w`}
-                                      sizes="40px"
-                                      alt={`${stage.title} option`}
-                                      className="h-full w-full object-cover bg-black"
-                                      loading={stage.key === "non_ai" ? "eager" : "lazy"}
-                                      decoding="async"
-                                    />
-                                  </picture>
-                                ) : (
-                                  <img
-                                    src={iconPreview ? (isMobile ? iconPreview.mobile : iconPreview.desktop) : icon}
-                                    srcSet={
-                                      iconPreview
-                                        ? `${iconPreview.mobile} 96w, ${iconPreview.desktop} 128w`
-                                        : `${iconMobile} 96w, ${iconDesktop} 128w, ${icon} 256w`
-                                    }
-                                    sizes="40px"
-                                    alt={`${stage.title} option`}
-                                    className="h-full w-full object-cover bg-black"
-                                    loading={stage.key === "non_ai" ? "eager" : "lazy"}
-                                    decoding="async"
-                                  />
-                                )}
-                                <div className="pointer-events-none absolute inset-0 bg-black/20" />
-                              </div>
-                            )}
-                            <div
-                              aria-hidden="true"
-                              className={`vostok-process-icon__flash pointer-events-none absolute inset-0 z-[2] bg-white ${
-                                flashIconKey === iconKey ? "vostok-process-icon__flash--active" : ""
-                              }`}
-                            />
-                          </button>
-                        );
-                      })}
+                  {stage.key === "non_ai" ? (
+                    <div>
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+                          {stage.title}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => selectStage(stage.key as StageKey, stage.icons[0])}
+                          className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
+                            isActiveStage && !isNonAiAfter
+                              ? "border-chrome/60 bg-white/10 text-white"
+                              : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
+                          }`}
+                        >
+                          Before
+                        </button>
+                      </div>
+                      <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                        <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+                          AFTER
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => selectStage("non_ai", stage.icons[1])}
+                          className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
+                            isNonAiAfter
+                              ? "border-chrome/60 bg-white/10 text-white"
+                              : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
+                          }`}
+                          aria-pressed={isNonAiAfter}
+                        >
+                          After
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex items-center justify-between gap-4">
+                      <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
+                        {stage.title}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => selectStage(stage.key as StageKey, stage.icons[0])}
+                        className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
+                          isActiveStage
+                            ? "border-chrome/60 bg-white/10 text-white"
+                            : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
+                        }`}
+                      >
+                        View
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}

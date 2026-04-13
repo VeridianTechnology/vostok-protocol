@@ -372,6 +372,8 @@ const PremiumLifestyleSection = ({
   const visibleSectionSet = new Set(visibleSections);
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
+  const wallGlitchTargetRef = useRef<HTMLDivElement | null>(null);
+  const wallGlitchSeenRef = useRef(false);
   const areBecomingYouVideosPausedRef = useRef(false);
   const individuallyPausedBecomingYouVideosRef = useRef([false, false, false, false, false]);
   const [isMobile, setIsMobile] = useState(false);
@@ -467,6 +469,43 @@ const PremiumLifestyleSection = ({
     };
   }, []);
 
+  useEffect(() => {
+    if (!visibleSectionSet.has("wall")) {
+      wallGlitchSeenRef.current = false;
+      return;
+    }
+
+    const node = wallGlitchTargetRef.current;
+    if (!node || !("IntersectionObserver" in window)) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting || wallGlitchSeenRef.current) {
+            return;
+          }
+
+          wallGlitchSeenRef.current = true;
+          window.dispatchEvent(
+            new CustomEvent("vostok:system-glitch", {
+              detail: { word: "СБОЙ СИСТЕМЫ" as const },
+            })
+          );
+          observer.disconnect();
+        });
+      },
+      {
+        threshold: 0.35,
+        rootMargin: "0px 0px -8% 0px",
+      }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visibleSectionSet]);
+
   const handleBecomingYouToggle = () => {
     const nextPausedState = !areBecomingYouVideosPaused;
     setAreBecomingYouVideosPaused(nextPausedState);
@@ -520,7 +559,7 @@ const PremiumLifestyleSection = ({
         lines={[]}
         desktopBackground="/section_wallpaper/interest/new_desktop.jpg?v=1"
         mobileBackground="/section_wallpaper/interest/mobile/3.jpg?v=1"
-        sectionClassName="-mt-[8vh] min-h-[108vh] -mb-[10vh] pt-0 pb-0 md:mt-0 md:mb-0 md:min-h-[112vh] md:pt-[5.2rem] md:pb-[4.8rem]"
+        sectionClassName="-mt-[8vh] min-h-[108vh] -mb-[10vh] pt-0 pb-0 md:mt-0 md:mb-0 md:min-h-[140vh] md:pt-[5.2rem] md:pb-[4.8rem]"
         tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
         mobileBackgroundPosition="58% center"
         mobileBackgroundSize="cover"
@@ -531,7 +570,7 @@ const PremiumLifestyleSection = ({
         secondaryOverlayClassName="right-[-14vw] h-full -rotate-[25deg] opacity-100"
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         disableParallax
-        contentClassName="flex min-h-[calc(108vh-8.8rem)] flex-col items-center justify-center md:min-h-[calc(112vh-10rem)] md:max-w-none md:items-start md:justify-end"
+        contentClassName="flex min-h-[calc(108vh-8.8rem)] flex-col items-center justify-center md:min-h-[calc(140vh-10rem)] md:max-w-none md:items-start md:justify-end"
         innerContentClassName="flex w-full items-center justify-center px-[6vw] pb-[10vh] pt-[14vh] md:items-end md:justify-start md:px-0 md:pb-[10vh] md:pl-[10vw] md:pt-0"
       >
         <div className="pointer-events-none mx-auto max-w-[24rem] text-center md:hidden">
@@ -540,7 +579,7 @@ const PremiumLifestyleSection = ({
           </p>
         </div>
         <div className="pointer-events-none hidden max-w-[36rem] md:block">
-          <p className="font-quote text-left text-[1.6rem] italic leading-[1.55] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:-ml-[7.5vw]">
+          <p className="hero-quote-glow font-quote text-left text-[1.6rem] italic leading-[1.55] tracking-[0.05em] text-silver md:-ml-[7.5vw]">
             <span className="block">The messianic age has begun.</span>
             <span className="mt-2 block pl-[2.9rem]">I am here to bring good news</span>
           </p>
@@ -555,7 +594,7 @@ const PremiumLifestyleSection = ({
         lines={[]}
         desktopBackground="/section_wallpaper/wall/2_desktop.jpg?v=1"
         mobileBackground="/section_wallpaper/wall/3.png?v=1"
-        sectionClassName="min-h-[108vh] py-0 md:min-h-[112vh]"
+        sectionClassName="min-h-[108vh] py-0 md:min-h-[140vh]"
         mobileBackgroundPosition="center"
         mobileBackgroundSize="cover"
         mobileBackgroundScale={1.08}
@@ -571,26 +610,28 @@ const PremiumLifestyleSection = ({
           />
         }
         disableParallax
-        contentClassName="flex min-h-[108vh] items-start justify-center md:min-h-[112vh] md:max-w-none md:items-end md:justify-start"
+        contentClassName="flex min-h-[108vh] items-start justify-center md:min-h-[140vh] md:max-w-none md:items-end md:justify-start"
         innerContentClassName="relative z-10 flex w-full justify-center pb-0 pt-[30vh] md:pb-[10vh] md:pt-0 md:pl-[10vw] md:justify-start"
       >
-        <div className="pointer-events-none mx-auto max-w-[21rem] text-center md:hidden">
-          <p className="font-quote text-[1.45rem] italic leading-[1.45] tracking-[0.04em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)]">
-            <span className="block">This... this has been waiting for you.</span>
-            <span className="block h-[1.45em]" aria-hidden="true" />
-            <span className="block">Destiny... has chosen you.</span>
-            <span className="block h-[1.45em]" aria-hidden="true" />
-            <span className="block">It is time, that you are... exposed to... the truth.</span>
-          </p>
-        </div>
-        <div className="pointer-events-none hidden max-w-[40rem] md:block">
-          <p className="font-quote text-left text-[1.95rem] italic leading-[1.52] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:-ml-[7.5vw]">
-            <span className="block">You. Yes you. Can be good looking.</span>
-            <span className="relative mt-2 block pl-[4.1rem] before:absolute before:left-[2.9rem] before:top-[0.12em] before:h-[1.2em] before:w-px before:bg-silver/70 before:content-['']">
-              Can stun people. Can have the face of a lifetime.
-            </span>
-            <span className="mt-2 block pl-[5.8rem]">You. Yes you. Can be perfect.</span>
-          </p>
+        <div ref={wallGlitchTargetRef}>
+          <div className="pointer-events-none mx-auto max-w-[21rem] text-center md:hidden">
+            <p className="font-quote text-[1.45rem] italic leading-[1.45] tracking-[0.04em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)]">
+              <span className="block">This... this has been waiting for you.</span>
+              <span className="block h-[1.45em]" aria-hidden="true" />
+              <span className="block">Destiny... has chosen you.</span>
+              <span className="block h-[1.45em]" aria-hidden="true" />
+              <span className="block">It is time, that you are... exposed to... the truth.</span>
+            </p>
+          </div>
+          <div className="pointer-events-none hidden max-w-[40rem] md:block">
+            <p className="hero-quote-glow font-quote text-left text-[1.95rem] italic leading-[1.52] tracking-[0.05em] text-silver md:-ml-[7.5vw]">
+              <span className="block">You. Yes you. Can be good looking.</span>
+              <span className="relative mt-2 block pl-[4.1rem] before:absolute before:left-[2.9rem] before:top-[0.12em] before:h-[1.2em] before:w-px before:bg-silver/70 before:content-['']">
+                Can stun people. Can have the face of a lifetime.
+              </span>
+              <span className="mt-2 block pl-[5.8rem]">You. Yes you. Can be perfect.</span>
+            </p>
+          </div>
         </div>
       </InterestSection>
       ) : null}

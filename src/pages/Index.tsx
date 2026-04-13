@@ -1,5 +1,5 @@
-import { LazySection } from "@/components/LazySection";
 import { useEffect, useRef, useState, lazy } from "react";
+import { createPortal } from "react-dom";
 import FeatureThumbnails from "@/components/FeatureThumbnails";
 const PremiumLifestyleSection = lazy(() => import("@/components/PremiumLifestyleSection"));
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
@@ -18,9 +18,8 @@ const orderedSectionIds = [
   "section-cta",
 ] as const;
 
-const PREVIOUS_SECTION_GRACE_MS = 1400;
-
 const Index = () => {
+  const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
   const [isFourChanEntry, setIsFourChanEntry] = useState(false);
   const [isInstagramEntry, setIsInstagramEntry] = useState(false);
@@ -29,14 +28,34 @@ const Index = () => {
   const [isTwitterEntry, setIsTwitterEntry] = useState(false);
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
-  const [graceSectionId, setGraceSectionId] =
-    useState<(typeof orderedSectionIds)[number] | null>(null);
   const stayTimerRef = useRef<number | null>(null);
   const stay60TimerRef = useRef<number | null>(null);
   const scrollRafRef = useRef<number | null>(null);
-  const previousSectionGraceTimeoutRef = useRef<number | null>(null);
+  const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
+  const systemGlitchDoTimeoutRef = useRef<number | null>(null);
+  const systemGlitchSystemTimeoutRef = useRef<number | null>(null);
+  const systemGlitchClearTimeoutRef = useRef<number | null>(null);
   const activeSectionIdRef = useRef<(typeof orderedSectionIds)[number]>("section-hero");
   const visibleSectionsRef = useRef<Map<string, number>>(new Map());
+
+  const clearSystemGlitchTimeouts = () => {
+    if (systemGlitchCopyTimeoutRef.current) {
+      window.clearTimeout(systemGlitchCopyTimeoutRef.current);
+      systemGlitchCopyTimeoutRef.current = null;
+    }
+    if (systemGlitchDoTimeoutRef.current) {
+      window.clearTimeout(systemGlitchDoTimeoutRef.current);
+      systemGlitchDoTimeoutRef.current = null;
+    }
+    if (systemGlitchSystemTimeoutRef.current) {
+      window.clearTimeout(systemGlitchSystemTimeoutRef.current);
+      systemGlitchSystemTimeoutRef.current = null;
+    }
+    if (systemGlitchClearTimeoutRef.current) {
+      window.clearTimeout(systemGlitchClearTimeoutRef.current);
+      systemGlitchClearTimeoutRef.current = null;
+    }
+  };
   useEffect(() => {
     trackOnce("page_view");
     const params = new URLSearchParams(window.location.search);
@@ -95,9 +114,7 @@ const Index = () => {
 
   useEffect(() => {
     return () => {
-      if (previousSectionGraceTimeoutRef.current) {
-        window.clearTimeout(previousSectionGraceTimeoutRef.current);
-      }
+      clearSystemGlitchTimeouts();
     };
   }, []);
 
@@ -169,18 +186,6 @@ const Index = () => {
         });
 
         if (nextSectionId && nextSectionId !== activeSectionIdRef.current) {
-          if (previousSectionGraceTimeoutRef.current) {
-            window.clearTimeout(previousSectionGraceTimeoutRef.current);
-            previousSectionGraceTimeoutRef.current = null;
-          }
-          const previousActiveSectionId = activeSectionIdRef.current;
-          setGraceSectionId(previousActiveSectionId);
-          previousSectionGraceTimeoutRef.current = window.setTimeout(() => {
-            setGraceSectionId((currentGraceSectionId) =>
-              currentGraceSectionId === previousActiveSectionId ? null : currentGraceSectionId
-            );
-            previousSectionGraceTimeoutRef.current = null;
-          }, PREVIOUS_SECTION_GRACE_MS);
           setActiveSectionId(nextSectionId);
         }
       },
@@ -238,7 +243,6 @@ const Index = () => {
       return;
     }
 
-    const desktopQuery = window.matchMedia("(min-width: 768px)");
     let observer: IntersectionObserver | null = null;
     const seenIds = new Set<string>();
     const glitchTargets: Array<{
@@ -247,16 +251,11 @@ const Index = () => {
     }> = [
       { id: "section-hero", word: "КОПИРОВАТЬ" },
       { id: "section-messianic", word: "ДЕЛАЙ" },
-      { id: "section-wall", word: "СБОЙ СИСТЕМЫ" },
     ];
 
     const connectObserver = () => {
       observer?.disconnect();
       observer = null;
-
-      if (!desktopQuery.matches) {
-        return;
-      }
 
       observer = new IntersectionObserver(
         (entries) => {
@@ -279,7 +278,10 @@ const Index = () => {
             );
           });
         },
-        { threshold: 0.55 }
+        {
+          threshold: 0.3,
+          rootMargin: "0px 0px -12% 0px",
+        }
       );
 
       glitchTargets.forEach(({ id }) => {
@@ -291,11 +293,68 @@ const Index = () => {
     };
 
     connectObserver();
-    desktopQuery.addEventListener("change", connectObserver);
 
     return () => {
-      desktopQuery.removeEventListener("change", connectObserver);
       observer?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    const triggerSystemGlitchWord = (
+      word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ",
+      durationMs = 520
+    ) => {
+      clearSystemGlitchTimeouts();
+      setSystemGlitchWord(word);
+      systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
+        setSystemGlitchWord(null);
+      }, durationMs);
+    };
+
+    const triggerSystemGlitchSequence = () => {
+      clearSystemGlitchTimeouts();
+      setSystemGlitchWord("КОПИРОВАТЬ");
+
+      systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
+        setSystemGlitchWord(null);
+      }, 220);
+
+      systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
+        setSystemGlitchWord("ДЕЛАЙ");
+      }, 320);
+
+      systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
+        setSystemGlitchWord("СБОЙ СИСТЕМЫ");
+      }, 640);
+
+      systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
+        setSystemGlitchWord(null);
+      }, 920);
+    };
+
+    const handleSystemGlitch = (event: Event) => {
+      const customEvent = event as CustomEvent<{
+        word?: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
+      }>;
+      const word = customEvent.detail?.word;
+
+      if (!word) {
+        return;
+      }
+
+      triggerSystemGlitchWord(word);
+    };
+
+    const handleSystemGlitchSequence = () => {
+      triggerSystemGlitchSequence();
+    };
+
+    window.addEventListener("vostok:system-glitch", handleSystemGlitch);
+    window.addEventListener("vostok:system-glitch-sequence", handleSystemGlitchSequence);
+
+    return () => {
+      window.removeEventListener("vostok:system-glitch", handleSystemGlitch);
+      window.removeEventListener("vostok:system-glitch-sequence", handleSystemGlitchSequence);
     };
   }, []);
 
@@ -316,88 +375,57 @@ const Index = () => {
             : isTwitterEntry
               ? "twitter"
               : "direct";
-  const activeSectionIndex = orderedSectionIds.indexOf(activeSectionId);
-  const shouldRenderSection = (id: (typeof orderedSectionIds)[number]) => {
-    const sectionIndex = orderedSectionIds.indexOf(id);
-    return (
-      id === activeSectionId ||
-      sectionIndex === activeSectionIndex + 1 ||
-      id === graceSectionId
-    );
-  };
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background">
-      <section id="section-hero" className="min-h-[108vh] md:min-h-[112vh]">
-        {shouldRenderSection("section-hero") ? (
-          <FeatureThumbnails
-            renderStructureSection={false}
-            renderWallpaperSection
-            entrySource={entrySource}
-          />
-        ) : null}
+      <section id="section-hero" className="min-h-[108vh] md:min-h-[140vh]">
+        <FeatureThumbnails
+          renderStructureSection={false}
+          renderWallpaperSection
+          entrySource={entrySource}
+        />
       </section>
       <div className="divider-line hidden md:block" />
-      <LazySection
-        id="section-messianic"
-        minHeightClass="min-h-[108vh] md:min-h-[112vh]"
-        loaderLabel="Loading Lifestyle"
-        shouldRender={shouldRenderSection("section-messianic")}
-      >
+      <section id="section-messianic" className="min-h-[108vh] md:min-h-[140vh]">
         <PremiumLifestyleSection
           visibleSections={["messianic"]}
           messianicSectionId={undefined}
         />
-      </LazySection>
-      <LazySection
-        id="section-wall"
-        minHeightClass="min-h-[108vh] md:min-h-[112vh]"
-        loaderLabel="Loading Wall"
-        shouldRender={shouldRenderSection("section-wall")}
-      >
+      </section>
+      <section id="section-wall" className="min-h-[108vh] md:min-h-[140vh]">
         <PremiumLifestyleSection
           visibleSections={["wall"]}
           wallSectionId={undefined}
         />
-      </LazySection>
-      <LazySection
-        id="section-become"
-        minHeightClass="min-h-[78vh] md:min-h-[200vh]"
-        loaderLabel="Loading Become"
-        shouldRender={shouldRenderSection("section-become")}
-      >
+      </section>
+      <section id="section-become" className="min-h-[78vh] md:min-h-[200vh]">
         <PremiumLifestyleSection
           visibleSections={["becoming"]}
           becomingSectionId={undefined}
           isBecomingYouActive={activeSectionId === "section-become"}
         />
-      </LazySection>
+      </section>
       <div className="divider-line" />
-      <LazySection
-        id="section-vostok"
-        minHeightClass="min-h-[40vh]"
-        loaderLabel="Loading Process"
-        shouldRender={shouldRenderSection("section-vostok")}
-      >
+      <section id="section-vostok" className="min-h-[40vh]">
         <VostokProcess entrySource={entrySource} />
-      </LazySection>
-      <LazySection
-        id="section-research"
-        minHeightClass="min-h-[50vh]"
-        loaderLabel="Loading Research"
-        shouldRender={shouldRenderSection("section-research")}
-      >
+      </section>
+      <section id="section-research" className="min-h-[50vh]">
         <ResearchStudies entrySource={entrySource} />
-      </LazySection>
+      </section>
       <div className="h-px w-full bg-black/80" />
-      <LazySection
-        id="section-cta"
-        minHeightClass="min-h-[40vh]"
-        loaderLabel="Loading Checkout"
-        shouldRender={shouldRenderSection("section-cta")}
-      >
+      <section id="section-cta" className="min-h-[40vh]">
         <CTAFooter onRequestBuy={handleRequestBuy} entrySource={entrySource} />
-      </LazySection>
+      </section>
+      {systemGlitchWord && typeof document !== "undefined"
+        ? createPortal(
+            <div className="system-glitch-overlay fixed inset-0 z-[90] flex items-center justify-center">
+              <span data-text={systemGlitchWord} className="system-glitch-word">
+                {systemGlitchWord}
+              </span>
+            </div>,
+            document.body
+          )
+        : null}
     </main>
   );
 };

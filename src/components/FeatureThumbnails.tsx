@@ -1,6 +1,5 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { getImageVariants } from "@/lib/utils";
 import SectionSideTab from "@/components/SectionSideTab";
 
@@ -169,7 +168,6 @@ const FeatureThumbnails = ({
   const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
   );
-  const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -183,10 +181,6 @@ const FeatureThumbnails = ({
   const wallpaperGlitchSequenceTimeoutRef = useRef<number | null>(null);
   const mobileHeroFlashTimeoutsRef = useRef<number[]>([]);
   const mobileHeroFlashSequenceTimeoutRef = useRef<number | null>(null);
-  const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
-  const systemGlitchDoTimeoutRef = useRef<number | null>(null);
-  const systemGlitchSystemTimeoutRef = useRef<number | null>(null);
-  const systemGlitchClearTimeoutRef = useRef<number | null>(null);
   const wallpaperIsUserPausedRef = useRef(false);
   const wallpaperIsGlitchingRef = useRef(false);
   const wallpaperAutoAdvanceEnabledRef = useRef(true);
@@ -349,38 +343,6 @@ const FeatureThumbnails = ({
       setIsMobileHeroTextFlashVisible(false);
     };
   }, [isMobile]);
-
-  const clearSystemGlitchTimeouts = () => {
-    if (systemGlitchCopyTimeoutRef.current) {
-      window.clearTimeout(systemGlitchCopyTimeoutRef.current);
-      systemGlitchCopyTimeoutRef.current = null;
-    }
-    if (systemGlitchDoTimeoutRef.current) {
-      window.clearTimeout(systemGlitchDoTimeoutRef.current);
-      systemGlitchDoTimeoutRef.current = null;
-    }
-    if (systemGlitchSystemTimeoutRef.current) {
-      window.clearTimeout(systemGlitchSystemTimeoutRef.current);
-      systemGlitchSystemTimeoutRef.current = null;
-    }
-    if (systemGlitchClearTimeoutRef.current) {
-      window.clearTimeout(systemGlitchClearTimeoutRef.current);
-      systemGlitchClearTimeoutRef.current = null;
-    }
-  };
-
-  useEffect(() => clearSystemGlitchTimeouts, []);
-
-  const triggerSystemGlitchWord = (
-    word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ",
-    durationMs = 520
-  ) => {
-    clearSystemGlitchTimeouts();
-    setSystemGlitchWord(word);
-    systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
-      setSystemGlitchWord(null);
-    }, durationMs);
-  };
 
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
@@ -593,49 +555,8 @@ const FeatureThumbnails = ({
   };
 
   const triggerSystemGlitch = () => {
-    clearSystemGlitchTimeouts();
-    setSystemGlitchWord("КОПИРОВАТЬ");
-
-    systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
-      setSystemGlitchWord(null);
-    }, 220);
-
-    systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
-      setSystemGlitchWord("ДЕЛАЙ");
-    }, 320);
-
-    systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
-      setSystemGlitchWord("СБОЙ СИСТЕМЫ");
-    }, 640);
-
-    systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
-      setSystemGlitchWord(null);
-    }, 920);
+    window.dispatchEvent(new CustomEvent("vostok:system-glitch-sequence"));
   };
-
-  useEffect(() => {
-    const handleSystemGlitch = (
-      event: Event
-    ) => {
-      if (isMobile) {
-        return;
-      }
-
-      const customEvent = event as CustomEvent<{
-        word?: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
-      }>;
-      const word = customEvent.detail?.word;
-
-      if (!word) {
-        return;
-      }
-
-      triggerSystemGlitchWord(word);
-    };
-
-    window.addEventListener("vostok:system-glitch", handleSystemGlitch);
-    return () => window.removeEventListener("vostok:system-glitch", handleSystemGlitch);
-  }, [isMobile]);
 
   useEffect(() => {
     wallpaperIsUserPausedRef.current = false;
@@ -952,7 +873,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
-            className="relative min-h-[108vh] w-full md:min-h-[112vh]"
+            className="relative min-h-[108vh] w-full md:min-h-[140vh]"
             onClick={!isMobile ? toggleWallpaperVideoPlayback : undefined}
           >
           <div
@@ -1065,15 +986,6 @@ const FeatureThumbnails = ({
               VOSTOK
             </p>
           )}
-          {!isMobile && (
-            <button
-              type="button"
-              onClick={triggerSystemGlitch}
-              className="absolute right-[5vw] top-1/2 z-20 -translate-y-1/2 rounded-full border border-white/20 bg-black/30 px-5 py-3 font-['Tektur'] text-[0.8rem] font-bold uppercase tracking-[0.22em] text-white backdrop-blur-sm transition hover:border-white/40 hover:bg-black/45"
-            >
-              Trigger Glitch
-            </button>
-          )}
           <audio ref={mobileHeroThunderAudioRef} src={mobileHeroThunderSrc} preload="auto" />
           <div className="absolute left-1/2 top-[44vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[12vh] md:pl-[10vw]">
             {isMobile && (
@@ -1108,7 +1020,7 @@ const FeatureThumbnails = ({
             {!isMobile && (
               <>
                 <p
-                  className="pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver [text-shadow:6px_3px_0_rgba(0,0,0,0.92),6px_3px_14px_rgba(0,0,0,0.6)] md:-ml-[7.5vw] md:text-[1.6rem]"
+                  className="hero-quote-glow pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver md:-ml-[7.5vw] md:text-[1.6rem]"
                 >
                   <span className="block">Gaze upon the truth.</span>
                   <span className="mt-2 block pl-[2.9rem]">And the truth... shall set you free.</span>
@@ -1119,16 +1031,6 @@ const FeatureThumbnails = ({
           </div>
         </section>
       )}
-      {systemGlitchWord && typeof document !== "undefined"
-        ? createPortal(
-            <div className="system-glitch-overlay fixed inset-0 z-[90] flex items-center justify-center">
-              <span data-text={systemGlitchWord} className="system-glitch-word">
-                {systemGlitchWord}
-              </span>
-            </div>,
-            document.body
-          )
-        : null}
     </>
   );
 };

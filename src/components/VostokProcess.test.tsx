@@ -35,9 +35,8 @@ describe("VostokProcess", () => {
   it("handles mobile taps on the before/after after icon through click events", () => {
     render(<VostokProcess />);
 
-    const stageButtons = screen.getAllByRole("button", { name: "BEFORE / AFTER option" });
-    const beforeButton = stageButtons[0];
-    const afterButton = stageButtons[1];
+    const beforeButton = screen.getByRole("button", { name: "Before" });
+    const afterButton = screen.getByRole("button", { name: "After" });
 
     fireEvent.click(afterButton, { detail: 1 });
     expect(
@@ -56,11 +55,11 @@ describe("VostokProcess", () => {
   it("uses the responsive before/after after image variants on desktop and mobile", () => {
     const { unmount } = render(<VostokProcess />);
 
-    const mobileAfterButton = screen.getAllByRole("button", { name: "BEFORE / AFTER option" })[1];
+    const mobileAfterButton = screen.getByRole("button", { name: "After" });
     fireEvent.click(mobileAfterButton, { detail: 1 });
 
-    const mobileImage = screen.getByAltText("BEFORE / AFTER comparison");
-    expect(mobileImage).toHaveAttribute("src", "/Comparison/after_mobile.JPG");
+    const mobileImage = screen.getByAltText("BEFORE comparison");
+    expect(mobileImage).toHaveAttribute("src", "/Comparison/1_mobile.JPG");
 
     unmount();
 
@@ -71,11 +70,11 @@ describe("VostokProcess", () => {
 
     render(<VostokProcess />);
 
-    const desktopAfterButton = screen.getAllByRole("button", { name: "BEFORE / AFTER option" })[1];
+    const desktopAfterButton = screen.getByRole("button", { name: "After" });
     fireEvent.click(desktopAfterButton, { detail: 1 });
 
-    const desktopImage = screen.getByAltText("BEFORE / AFTER comparison");
-    expect(desktopImage).toHaveAttribute("src", "/Comparison/after_desktop.JPG");
+    const desktopImage = screen.getByAltText("BEFORE comparison");
+    expect(desktopImage).toHaveAttribute("src", "/Comparison/1_desktop.JPG");
   });
 
   it("handles desktop clicks on the before/after icons", () => {
@@ -86,9 +85,8 @@ describe("VostokProcess", () => {
 
     render(<VostokProcess />);
 
-    const stageButtons = screen.getAllByRole("button", { name: "BEFORE / AFTER option" });
-    const beforeButton = stageButtons[0];
-    const afterButton = stageButtons[1];
+    const beforeButton = screen.getByRole("button", { name: "Before" });
+    const afterButton = screen.getByRole("button", { name: "After" });
 
     fireEvent.click(afterButton);
     expect(
