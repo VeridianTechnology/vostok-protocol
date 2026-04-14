@@ -5,6 +5,8 @@ const PremiumLifestyleSection = lazy(() => import("@/components/PremiumLifestyle
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
+const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
+const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
 import { track } from "@vercel/analytics";
 import { trackOnce } from "@/lib/analytics";
 
@@ -13,6 +15,7 @@ const orderedSectionIds = [
   "section-messianic",
   "section-wall",
   "section-become",
+  "section-what-is-it",
   "section-vostok",
   "section-research",
   "section-cta",
@@ -405,15 +408,19 @@ const Index = () => {
           isBecomingYouActive={activeSectionId === "section-become"}
         />
       </section>
-      <div className="divider-line" />
+      <TransitionThreshold variant="crossing" />
+      <section id="section-what-is-it" className="min-h-[36vh]">
+        <WhatIsItSection />
+      </section>
       <section id="section-vostok" className="min-h-[40vh]">
         <VostokProcess entrySource={entrySource} />
       </section>
+      <TransitionThreshold variant="chamber" />
       <section id="section-research" className="min-h-[50vh]">
         <ResearchStudies entrySource={entrySource} />
       </section>
-      <div className="h-px w-full bg-black/80" />
-      <section id="section-cta" className="min-h-[40vh]">
+      <TransitionThreshold variant="fracture" />
+      <section id="section-cta" className="min-h-[40vh] md:min-h-[140vh]">
         <CTAFooter onRequestBuy={handleRequestBuy} entrySource={entrySource} />
       </section>
       {systemGlitchWord && typeof document !== "undefined"

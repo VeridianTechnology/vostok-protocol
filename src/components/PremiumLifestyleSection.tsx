@@ -370,13 +370,23 @@ const PremiumLifestyleSection = ({
   isBecomingYouActive = true,
 }: PremiumLifestyleSectionProps) => {
   const visibleSectionSet = new Set(visibleSections);
+  const becomingYouSectionRef = useRef<HTMLDivElement | null>(null);
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
   const wallGlitchTargetRef = useRef<HTMLDivElement | null>(null);
   const wallGlitchSeenRef = useRef(false);
   const areBecomingYouVideosPausedRef = useRef(false);
   const individuallyPausedBecomingYouVideosRef = useRef([false, false, false, false, false]);
+  const becomingYouLoadTimeoutRef = useRef<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isBecomingYouInView, setIsBecomingYouInView] = useState(false);
+  const [loadedBecomingYouVideoIndices, setLoadedBecomingYouVideoIndices] = useState<boolean[]>([
+    false,
+    false,
+    false,
+    false,
+    false,
+  ]);
   const [areBecomingYouVideosPaused, setAreBecomingYouVideosPaused] = useState(false);
   const [becomingYouVideoFading, setBecomingYouVideoFading] = useState([false, false, false, false, false]);
   const [individuallyPausedBecomingYouVideos, setIndividuallyPausedBecomingYouVideos] = useState([
@@ -389,8 +399,13 @@ const PremiumLifestyleSection = ({
   const becomingYouFadeDurationMs = isMobile ? 450 : 2000;
   const becomingYouRestartDelayMs = isMobile ? 220 : 2000;
 
-  const setBecomingYouVideoRef = (index: number) => (element: HTMLVideoElement | null) => {
-    becomingYouVideoRefs.current[index] = element;
+  const setBecomingYouVideoRef =
+    (index: number, variant: "mobile" | "desktop") => (element: HTMLVideoElement | null) => {
+      if ((variant === "mobile" && !isMobile) || (variant === "desktop" && isMobile)) {
+        return;
+      }
+
+      becomingYouVideoRefs.current[index] = element;
   };
 
   useEffect(() => {
@@ -410,12 +425,70 @@ const PremiumLifestyleSection = ({
   }, [individuallyPausedBecomingYouVideos]);
 
   useEffect(() => {
+    if (!isMobile) {
+      setIsBecomingYouInView(true);
+      setLoadedBecomingYouVideoIndices([true, true, true, true, true]);
+      return;
+    }
+
+    const node = becomingYouSectionRef.current;
+    if (!node || !("IntersectionObserver" in window)) {
+      setIsBecomingYouInView(true);
+      setLoadedBecomingYouVideoIndices([true, true, true, true, true]);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+
+          setIsBecomingYouInView(true);
+          setLoadedBecomingYouVideoIndices((current) => {
+            if (current[0] && current[1]) {
+              return current;
+            }
+
+            return current.map((value, index) => (index < 2 ? true : value));
+          });
+
+          if (becomingYouLoadTimeoutRef.current) {
+            window.clearTimeout(becomingYouLoadTimeoutRef.current);
+          }
+
+          becomingYouLoadTimeoutRef.current = window.setTimeout(() => {
+            setLoadedBecomingYouVideoIndices([true, true, true, true, true]);
+            becomingYouLoadTimeoutRef.current = null;
+          }, 450);
+
+          observer.disconnect();
+        });
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "30% 0px 20% 0px",
+      }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [isMobile]);
+
+  useEffect(() => {
     becomingYouVideoRefs.current.forEach((video, index) => {
       if (!video) {
         return;
       }
 
-      if (!isBecomingYouActive) {
+      const isLoaded = !isMobile || loadedBecomingYouVideoIndices[index];
+      if (!isLoaded) {
+        video.pause();
+        return;
+      }
+
+      if (!isBecomingYouActive && !(isMobile && isBecomingYouInView)) {
         video.pause();
         return;
       }
@@ -427,7 +500,14 @@ const PremiumLifestyleSection = ({
 
       void video.play().catch(() => {});
     });
-  }, [areBecomingYouVideosPaused, individuallyPausedBecomingYouVideos, isBecomingYouActive]);
+  }, [
+    areBecomingYouVideosPaused,
+    individuallyPausedBecomingYouVideos,
+    isBecomingYouActive,
+    isBecomingYouInView,
+    isMobile,
+    loadedBecomingYouVideoIndices,
+  ]);
 
   useEffect(() => {
     becomingYouVideoRefs.current.forEach((video, index) => {
@@ -440,7 +520,19 @@ const PremiumLifestyleSection = ({
         return;
       }
 
-      if (!isBecomingYouActive) {
+      const shouldLoadVideo = !isMobile || loadedBecomingYouVideoIndices[index];
+
+      if (!shouldLoadVideo) {
+        video.pause();
+        video.removeAttribute("src");
+        sources.forEach((source) => {
+          source.removeAttribute("src");
+        });
+        video.load();
+        return;
+      }
+
+      if (!isBecomingYouActive && !(isMobile && isBecomingYouInView)) {
         video.pause();
         video.removeAttribute("src");
         sources.forEach((source) => {
@@ -465,14 +557,30 @@ const PremiumLifestyleSection = ({
 
       video.load();
 
-      if (!areBecomingYouVideosPausedRef.current && !individuallyPausedBecomingYouVideosRef.current[index]) {
+      const tryPlay = () => {
+        if (areBecomingYouVideosPausedRef.current || individuallyPausedBecomingYouVideosRef.current[index]) {
+          return;
+        }
+        if (!isBecomingYouActive && !(isMobile && isBecomingYouInView)) {
+          return;
+        }
         void video.play().catch(() => {});
+      };
+
+      video.onloadedmetadata = tryPlay;
+      video.oncanplay = tryPlay;
+
+      if (!areBecomingYouVideosPausedRef.current && !individuallyPausedBecomingYouVideosRef.current[index]) {
+        tryPlay();
       }
     });
-  }, [isBecomingYouActive, isMobile]);
+  }, [isBecomingYouActive, isBecomingYouInView, isMobile, loadedBecomingYouVideoIndices]);
 
   useEffect(() => {
     return () => {
+      if (becomingYouLoadTimeoutRef.current) {
+        window.clearTimeout(becomingYouLoadTimeoutRef.current);
+      }
       becomingYouFadeTimeoutsRef.current.forEach((timeout) => {
         if (timeout) {
           window.clearTimeout(timeout);
@@ -702,6 +810,7 @@ const PremiumLifestyleSection = ({
         backgroundOverlayClassName="bg-[linear-gradient(180deg,rgba(255,255,255,0.26)_0%,rgba(255,255,255,0.1)_18%,rgba(255,255,255,0.04)_42%,rgba(0,0,0,0.18)_100%)]"
       >
         <div
+          ref={becomingYouSectionRef}
           className="relative cursor-pointer md:hidden"
           onClick={handleBecomingYouToggle}
         >
@@ -711,7 +820,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(0, event)}>
               <video
-                ref={setBecomingYouVideoRef(0)}
+                ref={setBecomingYouVideoRef(0, "mobile")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -761,7 +870,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
               <video
-                ref={setBecomingYouVideoRef(1)}
+                ref={setBecomingYouVideoRef(1, "mobile")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -811,7 +920,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative -mt-[1.2vh]" onClick={(event) => handleBecomingYouVideoToggle(2, event)}>
               <video
-                ref={setBecomingYouVideoRef(2)}
+                ref={setBecomingYouVideoRef(2, "mobile")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -861,7 +970,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(3, event)}>
               <video
-                ref={setBecomingYouVideoRef(3)}
+                ref={setBecomingYouVideoRef(3, "mobile")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -911,7 +1020,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative" onClick={(event) => handleBecomingYouVideoToggle(4, event)}>
               <video
-                ref={setBecomingYouVideoRef(4)}
+                ref={setBecomingYouVideoRef(4, "mobile")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -969,7 +1078,7 @@ const PremiumLifestyleSection = ({
               <div className="flex flex-col gap-[3vh] md:flex-row md:items-stretch md:gap-0">
                 <div className="relative md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(0, event)}>
                   <video
-                    ref={setBecomingYouVideoRef(0)}
+                    ref={setBecomingYouVideoRef(0, "desktop")}
                     className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                     autoPlay
                     muted
@@ -1028,7 +1137,7 @@ const PremiumLifestyleSection = ({
               <div className="md:translate-y-[20vh]">
                 <div className="relative md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(2, event)}>
                   <video
-                    ref={setBecomingYouVideoRef(2)}
+                    ref={setBecomingYouVideoRef(2, "desktop")}
                     className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                     autoPlay
                     muted
@@ -1091,7 +1200,7 @@ const PremiumLifestyleSection = ({
                   </h2>
                   <div className="relative mt-[3vh]" onClick={(event) => handleBecomingYouVideoToggle(4, event)}>
                     <video
-                      ref={setBecomingYouVideoRef(4)}
+                      ref={setBecomingYouVideoRef(4, "desktop")}
                       className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                       autoPlay
                       muted
@@ -1155,7 +1264,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative z-[5] md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(1, event)}>
               <video
-                ref={setBecomingYouVideoRef(1)}
+                ref={setBecomingYouVideoRef(1, "desktop")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted
@@ -1215,7 +1324,7 @@ const PremiumLifestyleSection = ({
             </h2>
             <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]" onClick={(event) => handleBecomingYouVideoToggle(3, event)}>
               <video
-                ref={setBecomingYouVideoRef(3)}
+                ref={setBecomingYouVideoRef(3, "desktop")}
                 className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
                 autoPlay
                 muted

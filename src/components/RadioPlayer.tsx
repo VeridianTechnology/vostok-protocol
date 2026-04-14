@@ -324,7 +324,7 @@ const DJ_REWIND_CLIP_PAIRS = [
   ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
 ] as const;
 const DEFAULT_VOLUME = 1;
-const DJ_STINGER_VOLUME_MULTIPLIER = 0.5;
+const DJ_STINGER_VOLUME_MULTIPLIER = 0.2;
 const DJ_RESUME_LEAD_MS = 500;
 const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
 const DJ_RANDOM_VOLUME_MULTIPLIER = 0.7;
@@ -1228,7 +1228,7 @@ const RadioPlayer = () => {
       <audio ref={djVoiceAudioRef} />
       <audio ref={djRandomAudioRef} />
       <div
-        className={`fixed inset-x-0 z-[59] flex justify-center items-end transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start ${
+        className={`fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
           isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
         }`}
         style={{ transitionDuration: "2000ms" }}
@@ -1262,7 +1262,7 @@ const RadioPlayer = () => {
             )}
           </svg>
         </button>
-        <div className="relative flex items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] px-4 pb-3 pt-2 shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:gap-1.5 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
+        <div className="relative flex w-[33vw] min-w-[118px] max-w-[152px] items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] px-3 pb-3 pt-2 shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:w-auto md:max-w-none md:gap-1.5 md:px-4 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
           <div className="pointer-events-none absolute inset-0">
             <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
@@ -1287,7 +1287,7 @@ const RadioPlayer = () => {
               type="button"
               onClick={handleNextTrack}
               aria-label="Next track"
-              className="mb-2 inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:h-[26px] md:w-[26px]"
+              className="mb-[4vh] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:mb-2 md:h-[26px] md:w-[26px]"
             >
               <svg
                 aria-hidden="true"

@@ -103,22 +103,22 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     <section
       ref={sectionRef}
       id="purchase"
-      className="section-surface relative left-1/2 right-1/2 h-[73svh] min-h-[73svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[95svh] md:min-h-[95svh] md:pb-[5vh]"
+      className="section-surface relative left-1/2 right-1/2 h-[78svh] min-h-[78svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[140vh] md:min-h-[140vh] md:pb-[5vh]"
     >
       <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
         <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[10%]">
           <img
-            src="/section_wallpaper/buy/07_mobile.png"
+            src="/section_wallpaper/buy/11.jpg"
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-fill object-center md:hidden"
+            className="absolute inset-0 h-full w-full object-cover object-center md:hidden"
             style={{
               transform: "none",
             }}
           />
           <img
-            src="/section_wallpaper/refined_images/buy_section_08_desktop.jpg"
+            src="/section_wallpaper/buy/10.png"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 hidden h-full w-full object-cover object-[center_18%] md:block"
@@ -156,19 +156,21 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
 
           <div className="absolute inset-0 flex items-center justify-center px-6">
             <m.button
-              whileHover={{ scale: 1.02 }}
+              whileHover={{}}
               whileTap={{ scale: 0.98 }}
               type="button"
               onClick={() => handleCheckoutClick("footer")}
-            className="group relative inline-flex min-h-[70px] min-w-[156px] items-center justify-center overflow-hidden rounded-[26px] border border-black/20 px-5 py-4 text-base font-medium uppercase tracking-[0.28em] text-white shadow-[0_20px_44px_rgba(0,0,0,0.38)] transition-all duration-500 md:min-h-[92px] md:min-w-[420px] md:rounded-[34px] md:px-8 md:text-[1.1rem]"
-          >
+              className="group relative inline-flex min-h-[70px] min-w-[156px] items-center justify-center overflow-hidden rounded-[10px] border border-white/14 bg-[rgba(8,9,11,0.82)] px-5 py-4 text-base font-medium uppercase tracking-[0.28em] text-white shadow-[0_6px_18px_rgba(0,0,0,0.28)] backdrop-blur-[8px] transition-[border-color,background-color] duration-300 ease-in md:min-h-[92px] md:min-w-[420px] md:rounded-[12px] md:px-8 md:text-[1.1rem]"
+            >
               <span className="absolute inset-0">
-                <span aria-hidden="true" className="pod-wallpaper-bg absolute inset-0" />
-                <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.42)_100%)] transition-opacity duration-500 group-hover:opacity-80" />
-                <span className="absolute inset-[1px] rounded-[25px] border border-white/18 md:rounded-[33px]" />
+                <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,20,24,0.92)_0%,rgba(7,8,10,0.88)_100%)] transition-opacity duration-300 ease-in group-hover:opacity-0" />
+                <span className="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,11,13,0.96)_0%,rgba(4,5,7,0.96)_100%)] opacity-0 transition-opacity duration-300 ease-in group-hover:opacity-100" />
+                <span className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.03)_0%,transparent_38%,rgba(255,255,255,0.012)_100%)] opacity-70 transition-opacity duration-300 ease-in group-hover:opacity-85" />
+                <span className="absolute inset-[1px] rounded-[9px] border border-white/10 md:rounded-[11px]" />
+                <span className="absolute inset-[3px] rounded-[7px] border border-white/18 opacity-0 transition-opacity duration-300 ease-in group-hover:opacity-100 md:rounded-[9px]" />
               </span>
-              <span className="relative z-[1] font-['Tektur'] text-[0.82rem] font-bold uppercase tracking-[0.24em] text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] md:text-[1.18rem]">
-                {isFourChan ? "Neetbux here" : "JØIN THE CLUB"}
+              <span className="relative z-[1] font-['Tektur'] text-[0.82rem] font-bold uppercase tracking-[0.34em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white [text-rendering:geometricPrecision] md:text-[1.12rem]">
+                {isFourChan ? "Proceed" : "Step Forward"}
               </span>
             </m.button>
           </div>
