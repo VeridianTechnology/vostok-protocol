@@ -256,10 +256,24 @@ const TRACKS: Track[] = [
   },
   {
     id: "36",
-    title: "VIDA NOTURNA (Slowed Reverb)",
+    title: "VIDA NOTURNA (Slowed + Reverb)",
     score: "NR",
     audioSrc: "/audio/radio/36_VIDA NOTURNA (Slowed Reverb).m4a",
-    youtubeUrl: "https://www.youtube.com/results?search_query=VIDA+NOTURNA+Slowed+Reverb",
+    youtubeUrl: "https://www.youtube.com/watch?v=VnvL3z0jmaw&list=RDqvgi-E6N8FU",
+  },
+  {
+    id: "37",
+    title: "Atmosphere",
+    score: "NR",
+    audioSrc: "/audio/radio/37_KNSRK - Atmosphere (Slowed  Reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=6YDCyXi12Sk",
+  },
+  {
+    id: "38",
+    title: "Hoes Come Easy",
+    score: "NR",
+    audioSrc: "/audio/radio/38_Hoes Come Easy (Slowed  Low Honor - The Dark Triad).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=fEj4v7AJkgY",
   },
 ];
 
