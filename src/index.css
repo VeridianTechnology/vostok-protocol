@@ -147,6 +147,73 @@
     line-height: 0.95;
   }
 
+  .research-matrix-rain {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .research-panel-shell {
+    position: relative;
+    isolation: isolate;
+    border: 1px solid rgba(214, 184, 101, 0.18);
+    background-color: rgba(43, 43, 47, 0.9);
+  }
+
+  .research-panel-shell::before,
+  .research-panel-shell::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: calc(1.5rem - 12px);
+    pointer-events: none;
+  }
+
+  .research-panel-shell::before {
+    border: 1px solid rgba(214, 184, 101, 0.52);
+  }
+
+  .research-panel-shell::after {
+    background:
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) left 16px top 16px / 24px 1px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) left 16px top 16px / 1px 24px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) right 16px top 16px / 24px 1px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) right 16px top 16px / 1px 24px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) left 16px bottom 16px / 24px 1px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) left 16px bottom 16px / 1px 24px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) right 16px bottom 16px / 24px 1px no-repeat,
+      linear-gradient(rgba(214, 184, 101, 0.65), rgba(214, 184, 101, 0.65)) right 16px bottom 16px / 1px 24px no-repeat,
+      linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) center top 16px / 56px 1px no-repeat,
+      linear-gradient(rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)) center bottom 16px / 56px 1px no-repeat,
+      linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)) left 16px center / 1px 56px no-repeat,
+      linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)) right 16px center / 1px 56px no-repeat;
+  }
+
+  .research-matrix-rain__column {
+    position: absolute;
+    top: -32%;
+    display: block;
+    white-space: pre;
+    font-family: "Tektur", sans-serif;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: rgba(20, 20, 20, 0.9);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.82);
+    mix-blend-mode: multiply;
+    will-change: transform, opacity;
+    animation-name: research-matrix-fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .cta-typing-cursor {
+    animation: cta-typing-cursor-blink 760ms steps(1) infinite;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.92);
+  }
+
   .becoming-you-soft-flash {
     animation: becoming-you-soft-flash 5000ms ease-in-out forwards;
   }
@@ -262,6 +329,38 @@
       );
     background-size: 100% 100%, 100% 100%;
     animation: hero-tv-spazz 9.5s steps(1) infinite;
+  }
+
+  @keyframes research-matrix-fall {
+    0% {
+      transform: translate3d(calc(var(--matrix-drift-x, 0vw) * -0.2), -16%, 0);
+      opacity: 0;
+    }
+
+    10% {
+      opacity: 0.7;
+    }
+
+    88% {
+      opacity: 0.7;
+    }
+
+    100% {
+      transform: translate3d(var(--matrix-drift-x, 0vw), 190vh, 0);
+      opacity: 0;
+    }
+  }
+
+  @keyframes cta-typing-cursor-blink {
+    0%,
+    48% {
+      opacity: 1;
+    }
+
+    49%,
+    100% {
+      opacity: 0;
+    }
   }
 
   .mobile-hero-rain-pane {

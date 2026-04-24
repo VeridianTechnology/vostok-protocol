@@ -134,16 +134,20 @@ const FeatureThumbnails = ({
   renderStructureSection = true,
   renderWallpaperSection = true,
 }: FeatureThumbnailsProps) => {
-  const mobileHeroImage = "/section_wallpaper/hero/mobile.png";
-  const desktopHeroImage = "/section_wallpaper/hero/final1_desktop.jpg";
-  const mobileHeroThunderSrc = "/audio/effect/thunder.m4a";
-  const MOBILE_HERO_THUNDER_VOLUME = 0.2;
-  const MOBILE_HERO_FLASH_MIN_DELAY_MS = 9000;
-  const MOBILE_HERO_FLASH_MAX_DELAY_MS = 18000;
-  const MOBILE_HERO_THUNDER_LEAD_IN_MS = 300;
-  const MOBILE_HERO_FIRST_FLASH_ON_MS = 400;
-  const MOBILE_HERO_SECOND_FLASH_ON_MS = 700;
-  const MOBILE_HERO_FLASH_GAP_MS = 1000;
+  const mobileHeroImage = "/section_wallpaper/hero/xxz.jpg";
+  const desktopHeroImage = "/section_wallpaper/hero/01.jpg";
+  // Desktop hero rotation test: remove this toggle, the image list, the state/effect below,
+  // and the extra desktop image/blackout layers in the hero markup to roll the test back out.
+  const ENABLE_DESKTOP_HERO_ROTATION_TEST = true;
+  const DESKTOP_HERO_ROTATION_EXTRA_IMAGES: string[] = [
+    // "/section_wallpaper/hero/rotating/01.jpg",
+    // "/section_wallpaper/hero/rotating/02.jpg",
+    // "/section_wallpaper/hero/rotating/03.jpg",
+  ];
+  const DESKTOP_HERO_ROTATION_HOLD_MS = 15000;
+  const DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS = 1200;
+  const DESKTOP_HERO_ROTATION_BLACK_HOLD_MS = 600;
+  const DESKTOP_HERO_ROTATION_FADE_IN_MS = 1200;
   const WALLPAPER_GLITCH_MIN_DELAY_MS = 5000;
   const WALLPAPER_GLITCH_MAX_DELAY_MS = 15000;
   const WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS = 400;
@@ -160,9 +164,8 @@ const FeatureThumbnails = ({
   );
   const [wallpaperSlideIndex, setWallpaperSlideIndex] = useState(0);
   const [isWallpaperFlashVisible, setIsWallpaperFlashVisible] = useState(false);
-  const [isMobileHeroFlashVisible, setIsMobileHeroFlashVisible] = useState(false);
-  const [isMobileHeroTextFlashVisible, setIsMobileHeroTextFlashVisible] = useState(false);
-  const [isMobileHeroRainVisible, setIsMobileHeroRainVisible] = useState(false);
+  const [desktopHeroRotationIndex, setDesktopHeroRotationIndex] = useState(0);
+  const [isDesktopHeroBlackoutVisible, setIsDesktopHeroBlackoutVisible] = useState(false);
   const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
   const [isWallpaperPlaying, setIsWallpaperPlaying] = useState(true);
   const [isWallpaperUserPaused, setIsWallpaperUserPaused] = useState(false);
@@ -180,13 +183,10 @@ const FeatureThumbnails = ({
   const wallpaperCaptionTimeoutRef = useRef<number | null>(null);
   const wallpaperGlitchTimeoutsRef = useRef<number[]>([]);
   const wallpaperGlitchSequenceTimeoutRef = useRef<number | null>(null);
-  const mobileHeroFlashTimeoutsRef = useRef<number[]>([]);
-  const mobileHeroFlashSequenceTimeoutRef = useRef<number | null>(null);
+  const desktopHeroRotationTimeoutsRef = useRef<number[]>([]);
   const wallpaperIsUserPausedRef = useRef(false);
   const wallpaperIsGlitchingRef = useRef(false);
   const wallpaperAutoAdvanceEnabledRef = useRef(true);
-  const mobileHeroThunderAudioRef = useRef<HTMLAudioElement | null>(null);
-  const hasPlayedMobileHeroThunderSequenceRef = useRef(false);
   const structureImage = `/images/structure/${structureStep}.jpg`;
   const highlightImage =
     structureStep > 1 ? `/images/structure/highlight/${structureStep - 1}.jpg` : "";
@@ -262,96 +262,6 @@ const FeatureThumbnails = ({
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
 
-  const clearMobileHeroFlashTimeouts = () => {
-    mobileHeroFlashTimeoutsRef.current.forEach((timeoutId) => {
-      window.clearTimeout(timeoutId);
-    });
-    mobileHeroFlashTimeoutsRef.current = [];
-
-    if (mobileHeroFlashSequenceTimeoutRef.current) {
-      window.clearTimeout(mobileHeroFlashSequenceTimeoutRef.current);
-      mobileHeroFlashSequenceTimeoutRef.current = null;
-    }
-
-    if (mobileHeroThunderAudioRef.current) {
-      mobileHeroThunderAudioRef.current.pause();
-      mobileHeroThunderAudioRef.current.currentTime = 0;
-    }
-  };
-
-  const scheduleMobileHeroFlash = () => {
-    clearMobileHeroFlashTimeouts();
-
-    if (!isMobile) {
-      setIsMobileHeroFlashVisible(false);
-      setIsMobileHeroTextFlashVisible(false);
-      setIsMobileHeroRainVisible(false);
-      hasPlayedMobileHeroThunderSequenceRef.current = false;
-      return;
-    }
-
-    if (hasPlayedMobileHeroThunderSequenceRef.current) {
-      return;
-    }
-
-    const nextDelay =
-      Math.floor(
-        Math.random() * (MOBILE_HERO_FLASH_MAX_DELAY_MS - MOBILE_HERO_FLASH_MIN_DELAY_MS)
-      ) + MOBILE_HERO_FLASH_MIN_DELAY_MS;
-
-    mobileHeroFlashSequenceTimeoutRef.current = window.setTimeout(() => {
-      hasPlayedMobileHeroThunderSequenceRef.current = true;
-      if (mobileHeroThunderAudioRef.current) {
-        mobileHeroThunderAudioRef.current.volume = MOBILE_HERO_THUNDER_VOLUME;
-        mobileHeroThunderAudioRef.current.currentTime = 0;
-        void mobileHeroThunderAudioRef.current.play().catch(() => {});
-      }
-
-      const firstOnTimeout = window.setTimeout(() => {
-        setIsMobileHeroFlashVisible(true);
-        setIsMobileHeroTextFlashVisible(true);
-      }, MOBILE_HERO_THUNDER_LEAD_IN_MS);
-
-      const firstOffTimeout = window.setTimeout(() => {
-        setIsMobileHeroFlashVisible(false);
-        setIsMobileHeroTextFlashVisible(false);
-      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS);
-
-      const secondOnTimeout = window.setTimeout(() => {
-        setIsMobileHeroFlashVisible(true);
-        setIsMobileHeroTextFlashVisible(true);
-      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS);
-
-      const secondOffTimeout = window.setTimeout(() => {
-        setIsMobileHeroFlashVisible(false);
-        setIsMobileHeroTextFlashVisible(false);
-      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS + MOBILE_HERO_SECOND_FLASH_ON_MS);
-
-      const rainRevealTimeout = window.setTimeout(() => {
-        setIsMobileHeroRainVisible(true);
-      }, MOBILE_HERO_THUNDER_LEAD_IN_MS + MOBILE_HERO_FIRST_FLASH_ON_MS + MOBILE_HERO_FLASH_GAP_MS + MOBILE_HERO_SECOND_FLASH_ON_MS + 120);
-
-      mobileHeroFlashTimeoutsRef.current.push(
-        firstOnTimeout,
-        firstOffTimeout,
-        secondOnTimeout,
-        secondOffTimeout,
-        rainRevealTimeout
-      );
-    }, nextDelay);
-  };
-
-  useEffect(() => {
-    scheduleMobileHeroFlash();
-
-    return () => {
-      clearMobileHeroFlashTimeouts();
-      setIsMobileHeroFlashVisible(false);
-      setIsMobileHeroTextFlashVisible(false);
-      setIsMobileHeroRainVisible(false);
-    };
-  }, [isMobile]);
-
   useEffect(() => {
     if (structureStep === 1 && isHighlightOn) {
       setIsHighlightOn(false);
@@ -363,6 +273,12 @@ const FeatureThumbnails = ({
 
   const activeFeature = features.find((feature) => feature.step === structureStep) ?? features[0];
   const activeWallpaperSlide = wallpaperSlides[wallpaperSlideIndex] ?? wallpaperSlides[0];
+  const desktopHeroRotationImages = [
+    desktopHeroImage,
+    ...DESKTOP_HERO_ROTATION_EXTRA_IMAGES,
+  ];
+  const activeDesktopHeroImage =
+    desktopHeroRotationImages[desktopHeroRotationIndex] ?? desktopHeroImage;
   const activeVariants = getImageVariants(activeImage);
   const isActiveUnlocked = structureStep >= activeFeature.step;
   const defaultDetailTitle = "The Harmony Index Explained";
@@ -383,6 +299,67 @@ const FeatureThumbnails = ({
       setParallaxOffset({ x: x * 50, y: y * 34 });
     });
   };
+
+  useEffect(() => {
+    desktopHeroRotationTimeoutsRef.current.forEach((timeoutId) => window.clearTimeout(timeoutId));
+    desktopHeroRotationTimeoutsRef.current = [];
+
+    if (
+      isMobile ||
+      !ENABLE_DESKTOP_HERO_ROTATION_TEST ||
+      desktopHeroRotationImages.length <= 1
+    ) {
+      setDesktopHeroRotationIndex(0);
+      setIsDesktopHeroBlackoutVisible(false);
+      return;
+    }
+
+    const runRotation = () => {
+      const fadeToBlackTimeout = window.setTimeout(() => {
+        setIsDesktopHeroBlackoutVisible(true);
+      }, DESKTOP_HERO_ROTATION_HOLD_MS);
+
+      const swapImageTimeout = window.setTimeout(() => {
+        setDesktopHeroRotationIndex((currentIndex) =>
+          (currentIndex + 1) % desktopHeroRotationImages.length
+        );
+      }, DESKTOP_HERO_ROTATION_HOLD_MS + DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS + DESKTOP_HERO_ROTATION_BLACK_HOLD_MS);
+
+      const fadeInTimeout = window.setTimeout(() => {
+        setIsDesktopHeroBlackoutVisible(false);
+      }, DESKTOP_HERO_ROTATION_HOLD_MS + DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS + DESKTOP_HERO_ROTATION_BLACK_HOLD_MS);
+
+      const restartTimeout = window.setTimeout(() => {
+        runRotation();
+      }, DESKTOP_HERO_ROTATION_HOLD_MS + DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS + DESKTOP_HERO_ROTATION_BLACK_HOLD_MS + DESKTOP_HERO_ROTATION_FADE_IN_MS);
+
+      desktopHeroRotationTimeoutsRef.current.push(
+        fadeToBlackTimeout,
+        swapImageTimeout,
+        fadeInTimeout,
+        restartTimeout
+      );
+    };
+
+    runRotation();
+
+    return () => {
+      desktopHeroRotationTimeoutsRef.current.forEach((timeoutId) =>
+        window.clearTimeout(timeoutId)
+      );
+      desktopHeroRotationTimeoutsRef.current = [];
+      setIsDesktopHeroBlackoutVisible(false);
+      setDesktopHeroRotationIndex(0);
+    };
+  }, [
+    DESKTOP_HERO_ROTATION_BLACK_HOLD_MS,
+    DESKTOP_HERO_ROTATION_FADE_IN_MS,
+    DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS,
+    DESKTOP_HERO_ROTATION_HOLD_MS,
+    ENABLE_DESKTOP_HERO_ROTATION_TEST,
+    desktopHeroRotationImages.length,
+    isMobile,
+  ]);
 
   const handleParallaxLeave = () => {
     if (rafRef.current) {
@@ -881,7 +858,7 @@ const FeatureThumbnails = ({
       {renderWallpaperSection && (
         <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden">
           <div
-            className="relative min-h-[98vh] w-full md:min-h-[140vh]"
+            className="relative min-h-[97vh] w-full overflow-hidden bg-black md:min-h-[140vh]"
             onClick={!isMobile ? toggleWallpaperVideoPlayback : undefined}
           >
           <div
@@ -909,20 +886,37 @@ const FeatureThumbnails = ({
               <img
                 src={mobileHeroImage}
                 alt="Vostok hero"
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-x-0 top-0 h-[92%] w-[92%] object-cover object-top"
+                style={{ left: "50%", transform: "translateX(-50%)" }}
                 loading="eager"
                 fetchPriority="high"
                 decoding="async"
               />
             ) : (
-              <img
-                src={desktopHeroImage}
-                alt="Vostok hero"
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="eager"
-                fetchPriority="high"
-                decoding="async"
-              />
+              <>
+                <img
+                  src={activeDesktopHeroImage}
+                  alt="Vostok hero"
+                  className="absolute left-1/2 top-1/2 h-[92%] w-[92%] -translate-x-1/2 -translate-y-1/2 object-cover"
+                  loading="eager"
+                  fetchPriority="high"
+                  decoding="async"
+                />
+                {ENABLE_DESKTOP_HERO_ROTATION_TEST ? (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 z-[6] bg-black"
+                    style={{
+                      opacity: isDesktopHeroBlackoutVisible ? 1 : 0,
+                      transition: `opacity ${
+                        isDesktopHeroBlackoutVisible
+                          ? DESKTOP_HERO_ROTATION_FADE_TO_BLACK_MS
+                          : DESKTOP_HERO_ROTATION_FADE_IN_MS
+                      }ms ease`,
+                    }}
+                  />
+                ) : null}
+              </>
             )
           ) : (
             <picture>
@@ -947,9 +941,7 @@ const FeatureThumbnails = ({
           {isMobile && (
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute inset-0 z-[9] transition-opacity duration-700 ${
-                isMobileHeroRainVisible ? "opacity-100" : "opacity-0"
-              }`}
+              className="pointer-events-none absolute inset-0 z-[9]"
             >
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%]" />
               <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%]" />
@@ -978,13 +970,6 @@ const FeatureThumbnails = ({
               </span>
             </div>
           )}
-          {isMobile && (
-            <div
-              className={`absolute inset-0 bg-white transition-opacity duration-150 ${
-                isMobileHeroFlashVisible ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            />
-          )}
           <div
             aria-hidden="true"
             className={`pointer-events-none absolute inset-0 z-[9] bg-black transition-opacity ${
@@ -999,49 +984,8 @@ const FeatureThumbnails = ({
               VOSTOK
             </p>
           )}
-          <audio ref={mobileHeroThunderAudioRef} src={mobileHeroThunderSrc} preload="auto" />
-          <div className="absolute left-1/2 top-[44vh] z-10 w-full -translate-x-1/2 px-6 text-center md:bottom-0 md:left-0 md:top-auto md:w-auto md:translate-x-0 md:px-0 md:text-left md:pb-[12vh] md:pl-[10vw]">
-            {isMobile && (
-              <>
-                <p
-                  className={`pointer-events-none absolute left-1/2 top-[-24vh] w-full -translate-x-1/2 px-8 text-center text-[34px] font-bold uppercase tracking-[0.18em] text-white transition-all duration-100 ${
-                    isMobileHeroTextFlashVisible
-                      ? "scale-[1.02] drop-shadow-[0_0_18px_rgba(255,255,255,0.95)]"
-                      : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
-                  }`}
-                >
-                  <span className="block">VØSTØKMETHØD</span>
-                  <span className="block">.com</span>
-                </p>
-                <div
-                  className={`pointer-events-none absolute left-1/2 top-[31vh] flex w-full -translate-x-1/2 justify-center px-8 text-[34px] font-medium text-white transition-all duration-100 ${
-                    isMobileHeroTextFlashVisible
-                      ? "scale-[1.02] drop-shadow-[0_0_18px_rgba(255,255,255,0.95)]"
-                      : "drop-shadow-[0_6px_20px_rgba(0,0,0,0.9)]"
-                  }`}
-                >
-                  <span className="inline-flex items-end gap-[0.06em]">
-                    <span className="inline-block -rotate-[7.5deg] translate-y-[0.4rem]">ヴ</span>
-                    <span className="inline-block -rotate-[4.5deg] translate-y-[0.18rem]">ォ</span>
-                    <span className="inline-block -rotate-[1.5deg] translate-y-[0.04rem]">ス</span>
-                    <span className="inline-block rotate-[1.5deg] translate-y-[0.04rem]">ト</span>
-                    <span className="inline-block rotate-[4.5deg] translate-y-[0.18rem]">ク</span>
-                  </span>
-                </div>
-              </>
-            )}
-            {!isMobile && (
-              <>
-                <p
-                  className="hero-quote-glow pointer-events-none font-quote mt-6 max-w-[36rem] text-left text-[1.1rem] italic leading-[1.55] tracking-[0.05em] text-silver md:-ml-[7.5vw] md:text-[1.6rem]"
-                >
-                  <span className="block">Gaze upon the truth.</span>
-                  <span className="mt-2 block pl-[2.9rem]">And the truth... shall set you free.</span>
-                </p>
-              </>
-            )}
           </div>
-          </div>
+          {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
         </section>
       )}
     </>

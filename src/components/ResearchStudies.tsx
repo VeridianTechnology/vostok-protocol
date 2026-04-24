@@ -1,8 +1,8 @@
+import type { CSSProperties } from "react";
 import { useMemo, useState } from "react";
 import { m, AnimatePresence } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trackSafe } from "@/lib/analytics";
-import SectionSideTab from "@/components/SectionSideTab";
 
 type ResearchStudiesProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
@@ -33,6 +33,8 @@ type NarrativeTab = {
     caption?: string;
     splitLayout?: boolean;
     splitLayoutText?: string[];
+    splitLayoutClassName?: string;
+    splitLayoutContentClassName?: string;
     frameClassName?: string;
     imageClassName?: string;
   }>;
@@ -41,6 +43,167 @@ type NarrativeTab = {
     title?: string;
     paragraphs: string[];
   }>;
+};
+
+type FloatingGlyphColumn = {
+  id: string;
+  glyphs: string;
+  side: "left" | "right";
+  x: string;
+  driftX: string;
+  duration: string;
+  delay: string;
+  fontSize: string;
+  blur: string;
+  opacity: number;
+};
+
+const MATRIX_PHRASES = [
+  "B00B135",
+  "5318008",
+  "0.7734",
+  "58008",
+  "D00M3D",
+  "H4CK3RM4N",
+  "L33T H4X",
+  "P33P33P00P00",
+  "S3ND NUD35",
+  "H0T D0G",
+  "1337 5P34K",
+  "B4D B0Y",
+  "C0FF33",
+  "L0L WUT",
+  "FU88 0FF",
+  "SUDO MAKE ME A SANDWICH",
+  "R00T ACCESS GRANTED",
+  "EXECUTE: GL0BAL_D0MINATI0N.exe",
+  "LOAD: N3URAL_L1NK // C0NSC10USNESS.SYS",
+  "ERROR: R34LITY.SYS N0T F0UND",
+  "UNZIP TH0UGHTS.zip",
+  "CHMOD +X DEST1NY",
+  "PING 127.0.0.1 // ECH0 \"I EXIST\"",
+  "SYS.OVERR1DE = 1",
+  "WHOAMI // RESULT: N30",
+  "TH3R3 15 N0 SP00N",
+  "F0LL0W TH3 WH1T3 R4BB1T",
+  "KN0CK KN0CK, N30",
+  "1GN0R4NC3 15 BL155",
+  "R3M3MB3R 2 BR34TH3",
+  "D0 N0T TRY 4ND B3ND TH3 SP00N",
+  "Y0U 4R3 TH3 0N3",
+  "H3LL0, M1ST3R 4ND3RS0N",
+  "1 KN0W KUN6 FU",
+  "W4K3 UP...",
+  "1 4M A R0B0T",
+  "B1FF T4NN3N",
+  "L3T M3 1N",
+  "H3LL0 W0RLD",
+  "80081355",
+  "C4LCUL4T1NG R1SK...",
+  "3RR0R: H4ND5H4K3 F41L3D",
+  "P4CK3T L055: 17%",
+  "D0WNL04D1NG C0NSC10USN355... 99%",
+  "SYN... SYN... ACK...",
+  "ᗰᗩᖇᑕᕼ Iᑎᑕ",
+  "𝕯 𝕺 𝖂 𝕹 𝕷 𝕺 𝕬 𝕯",
+  "⍟⍟⍟ D4T4 STR34M 0NLY ⍟⍟⍟",
+  "⟨ ⟨ R3CURS10N ⟩ ⟩",
+  ">-< F1R3W4LL >-< BR34CH3D >-<",
+] as const;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const createFloatingGlyphColumns = (count: number): FloatingGlyphColumn[] => {
+  let lastLeftX = 4 + Math.random() * 10;
+  let lastRightX = 84 + Math.random() * 10;
+  const recentLeftX: number[] = [lastLeftX];
+  const recentRightX: number[] = [lastRightX];
+
+  return Array.from({ length: count }, (_, index) => {
+    const side = Math.random() > 0.5 ? "left" : "right";
+    const previousX = side === "left" ? lastLeftX : lastRightX;
+    const recentX = side === "left" ? recentLeftX : recentRightX;
+    const minX = side === "left" ? 2 : 81;
+    const maxX = side === "left" ? 19 : 98;
+    const minimumGap = 2.8;
+    let baseX = previousX;
+
+    for (let attempt = 0; attempt < 14; attempt += 1) {
+      const spreadBoost = attempt >= 8 ? 2.6 : 0;
+      const xDelta = (Math.random() - 0.5) * (7.5 + spreadBoost);
+      const candidateX = clamp(previousX + xDelta, minX, maxX);
+      const respectsGap = recentX
+        .slice(-3)
+        .every((recentValue) => Math.abs(candidateX - recentValue) >= minimumGap);
+
+      if (respectsGap || attempt === 13) {
+        baseX = candidateX;
+        break;
+      }
+    }
+
+    const glyphs = Array.from(
+      MATRIX_PHRASES[Math.floor(Math.random() * MATRIX_PHRASES.length)],
+    ).join("\n");
+    const driftDirection = side === "left" ? 1 : -1;
+    const driftX = (driftDirection * (1.4 + Math.random() * 4.6)).toFixed(2);
+
+    if (side === "left") {
+      lastLeftX = baseX;
+      recentLeftX.push(baseX);
+      if (recentLeftX.length > 4) {
+        recentLeftX.shift();
+      }
+    } else {
+      lastRightX = baseX;
+      recentRightX.push(baseX);
+      if (recentRightX.length > 4) {
+        recentRightX.shift();
+      }
+    }
+
+    return {
+      id: `matrix-glyph-${index}`,
+      glyphs,
+      side,
+      x: `${baseX.toFixed(2)}%`,
+      driftX: `${driftX}vw`,
+      duration: `${((12 + Math.random() * 18) * 1.6).toFixed(2)}s`,
+      delay: `${(-Math.random() * 30).toFixed(2)}s`,
+      fontSize: `${(1.05 + Math.random() * 0.45).toFixed(2)}rem`,
+      blur: `${(Math.random() * 0.3).toFixed(2)}px`,
+      opacity: 0.6 + Math.random() * 0.2,
+    };
+  });
+};
+
+const ResearchMatrixRain = ({ seed }: { seed: string }) => {
+  const columns = useMemo(() => createFloatingGlyphColumns(6), [seed]);
+
+  return (
+    <div className="research-matrix-rain" aria-hidden="true">
+      {columns.map((column) => (
+        <span
+          key={column.id}
+          className="research-matrix-rain__column"
+          style={
+            {
+              left: column.x,
+              "--matrix-drift-x": column.driftX,
+              animationDuration: column.duration,
+              animationDelay: column.delay,
+              fontSize: column.fontSize,
+              filter: `blur(${column.blur})`,
+              opacity: column.opacity,
+            } as CSSProperties
+          }
+        >
+          {column.glyphs}
+        </span>
+      ))}
+    </div>
+  );
 };
 
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
@@ -226,10 +389,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       const tabs: NarrativeTab[] = [
       {
         label: "The Face Card Never Lies",
-        topTitle: "The Face Card Never Lies",
         image: {
-          desktopSrc: "/section_wallpaper/research/refined_images/06_desktop.jpg",
-          mobileSrc: "/section_wallpaper/research/refined_images/06_mobile.jpg",
+          desktopSrc: "/section_wallpaper/research/09.png",
+          mobileSrc: "/section_wallpaper/research/09.png",
           alt: "Face card illustration used in the dating-market research section",
           caption:
             "The prettiest ones are almost always positioned in the center. It is not coincidence. It is a visual reckoning of status that happens without a word spoken.",
@@ -291,9 +453,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
         topTitle:
           "The Man Must be Better Looking or at Par with the Woman for the Relationship to be Happy.",
         image: {
-          desktopSrc: "/section_wallpaper/research/refined_images/05_desktop.jpg",
-          mobileSrc: "/section_wallpaper/research/refined_images/05_mobile.jpg",
-          alt: "Masculine aesthetic advantage illustration used in the research section",
+          desktopSrc: "/section_wallpaper/research/refined_images/10_desktop.jpg",
+          mobileSrc: "/section_wallpaper/research/refined_images/10_mobile.jpg",
+          alt: "Male beauty and status infographic used in the masculine aesthetic advantage section",
           frameClassName:
             "mx-auto mb-3 w-full max-w-[28rem] overflow-hidden rounded-[1.4rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:mb-4 md:max-w-[58rem]",
           imageClassName: "block h-auto w-full object-cover",
@@ -366,26 +528,29 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           },
         ],
         image: {
-          desktopSrc: "/section_wallpaper/research/refined_images/02_desktop.jpg",
-          mobileSrc: "/section_wallpaper/research/refined_images/02_mobile.jpg",
-          alt: "Portrait study used in the looks and leverage research section",
+          desktopSrc: "/section_wallpaper/research/refined_images/07_desktop.jpg",
+          mobileSrc: "/section_wallpaper/research/refined_images/07_mobile.jpg",
+          alt: "Status hierarchy illustration used in the looks and leverage research section",
+          frameClassName:
+            "mx-auto mb-4 w-full max-w-[28rem] overflow-hidden rounded-[1.4rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:mb-5 md:max-w-[42rem]",
+          imageClassName: "block h-auto w-full object-cover",
         },
         inlineImages: [
           {
             beforeText:
               "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
-            desktopSrc: "/section_wallpaper/research/refined_images/03_desktop.jpg",
-            mobileSrc: "/section_wallpaper/research/refined_images/03_mobile.jpg",
-            alt: "Historical leadership collage used in the power and appearance argument",
+            desktopSrc: "/section_wallpaper/research/refined_images/08_desktop.jpg",
+            mobileSrc: "/section_wallpaper/research/refined_images/08_mobile.jpg",
+            alt: "Election and appearance infographic used in the power and perception argument",
             caption:
-              "You think if these men had been ugly, they would have been elected or would have had people follow them? Of course not. They were the uber chads of their day.",
+              "Power follows perception. Attractive leaders are judged faster, trusted sooner, and chosen more often when everything else reads as equal.",
             splitLayout: true,
             splitLayoutText: [
               "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
               "It's not just politics. In corporate settings, looks play a massive role in who gets promoted to power positions. The \"Chad and Stacy\" effect is real: when two candidates are equally qualified, the better-looking one is disproportionately chosen. If you want career gains, whether climbing the corporate ladder, securing investors, or positioning yourself as an authority, you cannot afford to ignore your face. With looks comes not only modeling income but also access to positions of power. You must look the part and be the part.",
             ],
             frameClassName:
-              "w-full max-w-[24rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:max-w-[38rem]",
+              "w-full max-w-[26rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/8 shadow-[0_24px_64px_rgba(0,0,0,0.28)] md:max-w-[42rem]",
             imageClassName: "block h-auto w-full object-cover",
           },
         ],
@@ -459,7 +624,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
 
   return (
     <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black px-6 pb-[15.5vh] pt-[9vh] md:pb-[30vh] md:pt-[22vh]">
-      <SectionSideTab label="RESEARCH" />
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
           src="/section_wallpaper/research/01.png"
@@ -474,10 +638,13 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           className="absolute inset-0 hidden h-full w-full object-cover md:block"
         />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.08)_38%,rgba(0,0,0,0.22)_100%)]" />
+        {currentNarrative.label === "Looks and Leverage" ? (
+          <ResearchMatrixRain seed={currentNarrative.label} />
+        ) : null}
       </div>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         {isFourChan ? (
-          <div className="rounded-3xl border border-white/10 bg-[rgba(42,42,46,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
+          <div className="research-panel-shell rounded-3xl p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
             <Tabs
               defaultValue={makeFourChanValue(fourChanSections[0].title)}
               onValueChange={(value) => {
@@ -514,7 +681,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           </div>
         ) : (
           <div className="flex flex-col gap-6">
-            <div className="rounded-3xl border border-white/10 bg-[rgba(42,42,46,0.72)] p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
+            <div className="research-panel-shell rounded-3xl p-6 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-10">
               <div className="mt-5">
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   {narrativeTabs.map((tab, index) => (
@@ -638,7 +805,10 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                               image.splitLayout ? (
                                 <div
                                   key={`${image.desktopSrc}-${paragraph}`}
-                                  className="my-6 flex flex-col items-center gap-6 md:my-8 md:flex-row md:items-start md:gap-8"
+                                  className={
+                                    image.splitLayoutClassName ??
+                                    "my-6 flex flex-col items-center gap-6 md:my-8 md:flex-row md:items-start md:gap-8"
+                                  }
                                 >
                                   <div
                                     className={
@@ -662,7 +832,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                                       </p>
                                     ) : null}
                                   </div>
-                                  <div className="flex-1 text-left">
+                                  <div className={image.splitLayoutContentClassName ?? "flex-1 text-left"}>
                                     <div className="space-y-4">
                                       {(image.splitLayoutText ?? [paragraph]).map((text) => (
                                         <div key={text}>

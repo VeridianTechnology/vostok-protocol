@@ -9,15 +9,51 @@ type CTAFooterProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
+const STEP_FORWARD_PHRASES = [
+  "ШАГ ВПЕРЕД",
+  "向前迈进",
+  "앞으로 나아가기",
+  "ΣΙΓΟΥΡΑ ΠΡΟΣ ΤΑ ΕΜΠΡΟΣ",
+  "確信の一歩",
+  "ДА, Я ГОТОВ",
+  "开始蜕变",
+  "결정적인 순간",
+  "ТОЧНО ВПЕРЕД",
+  "不留退路",
+  "지금 바로",
+  "ΕΜΠΡΟΣ ΟΛΟΤΑΧΩΣ",
+  "ВРЕМЯ ДЕЙСТВОВАТЬ",
+  "勢在必行",
+  "운명의 선택",
+  "ВЕРНЫЙ ХОД",
+  "毫不猶豫",
+  "확신의 선택",
+  "ΑΠΟΦΑΣΙΣΤΙΚΟ ΒΗΜΑ",
+  "ЭТО МОЁ",
+  "立刻拥有",
+  "결국, 나의 것",
+  "НЕ ЖДАТЬ",
+  "改变现在",
+  "전진만이 답이다",
+  "БЕЗ СОМНЕНИЙ",
+  "果断抉择",
+  "승리를 향해",
+  "Я ЗАСЛУЖИЛ",
+  "이것이 정답이다",
+] as const;
+
 const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => {
   const isFourChan = entrySource === "4chan";
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [buttonLabel, setButtonLabel] = useState<string>(STEP_FORWARD_PHRASES[0]);
+  const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://vostokmethod.gumroad.com/l/vostokmethod?wanted=true";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const phraseIndexRef = useRef(0);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
@@ -53,6 +89,70 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
       }
     };
   }, [isRedirecting, gumroadUrl, isDesktop]);
+
+  useEffect(() => {
+    if (isFourChan) {
+      return;
+    }
+
+    let isCancelled = false;
+    const timers = new Set<number>();
+
+    const scheduleTimer = (callback: () => void, delay: number) => {
+      const timer = window.setTimeout(() => {
+        timers.delete(timer);
+        callback();
+      }, delay);
+      timers.add(timer);
+    };
+
+    const runPhraseCycle = () => {
+      const nextIndex = (phraseIndexRef.current + 1) % STEP_FORWARD_PHRASES.length;
+      const nextPhrase = STEP_FORWARD_PHRASES[nextIndex];
+      const characters = Array.from(nextPhrase);
+      const blankDuration = 260;
+      const typingWindow = 3400;
+      const stepDuration = Math.max(70, Math.floor(typingWindow / Math.max(characters.length, 1)));
+
+      scheduleTimer(() => {
+        if (isCancelled) {
+          return;
+        }
+
+        setIsTypingLabel(true);
+        setButtonLabel("");
+
+        characters.forEach((_, index) => {
+          scheduleTimer(() => {
+            if (isCancelled) {
+              return;
+            }
+            setButtonLabel(characters.slice(0, index + 1).join(""));
+          }, blankDuration + stepDuration * (index + 1));
+        });
+
+        scheduleTimer(() => {
+          if (isCancelled) {
+            return;
+          }
+          phraseIndexRef.current = nextIndex;
+          setButtonLabel(nextPhrase);
+          setIsTypingLabel(false);
+        }, blankDuration + stepDuration * characters.length + 40);
+      }, 0);
+    };
+
+    const interval = window.setInterval(runPhraseCycle, 10000);
+    scheduleTimer(runPhraseCycle, 10000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(interval);
+      timers.forEach((timer) => window.clearTimeout(timer));
+      timers.clear();
+      setIsTypingLabel(false);
+    };
+  }, [isFourChan]);
 
   const closeRedirect = () => {
     if (redirectIntervalRef.current) {
@@ -169,8 +269,14 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
                 <span className="absolute inset-[1px] rounded-[9px] border border-white/10 md:rounded-[11px]" />
                 <span className="absolute inset-[3px] rounded-[7px] border border-white/18 opacity-0 transition-opacity duration-300 ease-in group-hover:opacity-100 md:rounded-[9px]" />
               </span>
-              <span className="relative z-[1] font-['Tektur'] text-[0.82rem] font-bold uppercase tracking-[0.34em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white [text-rendering:geometricPrecision] md:text-[1.12rem]">
-                {isFourChan ? "Proceed" : "Step Forward"}
+              <span className="relative z-[1] inline-flex min-h-[1.2em] items-center justify-center font-['Tektur'] text-[0.82rem] font-bold tracking-[0.24em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white [text-rendering:geometricPrecision] md:min-h-[1.35em] md:text-[1.12rem]">
+                {isFourChan ? "Proceed" : buttonLabel}
+                {!isFourChan && isTypingLabel ? (
+                  <span
+                    aria-hidden="true"
+                    className="cta-typing-cursor ml-[0.14em] inline-block h-[1em] w-[0.58em] bg-black align-middle"
+                  />
+                ) : null}
               </span>
             </m.button>
           </div>
