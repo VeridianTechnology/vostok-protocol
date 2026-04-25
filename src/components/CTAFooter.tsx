@@ -204,10 +204,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     <section
       ref={sectionRef}
       id="purchase"
-      className="section-surface relative left-1/2 right-1/2 h-[78svh] min-h-[78svh] w-screen -translate-x-1/2 overflow-hidden pb-[3vh] md:h-[140vh] md:min-h-[140vh] md:pb-[5vh]"
+      className="section-surface relative left-1/2 right-1/2 h-[78svh] min-h-[78svh] w-screen -translate-x-1/2 overflow-hidden bg-black pb-[3vh] md:h-[140vh] md:min-h-[140vh] md:pb-[5vh]"
     >
-      <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6]">
-        <div className="absolute inset-0 bg-[#d9d9d6]" aria-hidden="true" />
+      <div className="absolute inset-0 -z-10 overflow-hidden bg-[#d9d9d6] md:bg-[#17181A]">
+        <div className="absolute inset-0 bg-[#d9d9d6] md:bg-[#17181A]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[10%]">
           <img
             src="/section_wallpaper/buy/11.jpg"

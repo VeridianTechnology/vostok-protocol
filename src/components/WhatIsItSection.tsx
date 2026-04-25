@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 type ScreenLine = {
   text?: string;
-  tone?: "body" | "emphasis" | "italic";
+  tone?: "body" | "emphasis" | "italic" | "question" | "answer";
 };
 
 type IdentityScreen = {
@@ -15,16 +15,27 @@ type IdentityScreen = {
 const vostokScreens: IdentityScreen[] = [
   {
     lines: [
-      { text: "The Face", tone: "body" },
-      { text: "Is The First Story", tone: "body" },
-      { text: "The World Believes About You", tone: "body" },
+      { text: "So What Is This?", tone: "question" },
+      {
+        text: "This is a $30 ebook guide that can actually make you more attractive, using proven methods that have worked for a dozen other people and helped fix everything from jaw issues and eye alignment to facial aging, forehead asymmetries, and lip volume. I am not even the best example anymore, because I hardly do it now.",
+        tone: "answer",
+      },
     ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
   {
     lines: [
-      { text: "Vostok Begins", tone: "body" },
-      { text: "At That Threshold", tone: "body" },
+      { text: "So Why Trust You?", tone: "question" },
+      {
+        text: "Because I am an avid Vostok follower myself. I not only invented and developed many of these methods, but also learned from others and tested them on myself for a year and a half, close to two years. I started slowly, then got deeply into it, and it has de-aged me and given me a sense of youth, vigor, confidence, and purpose like never before. I do not just sell the information. I live it, every day.",
+        tone: "answer",
+      },
+      {
+        text: "There is just no one as good as I am when it comes to this stuff. Not even close.",
+        tone: "answer",
+      },
     ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
   {
     lines: [
@@ -388,7 +399,7 @@ const WhatIsItSection = () => {
                           duration: activeTab === "what-changes" && sequenceScreenIndex === 10 ? 0.72 : 0.55,
                           ease: "easeOut",
                         }}
-                        className={`flex w-full max-w-full flex-col items-center justify-center gap-5 overflow-hidden ${currentSequenceScreen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"}`}
+                        className={`flex w-full max-w-full flex-col items-center justify-center gap-2 overflow-hidden ${currentSequenceScreen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"}`}
                       >
                         {currentSequenceScreen?.spacer ? (
                           <div className="h-24 w-full" />
@@ -399,8 +410,12 @@ const WhatIsItSection = () => {
                               className={
                                 line.tone === "emphasis"
                                   ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-[#e7ebf0] md:text-[3.9rem]"
-                                  : line.tone === "italic"
-                                    ? "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#afb5be] md:text-[3rem]"
+                                  : line.tone === "question"
+                                    ? "max-w-full px-2 text-[1.72rem] font-semibold leading-[1.2] tracking-[0.04em] text-[#e7ebf0] md:text-[3.2rem]"
+                                    : line.tone === "answer"
+                                      ? "mt-8 max-w-[40rem] px-3 text-[0.8rem] font-normal leading-[1.6] text-[#b8bec6] md:mt-14 md:max-w-[50rem] md:text-[1.16rem]"
+                                    : line.tone === "italic"
+                                      ? "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#afb5be] md:text-[3rem]"
                                     : "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#afb5be] md:text-[3rem]"
                               }
                               style={{ fontFamily: "var(--font-display)" }}
