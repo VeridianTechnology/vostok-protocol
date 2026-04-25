@@ -9,7 +9,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
 
   if (variant === "crossing") {
     return (
-      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
+      <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
           src="/section_wallpaper/break/1.png"
           alt=""
@@ -22,7 +22,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
 
   if (variant === "chamber") {
     return (
-      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
+      <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
           src="/section_wallpaper/break/2.png"
           alt=""
@@ -35,7 +35,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
 
   if (variant === "fracture") {
     return (
-      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
+      <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
           src="/section_wallpaper/break/3.png"
           alt=""

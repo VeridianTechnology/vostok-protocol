@@ -889,7 +889,7 @@ const FeatureThumbnails = ({
                 className="absolute inset-x-0 top-0 h-[92%] w-[92%] object-cover object-top"
                 style={{ left: "50%", transform: "translateX(-50%)" }}
                 loading="eager"
-                fetchPriority="high"
+                fetchpriority="high"
                 decoding="async"
               />
             ) : (
@@ -899,7 +899,7 @@ const FeatureThumbnails = ({
                   alt="Vostok hero"
                   className="absolute left-1/2 top-1/2 h-[92%] w-[92%] -translate-x-1/2 -translate-y-1/2 object-cover"
                   loading="eager"
-                  fetchPriority="high"
+                  fetchpriority="high"
                   decoding="async"
                 />
                 {ENABLE_DESKTOP_HERO_ROTATION_TEST ? (

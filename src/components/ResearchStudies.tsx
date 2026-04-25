@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "framer-motion";
 import { trackSafe } from "@/lib/analytics";
 
@@ -193,7 +194,13 @@ const researchSlides: ResearchSlide[] = [
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  const [canPortal, setCanPortal] = useState(false);
   const activeSlide = researchSlides[activeIndex];
+
+  useEffect(() => {
+    setCanPortal(true);
+  }, []);
 
   const handleSelect = (index: number) => {
     if (index === activeIndex) {
@@ -207,6 +214,21 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
       entrySource,
     });
   };
+
+  useEffect(() => {
+    if (!isImageOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsImageOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isImageOpen]);
 
   return (
     <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black bg-[#17181A] px-4 pb-[15vh] pt-[8vh] md:px-6 md:pb-[24vh] md:pt-[14vh]">
@@ -261,7 +283,14 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                   transition={{ duration: 0.38, ease: "easeOut" }}
                   className="grid gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.9fr)] md:items-start md:gap-8"
                 >
-                  <div className="overflow-hidden rounded-[1.6rem] border border-white/10 bg-[rgba(8,8,10,0.88)] shadow-[0_26px_70px_rgba(0,0,0,0.32)] md:mx-auto md:w-[94%]">
+                  <m.button
+                    type="button"
+                    layoutId={`research-image-${activeSlide.id}`}
+                    onClick={() => setIsImageOpen(true)}
+                    className="block overflow-hidden rounded-[1.6rem] border border-white/10 bg-[rgba(8,8,10,0.88)] text-left shadow-[0_26px_70px_rgba(0,0,0,0.32)] outline-none transition hover:border-[#f1d27a]/55 focus-visible:border-[#f1d27a] md:mx-auto md:w-[94%]"
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                    aria-label={`Open ${activeSlide.tabLabel} research image`}
+                  >
                     <picture>
                       <source media="(max-width: 767px)" srcSet={activeSlide.mobileSrc} />
                       <source srcSet={activeSlide.desktopSrc} />
@@ -271,9 +300,9 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                         className="block h-auto w-full object-cover"
                       />
                     </picture>
-                  </div>
+                  </m.button>
 
-                  <div className="rounded-[1.6rem] border border-white/10 bg-[#17181A] p-5 text-left text-white/88 shadow-[0_24px_64px_rgba(0,0,0,0.22)] md:max-h-[min(76vh,72rem)] md:overflow-y-auto md:p-7">
+                  <div className="research-copy-scroll rounded-[1.6rem] border border-white/10 bg-[#17181A] p-5 text-left text-white/88 shadow-[0_24px_64px_rgba(0,0,0,0.22)] md:max-h-[min(76vh,72rem)] md:overflow-y-auto md:p-7">
                     <h2 className="text-[1.05rem] font-semibold uppercase leading-tight tracking-[0.12em] text-[#f1d27a] md:text-[1.35rem]">
                       {activeSlide.title}
                     </h2>
@@ -329,6 +358,48 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
           </div>
         </div>
       </div>
+      {canPortal
+        ? createPortal(
+            <AnimatePresence>
+              {isImageOpen ? (
+                <m.div
+                  className="fixed inset-0 z-[100] flex h-[100dvh] w-screen items-center justify-center bg-black/82 p-4 backdrop-blur-md md:p-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                  onClick={() => setIsImageOpen(false)}
+                >
+                  <button
+                    type="button"
+                    aria-label="Close research image"
+                    onClick={() => setIsImageOpen(false)}
+                    className="absolute right-4 top-4 z-[102] flex h-11 w-11 items-center justify-center rounded-full border border-white/25 bg-black/70 text-2xl leading-none text-white/88 shadow-[0_18px_50px_rgba(0,0,0,0.45)] transition hover:border-[#f1d27a] hover:text-white md:right-8 md:top-8"
+                  >
+                    ×
+                  </button>
+                  <m.div
+                    layoutId={`research-image-${activeSlide.id}`}
+                    className="relative z-[101] flex max-h-[88dvh] max-w-[94vw] items-center justify-center overflow-hidden rounded-[1.2rem] border border-white/16 bg-black shadow-[0_32px_120px_rgba(0,0,0,0.72)]"
+                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={(event) => event.stopPropagation()}
+                  >
+                    <picture>
+                      <source media="(max-width: 767px)" srcSet={activeSlide.mobileSrc} />
+                      <source srcSet={activeSlide.desktopSrc} />
+                      <img
+                        src={activeSlide.desktopSrc}
+                        alt={activeSlide.alt}
+                        className="block max-h-[88dvh] max-w-[94vw] object-contain"
+                      />
+                    </picture>
+                  </m.div>
+                </m.div>
+              ) : null}
+            </AnimatePresence>,
+            document.body,
+          )
+        : null}
     </section>
   );
 };
