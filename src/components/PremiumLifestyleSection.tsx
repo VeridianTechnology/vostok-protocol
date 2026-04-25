@@ -678,16 +678,16 @@ const PremiumLifestyleSection = ({
         lines={[]}
         desktopBackground="/section_wallpaper/interest/new_desktop.jpg?v=3"
         mobileBackground="/section_wallpaper/interest/new_mobile.jpg?v=1"
-        sectionClassName="-mt-[8vh] min-h-[72vh] mb-0 bg-black pt-0 pb-0 md:mt-0 md:mb-0 md:min-h-[96vh] md:pt-[4.25rem] md:pb-[3.5rem]"
+        sectionClassName="-mt-[8vh] min-h-[72vh] mb-0 bg-black pt-0 pb-0 md:mt-0 md:mb-0 md:min-h-[96vh] md:pt-0 md:pb-[3.5rem]"
         tabLabelClassName="min-w-[15.5rem] px-8 text-center tracking-[0.34em] md:min-w-[18.5rem] md:px-10"
-        mobileBackgroundPosition="58% center"
+        mobileBackgroundPosition="58% 72%"
         mobileBackgroundSize="cover"
         mobileBackgroundScale={1}
         desktopBackgroundScale={1}
         desktopBackgroundPosition="55% 28%"
         secondaryOverlaySrc="/section_wallpaper/interest/02.png?v=1"
         secondaryOverlayPosition="right"
-        secondaryOverlayClassName="bottom-0 right-[-46vw] h-[82%] -rotate-[25deg] opacity-100 md:top-0 md:right-[8vw] md:h-full"
+        secondaryOverlayClassName="bottom-[-9vh] right-[-46vw] h-[82%] -rotate-[25deg] opacity-100 md:top-0 md:right-[-14vw] md:h-full"
         backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
         disableParallax
         contentClassName="flex min-h-[72vh] flex-col items-center justify-center md:min-h-[calc(96vh-7.75rem)] md:max-w-none md:items-start md:justify-end"

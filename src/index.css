@@ -159,7 +159,7 @@
     position: relative;
     isolation: isolate;
     border: 1px solid rgba(214, 184, 101, 0.18);
-    background-color: rgba(43, 43, 47, 0.9);
+    background-color: #17181A;
   }
 
   .research-panel-shell::before,

@@ -14,7 +14,6 @@ type SlideSource = {
 type ResearchSlide = {
   id: string;
   tabLabel: string;
-  kicker?: string;
   title: string;
   subtitle?: string;
   paragraphs: string[];
@@ -30,7 +29,6 @@ const researchSlides: ResearchSlide[] = [
   {
     id: "looks-and-leverage",
     tabLabel: "Looks and Leverage",
-    kicker: "Research Slide 01",
     title: "Your Looks Determine More than Half Your Social Value",
     paragraphs: [
       "Appearance has measurable economic value. Attractive people are hired faster, evaluated more favorably, and paid more over time, even when qualifications are identical. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they improve the starting position.",
@@ -70,7 +68,6 @@ const researchSlides: ResearchSlide[] = [
   {
     id: "power-follows-perception",
     tabLabel: "Good Looking Men Get Elected",
-    kicker: "Research Slide 02",
     title: "Good Looking Men get Elected",
     subtitle:
       "Power follows perception. Attractive leaders are judged faster, trusted sooner, and chosen more often when everything else reads as equal.",
@@ -97,7 +94,6 @@ const researchSlides: ResearchSlide[] = [
   {
     id: "center-of-the-frame",
     tabLabel: "The Center of the Frame",
-    kicker: "Research Slide 03",
     title: "The Center of the Frame",
     paragraphs: [
       "Dating should not feel like labor. When your appearance is working for you, pursuit becomes selection. You stop forcing interest and move through dating with more calm, leverage, and less anxiety.",
@@ -147,7 +143,6 @@ const researchSlides: ResearchSlide[] = [
   {
     id: "masculine-aesthetic-advantage",
     tabLabel: "The Masculine Aesthetic Advantage",
-    kicker: "Research Slide 04",
     title: "The Man Must be Better Looking or at Par with the Woman for the Relationship to be Happy.",
     paragraphs: [
       "Looksmaxxing is not vanity. Treating your appearance as a project is one of the clearest forms of self-respect. When you stop neglecting how you present yourself, you start holding yourself to a higher standard everywhere else.",
@@ -214,20 +209,11 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   };
 
   return (
-    <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black bg-[#17181A] px-4 pb-[15vh] pt-[8vh] md:px-6 md:pb-[24vh] md:pt-[14vh]">
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-[#17181A]" />
-        <img
-          src="/section_wallpaper/research/12.png"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover opacity-50"
-        />
-        <div className="absolute inset-0 bg-[rgba(23,24,26,0.62)]" />
-      </div>
+    <section className="relative left-1/2 right-1/2 w-screen -translate-x-1/2 border-t-[3px] border-black bg-[#17181A] px-4 pb-[15vh] pt-[8vh] md:px-6 md:pb-[24vh] md:pt-[14vh]">
+      <div className="absolute inset-0 -z-10 bg-[#17181A]" />
 
       <div className="mx-auto w-full max-w-[118rem]">
-        <div className="research-panel-shell rounded-[2rem] bg-[#17181A] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
+        <div className="research-panel-shell rounded-[2rem] bg-[#17181A] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.45)] md:p-8">
           <div className="flex flex-col gap-4 pt-3 md:gap-6 md:pt-0">
             <div className="mt-2 flex flex-nowrap items-center justify-center gap-2 overflow-x-auto pb-1 md:mt-0 md:flex-wrap md:justify-center md:gap-3 md:overflow-visible md:pb-0">
               {researchSlides.map((slide, index) => (
@@ -256,10 +242,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                     </picture>
                   </span>
                   <span className="hidden min-w-0 md:block">
-                    <span className="block text-[0.6rem] uppercase tracking-[0.28em] text-[#f1d27a]/85 md:text-[0.66rem]">
-                      {slide.kicker}
-                    </span>
-                    <span className="mt-1 block text-[0.7rem] font-semibold uppercase tracking-[0.16em] md:text-[0.76rem]">
+                    <span className="block text-[0.7rem] font-semibold uppercase tracking-[0.16em] md:text-[0.76rem]">
                       {slide.tabLabel}
                     </span>
                   </span>
@@ -290,11 +273,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                     </picture>
                   </div>
 
-                  <div className="rounded-[1.6rem] border border-white/10 bg-[rgba(48,48,54,0.82)] p-5 text-left text-white/88 shadow-[0_24px_64px_rgba(0,0,0,0.22)] md:max-h-[min(76vh,72rem)] md:overflow-y-auto md:p-7">
-                    <p className="text-[0.7rem] font-semibold uppercase tracking-[0.32em] text-[#f1d27a]">
-                      {activeSlide.kicker}
-                    </p>
-                    <h2 className="mt-3 text-[1.05rem] font-semibold uppercase leading-tight tracking-[0.12em] text-[#f1d27a] md:text-[1.35rem]">
+                  <div className="rounded-[1.6rem] border border-white/10 bg-[#17181A] p-5 text-left text-white/88 shadow-[0_24px_64px_rgba(0,0,0,0.22)] md:max-h-[min(76vh,72rem)] md:overflow-y-auto md:p-7">
+                    <h2 className="text-[1.05rem] font-semibold uppercase leading-tight tracking-[0.12em] text-[#f1d27a] md:text-[1.35rem]">
                       {activeSlide.title}
                     </h2>
                     {activeSlide.subtitle ? (

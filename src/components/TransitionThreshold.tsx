@@ -5,8 +5,10 @@ type TransitionThresholdProps = {
 };
 
 const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
+  const mobileHeightClass = variant === "crossing" ? "h-[28vh]" : "h-[16vh]";
+
   return (
-    <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-[#050608] md:h-[44vh]">
+    <section className={`relative left-1/2 right-1/2 ${mobileHeightClass} w-screen -translate-x-1/2 overflow-hidden bg-[#050608] md:h-[44vh]`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.025),transparent_36%),linear-gradient(180deg,rgba(0,0,0,0.96)_0%,rgba(4,5,8,0.98)_100%)]" />
       <div className="absolute inset-0 opacity-30 [background-image:repeating-linear-gradient(0deg,rgba(255,255,255,0.012)_0px,rgba(255,255,255,0.012)_1px,transparent_1px,transparent_3px)]" />
       <div className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.18)_18%,rgba(255,255,255,0.18)_82%,transparent_100%)]" />

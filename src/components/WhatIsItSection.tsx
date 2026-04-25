@@ -68,10 +68,10 @@ const WhatIsItSection = () => {
             className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.035),transparent_34%),linear-gradient(90deg,rgba(255,255,255,0.012),transparent_22%,transparent_78%,rgba(255,255,255,0.012)),repeating-linear-gradient(0deg,rgba(255,255,255,0.014)_0px,rgba(255,255,255,0.014)_1px,transparent_1px,transparent_3px)] opacity-60"
           />
 
-          <div className="relative z-10 border-b border-white/12 bg-[linear-gradient(180deg,rgba(8,9,11,0.74)_0%,rgba(8,9,11,0.58)_100%)] px-4 py-4 md:px-6">
+          <div className="relative z-10 border-b border-white/12 bg-[linear-gradient(180deg,rgba(8,9,11,0.74)_0%,rgba(8,9,11,0.58)_100%)] px-4 py-4 md:px-6 md:pb-5 md:pt-8">
             <p
-              className="text-center text-[2rem] font-medium uppercase tracking-[0.18em] text-white/84 md:text-[2.5rem]"
-              style={{ fontFamily: "var(--font-display)" }}
+              className="text-center text-[3.4rem] font-normal leading-[0.96] text-white/88 md:text-[5.3rem]"
+              style={{ fontFamily: "Cylburn, serif" }}
             >
               Understand
             </p>
@@ -79,7 +79,7 @@ const WhatIsItSection = () => {
 
           <div className="relative z-10 flex-1 overflow-hidden px-7 py-8 text-[#b8bec6] md:px-12 md:py-12">
             <div className="mx-auto grid h-full max-w-[50rem] grid-rows-[1fr_auto]">
-              <div className="flex min-h-0 items-center justify-center overflow-hidden text-center">
+              <div className="flex min-h-0 items-center justify-center overflow-visible text-center">
                 <AnimatePresence mode="wait">
                   <m.div
                     key={sequenceScreenIndex}
@@ -98,7 +98,7 @@ const WhatIsItSection = () => {
                           line.tone === "emphasis"
                             ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-[#e7ebf0] md:text-[3.9rem]"
                             : line.tone === "question"
-                              ? "max-w-full px-2 text-[1.72rem] font-semibold leading-[1.2] tracking-[0.04em] text-[#e7ebf0] md:text-[3.2rem]"
+                              ? "max-w-full px-2 pb-1 text-[1.82rem] font-medium leading-[1.22] tracking-[-0.02em] text-[#e7ebf0] md:text-[4rem] md:leading-[1.1]"
                               : line.tone === "answer"
                                 ? "mt-8 max-w-[40rem] px-3 text-[0.8rem] font-normal leading-[1.68] tracking-[0.01em] text-[#c4cad2] md:mt-14 md:max-w-[50rem] md:text-[1.12rem]"
                                 : line.tone === "italic"
@@ -109,7 +109,9 @@ const WhatIsItSection = () => {
                           fontFamily:
                             line.tone === "answer"
                               ? "var(--font-body)"
-                              : "var(--font-display)",
+                              : line.tone === "question"
+                                ? "Georgia, 'Times New Roman', serif"
+                                : "var(--font-display)",
                         }}
                       >
                         {line.text}

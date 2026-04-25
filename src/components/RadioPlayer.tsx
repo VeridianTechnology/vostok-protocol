@@ -275,6 +275,27 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/38_Hoes Come Easy (Slowed  Low Honor - The Dark Triad).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=fEj4v7AJkgY",
   },
+  {
+    id: "39",
+    title: "Leanin - Cornell",
+    score: "NR",
+    audioSrc: "/audio/radio/39_Leanin.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=sB04u3tGbuM",
+  },
+  {
+    id: "40",
+    title: "Travis Scott - DUMBO (Instrumental)",
+    score: "NR",
+    audioSrc: "/audio/radio/40_Travis Scott - DUMBO (Instrumental).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=osJ6p7PmoAg",
+  },
+  {
+    id: "41",
+    title: "specialsadism (super slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/41_specialsadism (super slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=YbvkuJ3oQCM&list=RDMM0Uo67YlIdcw",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
