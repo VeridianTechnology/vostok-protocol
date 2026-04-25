@@ -938,16 +938,14 @@ const FeatureThumbnails = ({
               <div className="hero-tv-noise__glitch absolute inset-0" />
             </div>
           )}
-          {isMobile && (
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 z-[9]"
-            >
-              <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%]" />
-              <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%]" />
-              <div className="mobile-hero-rain-shelter absolute inset-x-0 top-0 h-[22vh]" />
-            </div>
-          )}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-[9]"
+          >
+            <div className="mobile-hero-rain-pane mobile-hero-rain-pane--left absolute inset-y-0 left-0 w-[34%] md:w-[41%]" />
+            <div className="mobile-hero-rain-pane mobile-hero-rain-pane--right absolute inset-y-0 right-0 w-[34%] md:w-[41%]" />
+            <div className="mobile-hero-rain-shelter absolute inset-x-0 top-0 h-[22vh] md:h-[26vh]" />
+          </div>
           {!isMobile && (
             <div
               aria-hidden="true"
@@ -977,13 +975,6 @@ const FeatureThumbnails = ({
             }`}
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
-          {!isMobile && (
-            <p
-              className="pointer-events-none absolute left-[10.25vw] top-[7vh] z-10 font-['Tektur'] text-[1.5rem] font-black uppercase tracking-[0.28em] text-white [text-shadow:0_4px_18px_rgba(0,0,0,0.72)]"
-            >
-              VOSTOK
-            </p>
-          )}
           </div>
           {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
         </section>

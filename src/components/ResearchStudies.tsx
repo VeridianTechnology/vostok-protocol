@@ -228,8 +228,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
 
       <div className="mx-auto w-full max-w-[118rem]">
         <div className="research-panel-shell rounded-[2rem] bg-[#17181A] p-4 shadow-[0_28px_80px_rgba(0,0,0,0.45)] backdrop-blur-xl md:p-8">
-          <div className="flex flex-col gap-4 md:gap-6">
-            <div className="flex flex-nowrap items-center justify-start gap-2 overflow-x-auto pb-1 md:flex-wrap md:justify-center md:gap-3 md:overflow-visible md:pb-0">
+          <div className="flex flex-col gap-4 pt-3 md:gap-6 md:pt-0">
+            <div className="mt-2 flex flex-nowrap items-center justify-center gap-2 overflow-x-auto pb-1 md:mt-0 md:flex-wrap md:justify-center md:gap-3 md:overflow-visible md:pb-0">
               {researchSlides.map((slide, index) => (
                 <button
                   key={slide.id}

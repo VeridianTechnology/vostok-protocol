@@ -389,13 +389,13 @@ const Index = () => {
         />
       </section>
       <div className="divider-line hidden md:block" />
-      <section id="section-messianic" className="min-h-[108vh] md:min-h-[140vh]">
+      <section id="section-messianic" className="min-h-0">
         <PremiumLifestyleSection
           visibleSections={["messianic"]}
           messianicSectionId={undefined}
         />
       </section>
-      <section id="section-wall" className="min-h-[94vh] md:min-h-[140vh]">
+      <section id="section-wall" className="min-h-0">
         <PremiumLifestyleSection
           visibleSections={["wall"]}
           wallSectionId={undefined}
