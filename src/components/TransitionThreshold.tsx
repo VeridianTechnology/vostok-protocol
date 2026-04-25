@@ -5,11 +5,11 @@ type TransitionThresholdProps = {
 };
 
 const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
-  const mobileHeightClass = variant === "crossing" ? "h-[28vh]" : "h-[16vh]";
+  const mobileHeightClass = variant === "crossing" ? "h-[28vh]" : "h-[8vh]";
 
   if (variant === "crossing") {
     return (
-      <section className="relative left-1/2 right-1/2 h-[43.03797vw] w-screen -translate-x-1/2 overflow-hidden bg-black">
+      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
         <img
           src="/section_wallpaper/break/1.png"
           alt=""
@@ -22,9 +22,22 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
 
   if (variant === "chamber") {
     return (
-      <section className="relative left-1/2 right-1/2 h-[43.03797vw] w-screen -translate-x-1/2 overflow-hidden bg-black">
+      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
         <img
           src="/section_wallpaper/break/2.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </section>
+    );
+  }
+
+  if (variant === "fracture") {
+    return (
+      <section className="relative left-1/2 right-1/2 h-[28vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[7.173vw]">
+        <img
+          src="/section_wallpaper/break/3.png"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
