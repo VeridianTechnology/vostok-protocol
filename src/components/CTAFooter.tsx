@@ -50,6 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [buttonLabel, setButtonLabel] = useState<string>(STEP_FORWARD_PHRASES[0]);
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://vostokmethod.gumroad.com/l/vostokmethod?wanted=true";
+  const twitterProfileUrl = "https://x.com/AmoxCentur14900";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -280,6 +281,22 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               </span>
             </m.button>
           </div>
+
+          <a
+            href={twitterProfileUrl}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Visit @AmoxCentur14900 on X"
+            className="absolute bottom-[9vh] right-5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/30 text-black transition-transform duration-300 hover:scale-105 hover:bg-white/45 md:bottom-[8vh] md:right-8"
+          >
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 24 24"
+              className="h-5 w-5 fill-current"
+            >
+              <path d="M18.244 2H21.5l-7.109 8.125L22.75 22h-6.547l-5.127-6.701L5.21 22H1.95l7.605-8.693L1.55 2H8.26l4.635 6.168L18.244 2Zm-1.141 18.05h1.803L7.28 3.846H5.345L17.103 20.05Z" />
+            </svg>
+          </a>
         </m.div>
       </div>
 
