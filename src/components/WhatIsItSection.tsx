@@ -40,7 +40,7 @@ const WhatIsItSection = () => {
   const currentSequenceScreen = vostokScreens[sequenceScreenIndex] ?? vostokScreens[0];
 
   return (
-    <section className="section-surface relative left-1/2 right-1/2 h-[66vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
+    <section className="section-surface relative left-1/2 right-1/2 h-[92vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
       <div className="absolute inset-0 -z-10">
         <img
           src="/section_wallpaper/whatisit/1.png"
@@ -57,8 +57,8 @@ const WhatIsItSection = () => {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.35)_38%,rgba(0,0,0,0.62)_100%)]" />
       </div>
 
-      <div className="relative z-10 flex h-full items-center justify-center px-4 py-[4vh] md:px-8 md:py-[8vh]">
-        <div className="relative flex h-full max-h-[58vh] w-full max-w-[68rem] flex-col overflow-hidden rounded-[28px] border border-white/14 shadow-[0_30px_110px_rgba(0,0,0,0.58)] md:max-h-[94vh]">
+      <div className="relative z-10 flex h-full items-center justify-center px-4 py-[5vh] md:px-8 md:py-[8vh]">
+        <div className="relative flex h-full max-h-[82vh] w-full max-w-[68rem] flex-col overflow-hidden rounded-[28px] border border-white/14 shadow-[0_30px_110px_rgba(0,0,0,0.58)] md:max-h-[94vh]">
           <div
             aria-hidden="true"
             className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,10,0.86)_0%,rgba(8,9,12,0.79)_14%,rgba(7,8,10,0.75)_100%)]"
@@ -77,7 +77,7 @@ const WhatIsItSection = () => {
             </p>
           </div>
 
-          <div className="relative z-10 flex-1 overflow-hidden px-7 py-8 text-[#b8bec6] md:px-12 md:py-12">
+          <div className="relative z-10 flex-1 overflow-hidden px-7 pb-10 pt-10 text-[#b8bec6] md:px-12 md:py-12">
             <div className="mx-auto grid h-full max-w-[50rem] grid-rows-[1fr_auto]">
               <div className="flex min-h-0 items-center justify-center overflow-visible text-center">
                 <AnimatePresence mode="wait">
@@ -88,7 +88,7 @@ const WhatIsItSection = () => {
                     exit={{ opacity: 0.18, y: -10 }}
                     transition={{ duration: 0.55, ease: "easeOut" }}
                     className={`flex w-full flex-col items-center justify-center ${
-                      currentSequenceScreen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"
+	                      currentSequenceScreen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"
                     }`}
                   >
                     {currentSequenceScreen?.lines?.map((line, lineIndex) => (
@@ -121,7 +121,7 @@ const WhatIsItSection = () => {
                 </AnimatePresence>
               </div>
 
-              <div className="mx-auto mt-4 flex w-full max-w-[24rem] items-center justify-between gap-8 pb-1 md:mt-8 md:max-w-none md:justify-center md:gap-16 md:pb-0">
+              <div className="mx-auto mt-8 flex w-full max-w-[24rem] items-center justify-between gap-8 pb-2 md:mt-8 md:max-w-none md:justify-center md:gap-16 md:pb-0">
                 <button
                   type="button"
                   onClick={() => setSequenceScreenIndex((current) => Math.max(0, current - 1))}

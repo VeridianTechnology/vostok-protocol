@@ -7,6 +7,32 @@ type TransitionThresholdProps = {
 const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
   const mobileHeightClass = variant === "crossing" ? "h-[28vh]" : "h-[16vh]";
 
+  if (variant === "crossing") {
+    return (
+      <section className="relative left-1/2 right-1/2 h-[43.03797vw] w-screen -translate-x-1/2 overflow-hidden bg-black">
+        <img
+          src="/section_wallpaper/break/1.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </section>
+    );
+  }
+
+  if (variant === "chamber") {
+    return (
+      <section className="relative left-1/2 right-1/2 h-[43.03797vw] w-screen -translate-x-1/2 overflow-hidden bg-black">
+        <img
+          src="/section_wallpaper/break/2.png"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      </section>
+    );
+  }
+
   return (
     <section className={`relative left-1/2 right-1/2 ${mobileHeightClass} w-screen -translate-x-1/2 overflow-hidden bg-[#050608] md:h-[44vh]`}>
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.025),transparent_36%),linear-gradient(180deg,rgba(0,0,0,0.96)_0%,rgba(4,5,8,0.98)_100%)]" />
