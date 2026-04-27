@@ -84,6 +84,26 @@ const vostokScreens: IdentityScreen[] = [
     ],
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
+  {
+    lines: [
+      { text: "How Will I Know I Get My Money's Worth?", tone: "question" },
+      {
+        text: "You will not know until you try. Stupid courses and fake gurus have ruined the online space, and I am ashamed of them. I am different. I am a former tech entrepreneur dedicated to making the highest-quality product I can. This is, and I mean it, probably the most valuable $30 you will ever spend and one of the biggest game changers in your life. Your entire environment will bend around you. I have yet to see one person who does not love this guide and this product. We are building a brand here, not an ebook store. I want you as a customer for life. You will buy every single product I release, I assure you.",
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
+  {
+    lines: [
+      { text: "Is There a Refund?", tone: "question" },
+      {
+        text: "No. And even if I could give a refund for a digital product, I never would anyway. I do not believe in refunds. But the more important answer is this: this is technology. It is technology for the face, and it is only going to improve. You are not buying an ebook. You are buying an ever-improving guide, techniques, and access to all of it. That is why I am not worried about copycats. The price will only go up, not down. This is as cheap as you will ever see it, I assure you.",
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
 ];
 
 const WhatIsItSection = () => {
