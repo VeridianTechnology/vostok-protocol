@@ -359,7 +359,7 @@ const DJ_REWIND_CLIP_PAIRS = [
   ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
 ] as const;
 const DEFAULT_VOLUME = 1;
-const DJ_STINGER_VOLUME_MULTIPLIER = 0.2;
+const DJ_STINGER_VOLUME_MULTIPLIER = 0.6;
 const DJ_RESUME_LEAD_MS = 500;
 const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
 const DJ_RANDOM_VOLUME_MULTIPLIER = 0.7;

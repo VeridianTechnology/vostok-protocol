@@ -114,10 +114,10 @@ const WhatIsItSection = () => {
     <section className="section-surface relative left-1/2 right-1/2 h-[92vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
       <div className="absolute inset-0 -z-10">
         <img
-          src="/section_wallpaper/whatisit/1.jpg"
+          src="/section_wallpaper/whatisit/3.jpg"
           alt=""
           aria-hidden="true"
-          className="absolute inset-0 hidden h-full w-full object-cover md:block"
+          className="absolute inset-0 hidden h-full w-full object-cover brightness-[1.4] md:block"
         />
         <img
           src="/section_wallpaper/whatisit/2.jpg"
