@@ -49,7 +49,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isDesktop, setIsDesktop] = useState(false);
   const [buttonLabel, setButtonLabel] = useState<string>(STEP_FORWARD_PHRASES[0]);
   const [isTypingLabel, setIsTypingLabel] = useState(false);
-  const gumroadUrl = "https://vostokmethod.gumroad.com/l/vostokmethod?wanted=true";
+  const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
   const twitterProfileUrl = "https://x.com/AmoxCentur14900";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
