@@ -726,8 +726,8 @@ const PremiumLifestyleSection = ({
         tabLabel="BECOMING YOU"
         hideTabLabel
         lines={[]}
-        desktopBackground="/section_wallpaper/become_you/01.png"
-        mobileBackground="/section_wallpaper/become_you/01.png"
+        desktopBackground="/section_wallpaper/become_you/01.jpg"
+        mobileBackground="/section_wallpaper/become_you/01.jpg"
         sectionClassName="min-h-[78vh] py-0 md:min-h-[200vh]"
         contentClassName="flex min-h-[78vh] -translate-y-[4vh] flex-col justify-start md:min-h-[200vh] md:translate-y-0"
         innerContentClassName="pt-0 pb-[2vh] md:py-[5.5vh]"
@@ -818,7 +818,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.22]"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "108px 108px",
@@ -868,7 +868,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -918,7 +918,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -968,7 +968,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -1018,7 +1018,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18]"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -1076,7 +1076,7 @@ const PremiumLifestyleSection = ({
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden"
                     style={{
-                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                       backgroundRepeat: "repeat",
                       backgroundPosition: "center",
                       backgroundSize: "108px 108px",
@@ -1086,7 +1086,7 @@ const PremiumLifestyleSection = ({
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block"
                     style={{
-                      backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                      backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
                       backgroundRepeat: "repeat",
                       backgroundPosition: "center",
                       backgroundSize: "128px 128px",
@@ -1138,7 +1138,7 @@ const PremiumLifestyleSection = ({
                     aria-hidden="true"
                     className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
                     style={{
-                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                      backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                       backgroundRepeat: "repeat",
                       backgroundPosition: "center",
                       backgroundSize: "116px 116px",
@@ -1148,7 +1148,7 @@ const PremiumLifestyleSection = ({
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
                   style={{
-                    backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                    backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
                       backgroundRepeat: "repeat",
                       backgroundPosition: "center",
                       backgroundSize: "152px 152px",
@@ -1198,7 +1198,7 @@ const PremiumLifestyleSection = ({
                       aria-hidden="true"
                       className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
                       style={{
-                        backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                        backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                         backgroundRepeat: "repeat",
                         backgroundPosition: "center",
                         backgroundSize: "116px 116px",
@@ -1208,7 +1208,7 @@ const PremiumLifestyleSection = ({
                       aria-hidden="true"
                       className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
                       style={{
-                        backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                        backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
                         backgroundRepeat: "repeat",
                         backgroundPosition: "center",
                         backgroundSize: "152px 152px",
@@ -1216,7 +1216,7 @@ const PremiumLifestyleSection = ({
                     />
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                     <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                      It&apos;s like Lego for your face. Brick by brick, each workout stacks on the last.
+                      It&apos;s a concrete and efficient workout system for your face. The first of its kind.
                     </p>
                   </div>
                 </div>
@@ -1262,7 +1262,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -1272,7 +1272,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "152px 152px",
@@ -1322,7 +1322,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "116px 116px",
@@ -1332,7 +1332,7 @@ const PremiumLifestyleSection = ({
                 aria-hidden="true"
                 className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
                 style={{
-                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.png")',
+                  backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
                   backgroundRepeat: "repeat",
                   backgroundPosition: "center",
                   backgroundSize: "152px 152px",
@@ -1340,7 +1340,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                A visual guide to building up your face. Yes, your face. Yes, build it up.
+                It's like the gym for your face.
               </p>
             </div>
           </div>

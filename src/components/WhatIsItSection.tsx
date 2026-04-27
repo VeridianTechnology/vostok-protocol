@@ -1,8 +1,9 @@
 import { AnimatePresence, m } from "framer-motion";
+import type { ReactNode } from "react";
 import { useState } from "react";
 
 type ScreenLine = {
-  text?: string;
+  text?: ReactNode;
   tone?: "body" | "emphasis" | "italic" | "question" | "answer";
 };
 
@@ -33,6 +34,56 @@ const vostokScreens: IdentityScreen[] = [
     ],
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
+  {
+    lines: [
+      { text: "So Why Is Your System Better?", tone: "question" },
+      {
+        text: "No weird injections. No Botox. No bone smashing. Nothing that could permanently damage or scar your face, or leave you infertile. This is an all-natural system. All you need is a mirror and some face oil.",
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
+  {
+    lines: [
+      { text: "What Makes You the Expert?", tone: "question" },
+      {
+        text: "I have more hours under my belt with this system than anyone else. I have used AI, proper technique, and relentless review to refine the work, and I have watched my life improve because of it. Women who used to feel way out of my league now swarm me. People react to me with respect and politeness. I do not just live the philosophy of the system; I built it through a massive amount of effort. No one, and I mean no one, is on my level, and you will see that very quickly the moment you start the practices.",
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
+  {
+    lines: [
+      { text: "What's the Catch?", tone: "question" },
+      {
+        text: "There is none. Well, okay, you will have to put in a lot of work. Will you see results? Yes, even the very next day. But real, concrete results take months. If you put in just two hours a week, you will accelerate your progress, and if you stop, the results will stay, at least 80% of them. This is for long-lasting, life-lasting improvement. It is not filler that can shift, leak, or ruin your face. It is not surgery that can make you look like a monstrosity. This is an all-natural system for de-aging, looks, and confidence.",
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
+  {
+    lines: [
+      { text: "I Don't See Much Improvement.", tone: "question" },
+      {
+        text: (
+          <>
+            Yeah. That is because I am five years older in my after photos, and I do not really
+            have good before photos. The differences are all there. I have also been a lifelong
+            smoker and used to smoke a pack a day. I should look <strong>way worse</strong>, but I
+            do not. I look better. I have since quit smoking and will properly train this to show
+            results. Most of my hours were spent investigating methods that worked. I wasted a ton
+            of time refining this. Most of my hours now go into promoting it, not using it. You can
+            far surpass me faster as a student.
+          </>
+        ),
+        tone: "answer",
+      },
+    ],
+    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+  },
 ];
 
 const WhatIsItSection = () => {
@@ -43,7 +94,7 @@ const WhatIsItSection = () => {
     <section className="section-surface relative left-1/2 right-1/2 h-[92vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
       <div className="absolute inset-0 -z-10">
         <img
-          src="/section_wallpaper/whatisit/1.png"
+          src="/section_wallpaper/whatisit/1.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 hidden h-full w-full object-cover md:block"
@@ -93,7 +144,7 @@ const WhatIsItSection = () => {
                   >
                     {currentSequenceScreen?.lines?.map((line, lineIndex) => (
                       <p
-                        key={`${sequenceScreenIndex}-${lineIndex}-${line.text}`}
+                        key={`${sequenceScreenIndex}-${lineIndex}`}
                         className={
                           line.tone === "emphasis"
                             ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-[#e7ebf0] md:text-[3.9rem]"

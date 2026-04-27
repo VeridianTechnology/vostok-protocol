@@ -11,7 +11,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
     return (
       <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
-          src="/section_wallpaper/break/1.png"
+          src="/section_wallpaper/break/1.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
@@ -24,7 +24,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
     return (
       <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
-          src="/section_wallpaper/break/2.png"
+          src="/section_wallpaper/break/2.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
@@ -37,7 +37,7 @@ const TransitionThreshold = ({ variant }: TransitionThresholdProps) => {
     return (
       <section className="relative left-1/2 right-1/2 h-[16.8vh] w-screen -translate-x-1/2 overflow-hidden bg-black md:h-[4.304vw]">
         <img
-          src="/section_wallpaper/break/3.png"
+          src="/section_wallpaper/break/3.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"

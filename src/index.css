@@ -62,8 +62,8 @@
     --obsidian: 0 0% 3%;
     --warm-highlight: 38 40% 60%;
     --section-surface: #F1F9F5;
-    --pod-wallpaper-mobile: url("/section_wallpaper/pod/06.png");
-    --pod-wallpaper-desktop: url("/section_wallpaper/pod/06.png");
+    --pod-wallpaper-mobile: url("/section_wallpaper/pod/06.jpg");
+    --pod-wallpaper-desktop: url("/section_wallpaper/pod/06.jpg");
 
     --gradient-silver: linear-gradient(135deg, hsl(0 0% 12%) 0%, hsl(0 0% 7%) 55%, hsl(0 0% 5%) 100%);
     --gradient-chrome: linear-gradient(180deg, hsl(0 0% 18%) 0%, hsl(0 0% 10%) 100%);
