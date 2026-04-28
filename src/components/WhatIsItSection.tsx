@@ -120,7 +120,7 @@ const WhatIsItSection = () => {
           className="absolute inset-0 hidden h-full w-full object-cover brightness-[1.4] md:block"
         />
         <img
-          src="/section_wallpaper/whatisit/2.jpg"
+          src="/section_wallpaper/whatisit/4.jpg"
           alt=""
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover md:hidden"

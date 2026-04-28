@@ -235,10 +235,10 @@ const TRACKS: Track[] = [
   },
   {
     id: "33",
-    title: "transgender - slowed reverb",
+    title: "You got it (jersey club)",
     score: "NR",
-    audioSrc: "/audio/radio/33_transgender - slowed  reverb.m4a",
-    youtubeUrl: "https://www.youtube.com/results?search_query=transgender+slowed+reverb",
+    audioSrc: "/audio/radio/33_You got it (jersey club).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=CEDokiMddd0",
   },
   {
     id: "34",
