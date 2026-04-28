@@ -116,10 +116,10 @@ const TRACKS: Track[] = [
   },
   {
     id: "16",
-    title: "Kazy Lambist - Doing Yoga",
-    score: "5/10",
-    audioSrc: "/audio/radio/16_Kazy Lambist - Doing Yoga.m4a",
-    youtubeUrl: "https://www.youtube.com/watch?v=wgg74iuPKqs&list=RDYCXYkcpD5tw",
+    title: "INTERSTELLAR ULTRAFUNK - SLOWED",
+    score: "NR",
+    audioSrc: "/audio/radio/16_INTERSTELLAR ULTRAFUNK - SLOWED.m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=INTERSTELLAR+ULTRAFUNK+SLOWED",
   },
   {
     id: "17",
@@ -296,6 +296,34 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/41_specialsadism (super slowed).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=YbvkuJ3oQCM&list=RDMM0Uo67YlIdcw",
   },
+  {
+    id: "42",
+    title: "Gangnam Style x Give Me Everything (Slowed & Reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/42_Gangnam Style x Give Me Everything (Slowed & Reverb) (TikTok Version).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ylfJtbVSs0w&list=RDMM0Uo67YlIdcw",
+  },
+  {
+    id: "43",
+    title: "BLAULICHT HARDTEKK",
+    score: "NR",
+    audioSrc: "/audio/radio/43_BLAULICHT HARDTEKK.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=fyZjRw1Ez_k",
+  },
+  {
+    id: "44",
+    title: "I WAS MADE FOR LOVIN' YOU (Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/44_I WAS MADE FOR LOVIN' YOU (Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=M0b_qzdpHyQ",
+  },
+  {
+    id: "45",
+    title: "UMBASA - NERO (Super Slowed + Reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/45_UMBASA - NERO (Super Slowed + reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ktRytKptndk",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -376,7 +404,7 @@ const DJ_RANDOM_MAX_DELAY_MS = 5 * 60 * 1000;
 const DJ_RANDOM_WINDOW_START = 0.25;
 const DJ_RANDOM_WINDOW_END = 0.75;
 
-const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
+const shuffleIndices = (length: number, avoidFirstIndex?: number) => {
   const indices = Array.from({ length }, (_, index) => index);
 
   for (let index = indices.length - 1; index > 0; index -= 1) {
@@ -385,11 +413,11 @@ const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
   }
 
   if (
-    pinnedFirstIndex !== undefined &&
+    avoidFirstIndex !== undefined &&
     indices.length > 1 &&
-    indices[0] === pinnedFirstIndex
+    indices[0] === avoidFirstIndex
   ) {
-    const swapIndex = indices.findIndex((value) => value !== pinnedFirstIndex);
+    const swapIndex = indices.findIndex((value) => value !== avoidFirstIndex);
     if (swapIndex > 0) {
       [indices[0], indices[swapIndex]] = [indices[swapIndex], indices[0]];
     }
@@ -398,14 +426,21 @@ const shuffleIndices = (length: number, pinnedFirstIndex?: number) => {
   return indices;
 };
 
-const buildRandomPlayState = (length: number, pinnedFirstIndex?: number) => {
-  const order = shuffleIndices(length, pinnedFirstIndex);
+const buildRandomPlayState = (length: number, avoidFirstIndex?: number) => {
+  const order = shuffleIndices(length);
   if (order.length <= 1) {
     return { playOrder: order, trackPosition: 0 };
   }
 
   const offset = Math.floor(Math.random() * order.length);
   const rotatedOrder = [...order.slice(offset), ...order.slice(0, offset)];
+  if (avoidFirstIndex !== undefined && rotatedOrder[0] === avoidFirstIndex) {
+    const swapIndex = rotatedOrder.findIndex((value) => value !== avoidFirstIndex);
+    if (swapIndex > 0) {
+      [rotatedOrder[0], rotatedOrder[swapIndex]] = [rotatedOrder[swapIndex], rotatedOrder[0]];
+    }
+  }
+
   return { playOrder: rotatedOrder, trackPosition: 0 };
 };
 
