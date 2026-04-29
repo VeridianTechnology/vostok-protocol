@@ -478,6 +478,27 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/67_CLARITY - HARDSTYLE (AGARTHA EDIT).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=rqtixbqxoTk",
   },
+  {
+    id: "68",
+    title: "T3NZU - Under The Influence",
+    score: "NR",
+    audioSrc: "/audio/radio/68_T3NZU - Under The Influence.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Y8Fh6ZC-5FU",
+  },
+  {
+    id: "69",
+    title: "Kenia Os - Tu y Yo X Siempre",
+    score: "NR",
+    audioSrc: "/audio/radio/69_Kenia Os - Tú y Yo X Siempre (Lyric Video).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=p9_OfhaG8I0",
+  },
+  {
+    id: "70",
+    title: "Ayesha Erotica, Mo Beats - Yummy (Righteous Remix - Sped Up)",
+    score: "NR",
+    audioSrc: "/audio/radio/70_Yummy (Righteous Remix - Sped Up) 4.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=hVZwm4ZzxBM",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
