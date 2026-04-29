@@ -324,6 +324,104 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/45_UMBASA - NERO (Super Slowed + reverb).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=ktRytKptndk",
   },
+  {
+    id: "46",
+    title: "down on me x I mean it",
+    score: "NR",
+    audioSrc: "/audio/radio/46_down on me x I mean it.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=QpH6aE3AfAo",
+  },
+  {
+    id: "47",
+    title: "Strippers",
+    score: "NR",
+    audioSrc: "/audio/radio/47_Strippers.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ygoCpnxTAkg",
+  },
+  {
+    id: "48",
+    title: "Griddle (feat. Don Toliver)",
+    score: "NR",
+    audioSrc: "/audio/radio/48_Griddle (feat. Don Toliver).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=_H0yAU3IP5I",
+  },
+  {
+    id: "49",
+    title: "Yo Voy - Lil Uzi Vert (unreleased)",
+    score: "NR",
+    audioSrc: "/audio/radio/49_Yo Voy - Lil Uzi Vert (unreleased).m4a",
+    youtubeUrl: "https://www.youtube.com/results?search_query=Yo+Voy+Lil+Uzi+Vert+unreleased",
+  },
+  {
+    id: "50",
+    title: "(FREE) twentythree + 2013club + swag type beat - money walk",
+    score: "NR",
+    audioSrc: "/audio/radio/50_(FREE) twentythree + 2013club + swag type beat - money walk.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=tnbqcz_iIf8",
+  },
+  {
+    id: "51",
+    title: "Antiflvx - White Light",
+    score: "NR",
+    audioSrc: "/audio/radio/51_Antiflvx - White Light.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=6_cnq8n2_mA",
+  },
+  {
+    id: "52",
+    title: "The Way I Are (slowed to perfection)",
+    score: "NR",
+    audioSrc: "/audio/radio/52_The Way I Are (slowed to perfection).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=VgOJv8tpKlw",
+  },
+  {
+    id: "53",
+    title: "VOCE NA MIRA (Super Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/53_VOCE NA MIRA (Super Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=oXf-mHcJkfw",
+  },
+  {
+    id: "54",
+    title: "Take Me There - DA TI",
+    score: "NR",
+    audioSrc: "/audio/radio/54_Take Me There - DA TI (Lyrics).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=t0fq25M8mSI",
+  },
+  {
+    id: "55",
+    title: "Templar (Versions) (Super Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/55_Templar (Versions) (Super Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=qdBGG6Vjm5k",
+  },
+  {
+    id: "56",
+    title: "The Haunted Youth - Coming Home",
+    score: "NR",
+    audioSrc: "/audio/radio/56_The Haunted Youth - Coming Home.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=SgrSr6LNMdY",
+  },
+  {
+    id: "57",
+    title: "HERO! - Sped Up",
+    score: "NR",
+    audioSrc: "/audio/radio/57_HERO! - Sped Up.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=EhUtJdRSs6M",
+  },
+  {
+    id: "58",
+    title: "OBLXKQ, eyfect, +w - Untitled#39",
+    score: "NR",
+    audioSrc: "/audio/radio/58_OBLXKQ, eyfect, w  -  Untitled#39.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=WD-fV1QCaWM",
+  },
+  {
+    id: "59",
+    title: "Criminal x Love Potions",
+    score: "NR",
+    audioSrc: "/audio/radio/59_Criminal x Love Potions.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=HQqhqxzuKBs",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -403,6 +501,11 @@ const DJ_RANDOM_MIN_DELAY_MS = 2 * 60 * 1000;
 const DJ_RANDOM_MAX_DELAY_MS = 5 * 60 * 1000;
 const DJ_RANDOM_WINDOW_START = 0.25;
 const DJ_RANDOM_WINDOW_END = 0.75;
+const OUTPUT_LIMITER_THRESHOLD_DB = -6;
+const OUTPUT_LIMITER_KNEE_DB = 0;
+const OUTPUT_LIMITER_RATIO = 20;
+const OUTPUT_LIMITER_ATTACK_S = 0.003;
+const OUTPUT_LIMITER_RELEASE_S = 0.25;
 
 const shuffleIndices = (length: number, avoidFirstIndex?: number) => {
   const indices = Array.from({ length }, (_, index) => index);
@@ -500,6 +603,7 @@ const RadioPlayer = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserMapRef = useRef(new Map<HTMLAudioElement, AnalyserNode>());
   const sourceNodeMapRef = useRef(new Map<HTMLAudioElement, MediaElementAudioSourceNode>());
+  const limiterNodeMapRef = useRef(new Map<HTMLAudioElement, DynamicsCompressorNode>());
   const animationFrameRef = useRef<number | null>(null);
   const frequencyDataRef = useRef<Uint8Array | null>(null);
   const visualizerRangesRef = useRef<Array<{ start: number; end: number; weight: number }> | null>(null);
@@ -621,12 +725,21 @@ const RadioPlayer = () => {
     analyser.fftSize = 256;
     analyser.smoothingTimeConstant = 0.72;
 
+    const limiter = context.createDynamicsCompressor();
+    limiter.threshold.value = OUTPUT_LIMITER_THRESHOLD_DB;
+    limiter.knee.value = OUTPUT_LIMITER_KNEE_DB;
+    limiter.ratio.value = OUTPUT_LIMITER_RATIO;
+    limiter.attack.value = OUTPUT_LIMITER_ATTACK_S;
+    limiter.release.value = OUTPUT_LIMITER_RELEASE_S;
+
     const source = context.createMediaElementSource(audio);
-    source.connect(analyser);
+    source.connect(limiter);
+    limiter.connect(analyser);
     analyser.connect(context.destination);
 
     analyserMapRef.current.set(audio, analyser);
     sourceNodeMapRef.current.set(audio, source);
+    limiterNodeMapRef.current.set(audio, limiter);
 
     if (!frequencyDataRef.current) {
       frequencyDataRef.current = new Uint8Array(analyser.frequencyBinCount);
