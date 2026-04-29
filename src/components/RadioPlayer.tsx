@@ -569,6 +569,34 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/80_FUNERAL.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=lHI7ZGfLnB4",
   },
+  {
+    id: "81",
+    title: "Desire (Hucci Remix)",
+    score: "NR",
+    audioSrc: "/audio/radio/81_Desire (Hucci Remix) 4.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=g6SVzgSjJck",
+  },
+  {
+    id: "82",
+    title: "BLOODY MARY - VØIDGLiTCH & ØNELY",
+    score: "NR",
+    audioSrc: "/audio/radio/82_BLOODY MARY - VØIDGLiTCH & ØNELY.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=RostBo8JJHs",
+  },
+  {
+    id: "83",
+    title: "Tart, Andreea Flavia - Stereo Love",
+    score: "NR",
+    audioSrc: "/audio/radio/83_Tart, Andreea Flavia - Stereo Love.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=uPkuKVjXjMQ",
+  },
+  {
+    id: "84",
+    title: "Poker Face X Vacation Bible School - Ayesha Erotica & Lady Gaga (mashup)",
+    score: "NR",
+    audioSrc: "/audio/radio/84_Poker Face X Vacation Bible School - Ayesha Erotica & Lady Gaga (mashup).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ViLL9KFSqWo",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
