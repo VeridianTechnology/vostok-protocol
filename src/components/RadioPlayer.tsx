@@ -422,6 +422,62 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/59_Criminal x Love Potions.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=HQqhqxzuKBs",
   },
+  {
+    id: "60",
+    title: "You Could Be The One [Slowed To Perfection] Snow Strippers",
+    score: "NR",
+    audioSrc: "/audio/radio/60_You Could Be The One [Slowed To Perfection] Snow Strippers.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=DH0vqfwwrYA",
+  },
+  {
+    id: "61",
+    title: "Porter Robinson - Mirror",
+    score: "NR",
+    audioSrc: "/audio/radio/61_Porter Robinson - Mirror (Official Music Video) 4.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=PkiIPzG37vQ",
+  },
+  {
+    id: "62",
+    title: "Feel So Close (Best Part Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/62_Feel So Close (Best Part Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=vNbZjC5H-K4",
+  },
+  {
+    id: "63",
+    title: "worry (ultra slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/63_worry (ultra slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=lCKU-tI-upI",
+  },
+  {
+    id: "64",
+    title: "New Jeans Jersey Remix (Miside Mita Edit TikTok Version)",
+    score: "NR",
+    audioSrc: "/audio/radio/64_New Jeans Jersey Remix (Audio Edited) (Miside Mita Edit TikTok Version) [made by purple drip boy] 4.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=i66MQyYuiHM",
+  },
+  {
+    id: "65",
+    title: "SIMULVCRUM - Silent Love (Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/65_Silent Love (Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=m02icgjgAts",
+  },
+  {
+    id: "66",
+    title: "ravyn, CLINCE, winter - CELESTIA (Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/66_CELESTIA (Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=iuqOXaIQW5M",
+  },
+  {
+    id: "67",
+    title: "CLARITY - HARDSTYLE (AGARTHA EDIT)",
+    score: "NR",
+    audioSrc: "/audio/radio/67_CLARITY - HARDSTYLE (AGARTHA EDIT).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=rqtixbqxoTk",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -1429,7 +1485,7 @@ const RadioPlayer = () => {
           type="button"
           onClick={() => setIsPodCollapsed((current) => !current)}
           aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
-          className="absolute left-1/2 top-0 z-[3] inline-flex h-[34px] w-[34px] -translate-x-1/2 -translate-y-[26px] items-center justify-center rounded-full border border-black/35 bg-black text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] transition hover:bg-black hover:text-white"
+          className="absolute left-1/2 top-0 z-[3] inline-flex h-[46px] w-[46px] -translate-x-1/2 -translate-y-[34px] items-center justify-center rounded-full border border-black/35 bg-black text-white shadow-[0_8px_18px_rgba(0,0,0,0.22)] transition hover:bg-black hover:text-white md:h-[34px] md:w-[34px] md:-translate-y-[26px]"
         >
           <svg
             aria-hidden="true"
@@ -1439,7 +1495,7 @@ const RadioPlayer = () => {
             strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-4 w-4"
+            className="h-5 w-5 md:h-4 md:w-4"
           >
             {isPodCollapsed ? (
               <path d="m6 15 6-6 6 6" />
@@ -1453,7 +1509,7 @@ const RadioPlayer = () => {
             <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
           </div>
-          <div className="relative z-[1] flex min-w-0 flex-col items-center px-2 text-center">
+          <div className="relative z-[1] mt-[2.5vh] flex min-w-0 flex-col items-center px-2 text-center md:mt-0">
             <div className="mb-1 flex items-center gap-2">
               {missingTrackSummary ? (
                 <span className="text-[8px] uppercase tracking-[0.18em] text-black/70 md:text-[9px]">
@@ -1473,7 +1529,7 @@ const RadioPlayer = () => {
               type="button"
               onClick={handleNextTrack}
               aria-label="Next track"
-              className="mb-[4vh] inline-flex h-[21px] w-[21px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:mb-2 md:h-[26px] md:w-[26px]"
+              className="mb-[4vh] mt-[3vh] inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:mb-2 md:mt-0 md:h-[26px] md:w-[26px]"
             >
               <svg
                 aria-hidden="true"
@@ -1483,7 +1539,7 @@ const RadioPlayer = () => {
                 strokeWidth="1.75"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                className="h-[11px] w-[11px] md:h-[13px] md:w-[13px]"
+                className="h-[22px] w-[22px] md:h-[13px] md:w-[13px]"
               >
                 <path d="m13 19 7-7-7-7" />
                 <path d="m4 19 7-7-7-7" />
