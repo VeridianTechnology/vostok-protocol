@@ -527,6 +527,48 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/74_IM SO LUCKY JUMPSTYLE (Super Slowed).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=PAxxAnMxjS0",
   },
+  {
+    id: "75",
+    title: "Nostalgia",
+    score: "NR",
+    audioSrc: "/audio/radio/75_Nostalgia.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Ui1wruLfNEg",
+  },
+  {
+    id: "76",
+    title: "2hollis - poster boy (slowed + reverb) lyrics",
+    score: "NR",
+    audioSrc: "/audio/radio/76_2hollis - poster boy (slowed  reverb) lyrics.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=S37_XuxHCSE",
+  },
+  {
+    id: "77",
+    title: "Close Your Eyes and Make a Wish - Fright Night (Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/77_Close Your Eyes and Make a Wish - Fright Night (Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=WnGNxkYpufU",
+  },
+  {
+    id: "78",
+    title: "lustr - tell me (lyrics)",
+    score: "NR",
+    audioSrc: "/audio/radio/78_lustr -  tell me (lyrics).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=jjxRHFuTTw4",
+  },
+  {
+    id: "79",
+    title: "UNDONE",
+    score: "NR",
+    audioSrc: "/audio/radio/79_UNDONE.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=SADGCyunoLE",
+  },
+  {
+    id: "80",
+    title: "FUNERAL",
+    score: "NR",
+    audioSrc: "/audio/radio/80_FUNERAL.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=lHI7ZGfLnB4",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
