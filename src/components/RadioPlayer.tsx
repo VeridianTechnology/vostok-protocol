@@ -499,6 +499,34 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/70_Yummy (Righteous Remix - Sped Up) 4.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=hVZwm4ZzxBM",
   },
+  {
+    id: "71",
+    title: "Embers (Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/71_Embers (Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=huTqagrLjzU",
+  },
+  {
+    id: "72",
+    title: "Irokz - Angel (Sped Up)",
+    score: "NR",
+    audioSrc: "/audio/radio/72_Angel (Sped Up) [ZTiaysiWjVE].m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=ZTiaysiWjVE",
+  },
+  {
+    id: "73",
+    title: "Blurred Stars",
+    score: "NR",
+    audioSrc: "/audio/radio/73_Blurred Stars.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=S1ngG7vg_Zs",
+  },
+  {
+    id: "74",
+    title: "Jeff Germita - IM SO LUCKY JUMPSTYLE (Super Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/74_IM SO LUCKY JUMPSTYLE (Super Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=PAxxAnMxjS0",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -1516,7 +1544,7 @@ const RadioPlayer = () => {
             strokeWidth="1.75"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="h-5 w-5 md:h-4 md:w-4"
+            className="h-5 w-5 text-[#d2aa63] md:h-4 md:w-4"
           >
             {isPodCollapsed ? (
               <path d="m6 15 6-6 6 6" />
