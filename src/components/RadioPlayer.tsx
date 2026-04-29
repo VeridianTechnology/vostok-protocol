@@ -439,6 +439,9 @@ const DJ_STINGERS = [
   "/audio/dj/lady/08.m4a",
   "/audio/dj/lady/09.m4a",
   "/audio/dj/lady/10.m4a",
+  "/audio/dj/lady/11.m4a",
+  "/audio/dj/lady/12.m4a",
+  "/audio/dj/lady/13.m4a",
 ] as const;
 const DJ_VOICE_CLIPS = [
   "/audio/dj/disko/1.m4a",
