@@ -8,6 +8,59 @@ type Track = {
   audioSrc?: string;
 };
 
+type RandomSource = () => number;
+
+const RADIO_SESSION_SEED_KEY = "timeless-elegance-radio-seed";
+
+const getRadioSessionSeed = () => {
+  if (typeof window === "undefined") {
+    return "server-session";
+  }
+
+  try {
+    const existingSeed = window.sessionStorage.getItem(RADIO_SESSION_SEED_KEY);
+    if (existingSeed) {
+      return existingSeed;
+    }
+
+    const entropy =
+      typeof window.crypto?.randomUUID === "function"
+        ? window.crypto.randomUUID()
+        : `${Date.now()}-${Math.floor(window.performance?.now?.() ?? 0)}`;
+    window.sessionStorage.setItem(RADIO_SESSION_SEED_KEY, entropy);
+    return entropy;
+  } catch {
+    return `${Date.now()}-${Math.floor(typeof performance !== "undefined" ? performance.now() : 0)}`;
+  }
+};
+
+const hashStringToSeed = (value: string) => {
+  let hash = 2166136261;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash ^= value.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0 || 1;
+};
+
+const createSeededRandom = (seed: number): RandomSource => {
+  let state = seed >>> 0 || 1;
+
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 2 ** 32;
+  };
+};
+
+const createSessionRandom = (seed: string, scope: string) =>
+  createSeededRandom(hashStringToSeed(`${seed}:${scope}`));
+
+const randomInt = (rng: RandomSource, maxExclusive: number) => Math.floor(rng() * maxExclusive);
+
+const randomBetween = (rng: RandomSource, min: number, max: number) => min + rng() * (max - min);
+
 const TRACKS: Track[] = [
   {
     id: "01",
@@ -618,6 +671,34 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/88_SORYN - IDLE [hardwave_phonk] - Soryn (youtube).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=1yaIsIcoeBE",
   },
+  {
+    id: "89",
+    title: "Kxllswxtch - WASTE [PHNK REMIX]",
+    score: "NR",
+    audioSrc: "/audio/radio/89_Kxllswxtch - WASTE [PHNK REMIX] - PHONKmedia東京 (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=8DVwzJef6zQ",
+  },
+  {
+    id: "90",
+    title: "VØJ, .diedlonely, énoument, GOTHBOY - Last Thought Before Shutdown",
+    score: "NR",
+    audioSrc: "/audio/radio/90_VØJ, .diedlonely, énoument, GOTHBOY - Last Thought Before Shutdown (4K Official Music Video) - GOTHBOY (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=vwdA81-7FL0",
+  },
+  {
+    id: "91",
+    title: "YEAT - Percz",
+    score: "NR",
+    audioSrc: "/audio/radio/91_YEAT - Percz (prod. SKY) - SKY (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Hn3Mv_MnFwM",
+  },
+  {
+    id: "92",
+    title: "studio killers - jenny (slowed + reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/92_studio killers - jenny (slowed + reverb) - vierra (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=UG7vrHP0FTs",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
@@ -706,11 +787,11 @@ const OUTPUT_LIMITER_RATIO = 20;
 const OUTPUT_LIMITER_ATTACK_S = 0.003;
 const OUTPUT_LIMITER_RELEASE_S = 0.25;
 
-const shuffleIndices = (length: number, avoidFirstIndex?: number) => {
+const shuffleIndices = (length: number, rng: RandomSource, avoidFirstIndex?: number) => {
   const indices = Array.from({ length }, (_, index) => index);
 
   for (let index = indices.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
+    const randomIndex = randomInt(rng, index + 1);
     [indices[index], indices[randomIndex]] = [indices[randomIndex], indices[index]];
   }
 
@@ -728,13 +809,13 @@ const shuffleIndices = (length: number, avoidFirstIndex?: number) => {
   return indices;
 };
 
-const buildRandomPlayState = (length: number, avoidFirstIndex?: number) => {
-  const order = shuffleIndices(length);
+const buildRandomPlayState = (length: number, rng: RandomSource, avoidFirstIndex?: number) => {
+  const order = shuffleIndices(length, rng);
   if (order.length <= 1) {
     return { playOrder: order, trackPosition: 0 };
   }
 
-  const offset = Math.floor(Math.random() * order.length);
+  const offset = randomInt(rng, order.length);
   const rotatedOrder = [...order.slice(offset), ...order.slice(0, offset)];
   if (avoidFirstIndex !== undefined && rotatedOrder[0] === avoidFirstIndex) {
     const swapIndex = rotatedOrder.findIndex((value) => value !== avoidFirstIndex);
@@ -746,11 +827,11 @@ const buildRandomPlayState = (length: number, avoidFirstIndex?: number) => {
   return { playOrder: rotatedOrder, trackPosition: 0 };
 };
 
-const shuffleItems = <T,>(items: readonly T[]) => {
+const shuffleItems = <T,>(items: readonly T[], rng: RandomSource) => {
   const next = [...items];
 
   for (let index = next.length - 1; index > 0; index -= 1) {
-    const randomIndex = Math.floor(Math.random() * (index + 1));
+    const randomIndex = randomInt(rng, index + 1);
     [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
   }
 
@@ -795,6 +876,43 @@ const getVisualizerRanges = (binCount: number) => {
 };
 
 const RadioPlayer = () => {
+  const sessionSeedRef = useRef<string | null>(null);
+  if (sessionSeedRef.current === null) {
+    sessionSeedRef.current = getRadioSessionSeed();
+  }
+
+  const mainOrderRandomRef = useRef<RandomSource | null>(null);
+  if (mainOrderRandomRef.current === null) {
+    mainOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "main-order");
+  }
+
+  const djInterruptionOrderRandomRef = useRef<RandomSource | null>(null);
+  if (djInterruptionOrderRandomRef.current === null) {
+    djInterruptionOrderRandomRef.current = createSessionRandom(
+      sessionSeedRef.current,
+      "dj-interruption-order"
+    );
+  }
+
+  const djVoiceOrderRandomRef = useRef<RandomSource | null>(null);
+  if (djVoiceOrderRandomRef.current === null) {
+    djVoiceOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-voice-order");
+  }
+
+  const djRandomOrderRandomRef = useRef<RandomSource | null>(null);
+  if (djRandomOrderRandomRef.current === null) {
+    djRandomOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-random-order");
+  }
+
+  const djStingerRandomRef = useRef<RandomSource | null>(null);
+  if (djStingerRandomRef.current === null) {
+    djStingerRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-stinger");
+  }
+
+  const schedulerRandomRef = useRef<RandomSource | null>(null);
+  if (schedulerRandomRef.current === null) {
+    schedulerRandomRef.current = createSessionRandom(sessionSeedRef.current, "scheduler");
+  }
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const djStingerAudioRef = useRef<HTMLAudioElement | null>(null);
   const djVoiceAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -812,11 +930,13 @@ const RadioPlayer = () => {
   const shouldAutoplayRef = useRef(false);
   const previousTrackIdRef = useRef<string | null>(null);
   const playedTrackIdsRef = useRef<string[]>([]);
-  const djInterruptionOrderRef = useRef<string[]>(shuffleItems(DJ_INTERRUPTION_CLIPS));
+  const djInterruptionOrderRef = useRef<string[]>(
+    shuffleItems(DJ_INTERRUPTION_CLIPS, djInterruptionOrderRandomRef.current)
+  );
   const djInterruptionIndexRef = useRef(0);
-  const djVoiceOrderRef = useRef<string[]>(shuffleItems(DJ_VOICE_CLIPS));
+  const djVoiceOrderRef = useRef<string[]>(shuffleItems(DJ_VOICE_CLIPS, djVoiceOrderRandomRef.current));
   const djVoiceIndexRef = useRef(0);
-  const djRandomOrderRef = useRef<string[]>(shuffleItems(DJ_RANDOM_CLIPS));
+  const djRandomOrderRef = useRef<string[]>(shuffleItems(DJ_RANDOM_CLIPS, djRandomOrderRandomRef.current));
   const djRandomIndexRef = useRef(0);
   const rewindPairIndexRef = useRef(0);
   const completedSongCountRef = useRef(0);
@@ -830,7 +950,7 @@ const RadioPlayer = () => {
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
   const isDjVoiceActiveRef = useRef(false);
   const [{ playOrder, trackPosition }, setPlayState] = useState(() =>
-    buildRandomPlayState(PLAYABLE_TRACKS.length)
+    buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current)
   );
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
@@ -1058,7 +1178,7 @@ const RadioPlayer = () => {
   const getNextDjInterruptionClip = () => {
     const order = djInterruptionOrderRef.current;
     if (djInterruptionIndexRef.current >= order.length) {
-      djInterruptionOrderRef.current = shuffleItems(DJ_INTERRUPTION_CLIPS);
+      djInterruptionOrderRef.current = shuffleItems(DJ_INTERRUPTION_CLIPS, djInterruptionOrderRandomRef.current);
       djInterruptionIndexRef.current = 0;
     }
 
@@ -1071,7 +1191,7 @@ const RadioPlayer = () => {
   const getNextDjVoiceClip = () => {
     const order = djVoiceOrderRef.current;
     if (djVoiceIndexRef.current >= order.length) {
-      djVoiceOrderRef.current = shuffleItems(DJ_VOICE_CLIPS);
+      djVoiceOrderRef.current = shuffleItems(DJ_VOICE_CLIPS, djVoiceOrderRandomRef.current);
       djVoiceIndexRef.current = 0;
     }
 
@@ -1091,7 +1211,7 @@ const RadioPlayer = () => {
   const getNextDjRandomClip = () => {
     const order = djRandomOrderRef.current;
     if (djRandomIndexRef.current >= order.length) {
-      djRandomOrderRef.current = shuffleItems(DJ_RANDOM_CLIPS);
+      djRandomOrderRef.current = shuffleItems(DJ_RANDOM_CLIPS, djRandomOrderRandomRef.current);
       djRandomIndexRef.current = 0;
     }
 
@@ -1129,7 +1249,7 @@ const RadioPlayer = () => {
       }
 
       scheduleDjRandomOverlay();
-    }, DJ_RANDOM_MIN_DELAY_MS + Math.random() * (DJ_RANDOM_MAX_DELAY_MS - DJ_RANDOM_MIN_DELAY_MS));
+    }, randomBetween(schedulerRandomRef.current, DJ_RANDOM_MIN_DELAY_MS, DJ_RANDOM_MAX_DELAY_MS));
   };
 
   const scheduleDjVoiceInterrupt = () => {
@@ -1160,8 +1280,7 @@ const RadioPlayer = () => {
       return;
     }
 
-    const targetTime =
-      earliestTime + Math.random() * (latestTime - earliestTime);
+    const targetTime = randomBetween(schedulerRandomRef.current, earliestTime, latestTime);
     const delay = Math.max(0, (targetTime - audio.currentTime) * 1000);
 
     djInterruptTimeoutRef.current = window.setTimeout(() => {
@@ -1345,7 +1464,7 @@ const RadioPlayer = () => {
         }
 
         playedTrackIdsRef.current = [];
-        return buildRandomPlayState(PLAYABLE_TRACKS.length, currentTrackIndex);
+        return buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current, currentTrackIndex);
       });
     };
 
@@ -1452,7 +1571,7 @@ const RadioPlayer = () => {
     previousTrackIdRef.current = currentTrack.id;
     const specialIntroSrc = getSpecialSongIntroSrc(currentTrack);
     const randomStinger =
-      DJ_STINGERS[Math.floor(Math.random() * DJ_STINGERS.length)] ?? DJ_STINGERS[0];
+      DJ_STINGERS[randomInt(djStingerRandomRef.current, DJ_STINGERS.length)] ?? DJ_STINGERS[0];
     const introSrc = specialIntroSrc ?? randomStinger;
     djStingerAudio.pause();
     djStingerAudio.currentTime = 0;
@@ -1599,7 +1718,7 @@ const RadioPlayer = () => {
       }
 
       playedTrackIdsRef.current = [];
-      return buildRandomPlayState(PLAYABLE_TRACKS.length, currentTrackIndex);
+      return buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current, currentTrackIndex);
     });
   };
 
