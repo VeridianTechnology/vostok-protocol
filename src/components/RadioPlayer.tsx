@@ -1800,7 +1800,11 @@ const RadioPlayer = () => {
           type="button"
           onClick={() => setIsPodCollapsed((current) => !current)}
           aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
-          className="absolute left-1/2 top-0 z-[3] inline-flex h-[46px] w-[46px] -translate-x-1/2 -translate-y-[34px] items-center justify-center rounded-full border-2 border-[#d2aa63] bg-white text-[#d2aa63] shadow-[0_8px_18px_rgba(0,0,0,0.18)] transition hover:bg-white hover:text-[#d2aa63] md:h-[34px] md:w-[34px] md:-translate-y-[26px]"
+          className={`absolute left-1/2 top-0 z-[3] inline-flex h-[46px] w-[46px] -translate-x-1/2 -translate-y-[34px] items-center justify-center rounded-full border-2 border-[#05080f] shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition md:h-[34px] md:w-[34px] md:-translate-y-[26px] ${
+            isPodCollapsed
+              ? "bg-white text-black hover:bg-white hover:text-black"
+              : "bg-[#0b111c] text-white hover:bg-[#101827] hover:text-white"
+          }`}
         >
           <svg
             aria-hidden="true"
@@ -1819,15 +1823,15 @@ const RadioPlayer = () => {
             )}
           </svg>
         </button>
-        <div className="relative flex w-[33vw] min-w-[118px] max-w-[152px] items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec] px-3 pb-3 pt-2 shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:w-auto md:max-w-none md:gap-1.5 md:px-4 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
+        <div className="relative flex w-[33vw] min-w-[118px] max-w-[152px] items-center justify-center gap-1 overflow-hidden rounded-t-[45px] border border-black/15 border-b-0 bg-[#eef2ec]/70 px-3 pb-3 pt-2 shadow-[0_10px_28px_rgba(0,0,0,0.12)] md:w-auto md:max-w-none md:gap-1.5 md:px-4 md:pl-[3vw] md:pr-[3vw] md:pt-[1.5vw]">
           <div className="pointer-events-none absolute inset-0">
-            <div className="pod-wallpaper-bg absolute inset-0 opacity-90" />
+            <div className="pod-wallpaper-bg absolute inset-0 opacity-70" />
             <div className="absolute inset-0 bg-[#eef2ec]/28" />
           </div>
           <div className="relative z-[1] mt-[2.5vh] flex min-w-0 flex-col items-center px-2 text-center md:mt-0">
             <div className="mb-1 flex items-center gap-2">
               {missingTrackSummary ? (
-                <span className="text-[8px] uppercase tracking-[0.18em] text-black/70 md:text-[9px]">
+                <span className="pod-inset-text text-[8px] uppercase tracking-[0.18em] md:text-[9px]">
                   {PLAYABLE_TRACKS.length}/{TRACKS.length} loaded · {missingTrackSummary}
                 </span>
               ) : null}
@@ -1836,7 +1840,7 @@ const RadioPlayer = () => {
               href={currentTrack.youtubeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] text-black/80 underline decoration-black/30 underline-offset-[0.22em] transition hover:text-black md:max-w-[18vw] md:text-[10px]"
+              className="pod-inset-text mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
             >
               {getTrackDisplayTitle(currentTrack)}
             </a>
@@ -1844,7 +1848,7 @@ const RadioPlayer = () => {
               type="button"
               onClick={handleNextTrack}
               aria-label="Next track"
-              className="mb-[4vh] mt-[3vh] inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-black/20 bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.9),0_4px_10px_rgba(255,255,255,0.28)] transition hover:bg-white md:mb-2 md:mt-0 md:h-[26px] md:w-[26px]"
+              className="mb-[4vh] mt-[3vh] inline-flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full border border-white/90 bg-white text-black shadow-[inset_0_1px_5px_rgba(0,0,0,0.16),0_5px_12px_rgba(0,0,0,0.32)] transition hover:bg-white md:mb-2 md:mt-0 md:h-[26px] md:w-[26px]"
             >
               <svg
                 aria-hidden="true"
@@ -1864,7 +1868,7 @@ const RadioPlayer = () => {
               type="button"
               onClick={() => void handleTogglePlayback()}
               aria-label={isPlaying ? "Pause radio" : "Play radio"}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/92 text-black shadow-[inset_0_1px_6px_rgba(255,255,255,0.92),0_8px_20px_rgba(255,255,255,0.2)] transition hover:scale-[1.02] md:h-9 md:w-9"
+              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/90 bg-white text-black shadow-[inset_0_1px_5px_rgba(0,0,0,0.16),0_8px_18px_rgba(0,0,0,0.34)] transition hover:scale-[1.02] hover:bg-white md:h-9 md:w-9"
             >
               {isPlaying ? (
                 <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" className="h-3.5 w-3.5 md:h-4 md:w-4">
@@ -1892,16 +1896,16 @@ const RadioPlayer = () => {
       >
         <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
           <div className="pointer-events-none absolute inset-0">
-            <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-90" />
+            <div aria-hidden="true" className="pod-wallpaper-bg absolute inset-0 opacity-100" />
             <div className="absolute inset-0 bg-[#f5f7f3]/26" />
           </div>
           <div className="relative min-w-0 w-full">
-            <div className="mb-0.5 flex items-center justify-between text-[9px] uppercase tracking-[0.18em] text-black/65 md:mb-1 md:text-[11px]">
+            <div className="pod-inset-text mb-0.5 flex items-center justify-between text-[9px] uppercase tracking-[0.18em] md:mb-1 md:text-[11px]">
               <a
                 href={currentTrack.youtubeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="truncate pr-3 underline decoration-black/30 underline-offset-[0.22em] transition hover:text-black"
+                className="truncate pr-3 underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white"
               >
                 {getTrackDisplayTitle(currentTrack)}
               </a>
