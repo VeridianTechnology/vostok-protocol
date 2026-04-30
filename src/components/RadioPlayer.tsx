@@ -734,6 +734,27 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/97_Dirty - Hit Da Floe - DirtyVEVO (youtube).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=dnToxeBgwC8",
   },
+  {
+    id: "98",
+    title: "I'm Miles Morales - lovin",
+    score: "NR",
+    audioSrc: "/audio/radio/98_I'm Miles Morales - lovin (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=mplYB2YHZW0",
+  },
+  {
+    id: "99",
+    title: "Purity Ring - Belispeak - Purity Ring",
+    score: "NR",
+    audioSrc: "/audio/radio/99_Purity Ring - Belispeak - Purity Ring (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=wVcOwVD4V30",
+  },
+  {
+    id: "100",
+    title: "the craft (portishead glory box ) scorn remix 1994",
+    score: "NR",
+    audioSrc: "/audio/radio/100_the craft (portishead glory box ) scorn remix 1994 - musique cinema et série télévisée (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=F_J2VKumPfw",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>

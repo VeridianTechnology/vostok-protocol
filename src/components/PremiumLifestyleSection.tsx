@@ -825,8 +825,8 @@ const PremiumLifestyleSection = ({
                 }}
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
-              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                BECØME COOL
+              <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
+                It&apos;s a concrete and efficient workout system for your face. The first of its kind.
               </p>
             </div>
 
@@ -876,7 +876,8 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                Smooth Dynamics
+                Like the
+                <span className="block">gym for your face.</span>
               </p>
             </div>
 
@@ -925,8 +926,8 @@ const PremiumLifestyleSection = ({
                 }}
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
-              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                BECØME BØY
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
+                Get those photos like your Grandfather had. Classic.
               </p>
             </div>
 
@@ -975,8 +976,9 @@ const PremiumLifestyleSection = ({
                 }}
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
-              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                BECØME WØMAN
+              <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
+                <span className="block">BECOME</span>
+                <span className="block">as hot as you want.</span>
               </p>
             </div>
 
@@ -1026,7 +1028,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                BECØME YØU
+                It&apos;s like the gym for your face.
               </p>
             </div>
           </div>
