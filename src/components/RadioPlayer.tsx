@@ -699,6 +699,41 @@ const TRACKS: Track[] = [
     audioSrc: "/audio/radio/92_studio killers - jenny (slowed + reverb) - vierra (youtube).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=UG7vrHP0FTs",
   },
+  {
+    id: "93",
+    title: "Devi McCallion - I WANT THINGS TO BE BEAUTIFUL",
+    score: "NR",
+    audioSrc: "/audio/radio/93_Devi McCallion - I WANT THINGS TO BE BEAUTIFUL - Devi McCallion (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=kOcnj-0lzeA",
+  },
+  {
+    id: "94",
+    title: "All Aboard - Yelawolf",
+    score: "NR",
+    audioSrc: "/audio/radio/94_All Aboard - Yelawolf (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=eNnaveslbCM",
+  },
+  {
+    id: "95",
+    title: "SAKUREYE - IN YOUR EYES / Extended",
+    score: "NR",
+    audioSrc: "/audio/radio/95_SAKUREYE - IN YOUR EYES _ Extended - S.P (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=sVcNLxgOuNw",
+  },
+  {
+    id: "96",
+    title: "Popstar (Yokimo Remix)",
+    score: "NR",
+    audioSrc: "/audio/radio/96_Popstar (Yokimo Remix) - Kill Eva (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=uiqU-vC2ymI",
+  },
+  {
+    id: "97",
+    title: "Dirty - Hit Da Floe",
+    score: "NR",
+    audioSrc: "/audio/radio/97_Dirty - Hit Da Floe - DirtyVEVO (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=dnToxeBgwC8",
+  },
 ];
 
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
