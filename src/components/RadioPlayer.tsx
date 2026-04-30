@@ -409,13 +409,6 @@ const TRACKS: Track[] = [
     youtubeUrl: "https://www.youtube.com/watch?v=EhUtJdRSs6M",
   },
   {
-    id: "58",
-    title: "OBLXKQ, eyfect, +w - Untitled#39",
-    score: "NR",
-    audioSrc: "/audio/radio/58_OBLXKQ, eyfect, w  -  Untitled#39.m4a",
-    youtubeUrl: "https://www.youtube.com/watch?v=WD-fV1QCaWM",
-  },
-  {
     id: "59",
     title: "Criminal x Love Potions",
     score: "NR",
@@ -596,6 +589,34 @@ const TRACKS: Track[] = [
     score: "NR",
     audioSrc: "/audio/radio/84_Poker Face X Vacation Bible School - Ayesha Erotica & Lady Gaga (mashup).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=ViLL9KFSqWo",
+  },
+  {
+    id: "85",
+    title: "SHAED - Trampoline (Jauz Remix)",
+    score: "NR",
+    audioSrc: "/audio/radio/85_SHAED - Trampoline (Jauz Remix).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=jWNY3EvQQIQ",
+  },
+  {
+    id: "86",
+    title: "SAILXNCE - ACTION",
+    score: "NR",
+    audioSrc: "/audio/radio/86_SAILXNCE - ACTION.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Jf4lAQqnJqk",
+  },
+  {
+    id: "87",
+    title: "OXWAVE - korabli",
+    score: "NR",
+    audioSrc: "/audio/radio/87_OXWAVE - korabli.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=GSQ9G1c0518",
+  },
+  {
+    id: "88",
+    title: "SORYN - IDLE [hardwave/phonk]",
+    score: "NR",
+    audioSrc: "/audio/radio/88_SORYN - IDLE [hardwave_phonk] - Soryn (youtube).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=1yaIsIcoeBE",
   },
 ];
 
