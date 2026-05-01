@@ -59,7 +59,6 @@ const createSessionRandom = (seed: string, scope: string) =>
 
 const randomInt = (rng: RandomSource, maxExclusive: number) => Math.floor(rng() * maxExclusive);
 
-const randomBetween = (rng: RandomSource, min: number, max: number) => min + rng() * (max - min);
 
 const TRACKS: Track[] = [
   {
@@ -776,122 +775,56 @@ const DJ_STINGERS = [
   "/audio/dj/lady/12.m4a",
   "/audio/dj/lady/13.m4a",
 ] as const;
-const DJ_VOICE_CLIPS = [
-  "/audio/dj/disko/1.m4a",
-  "/audio/dj/disko/2.m4a",
-  "/audio/dj/disko/3.m4a",
-  "/audio/dj/disko/4.m4a",
-  "/audio/dj/disko/5.m4a",
-  "/audio/dj/disko/6.m4a",
-  "/audio/dj/disko/7.m4a",
-  "/audio/dj/disko/8.m4a",
-  "/audio/dj/disko/9.m4a",
-  "/audio/dj/disko/10.m4a",
-  "/audio/dj/disko/11.m4a",
-  "/audio/dj/disko/12.m4a",
-  "/audio/dj/disko/13.m4a",
-  "/audio/dj/disko/14.m4a",
-] as const;
-const DJ_INTERRUPTION_CLIPS = [
-  "/audio/dj/special_interruption/01.m4a",
-  "/audio/dj/interruption/1.m4a",
-  "/audio/dj/interruption/2.m4a",
-  "/audio/dj/interruption/3.m4a",
-  "/audio/dj/interruption/4.m4a",
-  "/audio/dj/interruption/5.m4a",
-  "/audio/dj/interruption/6.m4a",
-  "/audio/dj/interruption/7.m4a",
-  "/audio/dj/interruption/8.m4a",
-  "/audio/dj/interruption/9.m4a",
-  "/audio/dj/interruption/10.m4a",
-] as const;
-const DJ_RANDOM_CLIPS = [
-  "/audio/dj/random/1.m4a",
-  "/audio/dj/random/2.m4a",
-  "/audio/dj/random/3.m4a",
-  "/audio/dj/random/4.m4a",
-  "/audio/dj/random/5.m4a",
-  "/audio/dj/random/6.m4a",
-  "/audio/dj/random/7.m4a",
-  "/audio/dj/random/8.m4a",
-] as const;
-const DJ_REWIND_CLIP_PAIRS = [
-  ["/audio/dj/rewind/1.mp3.m4a", "/audio/dj/rewind/1.1.m4a"],
-  ["/audio/dj/rewind/2.mp3.m4a", "/audio/dj/rewind/2.1.m4a"],
-  ["/audio/dj/rewind/3.mp3.m4a", "/audio/dj/rewind/3.1.m4a"],
-] as const;
 const DEFAULT_VOLUME = 1;
-const DJ_STINGER_VOLUME_MULTIPLIER = 0.6;
-const DJ_RESUME_LEAD_MS = 500;
-const DJ_INTERRUPT_VOLUME_MULTIPLIER = 0.7;
-const DJ_RANDOM_VOLUME_MULTIPLIER = 0.7;
-const DJ_INTERRUPTION_PREFIX_MS = 700;
-const DJ_INTERRUPT_MIN_LEAD_S = 20;
-const DJ_INTERRUPT_END_BUFFER_S = 18;
-const DJ_INTERRUPT_WINDOW_START = 0.35;
-const DJ_INTERRUPT_WINDOW_END = 0.72;
-const DJ_REWIND_WINDOW_START = 0.72;
-const DJ_REWIND_WINDOW_END = 0.82;
-const DJ_REWIND_SEEK_BACK_S = 10;
-const DJ_RANDOM_MIN_DELAY_MS = 2 * 60 * 1000;
-const DJ_RANDOM_MAX_DELAY_MS = 5 * 60 * 1000;
-const DJ_RANDOM_WINDOW_START = 0.25;
-const DJ_RANDOM_WINDOW_END = 0.75;
+const DJ_STINGER_VOLUME_MULTIPLIER = 0.35;
+const DJ_STINGER_DELAY_MS = 5000;
+const SKIP_LADY_COOLDOWN_MS = 60 * 1000;
 const OUTPUT_LIMITER_THRESHOLD_DB = -6;
 const OUTPUT_LIMITER_KNEE_DB = 0;
 const OUTPUT_LIMITER_RATIO = 20;
 const OUTPUT_LIMITER_ATTACK_S = 0.003;
 const OUTPUT_LIMITER_RELEASE_S = 0.25;
 
-const shuffleIndices = (length: number, rng: RandomSource, avoidFirstIndex?: number) => {
-  const indices = Array.from({ length }, (_, index) => index);
+const RADIO_PLAYLIST_KEY = "te-radio-playlist";
+const RADIO_POSITION_KEY = "te-radio-position";
 
-  for (let index = indices.length - 1; index > 0; index -= 1) {
-    const randomIndex = randomInt(rng, index + 1);
-    [indices[index], indices[randomIndex]] = [indices[randomIndex], indices[index]];
+const generateShuffledPlaylist = (): number[] => {
+  const indices = Array.from({ length: PLAYABLE_TRACKS.length }, (_, i) => i);
+  for (let i = indices.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
   }
-
-  if (
-    avoidFirstIndex !== undefined &&
-    indices.length > 1 &&
-    indices[0] === avoidFirstIndex
-  ) {
-    const swapIndex = indices.findIndex((value) => value !== avoidFirstIndex);
-    if (swapIndex > 0) {
-      [indices[0], indices[swapIndex]] = [indices[swapIndex], indices[0]];
-    }
-  }
-
   return indices;
 };
 
-const buildRandomPlayState = (length: number, rng: RandomSource, avoidFirstIndex?: number) => {
-  const order = shuffleIndices(length, rng);
-  if (order.length <= 1) {
-    return { playOrder: order, trackPosition: 0 };
-  }
-
-  const offset = randomInt(rng, order.length);
-  const rotatedOrder = [...order.slice(offset), ...order.slice(0, offset)];
-  if (avoidFirstIndex !== undefined && rotatedOrder[0] === avoidFirstIndex) {
-    const swapIndex = rotatedOrder.findIndex((value) => value !== avoidFirstIndex);
-    if (swapIndex > 0) {
-      [rotatedOrder[0], rotatedOrder[swapIndex]] = [rotatedOrder[swapIndex], rotatedOrder[0]];
-    }
-  }
-
-  return { playOrder: rotatedOrder, trackPosition: 0 };
+const savePlaylistState = (playlist: number[], position: number): void => {
+  try {
+    localStorage.setItem(RADIO_PLAYLIST_KEY, JSON.stringify(playlist));
+    localStorage.setItem(RADIO_POSITION_KEY, String(position));
+  } catch {}
 };
 
-const shuffleItems = <T,>(items: readonly T[], rng: RandomSource) => {
-  const next = [...items];
-
-  for (let index = next.length - 1; index > 0; index -= 1) {
-    const randomIndex = randomInt(rng, index + 1);
-    [next[index], next[randomIndex]] = [next[randomIndex], next[index]];
-  }
-
-  return next;
+const loadPlaylistState = (): { playlist: number[]; position: number } => {
+  try {
+    const rawPlaylist = localStorage.getItem(RADIO_PLAYLIST_KEY);
+    const rawPosition = localStorage.getItem(RADIO_POSITION_KEY);
+    if (rawPlaylist && rawPosition) {
+      const playlist = JSON.parse(rawPlaylist) as number[];
+      const position = parseInt(rawPosition, 10);
+      if (
+        Array.isArray(playlist) &&
+        playlist.length === PLAYABLE_TRACKS.length &&
+        Number.isFinite(position) &&
+        position >= 0 &&
+        position < playlist.length
+      ) {
+        return { playlist, position };
+      }
+    }
+  } catch {}
+  const playlist = generateShuffledPlaylist();
+  savePlaylistState(playlist, 0);
+  return { playlist, position: 0 };
 };
 
 const formatTime = (seconds: number) => {
@@ -937,42 +870,21 @@ const RadioPlayer = () => {
     sessionSeedRef.current = getRadioSessionSeed();
   }
 
-  const mainOrderRandomRef = useRef<RandomSource | null>(null);
-  if (mainOrderRandomRef.current === null) {
-    mainOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "main-order");
-  }
-
-  const djInterruptionOrderRandomRef = useRef<RandomSource | null>(null);
-  if (djInterruptionOrderRandomRef.current === null) {
-    djInterruptionOrderRandomRef.current = createSessionRandom(
-      sessionSeedRef.current,
-      "dj-interruption-order"
-    );
-  }
-
-  const djVoiceOrderRandomRef = useRef<RandomSource | null>(null);
-  if (djVoiceOrderRandomRef.current === null) {
-    djVoiceOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-voice-order");
-  }
-
-  const djRandomOrderRandomRef = useRef<RandomSource | null>(null);
-  if (djRandomOrderRandomRef.current === null) {
-    djRandomOrderRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-random-order");
-  }
-
   const djStingerRandomRef = useRef<RandomSource | null>(null);
   if (djStingerRandomRef.current === null) {
     djStingerRandomRef.current = createSessionRandom(sessionSeedRef.current, "dj-stinger");
   }
 
-  const schedulerRandomRef = useRef<RandomSource | null>(null);
-  if (schedulerRandomRef.current === null) {
-    schedulerRandomRef.current = createSessionRandom(sessionSeedRef.current, "scheduler");
+  const playlistRef = useRef<number[] | null>(null);
+  const positionRef = useRef<number | null>(null);
+  if (playlistRef.current === null) {
+    const { playlist, position } = loadPlaylistState();
+    playlistRef.current = playlist;
+    positionRef.current = position;
   }
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const djStingerAudioRef = useRef<HTMLAudioElement | null>(null);
-  const djVoiceAudioRef = useRef<HTMLAudioElement | null>(null);
-  const djRandomAudioRef = useRef<HTMLAudioElement | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserMapRef = useRef(new Map<HTMLAudioElement, AnalyserNode>());
   const sourceNodeMapRef = useRef(new Map<HTMLAudioElement, MediaElementAudioSourceNode>());
@@ -985,29 +897,16 @@ const RadioPlayer = () => {
   const hasInteractedRef = useRef(false);
   const shouldAutoplayRef = useRef(false);
   const previousTrackIdRef = useRef<string | null>(null);
-  const playedTrackIdsRef = useRef<string[]>([]);
-  const djInterruptionOrderRef = useRef<string[]>(
-    shuffleItems(DJ_INTERRUPTION_CLIPS, djInterruptionOrderRandomRef.current)
-  );
-  const djInterruptionIndexRef = useRef(0);
-  const djVoiceOrderRef = useRef<string[]>(shuffleItems(DJ_VOICE_CLIPS, djVoiceOrderRandomRef.current));
-  const djVoiceIndexRef = useRef(0);
-  const djRandomOrderRef = useRef<string[]>(shuffleItems(DJ_RANDOM_CLIPS, djRandomOrderRandomRef.current));
-  const djRandomIndexRef = useRef(0);
-  const rewindPairIndexRef = useRef(0);
-  const completedSongCountRef = useRef(0);
-  const pendingRewindRef = useRef(false);
-  const djInterruptTimeoutRef = useRef<number | null>(null);
-  const djResumeTimeoutRef = useRef<number | null>(null);
-  const djPrefixTimeoutRef = useRef<number | null>(null);
-  const djRandomTimeoutRef = useRef<number | null>(null);
+  const lastSkipTimeRef = useRef<number>(0);
+  const stingerDelayTimeoutRef = useRef<number | null>(null);
   const scrollPlayerTimeoutRef = useRef<number | null>(null);
   const lastScrollYRef = useRef(0);
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
-  const isDjVoiceActiveRef = useRef(false);
-  const [{ playOrder, trackPosition }, setPlayState] = useState(() =>
-    buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current)
-  );
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
+    const playlist = playlistRef.current ?? [];
+    const position = positionRef.current ?? 0;
+    return playlist[position] ?? 0;
+  });
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -1016,36 +915,40 @@ const RadioPlayer = () => {
   const [isPodCollapsed, setIsPodCollapsed] = useState(true);
   const [isScrollPlayerVisible, setIsScrollPlayerVisible] = useState(false);
   const sliderId = useId();
-  const currentTrackIndex = playOrder[trackPosition] ?? 0;
   const currentTrack = PLAYABLE_TRACKS[currentTrackIndex] ?? PLAYABLE_TRACKS[0];
   const missingTrackSummary = MISSING_TRACKS.map((track) => `${track.id}*`).join(", ");
   const sliderProgress = duration > 0 ? `${(currentTime / duration) * 100}%` : "0%";
 
-  const clearDjInterruptTimeout = () => {
-    if (djInterruptTimeoutRef.current) {
-      window.clearTimeout(djInterruptTimeoutRef.current);
-      djInterruptTimeoutRef.current = null;
+  const advanceToNext = () => {
+    const playlist = playlistRef.current ?? [];
+    const currentPos = positionRef.current ?? 0;
+    let nextPos = currentPos + 1;
+    let nextPlaylist = playlist;
+
+    if (nextPos >= playlist.length) {
+      nextPlaylist = generateShuffledPlaylist();
+      playlistRef.current = nextPlaylist;
+      nextPos = 0;
     }
+
+    positionRef.current = nextPos;
+    savePlaylistState(nextPlaylist, nextPos);
+    setCurrentTrackIndex(nextPlaylist[nextPos] ?? 0);
   };
 
-  const clearDjResumeTimeout = () => {
-    if (djResumeTimeoutRef.current) {
-      window.clearTimeout(djResumeTimeoutRef.current);
-      djResumeTimeoutRef.current = null;
-    }
+  const goToPrevious = () => {
+    const playlist = playlistRef.current ?? [];
+    const currentPos = positionRef.current ?? 0;
+    const prevPos = Math.max(0, currentPos - 1);
+    positionRef.current = prevPos;
+    savePlaylistState(playlist, prevPos);
+    setCurrentTrackIndex(playlist[prevPos] ?? 0);
   };
 
-  const clearDjPrefixTimeout = () => {
-    if (djPrefixTimeoutRef.current) {
-      window.clearTimeout(djPrefixTimeoutRef.current);
-      djPrefixTimeoutRef.current = null;
-    }
-  };
-
-  const clearDjRandomTimeout = () => {
-    if (djRandomTimeoutRef.current) {
-      window.clearTimeout(djRandomTimeoutRef.current);
-      djRandomTimeoutRef.current = null;
+  const clearStingerDelayTimeout = () => {
+    if (stingerDelayTimeoutRef.current) {
+      window.clearTimeout(stingerDelayTimeoutRef.current);
+      stingerDelayTimeoutRef.current = null;
     }
   };
 
@@ -1158,7 +1061,7 @@ const RadioPlayer = () => {
         return;
       }
 
-      if (currentAudio.paused || currentAudio.ended || isDjVoiceActiveRef.current) {
+      if (currentAudio.paused || currentAudio.ended) {
         visualizerFlatFramesRef.current = 0;
         setVisualizerBars(VISUALIZER_IDLE_BARS);
         animationFrameRef.current = window.requestAnimationFrame(draw);
@@ -1231,232 +1134,9 @@ const RadioPlayer = () => {
     }, 220);
   };
 
-  const getNextDjInterruptionClip = () => {
-    const order = djInterruptionOrderRef.current;
-    if (djInterruptionIndexRef.current >= order.length) {
-      djInterruptionOrderRef.current = shuffleItems(DJ_INTERRUPTION_CLIPS, djInterruptionOrderRandomRef.current);
-      djInterruptionIndexRef.current = 0;
-    }
-
-    const clip =
-      djInterruptionOrderRef.current[djInterruptionIndexRef.current] ?? DJ_INTERRUPTION_CLIPS[0];
-    djInterruptionIndexRef.current += 1;
-    return clip;
-  };
-
-  const getNextDjVoiceClip = () => {
-    const order = djVoiceOrderRef.current;
-    if (djVoiceIndexRef.current >= order.length) {
-      djVoiceOrderRef.current = shuffleItems(DJ_VOICE_CLIPS, djVoiceOrderRandomRef.current);
-      djVoiceIndexRef.current = 0;
-    }
-
-    const clip = djVoiceOrderRef.current[djVoiceIndexRef.current] ?? DJ_VOICE_CLIPS[0];
-    djVoiceIndexRef.current += 1;
-    return clip;
-  };
-
-  const getNextRewindPair = () => {
-    const pair =
-      DJ_REWIND_CLIP_PAIRS[rewindPairIndexRef.current] ?? DJ_REWIND_CLIP_PAIRS[0];
-    rewindPairIndexRef.current =
-      (rewindPairIndexRef.current + 1) % DJ_REWIND_CLIP_PAIRS.length;
-    return pair;
-  };
-
-  const getNextDjRandomClip = () => {
-    const order = djRandomOrderRef.current;
-    if (djRandomIndexRef.current >= order.length) {
-      djRandomOrderRef.current = shuffleItems(DJ_RANDOM_CLIPS, djRandomOrderRandomRef.current);
-      djRandomIndexRef.current = 0;
-    }
-
-    const clip = djRandomOrderRef.current[djRandomIndexRef.current] ?? DJ_RANDOM_CLIPS[0];
-    djRandomIndexRef.current += 1;
-    return clip;
-  };
-
-  const scheduleDjRandomOverlay = () => {
-    clearDjRandomTimeout();
-    djRandomTimeoutRef.current = window.setTimeout(() => {
-      const mainAudio = audioRef.current;
-      const djRandomAudio = djRandomAudioRef.current;
-      if (!mainAudio || !djRandomAudio || mainAudio.paused || isDjVoiceActiveRef.current) {
-        scheduleDjRandomOverlay();
-        return;
-      }
-
-      const durationSeconds = Number.isFinite(mainAudio.duration) ? mainAudio.duration : 0;
-      if (durationSeconds > 0) {
-        const progress = mainAudio.currentTime / durationSeconds;
-        const isWithinWindow =
-          progress >= DJ_RANDOM_WINDOW_START &&
-          progress <= DJ_RANDOM_WINDOW_END &&
-          mainAudio.currentTime >= DJ_INTERRUPT_MIN_LEAD_S &&
-          durationSeconds - mainAudio.currentTime >= DJ_INTERRUPT_END_BUFFER_S;
-
-        if (isWithinWindow) {
-          djRandomAudio.pause();
-          djRandomAudio.currentTime = 0;
-          djRandomAudio.src = getNextDjRandomClip();
-          djRandomAudio.load();
-          void djRandomAudio.play().catch(() => undefined);
-        }
-      }
-
-      scheduleDjRandomOverlay();
-    }, randomBetween(schedulerRandomRef.current, DJ_RANDOM_MIN_DELAY_MS, DJ_RANDOM_MAX_DELAY_MS));
-  };
-
-  const scheduleDjVoiceInterrupt = () => {
-    clearDjInterruptTimeout();
-    const audio = audioRef.current;
-    if (!audio || audio.paused || isDjVoiceActiveRef.current) {
-      return;
-    }
-
-    const durationSeconds = Number.isFinite(audio.duration) ? audio.duration : 0;
-    if (durationSeconds <= 0) {
-      return;
-    }
-
-    const isRewindEvent = pendingRewindRef.current;
-    const windowStart = isRewindEvent ? DJ_REWIND_WINDOW_START : DJ_INTERRUPT_WINDOW_START;
-    const windowEnd = isRewindEvent ? DJ_REWIND_WINDOW_END : DJ_INTERRUPT_WINDOW_END;
-    const earliestTime = Math.max(
-      audio.currentTime + DJ_INTERRUPT_MIN_LEAD_S,
-      durationSeconds * windowStart
-    );
-    const latestTime = Math.min(
-      durationSeconds - DJ_INTERRUPT_END_BUFFER_S,
-      durationSeconds * windowEnd
-    );
-
-    if (latestTime <= earliestTime) {
-      return;
-    }
-
-    const targetTime = randomBetween(schedulerRandomRef.current, earliestTime, latestTime);
-    const delay = Math.max(0, (targetTime - audio.currentTime) * 1000);
-
-    djInterruptTimeoutRef.current = window.setTimeout(() => {
-      const mainAudio = audioRef.current;
-      const djVoiceAudio = djVoiceAudioRef.current;
-      if (!mainAudio || !djVoiceAudio || mainAudio.paused || isDjVoiceActiveRef.current) {
-        return;
-      }
-
-      isDjVoiceActiveRef.current = true;
-      clearDjResumeTimeout();
-      clearDjPrefixTimeout();
-      mainAudio.pause();
-      showInterruptedVisualizerState();
-      djVoiceAudio.pause();
-      djVoiceAudio.currentTime = 0;
-
-      const resumeMainAudio = () => {
-        clearDjResumeTimeout();
-        clearDjPrefixTimeout();
-        isDjVoiceActiveRef.current = false;
-        if (shouldAutoplayRef.current) {
-          void mainAudio.play().catch(() => {
-            setIsPlaying(false);
-          });
-        }
-      };
-
-      const startDjVoiceClip = () => {
-        const scheduleResume = () => {
-          const clipDuration = Number.isFinite(djVoiceAudio.duration) ? djVoiceAudio.duration : 0;
-          const resumeDelay = Math.max(0, clipDuration * 1000 - DJ_RESUME_LEAD_MS);
-          clearDjResumeTimeout();
-          djResumeTimeoutRef.current = window.setTimeout(() => {
-            resumeMainAudio();
-          }, resumeDelay);
-        };
-
-        djVoiceAudio.onloadedmetadata = scheduleResume;
-        djVoiceAudio.onended = () => {
-          resumeMainAudio();
-        };
-        djVoiceAudio.src = getNextDjVoiceClip();
-        djVoiceAudio.load();
-        void djVoiceAudio.play().catch(() => {
-          resumeMainAudio();
-        });
-      };
-
-      const startRewindPair = () => {
-        const [leadClip, followClip] = getNextRewindPair();
-        pendingRewindRef.current = false;
-        mainAudio.currentTime = Math.max(0, mainAudio.currentTime - DJ_REWIND_SEEK_BACK_S);
-
-        const playFollowClip = () => {
-          const scheduleResume = () => {
-            const clipDuration = Number.isFinite(djVoiceAudio.duration) ? djVoiceAudio.duration : 0;
-            const resumeDelay = Math.max(0, clipDuration * 1000 - DJ_RESUME_LEAD_MS);
-            clearDjResumeTimeout();
-            djResumeTimeoutRef.current = window.setTimeout(() => {
-              resumeMainAudio();
-            }, resumeDelay);
-          };
-
-          djVoiceAudio.onloadedmetadata = scheduleResume;
-          djVoiceAudio.onended = () => {
-            resumeMainAudio();
-          };
-          djVoiceAudio.src = followClip;
-          djVoiceAudio.load();
-          void djVoiceAudio.play().catch(() => {
-            resumeMainAudio();
-          });
-        };
-
-        djVoiceAudio.onloadedmetadata = null;
-        djVoiceAudio.onended = null;
-        djVoiceAudio.src = leadClip;
-        djVoiceAudio.load();
-        void djVoiceAudio.play().catch(() => {
-          resumeMainAudio();
-        });
-        djPrefixTimeoutRef.current = window.setTimeout(() => {
-          if (!isDjVoiceActiveRef.current) {
-            return;
-          }
-          djVoiceAudio.pause();
-          djVoiceAudio.currentTime = 0;
-          playFollowClip();
-        }, DJ_INTERRUPTION_PREFIX_MS);
-      };
-
-      if (isRewindEvent) {
-        startRewindPair();
-        return;
-      }
-
-      djVoiceAudio.onloadedmetadata = null;
-      djVoiceAudio.onended = null;
-      djVoiceAudio.src = getNextDjInterruptionClip();
-      djVoiceAudio.load();
-      void djVoiceAudio.play().catch(() => {
-        resumeMainAudio();
-      });
-      djPrefixTimeoutRef.current = window.setTimeout(() => {
-        if (!isDjVoiceActiveRef.current) {
-          return;
-        }
-        djVoiceAudio.pause();
-        djVoiceAudio.currentTime = 0;
-        startDjVoiceClip();
-      }, DJ_INTERRUPTION_PREFIX_MS);
-    }, delay);
-  };
-
   useEffect(() => {
     const audio = audioRef.current;
     const djStingerAudio = djStingerAudioRef.current;
-    const djVoiceAudio = djVoiceAudioRef.current;
-    const djRandomAudio = djRandomAudioRef.current;
     if (!audio) {
       return;
     }
@@ -1467,14 +1147,6 @@ const RadioPlayer = () => {
       djStingerAudio.preload = "auto";
       djStingerAudio.playsInline = true;
     }
-    if (djVoiceAudio) {
-      djVoiceAudio.preload = "auto";
-      djVoiceAudio.playsInline = true;
-    }
-    if (djRandomAudio) {
-      djRandomAudio.preload = "auto";
-      djRandomAudio.playsInline = true;
-    }
 
     const syncTime = () => setCurrentTime(audio.currentTime);
     const syncDuration = () => {
@@ -1482,46 +1154,20 @@ const RadioPlayer = () => {
     };
     const handlePlay = () => {
       setIsPlaying(true);
-      scheduleDjRandomOverlay();
       void startVisualizer();
     };
     const handlePause = () => {
       setIsPlaying(false);
-      clearDjInterruptTimeout();
-      clearDjRandomTimeout();
       stopVisualizer();
     };
     const handleEnded = () => {
-      clearDjInterruptTimeout();
-      clearDjResumeTimeout();
-      clearDjPrefixTimeout();
-      clearDjRandomTimeout();
       stopVisualizer();
-      isDjVoiceActiveRef.current = false;
-      if (djVoiceAudio) {
-        djVoiceAudio.pause();
-        djVoiceAudio.currentTime = 0;
-      }
-      if (djRandomAudio) {
-        djRandomAudio.pause();
-        djRandomAudio.currentTime = 0;
-      }
+      clearStingerDelayTimeout();
       if (djStingerAudio) {
         djStingerAudio.pause();
         djStingerAudio.currentTime = 0;
       }
-      completedSongCountRef.current += 1;
-      if (completedSongCountRef.current % 2 === 0) {
-        pendingRewindRef.current = true;
-      }
-      setPlayState((current) => {
-        if (current.trackPosition < current.playOrder.length - 1) {
-          return { ...current, trackPosition: current.trackPosition + 1 };
-        }
-
-        playedTrackIdsRef.current = [];
-        return buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current, currentTrackIndex);
-      });
+      advanceToNext();
     };
 
     audio.addEventListener("timeupdate", syncTime);
@@ -1560,14 +1206,10 @@ const RadioPlayer = () => {
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("pause", handlePause);
       audio.removeEventListener("ended", handleEnded);
-      clearDjInterruptTimeout();
-      clearDjResumeTimeout();
-      clearDjPrefixTimeout();
-      clearDjRandomTimeout();
       window.removeEventListener("pointerdown", unlockPlayback);
       window.removeEventListener("keydown", unlockPlayback);
     };
-  }, [currentTrackIndex, playOrder.length]);
+  }, [currentTrackIndex]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -1575,12 +1217,6 @@ const RadioPlayer = () => {
     }
     if (djStingerAudioRef.current) {
       djStingerAudioRef.current.volume = volume * DJ_STINGER_VOLUME_MULTIPLIER;
-    }
-    if (djVoiceAudioRef.current) {
-      djVoiceAudioRef.current.volume = volume * DJ_INTERRUPT_VOLUME_MULTIPLIER;
-    }
-    if (djRandomAudioRef.current) {
-      djRandomAudioRef.current.volume = volume * DJ_RANDOM_VOLUME_MULTIPLIER;
     }
   }, [volume]);
 
@@ -1625,29 +1261,26 @@ const RadioPlayer = () => {
     }
 
     previousTrackIdRef.current = currentTrack.id;
+
+    clearStingerDelayTimeout();
+    djStingerAudio.pause();
+    djStingerAudio.currentTime = 0;
+
+    if (Date.now() - lastSkipTimeRef.current < SKIP_LADY_COOLDOWN_MS) {
+      return;
+    }
+
     const specialIntroSrc = getSpecialSongIntroSrc(currentTrack);
     const randomStinger =
       DJ_STINGERS[randomInt(djStingerRandomRef.current, DJ_STINGERS.length)] ?? DJ_STINGERS[0];
     const introSrc = specialIntroSrc ?? randomStinger;
-    djStingerAudio.pause();
-    djStingerAudio.currentTime = 0;
-    djStingerAudio.src = introSrc;
-    djStingerAudio.load();
-    void djStingerAudio.play().catch(() => undefined);
-  }, [currentTrack]);
 
-  useEffect(() => {
-    if (!currentTrack) {
-      return;
-    }
-
-    if (!playedTrackIdsRef.current.includes(currentTrack.id)) {
-      playedTrackIdsRef.current.push(currentTrack.id);
-    }
-
-    if (playedTrackIdsRef.current.length > PLAYABLE_TRACKS.length) {
-      playedTrackIdsRef.current = [currentTrack.id];
-    }
+    stingerDelayTimeoutRef.current = window.setTimeout(() => {
+      stingerDelayTimeoutRef.current = null;
+      djStingerAudio.src = introSrc;
+      djStingerAudio.load();
+      void djStingerAudio.play().catch(() => undefined);
+    }, DJ_STINGER_DELAY_MS);
   }, [currentTrack]);
 
   useEffect(() => {
@@ -1699,18 +1332,6 @@ const RadioPlayer = () => {
     }
 
     shouldAutoplayRef.current = false;
-    clearDjInterruptTimeout();
-    clearDjResumeTimeout();
-    clearDjRandomTimeout();
-    if (djVoiceAudioRef.current) {
-      djVoiceAudioRef.current.pause();
-      djVoiceAudioRef.current.currentTime = 0;
-    }
-    if (djRandomAudioRef.current) {
-      djRandomAudioRef.current.pause();
-      djRandomAudioRef.current.currentTime = 0;
-    }
-    isDjVoiceActiveRef.current = false;
     audio.pause();
     stopVisualizer();
   };
@@ -1726,64 +1347,30 @@ const RadioPlayer = () => {
 
   const handlePreviousTrack = () => {
     shouldAutoplayRef.current = true;
-    clearDjInterruptTimeout();
-    clearDjResumeTimeout();
-    clearDjPrefixTimeout();
-    clearDjRandomTimeout();
-    isDjVoiceActiveRef.current = false;
-    if (djVoiceAudioRef.current) {
-      djVoiceAudioRef.current.pause();
-      djVoiceAudioRef.current.currentTime = 0;
-    }
-    if (djRandomAudioRef.current) {
-      djRandomAudioRef.current.pause();
-      djRandomAudioRef.current.currentTime = 0;
-    }
+    clearStingerDelayTimeout();
+    lastSkipTimeRef.current = Date.now();
     if (djStingerAudioRef.current) {
       djStingerAudioRef.current.pause();
       djStingerAudioRef.current.currentTime = 0;
     }
-    setPlayState((current) => ({
-      ...current,
-      trackPosition: current.trackPosition === 0 ? current.playOrder.length - 1 : current.trackPosition - 1,
-    }));
+    goToPrevious();
   };
 
   const handleNextTrack = () => {
     shouldAutoplayRef.current = true;
-    clearDjInterruptTimeout();
-    clearDjResumeTimeout();
-    clearDjPrefixTimeout();
-    clearDjRandomTimeout();
-    isDjVoiceActiveRef.current = false;
-    if (djVoiceAudioRef.current) {
-      djVoiceAudioRef.current.pause();
-      djVoiceAudioRef.current.currentTime = 0;
-    }
-    if (djRandomAudioRef.current) {
-      djRandomAudioRef.current.pause();
-      djRandomAudioRef.current.currentTime = 0;
-    }
+    clearStingerDelayTimeout();
+    lastSkipTimeRef.current = Date.now();
     if (djStingerAudioRef.current) {
       djStingerAudioRef.current.pause();
       djStingerAudioRef.current.currentTime = 0;
     }
-    setPlayState((current) => {
-      if (current.trackPosition < current.playOrder.length - 1) {
-        return { ...current, trackPosition: current.trackPosition + 1 };
-      }
-
-      playedTrackIdsRef.current = [];
-      return buildRandomPlayState(PLAYABLE_TRACKS.length, mainOrderRandomRef.current, currentTrackIndex);
-    });
+    advanceToNext();
   };
 
   return (
     <>
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
-      <audio ref={djVoiceAudioRef} />
-      <audio ref={djRandomAudioRef} />
       <div
         className={`fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
           isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
