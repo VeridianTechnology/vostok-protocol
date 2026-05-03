@@ -409,7 +409,7 @@ const Index = () => {
         />
       </section>
       <TransitionThreshold variant="crossing" />
-      <section id="section-what-is-it" className="min-h-[36vh]">
+      <section id="section-what-is-it" className="min-h-0">
         <WhatIsItSection />
       </section>
       <section id="section-vostok" className="min-h-[40vh]">
