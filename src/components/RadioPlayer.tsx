@@ -461,6 +461,13 @@ const TRACKS: Track[] = [
     youtubeUrl: "https://www.youtube.com/watch?v=EhUtJdRSs6M",
   },
   {
+    id: "58",
+    title: "OBLXKQ, eyfect, +w - Untitled#39",
+    score: "NR",
+    audioSrc: "/audio/radio/58_OBLXKQ, eyfect, w  -  Untitled#39.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=WD-fV1QCaWM",
+  },
+  {
     id: "59",
     title: "Criminal x Love Potions",
     score: "NR",
@@ -753,6 +760,146 @@ const TRACKS: Track[] = [
     score: "NR",
     audioSrc: "/audio/radio/100_the craft (portishead glory box ) scorn remix 1994 - musique cinema et série télévisée (youtube).m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=F_J2VKumPfw",
+  },
+  {
+    id: "101",
+    title: "KAIZXKU - Under my skin",
+    score: "NR",
+    audioSrc: "/audio/radio/101_KAIZXKU - Under my skin.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=HOW4yx3vWZA",
+  },
+  {
+    id: "102",
+    title: "MARINA - Bubblegum Bitch",
+    score: "NR",
+    audioSrc: "/audio/radio/102_Bubblegum Bitch (Hardtekk).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=NSYPVIiDN8k",
+  },
+  {
+    id: "103",
+    title: "Secret Society - Neoperreo (feat. ALIC3E)",
+    score: "NR",
+    audioSrc: "/audio/radio/103_Secret Society - Neoperreo (feat. ALIC3E).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=IZ_VJPMI7T4",
+  },
+  {
+    id: "104",
+    title: "Aura (Ultra Slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/104_Aura (Ultra Slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=hdaVOtPuKCQ",
+  },
+  {
+    id: "105",
+    title: "adore - dancing while the world burns",
+    score: "NR",
+    audioSrc: "/audio/radio/105_adore - dancing while the world burns.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=Fn06M50rp94",
+  },
+  {
+    id: "106",
+    title: "GRIM LIGHT (Hardtekk)",
+    score: "NR",
+    audioSrc: "/audio/radio/106_GRIM LIGHT (Hardtekk).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=inyYv3ds614",
+  },
+  {
+    id: "107",
+    title: "TWENTYTHREE - MAKE IT HURT",
+    score: "NR",
+    audioSrc: "/audio/radio/107_TWENTYTHREE - MAKE IT HURT.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=DzAk5HJqHdo",
+  },
+  {
+    id: "108",
+    title: "RECREATE",
+    score: "NR",
+    audioSrc: "/audio/radio/108_RECREATE.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=WVMj-6pRsZk",
+  },
+  {
+    id: "109",
+    title: "Ravyn Lenae - Love Me Not best part ultra slowed (Edit by Uhar)",
+    score: "NR",
+    audioSrc: "/audio/radio/109_Ravyn Lenae - Love Me Not best part ultra slowed (Edit by Uhar).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=khrbemDZJp0",
+  },
+  {
+    id: "110",
+    title: "prodarvee - It Can't Come Quickly Enough Hardstyle",
+    score: "NR",
+    audioSrc: "/audio/radio/110_prodarvee - It Can't Come Quickly Enough Hardtekk.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=M9zgFsiuhUA",
+  },
+  {
+    id: "111",
+    title: "specialsadism hardstyle remix (slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/111_specialsadism hardstyle remix (slowed).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=R3dYUhEzveg",
+  },
+  {
+    id: "112",
+    title: "OSTBLOCK 3 (SUPER SLOWED + BEST PART) - REKUUDOTEKK",
+    score: "NR",
+    audioSrc: "/audio/radio/112_OSTBLOCK 3 (SUPER SLOWED  BEST PART) - REKUUDOTEKK.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=vwCi6xZbn_A",
+  },
+  {
+    id: "113",
+    title: "VLNCRSH - No Way Out",
+    score: "NR",
+    audioSrc: "/audio/radio/113_VLNCRSH - No Way Out.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=QTpNb921z0Y",
+  },
+  {
+    id: "114",
+    title: "Neoperreo - Secret Society ft. ALIC3E (Slowed + Reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/114_Neoperreo - Secret Society ft. ALIC3E (Slowed  Reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=7uOgzC8Wic4",
+  },
+  {
+    id: "115",
+    title: "Nightcall ft. Dreamhour - Dead V (Official Lyric Video)",
+    score: "NR",
+    audioSrc: "/audio/radio/115_Nightcall ft. Dreamhour - Dead V (Official Lyric Video).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=9cH7beQVfkY",
+  },
+  {
+    id: "116",
+    title: "wiv - i love u. (sped up + reverb)",
+    score: "NR",
+    audioSrc: "/audio/radio/116_wiv - i love u. (sped up  reverb).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=QU3Ax-xRJ-k",
+  },
+  {
+    id: "117",
+    title: "Hot N Cold (hardstyle remix + SUPER SLOWED)",
+    score: "NR",
+    audioSrc: "/audio/radio/117_Hot N Cold (hardstyle remix  SUPER SLOWED).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=4pGkU32ia-k",
+  },
+  {
+    id: "118",
+    title: "The Killers - Mr Brightside",
+    score: "NR",
+    audioSrc: "/audio/radio/118_The Killers - Mr Brightside (Lyrics).m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=j8tZs6G_h7U",
+  },
+  {
+    id: "119",
+    title: "Memories",
+    score: "NR",
+    audioSrc: "/audio/radio/119_Memories.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=57pw5VZ1seo",
+  },
+  {
+    id: "120",
+    title: "QMIIR, NUEKI - TAKA TITI",
+    score: "NR",
+    audioSrc: "/audio/radio/120_QMIIR, NUEKI - TAKA TITI.m4a",
+    youtubeUrl: "https://www.youtube.com/watch?v=pPGlJ_uVC3A",
   },
 ];
 
@@ -1372,13 +1519,13 @@ const RadioPlayer = () => {
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
       <div
-        className={`fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
+        className={`pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
           isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
         }`}
         style={{ transitionDuration: "2000ms" }}
       >
         <div
-          className="relative transition-transform duration-[2000ms] ease-in-out"
+          className="pointer-events-auto relative transition-transform duration-[2000ms] ease-in-out"
           style={{
             transform: isPodCollapsed ? "translateY(100%)" : "translateY(0)",
           }}
