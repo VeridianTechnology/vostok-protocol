@@ -139,6 +139,79 @@
     background-color: var(--section-surface);
   }
 
+  .hero-swallow-section {
+    --hero-swallow-progress: 0;
+    --hero-swallow-cover-height: 0%;
+    --hero-swallow-content-opacity: 1;
+    --hero-swallow-content-brightness: 1;
+    --hero-swallow-overlay-opacity: 0;
+    position: relative;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .hero-swallow-section > * {
+    will-change: opacity, filter, clip-path;
+    transition:
+      opacity 700ms ease,
+      filter 700ms ease,
+      clip-path 700ms ease;
+    opacity: var(--hero-swallow-content-opacity);
+    filter: brightness(var(--hero-swallow-content-brightness));
+    clip-path: inset(var(--hero-swallow-cover-height) 0 0 0);
+  }
+
+  .hero-swallow-section::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: 45;
+    height: var(--hero-swallow-cover-height);
+    min-height: 0;
+    background:
+      linear-gradient(180deg, rgba(0, 0, 0, 0.94), #000 72%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 9px);
+    border-bottom: 2px solid rgba(214, 214, 214, 0.86);
+    box-shadow:
+      0 10px 22px rgba(0, 0, 0, 0.46),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.18);
+    opacity: var(--hero-swallow-overlay-opacity);
+  }
+
+  .hero-swallow-section--placeholder {
+    height: var(--hero-swallow-placeholder-height);
+    min-height: var(--hero-swallow-placeholder-height);
+    max-height: var(--hero-swallow-placeholder-height);
+    border-bottom: 2px solid rgba(214, 214, 214, 0.92);
+    transition: none;
+  }
+
+  .hero-swallow-section--placeholder > * {
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .hero-swallow-section--placeholder::after {
+    height: 4px;
+    border-bottom: 2px solid rgba(214, 214, 214, 0.92);
+    opacity: 0.96;
+  }
+
+  .hero-swallow-section--shrinking {
+    height: 6px !important;
+    min-height: 6px !important;
+    max-height: 6px !important;
+    transition: none;
+  }
+
+  .hero-swallow-section--collapsed {
+    height: 6px !important;
+    min-height: 6px !important;
+    max-height: 6px !important;
+    transition: none;
+  }
+
   .pod-wallpaper-bg {
     background-color: #040606;
     background-image: var(--pod-wallpaper-mobile);
@@ -153,6 +226,194 @@
       0 1px 2px rgba(0, 0, 0, 0.95),
       0 -1px 0 rgba(0, 0, 0, 0.7),
       0 0 8px rgba(0, 0, 0, 0.72);
+  }
+
+  .radio-circuit-breaker {
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.2) 0, transparent 28%),
+      linear-gradient(180deg, #ffe000 0%, #ffd000 46%, #f2bc00 100%);
+    color: #070707;
+  }
+
+  .radio-circuit-breaker__grain {
+    opacity: 0.36;
+    mix-blend-mode: multiply;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 8px),
+      repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 1px, transparent 1px 11px);
+    animation: radio-circuit-breaker-grid 520ms steps(2) infinite;
+  }
+
+  .radio-circuit-breaker__scan {
+    opacity: 0.54;
+    mix-blend-mode: multiply;
+    background:
+      linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.24) 50%, transparent 100%),
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.18) 0 1px, transparent 1px 5px);
+    background-size: 100% 26vh, 100% 5px;
+    animation: radio-circuit-breaker-scan 1.2s linear infinite;
+  }
+
+  .radio-circuit-breaker__mark {
+    display: block;
+    width: min(28vw, 8rem);
+    aspect-ratio: 1;
+    border: 4px solid #050505;
+    box-shadow:
+      inset 0 0 0 10px rgba(255, 224, 0, 0.94),
+      inset 0 0 0 16px #050505,
+      0 16px 42px rgba(0, 0, 0, 0.28);
+    clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+    animation: radio-circuit-breaker-pulse 820ms steps(2) infinite;
+  }
+
+  .radio-circuit-breaker__label {
+    min-width: 13ch;
+    text-align: left;
+    font-family: "Tektur", sans-serif;
+    font-size: clamp(2.2rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: 0;
+    text-shadow:
+      0 2px 0 rgba(255, 255, 255, 0.32),
+      0 10px 0 rgba(0, 0, 0, 0.16);
+  }
+
+  .radio-song-flash-overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 95;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 2vw, 1.4rem);
+    isolation: isolate;
+  }
+
+  .radio-song-flash-overlay__bg {
+    position: absolute;
+    inset: 0;
+    background-color: var(--flash-color, #cc0022);
+    animation: radio-flash-bg-in 1600ms steps(1) forwards;
+  }
+
+  .radio-song-flash-overlay__scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(180deg, transparent 0 3px, rgba(0, 0, 0, 0.32) 3px 4px);
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .radio-song-flash-overlay__text {
+    position: relative;
+    z-index: 1;
+    font-family: "Tektur", sans-serif;
+    font-size: clamp(2.4rem, 9vw, 7rem);
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.96);
+    text-shadow:
+      0 0 22px rgba(255, 255, 255, 0.58),
+      0 0 64px rgba(255, 255, 255, 0.28);
+    animation:
+      radio-flash-text-in 1600ms steps(1) forwards,
+      radio-flash-text-glitch 1600ms steps(1) forwards;
+    text-align: center;
+    padding: 0 1rem;
+    max-width: 90vw;
+    line-height: 1.1;
+  }
+
+  .radio-song-flash-overlay__text::before,
+  .radio-song-flash-overlay__text::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    padding: 0 1rem;
+    mix-blend-mode: screen;
+  }
+
+  .radio-song-flash-overlay__text::before {
+    color: rgba(255, 48, 48, 0.50);
+    animation: radio-flash-split-a 1600ms steps(1) forwards;
+  }
+
+  .radio-song-flash-overlay__text::after {
+    color: rgba(48, 210, 255, 0.44);
+    animation: radio-flash-split-b 1600ms steps(1) forwards;
+  }
+
+  .radio-song-flash-overlay__sub {
+    position: relative;
+    z-index: 1;
+    font-family: "Tektur", sans-serif;
+    font-size: clamp(0.5rem, 1.6vw, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.44em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    animation: radio-flash-text-in 1600ms steps(1) forwards;
+    text-align: center;
+    padding: 0 1rem;
+    max-width: 90vw;
+  }
+
+  @keyframes radio-flash-bg-in {
+    0%   { opacity: 0.58; }
+    58%  { opacity: 0.55; }
+    78%  { opacity: 0.28; }
+    90%  { opacity: 0.10; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes radio-flash-text-in {
+    0%   { opacity: 0.60; }
+    58%  { opacity: 0.60; }
+    78%  { opacity: 0.38; }
+    90%  { opacity: 0.12; }
+    100% { opacity: 0; }
+  }
+
+  @keyframes radio-flash-text-glitch {
+    0%   { transform: translateX(0); }
+    6%   { transform: translateX(-14px); }
+    12%  { transform: translateX(11px); }
+    18%  { transform: translateX(-8px); }
+    24%  { transform: translateX(14px); }
+    30%  { transform: translateX(-5px); }
+    36%  { transform: translateX(7px); }
+    42%  { transform: translateX(-3px); }
+    48%  { transform: translateX(4px); }
+    54%  { transform: translateX(0); }
+    100% { transform: translateX(0); }
+  }
+
+  @keyframes radio-flash-split-a {
+    0%   { transform: translateX(-20px); opacity: 0.54; }
+    10%  { transform: translateX(16px);  opacity: 0.51; }
+    20%  { transform: translateX(-12px); opacity: 0.42; }
+    30%  { transform: translateX(9px);   opacity: 0.33; }
+    40%  { transform: translateX(-5px);  opacity: 0.21; }
+    52%  { transform: translateX(0);     opacity: 0; }
+    100% { transform: translateX(0);     opacity: 0; }
+  }
+
+  @keyframes radio-flash-split-b {
+    0%   { transform: translateX(20px);  opacity: 0.51; }
+    10%  { transform: translateX(-16px); opacity: 0.48; }
+    20%  { transform: translateX(12px);  opacity: 0.39; }
+    30%  { transform: translateX(-9px);  opacity: 0.30; }
+    40%  { transform: translateX(5px);   opacity: 0.18; }
+    52%  { transform: translateX(0);     opacity: 0; }
+    100% { transform: translateX(0);     opacity: 0; }
   }
 
   @media (min-width: 768px) {
@@ -543,6 +804,38 @@
     }
   }
 
+  @keyframes radio-circuit-breaker-grid {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    50% {
+      transform: translate3d(-6px, 4px, 0);
+    }
+    100% {
+      transform: translate3d(5px, -3px, 0);
+    }
+  }
+
+  @keyframes radio-circuit-breaker-scan {
+    0% {
+      background-position: 0 -28vh, 0 0;
+    }
+    100% {
+      background-position: 0 118vh, 0 0;
+    }
+  }
+
+  @keyframes radio-circuit-breaker-pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 0.96;
+    }
+    50% {
+      transform: scale(1.08);
+      opacity: 0.72;
+    }
+  }
+
   @keyframes hero-tv-noise-breathe {
     0%, 100% {
       opacity: 0.12;
@@ -605,6 +898,41 @@
     }
     100% {
       background-position: 0 170px;
+    }
+  }
+
+  /* Mobile rain uses transform (GPU-composited) instead of background-position to avoid choppy rendering */
+  @keyframes mobile-hero-rain-mobile-a {
+    0%   { transform: rotate(10deg) translateY(0px); }
+    100% { transform: rotate(10deg) translateY(260px); }
+  }
+
+  @keyframes mobile-hero-rain-mobile-b {
+    0%   { transform: rotate(10deg) translateY(0px); }
+    100% { transform: rotate(10deg) translateY(220px); }
+  }
+
+  @media (max-width: 767px) {
+    .mobile-hero-rain-pane::before {
+      opacity: 0.58;
+      background-image:
+        radial-gradient(ellipse 1.4px 18px at 18px 32px, rgba(225, 236, 255, 0.88) 0%, rgba(225, 236, 255, 0.42) 48%, transparent 100%),
+        radial-gradient(ellipse 1.2px 14px at 58px 96px, rgba(225, 236, 255, 0.72) 0%, rgba(225, 236, 255, 0.28) 50%, transparent 100%),
+        radial-gradient(ellipse 1.3px 20px at 92px 52px, rgba(255, 255, 255, 0.68) 0%, rgba(255, 255, 255, 0.22) 50%, transparent 100%);
+      background-size: 116px 260px;
+      will-change: transform;
+      animation: mobile-hero-rain-mobile-a 8s linear infinite;
+    }
+
+    .mobile-hero-rain-pane::after {
+      opacity: 0.24;
+      filter: blur(0.3px);
+      background-image:
+        radial-gradient(ellipse 1.1px 12px at 26px 42px, rgba(201, 222, 255, 0.68) 0%, rgba(201, 222, 255, 0.24) 58%, transparent 100%),
+        radial-gradient(ellipse 1px 10px at 80px 120px, rgba(201, 222, 255, 0.58) 0%, rgba(201, 222, 255, 0.2) 58%, transparent 100%);
+      background-size: 104px 220px;
+      will-change: transform;
+      animation: mobile-hero-rain-mobile-b 11s linear infinite;
     }
   }
 

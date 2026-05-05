@@ -21,6 +21,45 @@ const orderedSectionIds = [
   "section-cta",
 ] as const;
 
+const swallowedSectionIds = ["section-messianic", "section-wall"] as const;
+type SwallowedSectionId = (typeof swallowedSectionIds)[number];
+const SWALLOWED_SECTION_HEIGHT_PX = 6;
+const SWALLOW_PLACEHOLDER_HOLD_MS = 1000;
+const SWALLOW_PLACEHOLDER_SHRINK_MS = 50;
+type SwallowPhase = "open" | "hold" | "shrinking" | "collapsed";
+
+const createInitialSwallowProgress = (): Record<SwallowedSectionId, number> => ({
+  "section-messianic": 0,
+  "section-wall": 0,
+});
+
+const createInitialSwallowedSections = (): Record<SwallowedSectionId, boolean> => ({
+  "section-messianic": false,
+  "section-wall": false,
+});
+
+const createInitialSwallowHeights = (): Record<SwallowedSectionId, number> => ({
+  "section-messianic": 0,
+  "section-wall": 0,
+});
+
+const createInitialSwallowPhases = (): Record<SwallowedSectionId, SwallowPhase> => ({
+  "section-messianic": "open",
+  "section-wall": "open",
+});
+
+const createInitialSwallowTimers = (): Record<SwallowedSectionId, number | null> => ({
+  "section-messianic": null,
+  "section-wall": null,
+});
+
+const createInitialSwallowState = () => ({
+  progress: createInitialSwallowProgress(),
+  swallowed: createInitialSwallowedSections(),
+  heights: createInitialSwallowHeights(),
+  phase: createInitialSwallowPhases(),
+});
+
 const Index = () => {
   const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [isFacebookEntry, setIsFacebookEntry] = useState(false);
@@ -34,12 +73,17 @@ const Index = () => {
   const stayTimerRef = useRef<number | null>(null);
   const stay60TimerRef = useRef<number | null>(null);
   const scrollRafRef = useRef<number | null>(null);
+  const swallowRafRef = useRef<number | null>(null);
   const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
   const systemGlitchDoTimeoutRef = useRef<number | null>(null);
   const systemGlitchSystemTimeoutRef = useRef<number | null>(null);
   const systemGlitchClearTimeoutRef = useRef<number | null>(null);
   const activeSectionIdRef = useRef<(typeof orderedSectionIds)[number]>("section-hero");
   const visibleSectionsRef = useRef<Map<string, number>>(new Map());
+  const swallowHoldTimeoutRef = useRef(createInitialSwallowTimers());
+  const swallowCollapseFrameRef = useRef(createInitialSwallowTimers());
+  const swallowCollapseTimeoutRef = useRef(createInitialSwallowTimers());
+  const [swallowState, setSwallowState] = useState(createInitialSwallowState);
 
   const clearSystemGlitchTimeouts = () => {
     if (systemGlitchCopyTimeoutRef.current) {
@@ -159,6 +203,152 @@ const Index = () => {
       if (scrollRafRef.current) {
         window.cancelAnimationFrame(scrollRafRef.current);
         scrollRafRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    swallowedSectionIds.forEach((id) => {
+      if (swallowState.phase[id] !== "hold" || swallowHoldTimeoutRef.current[id]) {
+        return;
+      }
+
+      swallowHoldTimeoutRef.current[id] = window.setTimeout(() => {
+        swallowHoldTimeoutRef.current[id] = null;
+        swallowCollapseFrameRef.current[id] = window.requestAnimationFrame(() => {
+          swallowCollapseFrameRef.current[id] = null;
+          setSwallowState((current) => {
+            if (current.phase[id] !== "hold") {
+              return current;
+            }
+
+            return {
+              ...current,
+              phase: { ...current.phase, [id]: "shrinking" },
+            };
+          });
+
+          swallowCollapseTimeoutRef.current[id] = window.setTimeout(() => {
+            swallowCollapseTimeoutRef.current[id] = null;
+            setSwallowState((current) => {
+              if (current.phase[id] !== "shrinking") {
+                return current;
+              }
+
+              return {
+                ...current,
+                phase: { ...current.phase, [id]: "collapsed" },
+              };
+            });
+            window.requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
+          }, SWALLOW_PLACEHOLDER_SHRINK_MS);
+        });
+      }, SWALLOW_PLACEHOLDER_HOLD_MS);
+    });
+  }, [swallowState.phase]);
+
+  useEffect(() => {
+    const holdTimeoutRef = swallowHoldTimeoutRef.current;
+    const collapseFrameRef = swallowCollapseFrameRef.current;
+    const collapseTimeoutRef = swallowCollapseTimeoutRef.current;
+
+    return () => {
+      swallowedSectionIds.forEach((id) => {
+        const holdTimeoutId = holdTimeoutRef[id];
+        const frameId = collapseFrameRef[id];
+        const timeoutId = collapseTimeoutRef[id];
+
+        if (holdTimeoutId) {
+          window.clearTimeout(holdTimeoutId);
+        }
+        if (frameId) {
+          window.cancelAnimationFrame(frameId);
+        }
+        if (timeoutId) {
+          window.clearTimeout(timeoutId);
+        }
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateSwallowProgress = () => {
+      const scrollTop = window.scrollY;
+
+      setSwallowState((current) => {
+        let hasChanged = false;
+        const nextProgress = { ...current.progress };
+        const nextSwallowed = { ...current.swallowed };
+        const nextHeights = { ...current.heights };
+        const nextPhase = { ...current.phase };
+
+        swallowedSectionIds.forEach((id, index) => {
+          const node = document.getElementById(id);
+          if (!node) {
+            return;
+          }
+
+          const sectionTop = node.offsetTop;
+          const sectionHeight = Math.max(node.scrollHeight, node.offsetHeight, 1);
+          const hasPassedSection = scrollTop >= sectionTop + sectionHeight;
+          const previousSectionId = swallowedSectionIds[index - 1];
+
+          if (previousSectionId && current.phase[previousSectionId] !== "collapsed") {
+            return;
+          }
+
+          if (current.swallowed[id] || hasPassedSection) {
+            if (!current.swallowed[id]) {
+              nextSwallowed[id] = true;
+              nextHeights[id] = Math.max(sectionHeight, SWALLOWED_SECTION_HEIGHT_PX);
+              nextPhase[id] = "hold";
+              hasChanged = true;
+            }
+            if (nextProgress[id] !== 1) {
+              nextProgress[id] = 1;
+              hasChanged = true;
+            }
+            return;
+          }
+
+          const start = sectionTop;
+          const end = sectionTop + sectionHeight;
+          const progress = Math.min(1, Math.max(0, (scrollTop - start) / Math.max(end - start, 1)));
+          const roundedProgress = Math.round(progress * 1000) / 1000;
+
+          if (Math.abs((current.progress[id] ?? 0) - roundedProgress) > 0.004) {
+            nextProgress[id] = roundedProgress;
+            hasChanged = true;
+          }
+        });
+
+        return hasChanged
+          ? { progress: nextProgress, swallowed: nextSwallowed, heights: nextHeights, phase: nextPhase }
+          : current;
+      });
+    };
+
+    const requestUpdate = () => {
+      if (swallowRafRef.current) {
+        return;
+      }
+
+      swallowRafRef.current = window.requestAnimationFrame(() => {
+        swallowRafRef.current = null;
+        updateSwallowProgress();
+      });
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+    requestUpdate();
+
+    return () => {
+      window.removeEventListener("scroll", requestUpdate);
+      window.removeEventListener("resize", requestUpdate);
+      if (swallowRafRef.current) {
+        window.cancelAnimationFrame(swallowRafRef.current);
+        swallowRafRef.current = null;
       }
     };
   }, []);
@@ -378,6 +568,46 @@ const Index = () => {
             : isTwitterEntry
               ? "twitter"
               : "direct";
+  const activeSwallowSectionId: SwallowedSectionId | null =
+    swallowState.phase["section-messianic"] === "open" &&
+    swallowState.progress["section-messianic"] > 0
+      ? "section-messianic"
+      : swallowState.phase["section-wall"] === "open" && swallowState.progress["section-wall"] > 0
+        ? "section-wall"
+        : null;
+  const getSwallowStyle = (id: SwallowedSectionId) => {
+    const progress = swallowState.progress[id];
+    const phase = swallowState.phase[id];
+    const isActive = activeSwallowSectionId === id;
+    const visualProgress = phase !== "open" ? 1 : isActive ? progress : 0;
+
+    return {
+      ["--hero-swallow-progress" as string]: visualProgress,
+      ["--hero-swallow-placeholder-height" as string]: `${Math.max(
+        swallowState.heights[id],
+        SWALLOWED_SECTION_HEIGHT_PX
+      )}px`,
+      ["--hero-swallow-cover-height" as string]: isActive
+        ? `${Math.round(visualProgress * 1000) / 10}%`
+        : "0%",
+      ["--hero-swallow-content-opacity" as string]: Math.max(0, 1 - visualProgress),
+      ["--hero-swallow-content-brightness" as string]: Math.max(0.58, 1 - visualProgress * 0.42),
+      ["--hero-swallow-overlay-opacity" as string]: isActive
+        ? Math.min(1, visualProgress * 1.35)
+        : 0,
+    };
+  };
+  const getSwallowClassName = (id: SwallowedSectionId) => {
+    const phase = swallowState.phase[id];
+    return [
+      "hero-swallow-section min-h-0",
+      activeSwallowSectionId === id ? "hero-swallow-section--active" : "",
+      phase !== "open" ? "hero-swallow-section--placeholder" : "",
+      phase === "hold" ? "hero-swallow-section--hold" : "",
+      phase === "shrinking" ? "hero-swallow-section--shrinking" : "",
+      phase === "collapsed" ? "hero-swallow-section--collapsed" : "",
+    ].filter(Boolean).join(" ");
+  };
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background">
@@ -389,13 +619,21 @@ const Index = () => {
         />
       </section>
       <div className="divider-line hidden md:block" />
-      <section id="section-messianic" className="min-h-0">
+      <section
+        id="section-messianic"
+        className={getSwallowClassName("section-messianic")}
+        style={getSwallowStyle("section-messianic")}
+      >
         <PremiumLifestyleSection
           visibleSections={["messianic"]}
           messianicSectionId={undefined}
         />
       </section>
-      <section id="section-wall" className="min-h-0">
+      <section
+        id="section-wall"
+        className={getSwallowClassName("section-wall")}
+        style={getSwallowStyle("section-wall")}
+      >
         <PremiumLifestyleSection
           visibleSections={["wall"]}
           wallSectionId={undefined}

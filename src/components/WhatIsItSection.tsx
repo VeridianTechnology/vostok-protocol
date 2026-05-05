@@ -106,6 +106,7 @@ const WhatIsItSection = () => {
   const currentSequenceScreen = vostokScreens[sequenceScreenIndex] ?? vostokScreens[0];
   const hasFadeStarted = closePhase !== "idle";
   const isReceding = closePhase === "recede";
+  const isFinalSequenceScreen = sequenceScreenIndex === REFUND_SCREEN_INDEX;
 
   useEffect(() => {
     if (sequenceScreenIndex !== REFUND_SCREEN_INDEX) {
@@ -240,8 +241,14 @@ const WhatIsItSection = () => {
                   </AnimatePresence>
                 </div>
 
-                <div className="relative z-20 mx-auto mt-8 flex w-full max-w-[24rem] items-center justify-between gap-8 pb-2 md:mt-8 md:max-w-none md:justify-center md:gap-16 md:pb-0">
-                  {sequenceScreenIndex > 0 ? (
+                <div
+                  className={`relative z-20 mx-auto mt-8 flex w-full max-w-[24rem] items-center pb-2 md:mt-8 md:max-w-none md:pb-0 ${
+                    isFinalSequenceScreen
+                      ? "justify-center"
+                      : "justify-between gap-8 md:justify-center md:gap-16"
+                  }`}
+                >
+                  {!isFinalSequenceScreen && sequenceScreenIndex > 0 ? (
                     <button
                       type="button"
                       disabled={hasFadeStarted}
@@ -251,7 +258,7 @@ const WhatIsItSection = () => {
                       Prev
                     </button>
                   ) : null}
-                  <div className="flex min-w-0 flex-1 items-center justify-center md:hidden">
+                  <div className="flex min-w-0 items-center justify-center md:hidden">
                     <span className="text-[11px] uppercase tracking-[0.28em] text-white/72">
                       {sequenceScreenIndex + 1} / {vostokScreens.length}
                     </span>
@@ -272,18 +279,20 @@ const WhatIsItSection = () => {
                       />
                     ))}
                   </div>
-                  <button
-                    type="button"
-                    disabled={hasFadeStarted}
-                    onClick={() =>
-                      setSequenceScreenIndex((current) =>
-                        Math.min(vostokScreens.length - 1, current + 1),
-                      )
-                    }
-                    className="touch-manipulation border border-[#b08a4a] bg-black px-6 py-3 text-[11px] uppercase tracking-[0.34em] text-white/72 transition hover:border-[#d2aa63] hover:text-white disabled:pointer-events-none md:px-7"
-                  >
-                    Next
-                  </button>
+                  {!isFinalSequenceScreen ? (
+                    <button
+                      type="button"
+                      disabled={hasFadeStarted}
+                      onClick={() =>
+                        setSequenceScreenIndex((current) =>
+                          Math.min(vostokScreens.length - 1, current + 1),
+                        )
+                      }
+                      className="touch-manipulation border border-[#b08a4a] bg-black px-6 py-3 text-[11px] uppercase tracking-[0.34em] text-white/72 transition hover:border-[#d2aa63] hover:text-white disabled:pointer-events-none md:px-7"
+                    >
+                      Next
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>

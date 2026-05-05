@@ -826,7 +826,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
               <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                It&apos;s a concrete and efficient workout system for your face. The first of its kind.
+                In the Age of AI, You are the Product, not Your job.
               </p>
             </div>
 
@@ -876,8 +876,8 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                Like the
-                <span className="block">gym for your face.</span>
+                <span className="block">BECOME</span>
+                <span className="block">as hot as you want.</span>
               </p>
             </div>
 
@@ -927,7 +927,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
-                Get those photos like your Grandfather had. Classic.
+                Become Classic
               </p>
             </div>
 
@@ -1028,7 +1028,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                It&apos;s like the gym for your face.
+                Become as Hot as You Want.
               </p>
             </div>
           </div>
@@ -1158,7 +1158,7 @@ const PremiumLifestyleSection = ({
                   />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                   <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
-                    Get those photos like your Grandfather had. Classic.
+                    Become Classic
                   </p>
                 </div>
                 <div className="md:w-[32vw] md:min-w-[32vw]">
@@ -1218,7 +1218,7 @@ const PremiumLifestyleSection = ({
                     />
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                     <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                      It&apos;s a concrete and efficient workout system for your face. The first of its kind.
+                      In the Age of AI, You are the Product, not Your job.
                     </p>
                   </div>
                 </div>
@@ -1342,7 +1342,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                It's like the gym for your face.
+                Become as Hot as You Want.
               </p>
             </div>
           </div>

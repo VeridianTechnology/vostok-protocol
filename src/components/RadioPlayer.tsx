@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
 type Track = {
@@ -6,6 +7,13 @@ type Track = {
   score: string;
   youtubeUrl: string;
   audioSrc?: string;
+};
+
+type SongFlash = {
+  color: string;
+  text: string;
+  subText: string;
+  key: number;
 };
 
 type RandomSource = () => number;
@@ -903,6 +911,29 @@ const TRACKS: Track[] = [
   },
 ];
 
+const FEATURED_FLASH: Record<string, Omit<SongFlash, "key">> = {
+  "01":  { color: "#cc0022", text: "ЛЮБОВНОЕ ЗЕЛЬЕ",  subText: "SIGNAL INCOMING · LOVE POTION" },
+  "02":  { color: "#7700cc", text: "規格外",           subText: "11/10 · LIMIT EXCEEDED" },
+  "03":  { color: "#dd0055", text: "エクスタシー",     subText: "ECSTASY OVERRIDE DETECTED" },
+  "06":  { color: "#5500bb", text: "РОМАНС ПЛАНЕТА",  subText: "STAKILLAZ INCOMING" },
+  "08":  { color: "#0022cc", text: "嫉妬",             subText: "MY JEALOUSY · SLOWED PROTOCOL" },
+  "15":  { color: "#aa0044", text: "사랑의 마법",      subText: "LOVE POTIONS × MY JEALOUSY" },
+  "17":  { color: "#990099", text: "愛のポーション",   subText: "PAPARAZZI SIGNAL ONLINE" },
+  "22":  { color: "#003399", text: "ТЕНСА",           subText: "УЛЬТРА ЗАМЕДЛЕНИЕ · LOCKED" },
+  "25&": { color: "#cc5500", text: "高い習慣",         subText: "STAY HIGH × STEREO LOVE" },
+  "45":  { color: "#2a0044", text: "УМБАСА · НЕРО",  subText: "NERO · SUPER SLOWED" },
+  "64":  { color: "#bb0066", text: "뉴진스 리믹스",   subText: "MITA EDIT · JERSEY DETECTED" },
+  "67":  { color: "#440099", text: "クラリティ",       subText: "HARDSTYLE · AGARTHA EDIT" },
+  "82":  { color: "#880000", text: "КРОВАВАЯ МЭРИ",  subText: "VOIDGLITCH × ØNELY SIGNAL" },
+  "84":  { color: "#bb0077", text: "포커 페이스",      subText: "VACATION BIBLE SCHOOL MASHUP" },
+  "90":  { color: "#00001e", text: "최후의 신호",      subText: "LAST THOUGHT BEFORE SHUTDOWN" },
+  "99":  { color: "#002222", text: "ピュリティ·リング", subText: "BELISPEAK · LOADING" },
+  "100": { color: "#0d0000", text: "THE CRAFT",       subText: "PORTISHEAD · SCORN 1994" },
+  "102": { color: "#cc0055", text: "バブルガム",       subText: "BUBBLEGUM BITCH · HARDTEKK" },
+  "106": { color: "#1a0000", text: "МРАЧНЫЙ СВЕТ",   subText: "GRIM LIGHT · HARDTEKK ONLINE" },
+  "120": { color: "#001a00", text: "タカ·ティティ",   subText: "QMIIR × NUEKI · SIGNAL" },
+};
+
 const PLAYABLE_TRACKS = TRACKS.filter((track): track is Track & { audioSrc: string } =>
   Boolean(track.audioSrc)
 );
@@ -926,6 +957,10 @@ const DEFAULT_VOLUME = 1;
 const DJ_STINGER_VOLUME_MULTIPLIER = 0.35;
 const DJ_STINGER_DELAY_MS = 5000;
 const SKIP_LADY_COOLDOWN_MS = 60 * 1000;
+const RADIO_AUDIO_RETRY_MS = 3000;
+const RADIO_PLAYER_AUTO_CLOSE_MS = 20000;
+const RADIO_PLAYER_CLOSE_DURATION_MS = 3000;
+const RADIO_PLAYER_ICON_TOGGLE_DURATION_MS = RADIO_PLAYER_CLOSE_DURATION_MS / 2;
 const OUTPUT_LIMITER_THRESHOLD_DB = -6;
 const OUTPUT_LIMITER_KNEE_DB = 0;
 const OUTPUT_LIMITER_RATIO = 20;
@@ -948,7 +983,9 @@ const savePlaylistState = (playlist: number[], position: number): void => {
   try {
     localStorage.setItem(RADIO_PLAYLIST_KEY, JSON.stringify(playlist));
     localStorage.setItem(RADIO_POSITION_KEY, String(position));
-  } catch {}
+  } catch {
+    // Storage can be unavailable in private or locked-down browser contexts.
+  }
 };
 
 const loadPlaylistState = (): { playlist: number[]; position: number } => {
@@ -968,7 +1005,9 @@ const loadPlaylistState = (): { playlist: number[]; position: number } => {
         return { playlist, position };
       }
     }
-  } catch {}
+  } catch {
+    // Ignore invalid persisted playlist state and rebuild the playlist below.
+  }
   const playlist = generateShuffledPlaylist();
   savePlaylistState(playlist, 0);
   return { playlist, position: 0 };
@@ -984,7 +1023,8 @@ const formatTime = (seconds: number) => {
   return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
 };
 
-const getTrackDisplayTitle = (track: Track) => `${track.title}${track.audioSrc ? "" : " *"}`;
+const getTrackDisplayTitle = (track: Track) =>
+  `${track.id in FEATURED_FLASH ? `* ${track.id} · ` : ""}${track.title}${track.audioSrc ? "" : " *"}`;
 const getSpecialSongIntroSrc = (track: Track) =>
   track.id.includes("&") ? `/audio/dj/special_song/${track.id}.m4a` : null;
 
@@ -1047,8 +1087,15 @@ const RadioPlayer = () => {
   const lastSkipTimeRef = useRef<number>(0);
   const stingerDelayTimeoutRef = useRef<number | null>(null);
   const scrollPlayerTimeoutRef = useRef<number | null>(null);
+  const audioRetryTimeoutRef = useRef<number | null>(null);
+  const podCollapseTimeoutRef = useRef<number | null>(null);
+  const playAttemptRef = useRef(0);
   const lastScrollYRef = useRef(0);
   const visualizerInterruptTimeoutRef = useRef<number | null>(null);
+  const songFlashKeyRef = useRef(0);
+  const lastFlashedTrackIdRef = useRef<string | null>(null);
+  const flashDismissTimeoutRef = useRef<number | null>(null);
+  const hasTrackAdvancedRef = useRef(false);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
     const playlist = playlistRef.current ?? [];
     const position = positionRef.current ?? 0;
@@ -1060,13 +1107,19 @@ const RadioPlayer = () => {
   const [volume, setVolume] = useState(DEFAULT_VOLUME);
   const [visualizerBars, setVisualizerBars] = useState<number[]>(VISUALIZER_IDLE_BARS);
   const [isPodCollapsed, setIsPodCollapsed] = useState(true);
+  const [podTransitionDurationMs, setPodTransitionDurationMs] = useState(RADIO_PLAYER_CLOSE_DURATION_MS);
   const [isScrollPlayerVisible, setIsScrollPlayerVisible] = useState(false);
+  const [isTrackLoading, setIsTrackLoading] = useState(false);
+  const [loadingDotCount, setLoadingDotCount] = useState(1);
+  const [songFlash, setSongFlash] = useState<SongFlash | null>(null);
   const sliderId = useId();
   const currentTrack = PLAYABLE_TRACKS[currentTrackIndex] ?? PLAYABLE_TRACKS[0];
   const missingTrackSummary = MISSING_TRACKS.map((track) => `${track.id}*`).join(", ");
   const sliderProgress = duration > 0 ? `${(currentTime / duration) * 100}%` : "0%";
+  const loadingLabel = `loading${".".repeat(loadingDotCount)}`;
 
   const advanceToNext = () => {
+    hasTrackAdvancedRef.current = true;
     const playlist = playlistRef.current ?? [];
     const currentPos = positionRef.current ?? 0;
     let nextPos = currentPos + 1;
@@ -1084,6 +1137,7 @@ const RadioPlayer = () => {
   };
 
   const goToPrevious = () => {
+    hasTrackAdvancedRef.current = true;
     const playlist = playlistRef.current ?? [];
     const currentPos = positionRef.current ?? 0;
     const prevPos = Math.max(0, currentPos - 1);
@@ -1106,10 +1160,31 @@ const RadioPlayer = () => {
     }
   };
 
+  const clearAudioRetryTimeout = () => {
+    if (audioRetryTimeoutRef.current) {
+      window.clearTimeout(audioRetryTimeoutRef.current);
+      audioRetryTimeoutRef.current = null;
+    }
+  };
+
+  const clearPodCollapseTimeout = () => {
+    if (podCollapseTimeoutRef.current) {
+      window.clearTimeout(podCollapseTimeoutRef.current);
+      podCollapseTimeoutRef.current = null;
+    }
+  };
+
   const clearVisualizerInterruptTimeout = () => {
     if (visualizerInterruptTimeoutRef.current) {
       window.clearTimeout(visualizerInterruptTimeoutRef.current);
       visualizerInterruptTimeoutRef.current = null;
+    }
+  };
+
+  const clearFlashDismissTimeout = () => {
+    if (flashDismissTimeoutRef.current) {
+      window.clearTimeout(flashDismissTimeoutRef.current);
+      flashDismissTimeoutRef.current = null;
     }
   };
 
@@ -1281,6 +1356,69 @@ const RadioPlayer = () => {
     }, 220);
   };
 
+  const requestAudioPlay = (audio: HTMLAudioElement) => {
+    if (!shouldAutoplayRef.current) {
+      return;
+    }
+
+    setIsTrackLoading(true);
+    const playAttempt = playAttemptRef.current + 1;
+    playAttemptRef.current = playAttempt;
+
+    void audio.play().then(() => {
+      if (playAttempt !== playAttemptRef.current) {
+        return;
+      }
+      setIsPlaying(true);
+      if (!audio.paused) {
+        setIsTrackLoading(false);
+      }
+    }).catch(() => {
+      if (playAttempt !== playAttemptRef.current) {
+        return;
+      }
+      if (shouldAutoplayRef.current) {
+        setIsTrackLoading(true);
+        return;
+      }
+      setIsPlaying(false);
+      setIsTrackLoading(false);
+    });
+  };
+
+  const refreshCurrentSongPlayback = () => {
+    const audio = audioRef.current;
+    if (!audio || !currentTrack || !shouldAutoplayRef.current) {
+      return;
+    }
+
+    if (!audio.paused && audio.readyState >= 3 && audio.currentTime > 0) {
+      setIsTrackLoading(false);
+      return;
+    }
+
+    const currentPlaybackTime = Number.isFinite(audio.currentTime) ? audio.currentTime : 0;
+    audio.load();
+
+    if (currentPlaybackTime > 0) {
+      const restoreTime = () => {
+        try {
+          audio.currentTime = currentPlaybackTime;
+        } catch {
+          // Some browsers reject seeking until more metadata is available.
+        }
+      };
+
+      if (audio.readyState >= 1) {
+        restoreTime();
+      } else {
+        audio.addEventListener("loadedmetadata", restoreTime, { once: true });
+      }
+    }
+
+    requestAudioPlay(audio);
+  };
+
   useEffect(() => {
     const audio = audioRef.current;
     const djStingerAudio = djStingerAudioRef.current;
@@ -1299,16 +1437,55 @@ const RadioPlayer = () => {
     const syncDuration = () => {
       setDuration(audio.duration || 0);
     };
+    const handleLoading = () => {
+      if (shouldAutoplayRef.current) {
+        setIsTrackLoading(true);
+      }
+    };
     const handlePlay = () => {
       setIsPlaying(true);
+      if (audio.readyState < 3) {
+        setIsTrackLoading(true);
+      }
+    };
+    const handlePlaying = () => {
+      setIsPlaying(true);
+      setIsTrackLoading(false);
       void startVisualizer();
+      if (hasTrackAdvancedRef.current) {
+        const flashConfig = FEATURED_FLASH[currentTrack.id];
+        if (flashConfig && lastFlashedTrackIdRef.current !== currentTrack.id) {
+          lastFlashedTrackIdRef.current = currentTrack.id;
+          songFlashKeyRef.current += 1;
+          setSongFlash({ ...flashConfig, key: songFlashKeyRef.current });
+        }
+      }
     };
     const handlePause = () => {
+      if (shouldAutoplayRef.current && !audio.ended) {
+        stopVisualizer();
+        setIsTrackLoading(true);
+        return;
+      }
       setIsPlaying(false);
+      setIsTrackLoading(false);
       stopVisualizer();
+    };
+    const handleReady = () => {
+      if (shouldAutoplayRef.current && !audio.paused) {
+        setIsTrackLoading(false);
+      }
+    };
+    const handleError = () => {
+      if (shouldAutoplayRef.current) {
+        setIsTrackLoading(true);
+        return;
+      }
+      setIsTrackLoading(false);
     };
     const handleEnded = () => {
       stopVisualizer();
+      setIsTrackLoading(false);
       clearStingerDelayTimeout();
       if (djStingerAudio) {
         djStingerAudio.pause();
@@ -1320,17 +1497,22 @@ const RadioPlayer = () => {
     audio.addEventListener("timeupdate", syncTime);
     audio.addEventListener("loadedmetadata", syncDuration);
     audio.addEventListener("durationchange", syncDuration);
+    audio.addEventListener("loadstart", handleLoading);
+    audio.addEventListener("waiting", handleLoading);
+    audio.addEventListener("stalled", handleLoading);
     audio.addEventListener("play", handlePlay);
+    audio.addEventListener("playing", handlePlaying);
+    audio.addEventListener("canplay", handleReady);
+    audio.addEventListener("canplaythrough", handleReady);
     audio.addEventListener("pause", handlePause);
+    audio.addEventListener("error", handleError);
     audio.addEventListener("ended", handleEnded);
 
     const tryPlay = () => {
       if (!shouldAutoplayRef.current) {
         return;
       }
-      void audio.play().catch(() => {
-        setIsPlaying(false);
-      });
+      requestAudioPlay(audio);
     };
 
     tryPlay();
@@ -1350,8 +1532,15 @@ const RadioPlayer = () => {
       audio.removeEventListener("timeupdate", syncTime);
       audio.removeEventListener("loadedmetadata", syncDuration);
       audio.removeEventListener("durationchange", syncDuration);
+      audio.removeEventListener("loadstart", handleLoading);
+      audio.removeEventListener("waiting", handleLoading);
+      audio.removeEventListener("stalled", handleLoading);
       audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("playing", handlePlaying);
+      audio.removeEventListener("canplay", handleReady);
+      audio.removeEventListener("canplaythrough", handleReady);
       audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("error", handleError);
       audio.removeEventListener("ended", handleEnded);
       window.removeEventListener("pointerdown", unlockPlayback);
       window.removeEventListener("keydown", unlockPlayback);
@@ -1373,6 +1562,10 @@ const RadioPlayer = () => {
       return;
     }
 
+    lastFlashedTrackIdRef.current = null;
+    clearAudioRetryTimeout();
+    playAttemptRef.current += 1;
+    setIsTrackLoading(shouldAutoplayRef.current);
     audio.load();
     setCurrentTime(0);
     setDuration(0);
@@ -1381,16 +1574,81 @@ const RadioPlayer = () => {
       return;
     }
 
-    void audio.play().catch(() => {
-      setIsPlaying(false);
-    });
+    requestAudioPlay(audio);
   }, [currentTrack]);
 
   useEffect(() => {
     return () => {
       stopVisualizer();
+      clearAudioRetryTimeout();
+      clearPodCollapseTimeout();
+      clearFlashDismissTimeout();
     };
   }, []);
+
+  useEffect(() => {
+    clearFlashDismissTimeout();
+    if (!songFlash) {
+      return;
+    }
+    flashDismissTimeoutRef.current = window.setTimeout(() => {
+      setSongFlash(null);
+      flashDismissTimeoutRef.current = null;
+    }, 1800);
+    return clearFlashDismissTimeout;
+  }, [songFlash]);
+
+  useEffect(() => {
+    if (!isTrackLoading) {
+      setLoadingDotCount(1);
+      return;
+    }
+
+    const dotInterval = window.setInterval(() => {
+      setLoadingDotCount((current) => (current >= 3 ? 1 : current + 1));
+    }, 420);
+
+    return () => window.clearInterval(dotInterval);
+  }, [isTrackLoading]);
+
+  useEffect(() => {
+    clearAudioRetryTimeout();
+
+    if (!isTrackLoading || !shouldAutoplayRef.current) {
+      return;
+    }
+
+    const scheduleRetry = () => {
+      audioRetryTimeoutRef.current = window.setTimeout(() => {
+        audioRetryTimeoutRef.current = null;
+        refreshCurrentSongPlayback();
+
+        if (shouldAutoplayRef.current) {
+          scheduleRetry();
+        }
+      }, RADIO_AUDIO_RETRY_MS);
+    };
+
+    scheduleRetry();
+
+    return clearAudioRetryTimeout;
+  }, [currentTrack, isTrackLoading]);
+
+  useEffect(() => {
+    clearPodCollapseTimeout();
+
+    if (isPodCollapsed) {
+      return;
+    }
+
+    podCollapseTimeoutRef.current = window.setTimeout(() => {
+      setPodTransitionDurationMs(RADIO_PLAYER_CLOSE_DURATION_MS);
+      setIsPodCollapsed(true);
+      podCollapseTimeoutRef.current = null;
+    }, RADIO_PLAYER_AUTO_CLOSE_MS);
+
+    return clearPodCollapseTimeout;
+  }, [isPodCollapsed]);
 
   useEffect(() => {
     const djStingerAudio = djStingerAudioRef.current;
@@ -1453,7 +1711,7 @@ const RadioPlayer = () => {
       scrollPlayerTimeoutRef.current = window.setTimeout(() => {
         setIsScrollPlayerVisible(false);
         scrollPlayerTimeoutRef.current = null;
-      }, 15000);
+      }, RADIO_PLAYER_AUTO_CLOSE_MS);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -1472,13 +1730,14 @@ const RadioPlayer = () => {
 
     if (audio.paused) {
       shouldAutoplayRef.current = true;
-      await audio.play().catch(() => {
-        setIsPlaying(false);
-      });
+      requestAudioPlay(audio);
       return;
     }
 
     shouldAutoplayRef.current = false;
+    playAttemptRef.current += 1;
+    clearAudioRetryTimeout();
+    setIsTrackLoading(false);
     audio.pause();
     stopVisualizer();
   };
@@ -1494,6 +1753,7 @@ const RadioPlayer = () => {
 
   const handlePreviousTrack = () => {
     shouldAutoplayRef.current = true;
+    setIsTrackLoading(true);
     clearStingerDelayTimeout();
     lastSkipTimeRef.current = Date.now();
     if (djStingerAudioRef.current) {
@@ -1505,6 +1765,7 @@ const RadioPlayer = () => {
 
   const handleNextTrack = () => {
     shouldAutoplayRef.current = true;
+    setIsTrackLoading(true);
     clearStingerDelayTimeout();
     lastSkipTimeRef.current = Date.now();
     if (djStingerAudioRef.current) {
@@ -1518,21 +1779,38 @@ const RadioPlayer = () => {
     <>
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
+      {songFlash ? (
+        <div
+          key={songFlash.key}
+          className="radio-song-flash-overlay"
+          style={{ "--flash-color": songFlash.color } as CSSProperties}
+          aria-hidden="true"
+        >
+          <div className="radio-song-flash-overlay__bg" />
+          <div className="radio-song-flash-overlay__scanlines" />
+          <p className="radio-song-flash-overlay__text" data-text={songFlash.text}>{songFlash.text}</p>
+          <p className="radio-song-flash-overlay__sub">{songFlash.subText}</p>
+        </div>
+      ) : null}
       <div
         className={`pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
           isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
         }`}
-        style={{ transitionDuration: "2000ms" }}
+        style={{ transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms` }}
       >
         <div
-          className="pointer-events-auto relative transition-transform duration-[2000ms] ease-in-out"
+          className="pointer-events-auto relative transition-transform ease-in-out"
           style={{
             transform: isPodCollapsed ? "translateY(100%)" : "translateY(0)",
+            transitionDuration: `${podTransitionDurationMs}ms`,
           }}
         >
         <button
           type="button"
-          onClick={() => setIsPodCollapsed((current) => !current)}
+          onClick={() => {
+            setPodTransitionDurationMs(RADIO_PLAYER_ICON_TOGGLE_DURATION_MS);
+            setIsPodCollapsed((current) => !current);
+          }}
           aria-label={isPodCollapsed ? "Expand radio pod" : "Collapse radio pod"}
           className={`absolute left-1/2 top-0 z-[3] inline-flex h-[46px] w-[46px] -translate-x-1/2 -translate-y-[34px] items-center justify-center rounded-full border-2 border-[#05080f] shadow-[0_8px_18px_rgba(0,0,0,0.28)] transition md:h-[34px] md:w-[34px] md:-translate-y-[26px] ${
             isPodCollapsed
@@ -1626,7 +1904,7 @@ const RadioPlayer = () => {
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-full opacity-0"
         }`}
-        style={{ transitionDuration: "2000ms" }}
+        style={{ transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms` }}
       >
         <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
           <div className="pointer-events-none absolute inset-0">
