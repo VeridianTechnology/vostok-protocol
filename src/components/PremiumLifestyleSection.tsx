@@ -4,6 +4,35 @@ import SectionSideTab from "@/components/SectionSideTab";
 const getExplanationVideoSrc = (src: string, isMobile: boolean) =>
   src.replace(/\.mp4$/i, isMobile ? "_mobile.mp4" : "_desktop.mp4");
 
+type BecomingYouCaptionIndex = 0 | 1 | 2 | 3 | 4;
+
+const renderBecomingYouCaption = (index: BecomingYouCaptionIndex): ReactNode => {
+  switch (index) {
+    case 0:
+      return (
+        <>
+          Like the
+          <span className="block">gym for your face.</span>
+        </>
+      );
+    case 1:
+      return (
+        <>
+          <span className="block">BECOME</span>
+          <span className="block">as hot as you want.</span>
+        </>
+      );
+    case 2:
+      return "Become Classic";
+    case 3:
+      return "Become as Hot as You Want.";
+    case 4:
+      return "In the Age of AI, You are the Product, not Your job.";
+  }
+
+  return null;
+};
+
 type InterestSectionProps = {
   sectionId?: string;
   tabLabel: string;
@@ -826,7 +855,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
               <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                In the Age of AI, You are the Product, not Your job.
+                {renderBecomingYouCaption(0)}
               </p>
             </div>
 
@@ -876,8 +905,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                <span className="block">BECOME</span>
-                <span className="block">as hot as you want.</span>
+                {renderBecomingYouCaption(1)}
               </p>
             </div>
 
@@ -927,7 +955,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
-                Become Classic
+                {renderBecomingYouCaption(2)}
               </p>
             </div>
 
@@ -977,8 +1005,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                <span className="block">BECOME</span>
-                <span className="block">as hot as you want.</span>
+                {renderBecomingYouCaption(3)}
               </p>
             </div>
 
@@ -1028,7 +1055,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">
-                Become as Hot as You Want.
+                {renderBecomingYouCaption(4)}
               </p>
             </div>
           </div>
@@ -1096,8 +1123,7 @@ const PremiumLifestyleSection = ({
                   />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
                   <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">
-                    Like the
-                    <span className="block">gym for your face.</span>
+                    {renderBecomingYouCaption(0)}
                   </p>
                 </div>
               </div>
@@ -1158,7 +1184,7 @@ const PremiumLifestyleSection = ({
                   />
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                   <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">
-                    Become Classic
+                    {renderBecomingYouCaption(2)}
                   </p>
                 </div>
                 <div className="md:w-[32vw] md:min-w-[32vw]">
@@ -1218,7 +1244,7 @@ const PremiumLifestyleSection = ({
                     />
                     <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
                     <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">
-                      In the Age of AI, You are the Product, not Your job.
+                      {renderBecomingYouCaption(4)}
                     </p>
                   </div>
                 </div>
@@ -1282,8 +1308,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-right md:text-[2rem]">
-                <span className="block">BECOME</span>
-                <span className="block">as hot as you want.</span>
+                {renderBecomingYouCaption(1)}
               </p>
             </div>
             <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">
@@ -1342,7 +1367,7 @@ const PremiumLifestyleSection = ({
               />
               <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/52" />
               <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">
-                Become as Hot as You Want.
+                {renderBecomingYouCaption(3)}
               </p>
             </div>
           </div>

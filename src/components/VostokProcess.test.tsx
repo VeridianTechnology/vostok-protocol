@@ -59,7 +59,7 @@ describe("VostokProcess", () => {
     fireEvent.click(mobileAfterButton, { detail: 1 });
 
     const mobileImage = screen.getByAltText("BEFORE comparison");
-    expect(mobileImage).toHaveAttribute("src", "/Comparison/1_mobile.JPG");
+    expect(mobileImage).toHaveAttribute("src", "/before/after/after_mobile.jpg");
 
     unmount();
 
@@ -74,7 +74,7 @@ describe("VostokProcess", () => {
     fireEvent.click(desktopAfterButton, { detail: 1 });
 
     const desktopImage = screen.getByAltText("BEFORE comparison");
-    expect(desktopImage).toHaveAttribute("src", "/Comparison/1_desktop.JPG");
+    expect(desktopImage).toHaveAttribute("src", "/before/after/after_desktop.jpg");
   });
 
   it("handles desktop clicks on the before/after icons", () => {
