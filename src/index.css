@@ -212,6 +212,33 @@
     transition: none;
   }
 
+  @media (max-width: 767px) {
+    .hero-swallow-section {
+      overflow: visible;
+    }
+
+    .hero-swallow-section > * {
+      visibility: visible !important;
+      opacity: 1 !important;
+      filter: none !important;
+      clip-path: none !important;
+      transition: none;
+    }
+
+    .hero-swallow-section::after {
+      display: none;
+    }
+
+    .hero-swallow-section--placeholder,
+    .hero-swallow-section--shrinking,
+    .hero-swallow-section--collapsed {
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: none !important;
+      border-bottom: 0;
+    }
+  }
+
   .pod-wallpaper-bg {
     background-color: #040606;
     background-image: var(--pod-wallpaper-mobile);

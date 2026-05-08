@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { useEffect, useId, useRef, useState } from "react";
 
 type Track = {
@@ -1565,6 +1564,12 @@ const RadioPlayer = () => {
     lastFlashedTrackIdRef.current = null;
     clearAudioRetryTimeout();
     playAttemptRef.current += 1;
+
+    if (!audio.paused && audio.readyState >= 3 && audio.currentTime > 0) {
+      setIsTrackLoading(false);
+      return;
+    }
+
     setIsTrackLoading(shouldAutoplayRef.current);
     audio.load();
     setCurrentTime(0);
@@ -1779,19 +1784,6 @@ const RadioPlayer = () => {
     <>
       <audio ref={audioRef} src={currentTrack.audioSrc} />
       <audio ref={djStingerAudioRef} />
-      {songFlash ? (
-        <div
-          key={songFlash.key}
-          className="radio-song-flash-overlay"
-          style={{ "--flash-color": songFlash.color } as CSSProperties}
-          aria-hidden="true"
-        >
-          <div className="radio-song-flash-overlay__bg" />
-          <div className="radio-song-flash-overlay__scanlines" />
-          <p className="radio-song-flash-overlay__text" data-text={songFlash.text}>{songFlash.text}</p>
-          <p className="radio-song-flash-overlay__sub">{songFlash.subText}</p>
-        </div>
-      ) : null}
       <div
         className={`pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
           isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"

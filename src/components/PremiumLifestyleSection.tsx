@@ -9,25 +9,15 @@ type BecomingYouCaptionIndex = 0 | 1 | 2 | 3 | 4;
 const renderBecomingYouCaption = (index: BecomingYouCaptionIndex): ReactNode => {
   switch (index) {
     case 0:
-      return (
-        <>
-          Like the
-          <span className="block">gym for your face.</span>
-        </>
-      );
+      return "LOOK LIKE A MAN";
     case 1:
-      return (
-        <>
-          <span className="block">BECOME</span>
-          <span className="block">as hot as you want.</span>
-        </>
-      );
+      return "BECOME A DOLL";
     case 2:
-      return "Become Classic";
+      return "GET THAT BOYISH LOOK";
     case 3:
-      return "Become as Hot as You Want.";
+      return "YOU ARE UNIQUE";
     case 4:
-      return "In the Age of AI, You are the Product, not Your job.";
+      return "BECOME WHO YOU ARE";
   }
 
   return null;
