@@ -935,7 +935,6 @@ const FeatureThumbnails = ({
             <div aria-hidden="true" className="hero-tv-noise absolute inset-0 z-[7]">
               <div className="hero-tv-noise__grain absolute inset-0" />
               <div className="hero-tv-noise__scan absolute inset-0" />
-              <div className="hero-tv-noise__glitch absolute inset-0" />
             </div>
           )}
           <div

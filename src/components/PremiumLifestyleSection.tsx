@@ -395,8 +395,6 @@ const PremiumLifestyleSection = ({
   const becomingYouSectionRef = useRef<HTMLDivElement | null>(null);
   const becomingYouVideoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const becomingYouFadeTimeoutsRef = useRef<Array<number | null>>([null, null, null, null, null]);
-  const wallGlitchTargetRef = useRef<HTMLDivElement | null>(null);
-  const wallGlitchSeenRef = useRef(false);
   const areBecomingYouVideosPausedRef = useRef(false);
   const individuallyPausedBecomingYouVideosRef = useRef([false, false, false, false, false]);
   const becomingYouLoadTimeoutRef = useRef<number | null>(null);
@@ -600,42 +598,6 @@ const PremiumLifestyleSection = ({
     };
   }, []);
 
-  useEffect(() => {
-    if (!visibleSectionSet.has("wall")) {
-      wallGlitchSeenRef.current = false;
-      return;
-    }
-
-    const node = wallGlitchTargetRef.current;
-    if (!node || !("IntersectionObserver" in window)) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting || wallGlitchSeenRef.current) {
-            return;
-          }
-
-          wallGlitchSeenRef.current = true;
-          window.dispatchEvent(
-            new CustomEvent("vostok:system-glitch", {
-              detail: { word: "СБОЙ СИСТЕМЫ" as const },
-            })
-          );
-          observer.disconnect();
-        });
-      },
-      {
-        threshold: 0.35,
-        rootMargin: "0px 0px -8% 0px",
-      }
-    );
-
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [visibleSectionSet]);
 
   const handleBecomingYouToggle = () => {
     const nextPausedState = !areBecomingYouVideosPaused;
@@ -735,8 +697,6 @@ const PremiumLifestyleSection = ({
         contentClassName="flex h-full min-h-0 items-start justify-center md:max-w-none md:items-end md:justify-start"
         innerContentClassName="relative z-10 flex w-full justify-center p-0 md:justify-start md:pb-[3vh] md:pl-[10vw] md:pt-0"
       >
-        <div ref={wallGlitchTargetRef}>
-        </div>
       </InterestSection>
       ) : null}
       {visibleSectionSet.has("becoming") ? (
