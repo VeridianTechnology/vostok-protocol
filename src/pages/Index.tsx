@@ -650,7 +650,7 @@ const Index = () => {
       <section id="section-what-is-it" className="min-h-0">
         <WhatIsItSection />
       </section>
-      <section id="section-vostok" className="min-h-[40vh]">
+      <section id="section-vostok" className="hidden">
         <VostokProcess entrySource={entrySource} />
       </section>
       <TransitionThreshold variant="chamber" />
