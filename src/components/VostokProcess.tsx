@@ -653,10 +653,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         </m.div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
       </div>
-      <p className="relative z-10 mb-3 text-center text-2xl font-black uppercase tracking-[0.28em] text-black md:mb-8 md:text-4xl">
-        Vostok Facio-Cranial
-        <br />
-        Muscularization Process
+      <p className="relative z-10 mb-3 text-center text-2xl uppercase tracking-[0.18em] text-black md:mb-8 md:text-4xl" style={{ fontFamily: "'Cinzel', serif", fontWeight: 700 }}>
+        NYX's Process
       </p>
       {entrySource === "4chan" && (
         <p className="relative z-10 mx-auto mb-6 max-w-2xl text-center text-sm text-black/70">
