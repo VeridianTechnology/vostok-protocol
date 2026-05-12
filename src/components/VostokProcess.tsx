@@ -102,6 +102,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const [activeStage, setActiveStage] = useState<StageKey>("20");
   const [activeImage, setActiveImage] = useState("/Comparison/5z.jpg");
   const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showVideo2Modal, setShowVideo2Modal] = useState(false);
   const [showClientModal, setShowClientModal] = useState(false);
   const [clientModalExpanded, setClientModalExpanded] = useState(false);
 
@@ -142,6 +143,20 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const closeMyselfModal = () => {
     setMyselfModalExpanded(false);
     setTimeout(() => setShowMyselfModal(false), 1000);
+  };
+
+  const [showBigModal, setShowBigModal] = useState(false);
+  const [bigModalExpanded, setBigModalExpanded] = useState(false);
+
+  const openBigModal = () => {
+    setShowBigModal(true);
+    setBigModalExpanded(false);
+    requestAnimationFrame(() => requestAnimationFrame(() => setBigModalExpanded(true)));
+  };
+
+  const closeBigModal = () => {
+    setBigModalExpanded(false);
+    setTimeout(() => setShowBigModal(false), 1000);
   };
   const [parallaxShift, setParallaxShift] = useState(0);
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
@@ -705,10 +720,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
         </p>
       )}
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6 md:flex-row md:items-stretch md:gap-12">
-        <div className="md:w-3/5">
+        <div className="md:w-3/5 md:flex md:flex-col">
           <div
             ref={imageFrameRef}
-            className={`relative z-20 isolate aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 ${
+            className={`relative z-20 isolate aspect-[4/5] md:aspect-auto md:flex-1 w-full overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)] transition-all duration-500 ${
               focusPulse ? "brightness-110 shadow-[0_0_90px_rgba(255,255,255,0.25)]" : ""
             }`}
           >
@@ -803,6 +818,19 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">VIDEO #2</p>
+                <button
+                  type="button"
+                  onClick={() => setShowVideo2Modal(true)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  Play
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
                 <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">CLIENT #1</p>
                 <button
                   type="button"
@@ -833,6 +861,19 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 <button
                   type="button"
                   onClick={openMyselfModal}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                  </svg>
+                  View
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">FIVE YEARS DIFFERENCE #2</p>
+                <button
+                  type="button"
+                  onClick={openBigModal}
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
@@ -925,6 +966,65 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           </div>
         </div>
       </div>
+      {showVideo2Modal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setShowVideo2Modal(false)}
+        >
+          <div
+            className="relative w-full max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowVideo2Modal(false)}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
+              <iframe
+                src="https://www.youtube.com/embed/xeK0BKnvj7g?autoplay=1"
+                title="Video #2"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+      {showBigModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={closeBigModal}
+        >
+          <div
+            className="relative w-full max-w-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeBigModal}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <m.div
+              animate={{ paddingBottom: bigModalExpanded ? "100%" : "133.33%" }}
+              transition={{ duration: 1, ease: "easeInOut" }}
+              className="relative w-full overflow-hidden rounded-2xl"
+              style={{ paddingBottom: "133.33%" }}
+            >
+              <img
+                src="/images/big.jpg"
+                alt="Five years difference #2"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </m.div>
+          </div>
+        </div>
+      )}
       {showMyselfModal && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
