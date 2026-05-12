@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "framer-motion";
 import { trackSafe } from "@/lib/analytics";
@@ -24,6 +24,8 @@ type ResearchSlide = {
   mobileSrc: string;
   alt: string;
   sources: SlideSource[];
+  videoDesktopSrc?: string;
+  videoMobileSrc?: string;
 };
 
 const researchSlides: ResearchSlide[] = [
@@ -189,7 +191,106 @@ const researchSlides: ResearchSlide[] = [
       },
     ],
   },
+  {
+    id: "the-method",
+    tabLabel: "The Method",
+    title: "The Method",
+    paragraphs: [],
+    desktopSrc: "/screen.png",
+    mobileSrc: "/screen.png",
+    alt: "The Vostok Method",
+    sources: [],
+    videoDesktopSrc: "/website_video_web.webm",
+    videoMobileSrc: "/website_video_compress_mobile.mp4",
+  },
 ];
+
+const formatTime = (s: number) => {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+};
+
+const VideoSlidePlayer = ({ desktopSrc, mobileSrc }: { desktopSrc: string; mobileSrc: string }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const src = isMobile ? mobileSrc : desktopSrc;
+
+  const togglePlay = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { void v.play(); setIsPlaying(true); }
+    else { v.pause(); setIsPlaying(false); }
+  };
+
+  const handleScrub = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.currentTime = Number(e.target.value);
+    setCurrentTime(Number(e.target.value));
+  };
+
+  return (
+    <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10 bg-black shadow-[0_26px_70px_rgba(0,0,0,0.32)]">
+      <video
+        ref={videoRef}
+        src={src}
+        playsInline
+        preload="metadata"
+        className="block h-auto w-full object-cover"
+        onTimeUpdate={() => setCurrentTime(videoRef.current?.currentTime ?? 0)}
+        onLoadedMetadata={() => setDuration(videoRef.current?.duration ?? 0)}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        onEnded={() => setIsPlaying(false)}
+      />
+      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-5 pb-5 pt-12">
+        <input
+          type="range"
+          min={0}
+          max={duration || 100}
+          step={0.05}
+          value={currentTime}
+          onChange={handleScrub}
+          className="mb-3 h-1 w-full cursor-pointer appearance-none rounded-full bg-white/25 accent-[#f1d27a] [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#f1d27a]"
+        />
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={togglePlay}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20"
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isPlaying ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4">
+                <rect x="6" y="4" width="4" height="16" /><rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 pl-0.5">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
+          <span className="text-[0.72rem] tabular-nums tracking-[0.08em] text-white/70">
+            {formatTime(currentTime)} / {formatTime(duration)}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -281,9 +382,14 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -direction * 40 }}
                   transition={{ duration: 0.38, ease: "easeOut" }}
-                  className="grid gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.9fr)] md:items-start md:gap-8"
+                  className={activeSlide.videoDesktopSrc ? "" : "grid gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.9fr)] md:items-start md:gap-8"}
                 >
-                  <m.button
+                  {activeSlide.videoDesktopSrc ? (
+                    <VideoSlidePlayer desktopSrc={activeSlide.videoDesktopSrc} mobileSrc={activeSlide.videoMobileSrc ?? activeSlide.videoDesktopSrc} />
+                  ) : null}
+                  {!activeSlide.videoDesktopSrc ? (
+                    <>
+                    <m.button
                     type="button"
                     layoutId={`research-image-${activeSlide.id}`}
                     onClick={() => setIsImageOpen(true)}
@@ -352,6 +458,8 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                       </div>
                     </div>
                   </div>
+                    </>
+                  ) : null}
                 </m.div>
               </AnimatePresence>
             </div>
