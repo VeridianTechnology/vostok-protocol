@@ -1136,7 +1136,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             </button>
             <div className="relative aspect-[9/16] w-full overflow-hidden rounded-2xl">
               <iframe
-                src="https://www.youtube.com/embed/n4JFVHGskVQ?autoplay=1"
+                src="https://www.youtube.com/embed/pdQrtf3CzCo?autoplay=1"
                 title="Video #1"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
