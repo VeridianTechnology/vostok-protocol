@@ -193,8 +193,8 @@ const researchSlides: ResearchSlide[] = [
   },
   {
     id: "the-method",
-    tabLabel: "The Method",
-    title: "The Method",
+    tabLabel: "Why",
+    title: "Why",
     paragraphs: [],
     desktopSrc: "/screen.png",
     mobileSrc: "/screen.png",

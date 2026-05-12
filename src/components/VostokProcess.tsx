@@ -857,7 +857,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">FIVE YEARS DIFFERENCE</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK</p>
                 <button
                   type="button"
                   onClick={openMyselfModal}
@@ -870,7 +870,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">FIVE YEARS DIFFERENCE #2</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK #2</p>
                 <button
                   type="button"
                   onClick={openBigModal}
@@ -1018,7 +1018,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             >
               <img
                 src="/images/big.jpg"
-                alt="Five years difference #2"
+                alt="Pre/After Vostok #2"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </m.div>
@@ -1049,7 +1049,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             >
               <img
                 src="/images/myself.jpg"
-                alt="Five years difference"
+                alt="Pre/After Vostok"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </m.div>
@@ -1136,7 +1136,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             </button>
             <div className="relative aspect-[9/16] w-full overflow-hidden rounded-2xl">
               <iframe
-                src="https://www.youtube.com/embed/JUHjy3I2TV0?autoplay=1"
+                src="https://www.youtube.com/embed/n4JFVHGskVQ?autoplay=1"
                 title="Video #1"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
