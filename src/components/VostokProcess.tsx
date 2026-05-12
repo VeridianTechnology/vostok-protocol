@@ -101,6 +101,48 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("20");
   const [activeImage, setActiveImage] = useState("/Comparison/5z.jpg");
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [clientModalExpanded, setClientModalExpanded] = useState(false);
+
+  const openClientModal = () => {
+    setShowClientModal(true);
+    setClientModalExpanded(false);
+    requestAnimationFrame(() => requestAnimationFrame(() => setClientModalExpanded(true)));
+  };
+
+  const closeClientModal = () => {
+    setClientModalExpanded(false);
+    setTimeout(() => setShowClientModal(false), 1000);
+  };
+
+  const [showClient2Modal, setShowClient2Modal] = useState(false);
+  const [client2ModalExpanded, setClient2ModalExpanded] = useState(false);
+
+  const openClient2Modal = () => {
+    setShowClient2Modal(true);
+    setClient2ModalExpanded(false);
+    requestAnimationFrame(() => requestAnimationFrame(() => setClient2ModalExpanded(true)));
+  };
+
+  const closeClient2Modal = () => {
+    setClient2ModalExpanded(false);
+    setTimeout(() => setShowClient2Modal(false), 1000);
+  };
+
+  const [showMyselfModal, setShowMyselfModal] = useState(false);
+  const [myselfModalExpanded, setMyselfModalExpanded] = useState(false);
+
+  const openMyselfModal = () => {
+    setShowMyselfModal(true);
+    setMyselfModalExpanded(false);
+    requestAnimationFrame(() => requestAnimationFrame(() => setMyselfModalExpanded(true)));
+  };
+
+  const closeMyselfModal = () => {
+    setMyselfModalExpanded(false);
+    setTimeout(() => setShowMyselfModal(false), 1000);
+  };
   const [parallaxShift, setParallaxShift] = useState(0);
   const [gridShift, setGridShift] = useState({ x: 0, y: 0 });
   const [scanKey, setScanKey] = useState(0);
@@ -746,6 +788,60 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               focusPulse ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
             }`}
           >
+            <div className="mb-4 pb-4 border-b border-white/10">
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">VIDEO #1</p>
+                <button
+                  type="button"
+                  onClick={() => setShowVideoModal(true)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  Play
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">CLIENT #1</p>
+                <button
+                  type="button"
+                  onClick={openClientModal}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                  </svg>
+                  View
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">CLIENT #2</p>
+                <button
+                  type="button"
+                  onClick={openClient2Modal}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                  </svg>
+                  View
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">FIVE YEARS DIFFERENCE</p>
+                <button
+                  type="button"
+                  onClick={openMyselfModal}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                  </svg>
+                  View
+                </button>
+              </div>
+            </div>
             {stages.map((stage) => {
               const isActiveStage = activeStage === stage.key;
               return (
@@ -829,6 +925,127 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           </div>
         </div>
       </div>
+      {showMyselfModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={closeMyselfModal}
+        >
+          <div
+            className="relative w-full max-w-3xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeMyselfModal}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <m.div
+              animate={{ paddingBottom: myselfModalExpanded ? "55%" : "133.33%" }}
+              transition={{ duration: 1, ease: "easeInOut" }}
+              className="relative w-full overflow-hidden rounded-2xl"
+              style={{ paddingBottom: "133.33%" }}
+            >
+              <img
+                src="/images/myself.jpg"
+                alt="Five years difference"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </m.div>
+          </div>
+        </div>
+      )}
+      {showClient2Modal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={closeClient2Modal}
+        >
+          <div
+            className="relative w-full max-w-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeClient2Modal}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <m.div
+              animate={{ paddingBottom: client2ModalExpanded ? "80%" : "133.33%" }}
+              transition={{ duration: 1, ease: "easeInOut" }}
+              className="relative w-full overflow-hidden rounded-2xl"
+              style={{ paddingBottom: "133.33%" }}
+            >
+              <img
+                src="/images/client_2.jpg"
+                alt="Client #2 result"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </m.div>
+          </div>
+        </div>
+      )}
+      {showClientModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={closeClientModal}
+        >
+          <div
+            className="relative w-full max-w-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeClientModal}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <m.div
+              animate={{ paddingBottom: clientModalExpanded ? "66.67%" : "133.33%" }}
+              transition={{ duration: 1, ease: "easeInOut" }}
+              className="relative w-full overflow-hidden rounded-2xl"
+              style={{ paddingBottom: "133.33%" }}
+            >
+              <img
+                src="/images/client_1.jpg"
+                alt="Client #1 result"
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </m.div>
+          </div>
+        </div>
+      )}
+      {showVideoModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setShowVideoModal(false)}
+        >
+          <div
+            className="relative w-full max-w-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setShowVideoModal(false)}
+              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
+            >
+              Close
+            </button>
+            <div className="relative aspect-[9/16] w-full overflow-hidden rounded-2xl">
+              <iframe
+                src="https://www.youtube.com/embed/JUHjy3I2TV0?autoplay=1"
+                title="Video #1"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
