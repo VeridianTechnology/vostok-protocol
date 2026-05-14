@@ -1171,7 +1171,6 @@ const MISSING_TRACKS = TRACKS.filter((track) => !track.audioSrc);
 const DJ_STINGERS = [
   "/audio/dj/lady/01.m4a",
   "/audio/dj/lady/02.m4a",
-  "/audio/dj/lady/03.m4a",
   "/audio/dj/lady/04.m4a",
   "/audio/dj/lady/05.m4a",
   "/audio/dj/lady/06.m4a",
@@ -1182,6 +1181,14 @@ const DJ_STINGERS = [
   "/audio/dj/lady/11.m4a",
   "/audio/dj/lady/12.m4a",
   "/audio/dj/lady/13.m4a",
+  "/audio/dj/lady/14.m4a",
+  "/audio/dj/lady/15.m4a",
+  "/audio/dj/lady/16.m4a",
+  "/audio/dj/lady/17.m4a",
+  "/audio/dj/lady/18.m4a",
+  "/audio/dj/lady/19.m4a",
+  "/audio/dj/lady/20.m4a",
+  "/audio/dj/lady/21.m4a",
 ] as const;
 const DEFAULT_VOLUME = 1;
 const DJ_STINGER_VOLUME_MULTIPLIER = 0.35;
