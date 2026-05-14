@@ -889,10 +889,10 @@ const TRACKS: Track[] = [
   },
   {
     id: "118",
-    title: "The Killers - Mr Brightside",
+    title: 'HOT FREAKS - "FOR NOTHING"',
     score: "NR",
-    audioSrc: "/audio/radio/118_The Killers - Mr Brightside (Lyrics).m4a",
-    youtubeUrl: "https://www.youtube.com/watch?v=j8tZs6G_h7U",
+    audioSrc: "/audio/radio/118_HOT FREAKS - FOR NOTHING (Official Lyric Video).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=MaSYFeLWDMM",
   },
   {
     id: "119",
@@ -907,6 +907,55 @@ const TRACKS: Track[] = [
     score: "NR",
     audioSrc: "/audio/radio/120_QMIIR, NUEKI - TAKA TITI.m4a",
     youtubeUrl: "https://www.youtube.com/watch?v=pPGlJ_uVC3A",
+  },
+  {
+    id: "121",
+    title: "twilight",
+    score: "NR",
+    audioSrc: "/audio/radio/121_twilight.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=oTiSJOgRdiE",
+  },
+  {
+    id: "122",
+    title: "only time",
+    score: "NR",
+    audioSrc: "/audio/radio/122_only time.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=tm7M7ZhrHTY",
+  },
+  {
+    id: "123",
+    title: "i dont want your help",
+    score: "NR",
+    audioSrc: "/audio/radio/123_i dont want your help.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=4AjjUHFQvpI",
+  },
+  {
+    id: "124",
+    title: "Dominic Fike - Babydoll",
+    score: "NR",
+    audioSrc: "/audio/radio/124_Dominic Fike - Babydoll (Lyrics).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=pTmwTQrY3Ts",
+  },
+  {
+    id: "125",
+    title: "overtonight - spiral song",
+    score: "NR",
+    audioSrc: "/audio/radio/125_overtonight - spiral song (official audio).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=-LJTTqsFT_c",
+  },
+  {
+    id: "126",
+    title: "iwonnit",
+    score: "NR",
+    audioSrc: "/audio/radio/126_iwonnit.mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=TlQDimBgrNM",
+  },
+  {
+    id: "127",
+    title: "unhappy (slowed)",
+    score: "NR",
+    audioSrc: "/audio/radio/127_unhappy (slowed).mp3",
+    youtubeUrl: "https://www.youtube.com/watch?v=Ixu_r8wqGo4",
   },
 ];
 
@@ -1023,7 +1072,7 @@ const formatTime = (seconds: number) => {
 };
 
 const getTrackDisplayTitle = (track: Track) =>
-  `${track.id in FEATURED_FLASH ? `* ${track.id} · ` : ""}${track.title}${track.audioSrc ? "" : " *"}`;
+  `${track.id in FEATURED_FLASH ? `* ` : ""}${track.title}${track.audioSrc ? "" : " *"}`;
 const getSpecialSongIntroSrc = (track: Track) =>
   track.id.includes("&") ? `/audio/dj/special_song/${track.id}.m4a` : null;
 
