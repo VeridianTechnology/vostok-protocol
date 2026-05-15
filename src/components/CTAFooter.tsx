@@ -50,7 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [buttonLabel, setButtonLabel] = useState<string>(STEP_FORWARD_PHRASES[0]);
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
-  const twitterProfileUrl = "https://x.com/AmoxCentur14900";
+  const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -283,10 +283,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
           </div>
 
           <a
-            href={twitterProfileUrl}
+            href={instagramProfileUrl}
             target="_blank"
             rel="noreferrer"
-            aria-label="Visit @AmoxCentur14900 on X"
+            aria-label="Visit @nyx.vostok on Instagram"
             className="absolute bottom-[9vh] right-5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/30 text-black transition-transform duration-300 hover:scale-105 hover:bg-white/45 md:bottom-[8vh] md:right-8"
           >
             <svg
@@ -294,7 +294,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
               viewBox="0 0 24 24"
               className="h-5 w-5 fill-current"
             >
-              <path d="M18.244 2H21.5l-7.109 8.125L22.75 22h-6.547l-5.127-6.701L5.21 22H1.95l7.605-8.693L1.55 2H8.26l4.635 6.168L18.244 2Zm-1.141 18.05h1.803L7.28 3.846H5.345L17.103 20.05Z" />
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
             </svg>
           </a>
         </m.div>

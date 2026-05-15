@@ -1681,6 +1681,7 @@ const RadioPlayer = () => {
     };
     const handlePlay = () => {
       setIsPlaying(true);
+      window.dispatchEvent(new Event("radio:play"));
       if (audio.readyState < 3) {
         setIsTrackLoading(true);
       }
