@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import FeatureThumbnails from "@/components/FeatureThumbnails";
-import PremiumLifestyleSection from "@/components/PremiumLifestyleSection";
+import MessianicSection from "@/components/MessianicSection";
+import WallSection from "@/components/WallSection";
+import IdentityShiftSection from "@/components/IdentityShiftSection";
+import BecomingSection from "@/components/BecomingSection";
 import SectionLoader from "@/components/SectionLoader";
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
@@ -14,6 +17,7 @@ const orderedSectionIds = [
   "section-hero",
   "section-messianic",
   "section-wall",
+  "section-identity",
   "section-become",
   "section-what-is-it",
   "section-vostok",
@@ -21,66 +25,61 @@ const orderedSectionIds = [
   "section-cta",
 ] as const;
 
-const swallowedSectionIds = ["section-messianic", "section-wall"] as const;
-type SwallowedSectionId = (typeof swallowedSectionIds)[number];
-const SWALLOWED_SECTION_HEIGHT_PX = 6;
-const SWALLOW_PLACEHOLDER_HOLD_MS = 1000;
-const SWALLOW_PLACEHOLDER_SHRINK_MS = 50;
-type SwallowPhase = "open" | "hold" | "shrinking" | "collapsed";
+const collapsibleSectionIds = ["section-messianic", "section-wall"] as const;
+type CollapsibleSectionId = (typeof collapsibleSectionIds)[number];
+const COLLAPSED_HEIGHT_PX = 6;
+const COLLAPSE_HOLD_MS = 1000;
+const COLLAPSE_SHRINK_MS = 50;
+type CollapsePhase = "open" | "hold" | "shrinking" | "collapsed";
 
-const createInitialSwallowProgress = (): Record<SwallowedSectionId, number> => ({
+const createInitialCollapseProgress = (): Record<CollapsibleSectionId, number> => ({
   "section-messianic": 0,
   "section-wall": 0,
 });
 
-const createInitialSwallowedSections = (): Record<SwallowedSectionId, boolean> => ({
+const createInitialCollapsedSections = (): Record<CollapsibleSectionId, boolean> => ({
   "section-messianic": false,
   "section-wall": false,
 });
 
-const createInitialSwallowHeights = (): Record<SwallowedSectionId, number> => ({
+const createInitialCollapseHeights = (): Record<CollapsibleSectionId, number> => ({
   "section-messianic": 0,
   "section-wall": 0,
 });
 
-const createInitialSwallowPhases = (): Record<SwallowedSectionId, SwallowPhase> => ({
+const createInitialCollapsePhases = (): Record<CollapsibleSectionId, CollapsePhase> => ({
   "section-messianic": "open",
   "section-wall": "open",
 });
 
-const createInitialSwallowTimers = (): Record<SwallowedSectionId, number | null> => ({
+const createInitialCollapseTimers = (): Record<CollapsibleSectionId, number | null> => ({
   "section-messianic": null,
   "section-wall": null,
 });
 
-const createInitialSwallowState = () => ({
-  progress: createInitialSwallowProgress(),
-  swallowed: createInitialSwallowedSections(),
-  heights: createInitialSwallowHeights(),
-  phase: createInitialSwallowPhases(),
+const createInitialCollapseState = () => ({
+  progress: createInitialCollapseProgress(),
+  collapsed: createInitialCollapsedSections(),
+  heights: createInitialCollapseHeights(),
+  phase: createInitialCollapsePhases(),
 });
 
 const Index = () => {
   const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
-  const [isFacebookEntry, setIsFacebookEntry] = useState(false);
-  const [isFourChanEntry, setIsFourChanEntry] = useState(false);
-  const [isInstagramEntry, setIsInstagramEntry] = useState(false);
-  const [isTikTokEntry, setIsTikTokEntry] = useState(false);
-  const [isRedditEntry, setIsRedditEntry] = useState(false);
-  const [isTwitterEntry, setIsTwitterEntry] = useState(false);
+  const [entrySource, setEntrySource] = useState("direct");
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
-  const swallowRafRef = useRef<number | null>(null);
+  const collapseRafRef = useRef<number | null>(null);
   const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
   const systemGlitchDoTimeoutRef = useRef<number | null>(null);
   const systemGlitchSystemTimeoutRef = useRef<number | null>(null);
   const systemGlitchClearTimeoutRef = useRef<number | null>(null);
   const activeSectionIdRef = useRef<(typeof orderedSectionIds)[number]>("section-hero");
   const visibleSectionsRef = useRef<Map<string, number>>(new Map());
-  const swallowHoldTimeoutRef = useRef(createInitialSwallowTimers());
-  const swallowCollapseFrameRef = useRef(createInitialSwallowTimers());
-  const swallowCollapseTimeoutRef = useRef(createInitialSwallowTimers());
-  const [swallowState, setSwallowState] = useState(createInitialSwallowState);
+  const collapseHoldTimeoutRef = useRef(createInitialCollapseTimers());
+  const collapseFrameRef = useRef(createInitialCollapseTimers());
+  const collapseTimeoutRef = useRef(createInitialCollapseTimers());
+  const [collapseState, setCollapseState] = useState(createInitialCollapseState);
 
   const clearSystemGlitchTimeouts = () => {
     if (systemGlitchCopyTimeoutRef.current) {
@@ -102,14 +101,9 @@ const Index = () => {
   };
   useEffect(() => {
     checkAndSetOwnerParam();
-    const params = new URLSearchParams(window.location.search);
-    const normalizedSource = params.get("utm_source")?.toLowerCase();
-    if (normalizedSource === "facebook") setIsFacebookEntry(true);
-    if (normalizedSource === "4chan") setIsFourChanEntry(true);
-    if (normalizedSource === "instagram") setIsInstagramEntry(true);
-    if (normalizedSource === "tiktok") setIsTikTokEntry(true);
-    if (normalizedSource === "reddit") setIsRedditEntry(true);
-    if (normalizedSource === "twitter") setIsTwitterEntry(true);
+    const source = new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase();
+    const known = ["facebook", "4chan", "instagram", "tiktok", "reddit", "twitter"];
+    if (source && known.includes(source)) setEntrySource(source);
   }, []);
 
   // Visitor category system — fires exactly one event per session on exit:
@@ -188,16 +182,16 @@ const Index = () => {
 
 
   useEffect(() => {
-    swallowedSectionIds.forEach((id) => {
-      if (swallowState.phase[id] !== "hold" || swallowHoldTimeoutRef.current[id]) {
+    collapsibleSectionIds.forEach((id) => {
+      if (collapseState.phase[id] !== "hold" || collapseHoldTimeoutRef.current[id]) {
         return;
       }
 
-      swallowHoldTimeoutRef.current[id] = window.setTimeout(() => {
-        swallowHoldTimeoutRef.current[id] = null;
-        swallowCollapseFrameRef.current[id] = window.requestAnimationFrame(() => {
-          swallowCollapseFrameRef.current[id] = null;
-          setSwallowState((current) => {
+      collapseHoldTimeoutRef.current[id] = window.setTimeout(() => {
+        collapseHoldTimeoutRef.current[id] = null;
+        collapseFrameRef.current[id] = window.requestAnimationFrame(() => {
+          collapseFrameRef.current[id] = null;
+          setCollapseState((current) => {
             if (current.phase[id] !== "hold") {
               return current;
             }
@@ -208,9 +202,9 @@ const Index = () => {
             };
           });
 
-          swallowCollapseTimeoutRef.current[id] = window.setTimeout(() => {
-            swallowCollapseTimeoutRef.current[id] = null;
-            setSwallowState((current) => {
+          collapseTimeoutRef.current[id] = window.setTimeout(() => {
+            collapseTimeoutRef.current[id] = null;
+            setCollapseState((current) => {
               if (current.phase[id] !== "shrinking") {
                 return current;
               }
@@ -221,22 +215,22 @@ const Index = () => {
               };
             });
             window.requestAnimationFrame(() => window.dispatchEvent(new Event("scroll")));
-          }, SWALLOW_PLACEHOLDER_SHRINK_MS);
+          }, COLLAPSE_SHRINK_MS);
         });
-      }, SWALLOW_PLACEHOLDER_HOLD_MS);
+      }, COLLAPSE_HOLD_MS);
     });
-  }, [swallowState.phase]);
+  }, [collapseState.phase]);
 
   useEffect(() => {
-    const holdTimeoutRef = swallowHoldTimeoutRef.current;
-    const collapseFrameRef = swallowCollapseFrameRef.current;
-    const collapseTimeoutRef = swallowCollapseTimeoutRef.current;
+    const holdTimeoutRef = collapseHoldTimeoutRef.current;
+    const frameRef = collapseFrameRef.current;
+    const timeoutRef = collapseTimeoutRef.current;
 
     return () => {
-      swallowedSectionIds.forEach((id) => {
+      collapsibleSectionIds.forEach((id) => {
         const holdTimeoutId = holdTimeoutRef[id];
-        const frameId = collapseFrameRef[id];
-        const timeoutId = collapseTimeoutRef[id];
+        const frameId = frameRef[id];
+        const timeoutId = timeoutRef[id];
 
         if (holdTimeoutId) {
           window.clearTimeout(holdTimeoutId);
@@ -252,17 +246,17 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    const updateSwallowProgress = () => {
+    const updateCollapseProgress = () => {
       const scrollTop = window.scrollY;
 
-      setSwallowState((current) => {
+      setCollapseState((current) => {
         let hasChanged = false;
         const nextProgress = { ...current.progress };
-        const nextSwallowed = { ...current.swallowed };
+        const nextCollapsed = { ...current.collapsed };
         const nextHeights = { ...current.heights };
         const nextPhase = { ...current.phase };
 
-        swallowedSectionIds.forEach((id, index) => {
+        collapsibleSectionIds.forEach((id, index) => {
           const node = document.getElementById(id);
           if (!node) {
             return;
@@ -271,16 +265,16 @@ const Index = () => {
           const sectionTop = node.offsetTop;
           const sectionHeight = Math.max(node.scrollHeight, node.offsetHeight, 1);
           const hasPassedSection = scrollTop >= sectionTop + sectionHeight;
-          const previousSectionId = swallowedSectionIds[index - 1];
+          const previousSectionId = collapsibleSectionIds[index - 1];
 
           if (previousSectionId && current.phase[previousSectionId] !== "collapsed") {
             return;
           }
 
-          if (current.swallowed[id] || hasPassedSection) {
-            if (!current.swallowed[id]) {
-              nextSwallowed[id] = true;
-              nextHeights[id] = Math.max(sectionHeight, SWALLOWED_SECTION_HEIGHT_PX);
+          if (current.collapsed[id] || hasPassedSection) {
+            if (!current.collapsed[id]) {
+              nextCollapsed[id] = true;
+              nextHeights[id] = Math.max(sectionHeight, COLLAPSED_HEIGHT_PX);
               nextPhase[id] = "hold";
               hasChanged = true;
             }
@@ -303,19 +297,19 @@ const Index = () => {
         });
 
         return hasChanged
-          ? { progress: nextProgress, swallowed: nextSwallowed, heights: nextHeights, phase: nextPhase }
+          ? { progress: nextProgress, collapsed: nextCollapsed, heights: nextHeights, phase: nextPhase }
           : current;
       });
     };
 
     const requestUpdate = () => {
-      if (swallowRafRef.current) {
+      if (collapseRafRef.current) {
         return;
       }
 
-      swallowRafRef.current = window.requestAnimationFrame(() => {
-        swallowRafRef.current = null;
-        updateSwallowProgress();
+      collapseRafRef.current = window.requestAnimationFrame(() => {
+        collapseRafRef.current = null;
+        updateCollapseProgress();
       });
     };
 
@@ -326,9 +320,9 @@ const Index = () => {
     return () => {
       window.removeEventListener("scroll", requestUpdate);
       window.removeEventListener("resize", requestUpdate);
-      if (swallowRafRef.current) {
-        window.cancelAnimationFrame(swallowRafRef.current);
-        swallowRafRef.current = null;
+      if (collapseRafRef.current) {
+        window.cancelAnimationFrame(collapseRafRef.current);
+        collapseRafRef.current = null;
       }
     };
   }, []);
@@ -383,7 +377,6 @@ const Index = () => {
       return;
     }
     const targets: Array<{ id: string; event: string }> = [
-      { id: "section-hero", event: "section_hero_view" },
       { id: "section-vostok", event: "section_vostok_view" },
       { id: "section-change-face", event: "section_change_face_view" },
       { id: "section-research", event: "section_research_view" },
@@ -535,57 +528,44 @@ const Index = () => {
     continueToCheckout();
   };
 
-  const entrySource = isFacebookEntry
-    ? "facebook"
-    : isFourChanEntry
-      ? "4chan"
-      : isInstagramEntry
-        ? "instagram"
-        : isTikTokEntry
-          ? "tiktok"
-          : isRedditEntry
-            ? "reddit"
-            : isTwitterEntry
-              ? "twitter"
-              : "direct";
-  const activeSwallowSectionId: SwallowedSectionId | null =
-    swallowState.phase["section-messianic"] === "open" &&
-    swallowState.progress["section-messianic"] > 0
+  const activeCollapseSectionId: CollapsibleSectionId | null =
+    collapseState.phase["section-messianic"] === "open" &&
+    collapseState.progress["section-messianic"] > 0
       ? "section-messianic"
-      : swallowState.phase["section-wall"] === "open" && swallowState.progress["section-wall"] > 0
+      : collapseState.phase["section-wall"] === "open" && collapseState.progress["section-wall"] > 0
         ? "section-wall"
         : null;
-  const getSwallowStyle = (id: SwallowedSectionId) => {
-    const progress = swallowState.progress[id];
-    const phase = swallowState.phase[id];
-    const isActive = activeSwallowSectionId === id;
+  const getCollapseStyle = (id: CollapsibleSectionId) => {
+    const progress = collapseState.progress[id];
+    const phase = collapseState.phase[id];
+    const isActive = activeCollapseSectionId === id;
     const visualProgress = phase !== "open" ? 1 : isActive ? progress : 0;
 
     return {
-      ["--hero-swallow-progress" as string]: visualProgress,
-      ["--hero-swallow-placeholder-height" as string]: `${Math.max(
-        swallowState.heights[id],
-        SWALLOWED_SECTION_HEIGHT_PX
+      ["--hero-collapse-progress" as string]: visualProgress,
+      ["--hero-collapse-placeholder-height" as string]: `${Math.max(
+        collapseState.heights[id],
+        COLLAPSED_HEIGHT_PX
       )}px`,
-      ["--hero-swallow-cover-height" as string]: isActive
+      ["--hero-collapse-cover-height" as string]: isActive
         ? `${Math.round(visualProgress * 1000) / 10}%`
         : "0%",
-      ["--hero-swallow-content-opacity" as string]: Math.max(0, 1 - visualProgress),
-      ["--hero-swallow-content-brightness" as string]: Math.max(0.58, 1 - visualProgress * 0.42),
-      ["--hero-swallow-overlay-opacity" as string]: isActive
+      ["--hero-collapse-content-opacity" as string]: Math.max(0, 1 - visualProgress),
+      ["--hero-collapse-content-brightness" as string]: Math.max(0.58, 1 - visualProgress * 0.42),
+      ["--hero-collapse-overlay-opacity" as string]: isActive
         ? Math.min(1, visualProgress * 1.35)
         : 0,
     };
   };
-  const getSwallowClassName = (id: SwallowedSectionId) => {
-    const phase = swallowState.phase[id];
+  const getCollapseClassName = (id: CollapsibleSectionId) => {
+    const phase = collapseState.phase[id];
     return [
-      "hero-swallow-section min-h-0",
-      activeSwallowSectionId === id ? "hero-swallow-section--active" : "",
-      phase !== "open" ? "hero-swallow-section--placeholder" : "",
-      phase === "hold" ? "hero-swallow-section--hold" : "",
-      phase === "shrinking" ? "hero-swallow-section--shrinking" : "",
-      phase === "collapsed" ? "hero-swallow-section--collapsed" : "",
+      "hero-collapse-section min-h-0",
+      activeCollapseSectionId === id ? "hero-collapse-section--active" : "",
+      phase !== "open" ? "hero-collapse-section--placeholder" : "",
+      phase === "hold" ? "hero-collapse-section--hold" : "",
+      phase === "shrinking" ? "hero-collapse-section--shrinking" : "",
+      phase === "collapsed" ? "hero-collapse-section--collapsed" : "",
     ].filter(Boolean).join(" ");
   };
 
@@ -601,30 +581,23 @@ const Index = () => {
       <div className="divider-line hidden md:block" />
       <section
         id="section-messianic"
-        className={getSwallowClassName("section-messianic")}
-        style={getSwallowStyle("section-messianic")}
+        className={getCollapseClassName("section-messianic")}
+        style={getCollapseStyle("section-messianic")}
       >
-        <PremiumLifestyleSection
-          visibleSections={["messianic"]}
-          messianicSectionId={undefined}
-        />
+        <MessianicSection />
       </section>
       <section
         id="section-wall"
-        className={getSwallowClassName("section-wall")}
-        style={getSwallowStyle("section-wall")}
+        className={getCollapseClassName("section-wall")}
+        style={getCollapseStyle("section-wall")}
       >
-        <PremiumLifestyleSection
-          visibleSections={["wall"]}
-          wallSectionId={undefined}
-        />
+        <WallSection />
+      </section>
+      <section id="section-identity">
+        <IdentityShiftSection sectionId="section-identity" />
       </section>
       <section id="section-become" className="min-h-[78vh] md:min-h-[200vh]">
-        <PremiumLifestyleSection
-          visibleSections={["becoming"]}
-          becomingSectionId={undefined}
-          isBecomingYouActive={activeSectionId === "section-become"}
-        />
+        <BecomingSection isBecomingYouActive={activeSectionId === "section-become"} />
       </section>
       <Suspense fallback={null}>
         <TransitionThreshold variant="crossing" />

@@ -139,35 +139,35 @@
     background-color: var(--section-surface);
   }
 
-  .hero-swallow-section {
-    --hero-swallow-progress: 0;
-    --hero-swallow-cover-height: 0%;
-    --hero-swallow-content-opacity: 1;
-    --hero-swallow-content-brightness: 1;
-    --hero-swallow-overlay-opacity: 0;
+  .hero-collapse-section {
+    --hero-collapse-progress: 0;
+    --hero-collapse-cover-height: 0%;
+    --hero-collapse-content-opacity: 1;
+    --hero-collapse-content-brightness: 1;
+    --hero-collapse-overlay-opacity: 0;
     position: relative;
     overflow: hidden;
     background: #000;
   }
 
-  .hero-swallow-section > * {
+  .hero-collapse-section > * {
     will-change: opacity, filter, clip-path;
     transition:
       opacity 700ms ease,
       filter 700ms ease,
       clip-path 700ms ease;
-    opacity: var(--hero-swallow-content-opacity);
-    filter: brightness(var(--hero-swallow-content-brightness));
-    clip-path: inset(var(--hero-swallow-cover-height) 0 0 0);
+    opacity: var(--hero-collapse-content-opacity);
+    filter: brightness(var(--hero-collapse-content-brightness));
+    clip-path: inset(var(--hero-collapse-cover-height) 0 0 0);
   }
 
-  .hero-swallow-section::after {
+  .hero-collapse-section::after {
     content: "";
     pointer-events: none;
     position: absolute;
     inset: 0 0 auto;
     z-index: 45;
-    height: var(--hero-swallow-cover-height);
+    height: var(--hero-collapse-cover-height);
     min-height: 0;
     background:
       linear-gradient(180deg, rgba(0, 0, 0, 0.94), #000 72%),
@@ -176,36 +176,36 @@
     box-shadow:
       0 10px 22px rgba(0, 0, 0, 0.46),
       inset 0 -1px 0 rgba(255, 255, 255, 0.18);
-    opacity: var(--hero-swallow-overlay-opacity);
+    opacity: var(--hero-collapse-overlay-opacity);
   }
 
-  .hero-swallow-section--placeholder {
-    height: var(--hero-swallow-placeholder-height);
-    min-height: var(--hero-swallow-placeholder-height);
-    max-height: var(--hero-swallow-placeholder-height);
+  .hero-collapse-section--placeholder {
+    height: var(--hero-collapse-placeholder-height);
+    min-height: var(--hero-collapse-placeholder-height);
+    max-height: var(--hero-collapse-placeholder-height);
     border-bottom: 2px solid rgba(214, 214, 214, 0.92);
     transition: none;
   }
 
-  .hero-swallow-section--placeholder > * {
+  .hero-collapse-section--placeholder > * {
     visibility: hidden;
     opacity: 0;
   }
 
-  .hero-swallow-section--placeholder::after {
+  .hero-collapse-section--placeholder::after {
     height: 4px;
     border-bottom: 2px solid rgba(214, 214, 214, 0.92);
     opacity: 0.96;
   }
 
-  .hero-swallow-section--shrinking {
+  .hero-collapse-section--shrinking {
     height: 6px !important;
     min-height: 6px !important;
     max-height: 6px !important;
     transition: none;
   }
 
-  .hero-swallow-section--collapsed {
+  .hero-collapse-section--collapsed {
     height: 6px !important;
     min-height: 6px !important;
     max-height: 6px !important;
@@ -213,11 +213,11 @@
   }
 
   @media (max-width: 767px) {
-    .hero-swallow-section {
+    .hero-collapse-section {
       overflow: visible;
     }
 
-    .hero-swallow-section > * {
+    .hero-collapse-section > * {
       visibility: visible !important;
       opacity: 1 !important;
       filter: none !important;
@@ -225,13 +225,13 @@
       transition: none;
     }
 
-    .hero-swallow-section::after {
+    .hero-collapse-section::after {
       display: none;
     }
 
-    .hero-swallow-section--placeholder,
-    .hero-swallow-section--shrinking,
-    .hero-swallow-section--collapsed {
+    .hero-collapse-section--placeholder,
+    .hero-collapse-section--shrinking,
+    .hero-collapse-section--collapsed {
       height: auto !important;
       min-height: 0 !important;
       max-height: none !important;
@@ -1640,8 +1640,36 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* Blanket reduction — 0.01ms keeps JS animationend events firing */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
   .sweep-line {
     animation: none;
     opacity: 0.25;
+  }
+
+  .hero-collapse-section > * {
+    transition: none !important;
+    clip-path: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+
+  .hero-collapse-section::after {
+    display: none;
+  }
+
+  .mobile-hero-rain-pane::before,
+  .mobile-hero-rain-pane::after {
+    animation: none !important;
+  }
+
+  .becoming-you-bg-scroll {
+    animation: none !important;
   }
 }
