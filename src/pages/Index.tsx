@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, lazy } from "react";
+import { useEffect, useRef, useState, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
 import FeatureThumbnails from "@/components/FeatureThumbnails";
-const PremiumLifestyleSection = lazy(() => import("@/components/PremiumLifestyleSection"));
+import PremiumLifestyleSection from "@/components/PremiumLifestyleSection";
+import SectionLoader from "@/components/SectionLoader";
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
@@ -625,20 +626,34 @@ const Index = () => {
           isBecomingYouActive={activeSectionId === "section-become"}
         />
       </section>
-      <TransitionThreshold variant="crossing" />
+      <Suspense fallback={null}>
+        <TransitionThreshold variant="crossing" />
+      </Suspense>
       <section id="section-vostok">
-        <VostokProcess entrySource={entrySource} />
+        <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
+          <VostokProcess entrySource={entrySource} />
+        </Suspense>
       </section>
       <section id="section-what-is-it" className="min-h-0">
-        <WhatIsItSection />
+        <Suspense fallback={null}>
+          <WhatIsItSection />
+        </Suspense>
       </section>
-      <TransitionThreshold variant="chamber" />
+      <Suspense fallback={null}>
+        <TransitionThreshold variant="chamber" />
+      </Suspense>
       <section id="section-research" className="min-h-[50vh]">
-        <ResearchStudies entrySource={entrySource} />
+        <Suspense fallback={<SectionLoader minHeightClass="min-h-[50vh]" />}>
+          <ResearchStudies entrySource={entrySource} />
+        </Suspense>
       </section>
-      <TransitionThreshold variant="fracture" />
+      <Suspense fallback={null}>
+        <TransitionThreshold variant="fracture" />
+      </Suspense>
       <section id="section-cta" className="min-h-[40vh] md:min-h-[140vh]">
-        <CTAFooter onRequestBuy={handleRequestBuy} entrySource={entrySource} />
+        <Suspense fallback={<SectionLoader minHeightClass="min-h-[40vh] md:min-h-[140vh]" />}>
+          <CTAFooter onRequestBuy={handleRequestBuy} entrySource={entrySource} />
+        </Suspense>
       </section>
       {systemGlitchWord && typeof document !== "undefined"
         ? createPortal(

@@ -2079,14 +2079,20 @@ const RadioPlayer = () => {
                 </span>
               ) : null}
             </div>
-            <a
-              href={currentTrack.youtubeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="pod-inset-text mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
-            >
-              {getTrackDisplayTitle(currentTrack)}
-            </a>
+            {isTrackLoading ? (
+              <span className="pod-inset-text mb-1 animate-pulse text-center text-[8px] uppercase tracking-[0.14em] md:text-[10px]">
+                {loadingLabel}
+              </span>
+            ) : (
+              <a
+                href={currentTrack.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pod-inset-text mb-1 max-w-[28vw] text-center text-[8px] uppercase tracking-[0.14em] underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white md:max-w-[18vw] md:text-[10px]"
+              >
+                {getTrackDisplayTitle(currentTrack)}
+              </a>
+            )}
             <button
               type="button"
               onClick={handleNextTrack}
@@ -2144,14 +2150,18 @@ const RadioPlayer = () => {
           </div>
           <div className="relative min-w-0 w-full">
             <div className="pod-inset-text mb-0.5 flex items-center justify-between text-[9px] uppercase tracking-[0.18em] md:mb-1 md:text-[11px]">
-              <a
-                href={currentTrack.youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="truncate pr-3 underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white"
-              >
-                {getTrackDisplayTitle(currentTrack)}
-              </a>
+              {isTrackLoading ? (
+                <span className="animate-pulse tracking-[0.22em]">{loadingLabel}</span>
+              ) : (
+                <a
+                  href={currentTrack.youtubeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate pr-3 underline decoration-white/40 underline-offset-[0.22em] transition hover:text-white"
+                >
+                  {getTrackDisplayTitle(currentTrack)}
+                </a>
+              )}
               <span className="shrink-0">{formatTime(currentTime)} / {formatTime(duration)}</span>
             </div>
             <div className="flex items-center gap-2 md:gap-3">
