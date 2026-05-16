@@ -7,8 +7,7 @@ const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
-import { track } from "@vercel/analytics";
-import { trackOnce } from "@/lib/analytics";
+import { trackSafe, trackOnce, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
 
 const orderedSectionIds = [
   "section-hero",
@@ -70,9 +69,6 @@ const Index = () => {
   const [isTwitterEntry, setIsTwitterEntry] = useState(false);
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
-  const stayTimerRef = useRef<number | null>(null);
-  const stay60TimerRef = useRef<number | null>(null);
-  const scrollRafRef = useRef<number | null>(null);
   const swallowRafRef = useRef<number | null>(null);
   const systemGlitchCopyTimeoutRef = useRef<number | null>(null);
   const systemGlitchDoTimeoutRef = useRef<number | null>(null);
@@ -104,58 +100,78 @@ const Index = () => {
     }
   };
   useEffect(() => {
-    trackOnce("page_view");
+    checkAndSetOwnerParam();
     const params = new URLSearchParams(window.location.search);
-    const source = params.get("utm_source");
-    const normalizedSource = source?.toLowerCase();
-    if (normalizedSource === "facebook") {
-      setIsFacebookEntry(true);
-    }
-    if (normalizedSource === "4chan") {
-      setIsFourChanEntry(true);
-    }
-    if (normalizedSource === "instagram") {
-      setIsInstagramEntry(true);
-    }
-    if (normalizedSource === "tiktok") {
-      setIsTikTokEntry(true);
-    }
-    if (normalizedSource === "reddit") {
-      setIsRedditEntry(true);
-    }
-    if (normalizedSource === "twitter") {
-      setIsTwitterEntry(true);
-    }
+    const normalizedSource = params.get("utm_source")?.toLowerCase();
+    if (normalizedSource === "facebook") setIsFacebookEntry(true);
+    if (normalizedSource === "4chan") setIsFourChanEntry(true);
+    if (normalizedSource === "instagram") setIsInstagramEntry(true);
+    if (normalizedSource === "tiktok") setIsTikTokEntry(true);
+    if (normalizedSource === "reddit") setIsRedditEntry(true);
+    if (normalizedSource === "twitter") setIsTwitterEntry(true);
+  }, []);
 
-    stayTimerRef.current = window.setTimeout(() => {
-      track("stay_30s");
-      if (source?.toLowerCase() === "facebook") {
-        track("stay_30s_facebook");
+  // Visitor category system — fires exactly one event per session on exit:
+  // "bot_activity" | "did_check" | "checked_it_well" | "buy_button_check"
+  useEffect(() => {
+    if (isOwner()) return;
+    if (sessionStorage.getItem(CAT_KEY)) return;
+
+    const arrivalTime = Date.now();
+    let hasScrolled = false;
+    let hasMovement = false;
+    let maxScroll = 0;
+
+    const onScroll = () => {
+      hasScrolled = true;
+      hasMovement = true;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight > 0) {
+        maxScroll = Math.max(maxScroll, window.scrollY / docHeight);
       }
-      if (source?.toLowerCase() === "4chan") {
-        track("stay_30s_4chan");
+    };
+
+    const onMovement = () => {
+      hasMovement = true;
+    };
+
+    const fireCategory = () => {
+      if (sessionStorage.getItem(CAT_KEY)) return;
+      const elapsed = Date.now() - arrivalTime;
+      let cat: string | null = null;
+
+      if (hasBuyClicked() || sessionStorage.getItem(BOUGHT_KEY)) {
+        cat = "buy_button_check";
+      } else if (maxScroll > 0.5 || (elapsed >= 30000 && hasMovement)) {
+        cat = "checked_it_well";
+      } else if (elapsed >= 30000 && maxScroll >= 0.5) {
+        cat = "did_check";
+      } else if (elapsed < 7000 && !hasScrolled) {
+        cat = "bot_activity";
       }
-      if (source?.toLowerCase() === "instagram") {
-        track("stay_30s_instagram");
+
+      if (cat) {
+        sessionStorage.setItem(CAT_KEY, cat);
+        trackSafe(cat);
       }
-      if (source?.toLowerCase() === "tiktok") {
-        track("stay_30s_tiktok");
-      }
-      if (source?.toLowerCase() === "twitter") {
-        track("stay_30s_twitter");
-      }
-    }, 30000);
-    stay60TimerRef.current = window.setTimeout(() => {
-      trackOnce("stay_60s");
-    }, 60000);
+    };
+
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") fireCategory();
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("mousemove", onMovement, { passive: true });
+    window.addEventListener("touchstart", onMovement, { passive: true });
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", fireCategory);
 
     return () => {
-      if (stayTimerRef.current) {
-        window.clearTimeout(stayTimerRef.current);
-      }
-      if (stay60TimerRef.current) {
-        window.clearTimeout(stay60TimerRef.current);
-      }
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("mousemove", onMovement);
+      window.removeEventListener("touchstart", onMovement);
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", fireCategory);
     };
   }, []);
 
@@ -169,43 +185,6 @@ const Index = () => {
     activeSectionIdRef.current = activeSectionId;
   }, [activeSectionId]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (scrollRafRef.current) {
-        return;
-      }
-      scrollRafRef.current = window.requestAnimationFrame(() => {
-        scrollRafRef.current = null;
-        const scrollTop = window.scrollY;
-        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        if (docHeight <= 0) {
-          return;
-        }
-        const progress = scrollTop / docHeight;
-        if (progress >= 0.25) {
-          trackOnce("scroll_25");
-        }
-        if (progress >= 0.5) {
-          trackOnce("scroll_50");
-        }
-        if (progress >= 0.75) {
-          trackOnce("scroll_75");
-        }
-        if (progress >= 0.98) {
-          trackOnce("scroll_100");
-        }
-      });
-    };
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (scrollRafRef.current) {
-        window.cancelAnimationFrame(scrollRafRef.current);
-        scrollRafRef.current = null;
-      }
-    };
-  }, []);
 
   useEffect(() => {
     swallowedSectionIds.forEach((id) => {

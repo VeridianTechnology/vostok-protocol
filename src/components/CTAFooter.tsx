@@ -1,7 +1,7 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { track } from "@vercel/analytics";
+import { trackSafe, markBuyClicked } from "@/lib/analytics";
 import SectionSideTab from "@/components/SectionSideTab";
 
 type CTAFooterProps = {
@@ -177,22 +177,8 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         window.open(gumroadUrl, "_blank", "noopener,noreferrer");
       }
     };
-    track("buy_button", { location });
-    if (entrySource === "facebook") {
-      track("buy_button_facebook", { location });
-    }
-    if (entrySource === "4chan") {
-      track("buy_button_4chan", { location });
-    }
-    if (entrySource === "instagram") {
-      track("buy_button_instagram", { location });
-    }
-    if (entrySource === "twitter") {
-      track("buy_button_twitter", { location });
-    }
-    if (entrySource === "tiktok") {
-      track("buy_button_tiktok", { location });
-    }
+    markBuyClicked();
+    trackSafe("buy_button_check", { location, source: entrySource ?? "direct" });
     if (onRequestBuy) {
       onRequestBuy(goToCheckout);
       return;
