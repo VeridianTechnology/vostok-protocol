@@ -3,13 +3,11 @@ import { createPortal } from "react-dom";
 import FeatureThumbnails from "@/components/FeatureThumbnails";
 import MessianicSection from "@/components/MessianicSection";
 import WallSection from "@/components/WallSection";
-import IdentityShiftSection from "@/components/IdentityShiftSection";
 import BecomingSection from "@/components/BecomingSection";
 import SectionLoader from "@/components/SectionLoader";
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
-const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
 import { trackSafe, trackOnce, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
 
@@ -17,9 +15,7 @@ const orderedSectionIds = [
   "section-hero",
   "section-messianic",
   "section-wall",
-  "section-identity",
   "section-become",
-  "section-what-is-it",
   "section-vostok",
   "section-research",
   "section-cta",
@@ -593,9 +589,6 @@ const Index = () => {
       >
         <WallSection />
       </section>
-      <section id="section-identity">
-        <IdentityShiftSection sectionId="section-identity" />
-      </section>
       <section id="section-become" className="min-h-[78vh] md:min-h-[200vh]">
         <BecomingSection isBecomingYouActive={activeSectionId === "section-become"} />
       </section>
@@ -605,11 +598,6 @@ const Index = () => {
       <section id="section-vostok">
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
           <VostokProcess entrySource={entrySource} />
-        </Suspense>
-      </section>
-      <section id="section-what-is-it" className="min-h-0">
-        <Suspense fallback={null}>
-          <WhatIsItSection />
         </Suspense>
       </section>
       <Suspense fallback={null}>
