@@ -177,8 +177,10 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         window.open(gumroadUrl, "_blank", "noopener,noreferrer");
       }
     };
+    const source = entrySource ?? "direct";
     markBuyClicked();
-    trackSafe("buy_button_check", { location, source: entrySource ?? "direct" });
+    trackSafe("buy_button_check", { location, source });
+    trackSafe(`buy_button_${source}`, { location });
     if (onRequestBuy) {
       onRequestBuy(goToCheckout);
       return;
