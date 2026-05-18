@@ -170,6 +170,18 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
 
   const fireTikTokEvent = () => {
     try {
+      // Browser-side pixel event
+      const ttq = (window as Record<string, unknown>).ttq as { track?: (event: string, props: unknown) => void } | undefined;
+      ttq?.track?.("InitiateCheckout", {
+        contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
+        value: 30,
+        currency: "USD",
+      });
+    } catch {
+      // ignore
+    }
+    try {
+      // Server-side event
       fetch("/api/tiktok-event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
