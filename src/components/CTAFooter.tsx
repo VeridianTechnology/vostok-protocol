@@ -168,6 +168,21 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     setIsRedirecting(false);
   };
 
+  const fireTikTokEvent = () => {
+    try {
+      fetch("/api/tiktok-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userAgent: navigator.userAgent,
+          url: window.location.href,
+        }),
+      }).catch(() => {});
+    } catch {
+      // ignore
+    }
+  };
+
   const handleCheckoutClick = (location: "footer" | "footer_secondary") => {
     const goToCheckout = () => {
       if (isDesktop) {
@@ -179,6 +194,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     };
     const source = entrySource ?? "direct";
     markBuyClicked();
+    fireTikTokEvent();
     trackSafe("buy_button_check", { location, source });
     trackSafe(`buy_button_${source}`, { location });
     if (onRequestBuy) {
