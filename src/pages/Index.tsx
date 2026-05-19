@@ -9,6 +9,7 @@ const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
+const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
 import { trackSafe, trackOnce, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
 
 const orderedSectionIds = [
@@ -17,6 +18,7 @@ const orderedSectionIds = [
   "section-wall",
   "section-become",
   "section-vostok",
+  "section-what-is-it",
   "section-research",
   "section-cta",
 ] as const;
@@ -598,6 +600,11 @@ const Index = () => {
       <section id="section-vostok">
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
           <VostokProcess entrySource={entrySource} />
+        </Suspense>
+      </section>
+      <section id="section-what-is-it" className="min-h-0">
+        <Suspense fallback={null}>
+          <WhatIsItSection />
         </Suspense>
       </section>
       <Suspense fallback={null}>
