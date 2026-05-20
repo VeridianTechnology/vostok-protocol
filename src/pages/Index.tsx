@@ -10,7 +10,7 @@ const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
 const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
-import { trackSafe, trackOnce, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
+import { trackSafe, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
 
 const orderedSectionIds = [
   "section-hero",
@@ -112,41 +112,28 @@ const Index = () => {
 
     const arrivalTime = Date.now();
     let hasScrolled = false;
-    let hasMovement = false;
-    let maxScroll = 0;
 
     const onScroll = () => {
       hasScrolled = true;
-      hasMovement = true;
-      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (docHeight > 0) {
-        maxScroll = Math.max(maxScroll, window.scrollY / docHeight);
-      }
-    };
-
-    const onMovement = () => {
-      hasMovement = true;
     };
 
     const fireCategory = () => {
       if (sessionStorage.getItem(CAT_KEY)) return;
       const elapsed = Date.now() - arrivalTime;
-      let cat: string | null = null;
+      let cat: string;
 
       if (hasBuyClicked() || sessionStorage.getItem(BOUGHT_KEY)) {
         cat = "buy_button_check";
-      } else if (maxScroll > 0.5 || (elapsed >= 30000 && hasMovement)) {
+      } else if (hasScrolled && elapsed >= 30000) {
         cat = "checked_it_well";
-      } else if (elapsed >= 30000 && maxScroll >= 0.5) {
+      } else if (hasScrolled) {
         cat = "did_check";
-      } else if (elapsed < 7000 && !hasScrolled) {
+      } else {
         cat = "bot_activity";
       }
 
-      if (cat) {
-        sessionStorage.setItem(CAT_KEY, cat);
-        trackSafe(cat);
-      }
+      sessionStorage.setItem(CAT_KEY, cat);
+      trackSafe(cat);
     };
 
     const onVisibility = () => {
@@ -154,15 +141,11 @@ const Index = () => {
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("mousemove", onMovement, { passive: true });
-    window.addEventListener("touchstart", onMovement, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("pagehide", fireCategory);
 
     return () => {
       window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("mousemove", onMovement);
-      window.removeEventListener("touchstart", onMovement);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pagehide", fireCategory);
     };
@@ -367,38 +350,6 @@ const Index = () => {
       }
     });
 
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    if (!("IntersectionObserver" in window)) {
-      return;
-    }
-    const targets: Array<{ id: string; event: string }> = [
-      { id: "section-vostok", event: "section_vostok_view" },
-      { id: "section-change-face", event: "section_change_face_view" },
-      { id: "section-research", event: "section_research_view" },
-      { id: "section-cta", event: "section_cta_view" },
-    ];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const match = targets.find((item) => item.id === entry.target.id);
-            if (match) {
-              trackOnce(match.event);
-            }
-          }
-        });
-      },
-      { threshold: 0.4 }
-    );
-    targets.forEach(({ id }) => {
-      const node = document.getElementById(id);
-      if (node) {
-        observer.observe(node);
-      }
-    });
     return () => observer.disconnect();
   }, []);
 

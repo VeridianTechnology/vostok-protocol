@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, m } from "framer-motion";
-import { trackSafe } from "@/lib/analytics";
 
 type ResearchStudiesProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
@@ -310,10 +309,6 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
 
     setDirection(index > activeIndex ? 1 : -1);
     setActiveIndex(index);
-    trackSafe("research_story_tab_change", {
-      tab: researchSlides[index].tabLabel,
-      entrySource,
-    });
   };
 
   useEffect(() => {

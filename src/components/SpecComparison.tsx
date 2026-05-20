@@ -2,8 +2,6 @@ import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { getImageVariants } from "@/lib/utils";
 import LavaLampBlobs from "@/components/LavaLampBlobs";
-import { track } from "@vercel/analytics";
-import { trackSafe } from "@/lib/analytics";
 
 type EntrySource =
   | "facebook"
@@ -47,7 +45,6 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
     if (spreadIndex === 0) {
       return;
     }
-    trackSafe("book_prev");
     if (flipTimeout.current) {
       window.clearTimeout(flipTimeout.current);
     }
@@ -59,8 +56,6 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
   };
 
   const goNext = () => {
-    const isLast = spreadIndex === chapterPairs.length - 1;
-    trackSafe(isLast ? "book_start_over" : "book_next");
     if (flipTimeout.current) {
       window.clearTimeout(flipTimeout.current);
     }
@@ -101,18 +96,8 @@ const SpecComparison = ({ entrySource = "direct" }: SpecComparisonProps) => {
     return () => mediaQuery.removeEventListener("change", updateMatch);
   }, []);
 
-  const trackNextOnce = () => {
-    const key = `next_page_${entrySource}`;
-    if (sessionStorage.getItem(key)) {
-      return;
-    }
-    sessionStorage.setItem(key, "1");
-    track(key);
-  };
-
   const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    trackNextOnce();
     goNext();
   };
 

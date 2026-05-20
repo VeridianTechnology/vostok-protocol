@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import { track } from "@vercel/analytics";
 import { FlagValues } from "@vercel/flags/react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -55,15 +54,12 @@ const SurveyModal = ({ open, source, onOpenChange, onComplete }: SurveyModalProp
   ) => {
     if (key === "buyChoice" && (value === "buy" || value === "not_buy")) {
       setBuyChoice(value);
-      track("survey_buy_choice", { choice: value, source }, { flags: ["q_buy_choice"] });
     }
     if (key === "siteLike" && (value === "yes" || value === "no")) {
       setSiteLike(value);
-      track("survey_site_like", { choice: value, source }, { flags: ["q_site_like"] });
     }
     if (key === "looksInterest" && (value === "yes" || value === "no")) {
       setLooksInterest(value);
-      track("survey_looks_interest", { choice: value, source }, { flags: ["q_looks_interest"] });
     }
   };
 

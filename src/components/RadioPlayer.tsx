@@ -1333,6 +1333,7 @@ const RadioPlayer = () => {
   const lastFlashedTrackIdRef = useRef<string | null>(null);
   const flashDismissTimeoutRef = useRef<number | null>(null);
   const hasTrackAdvancedRef = useRef(false);
+  const isFirstTrackMountRef = useRef(true);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(() => {
     const playlist = playlistRef.current ?? [];
     const position = positionRef.current ?? 0;
@@ -1800,6 +1801,11 @@ const RadioPlayer = () => {
       return;
     }
 
+    if (isFirstTrackMountRef.current) {
+      isFirstTrackMountRef.current = false;
+      return;
+    }
+
     lastFlashedTrackIdRef.current = null;
     clearAudioRetryTimeout();
     playAttemptRef.current += 1;
@@ -2021,7 +2027,7 @@ const RadioPlayer = () => {
 
   return (
     <>
-      <audio ref={audioRef} src={currentTrack.audioSrc} />
+      <audio ref={audioRef} src={currentTrack.audioSrc} preload="auto" />
       <audio ref={djStingerAudioRef} />
       <div
         className={`pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${

@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { track } from "@vercel/analytics";
-import { trackSafe } from "@/lib/analytics";
 import { toDesktopImage } from "@/lib/utils";
 
 type VideoSectionProps = {
@@ -16,8 +14,6 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const hasTrackedStart = useRef(false);
-  const hasTrackedFinish = useRef(false);
   const videoSources = isMobile
     ? [
         { src: "/website_video_compress_mobile.mp4", type: "video/mp4" },
@@ -127,48 +123,9 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
                 onPlay={() => {
                   setIsPlaying(true);
                   setHasStarted(true);
-                  if (!hasTrackedStart.current) {
-                    track("start_video");
-                    if (entrySource === "facebook") {
-                      track("start_video_facebook");
-                    }
-                    if (entrySource === "4chan") {
-                      track("start_video_4chan");
-                    }
-                    if (entrySource === "instagram") {
-                      track("start_video_instagram");
-                    }
-                    if (entrySource === "twitter") {
-                      track("start_video_twitter");
-                    }
-                    if (entrySource === "tiktok") {
-                      track("start_video_tiktok");
-                    }
-                    hasTrackedStart.current = true;
-                  }
                 }}
                 onPause={() => setIsPlaying(false)}
                 onEnded={() => {
-                  if (!hasTrackedFinish.current) {
-                    track("finish_video");
-                    if (entrySource === "facebook") {
-                      track("finish_video_facebook");
-                    }
-                    if (entrySource === "4chan") {
-                      track("finish_video_4chan");
-                    }
-                    if (entrySource === "instagram") {
-                      track("finish_video_instagram");
-                    }
-                    if (entrySource === "twitter") {
-                      track("finish_video_twitter");
-                    }
-                    if (entrySource === "tiktok") {
-                      track("finish_video_tiktok");
-                    }
-                    hasTrackedFinish.current = true;
-                  }
-                  trackSafe("video_closed");
                   setIsClosed(true);
                   onClosed?.();
                 }}
