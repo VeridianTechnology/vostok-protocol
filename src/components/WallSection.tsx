@@ -19,7 +19,7 @@ const WallSection = ({ sectionId }: WallSectionProps) => (
     desktopBackgroundSize="cover"
     decoration={
       <img
-        src=/statues/2.webp"
+        src="/statues/2.webp"
         alt=""
         aria-hidden="true"
         draggable={false}

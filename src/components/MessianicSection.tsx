@@ -17,7 +17,7 @@ const MessianicSection = ({ sectionId }: MessianicSectionProps) => (
     mobileBackgroundScale={1}
     desktopBackgroundScale={1}
     desktopBackgroundPosition="55% 28%"
-    secondaryOverlaySrc=/section_wallpaper/interest/02.webp"
+    secondaryOverlaySrc="/section_wallpaper/interest/02.webp"
     secondaryOverlayPosition="right"
     secondaryOverlayClassName="bottom-[-9vh] right-[-46vw] hidden h-[82%] -rotate-[25deg] opacity-100 md:top-0 md:right-[-14vw] md:block md:h-full"
     backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"

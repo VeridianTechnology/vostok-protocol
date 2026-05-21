@@ -311,9 +311,9 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
             <div className="absolute left-[-22vw] top-[48vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
             <div className="absolute left-[-14vw] top-[80vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
           </div>
-          <img src=/section_wallpaper/explaination/03.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[38%] w-auto max-w-none object-contain md:block" />
-          <img src=/section_wallpaper/explaination/05.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-0 right-[-50px] z-0 hidden h-[74%] w-auto max-w-none object-contain md:block" />
-          <img src=/section_wallpaper/explaination/04.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-[-8%] left-[-30px] z-0 hidden h-[60%] w-auto max-w-none -scale-x-100 object-contain md:block" />
+          <img src="/section_wallpaper/explaination/03.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[38%] w-auto max-w-none object-contain md:block" />
+          <img src="/section_wallpaper/explaination/05.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-0 right-[-50px] z-0 hidden h-[74%] w-auto max-w-none object-contain md:block" />
+          <img src="/section_wallpaper/explaination/04.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-[-8%] left-[-30px] z-0 hidden h-[60%] w-auto max-w-none -scale-x-100 object-contain md:block" />
         </>
       }
     >
