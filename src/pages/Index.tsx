@@ -65,6 +65,7 @@ const createInitialCollapseState = () => ({
 const Index = () => {
   const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [entrySource, setEntrySource] = useState("direct");
+  const [isFacebookLayout, setIsFacebookLayout] = useState(false);
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
   const collapseRafRef = useRef<number | null>(null);
@@ -102,6 +103,9 @@ const Index = () => {
     const source = new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase();
     const known = ["facebook", "4chan", "instagram", "tiktok", "reddit", "twitter"];
     if (source && known.includes(source)) setEntrySource(source);
+    if (source === "facebook" || window.location.hostname === "localhost") {
+      setIsFacebookLayout(true);
+    }
   }, []);
 
   // Visitor category system — fires exactly one event per session on exit:
@@ -354,7 +358,7 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    if (!("IntersectionObserver" in window)) {
+    if (!("IntersectionObserver" in window) || isFacebookLayout) {
       return;
     }
 
@@ -412,9 +416,11 @@ const Index = () => {
     return () => {
       observer?.disconnect();
     };
-  }, []);
+  }, [isFacebookLayout]);
 
   useEffect(() => {
+    if (isFacebookLayout) return;
+
     const triggerSystemGlitchWord = (
       word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ",
       durationMs = 520
@@ -471,7 +477,7 @@ const Index = () => {
       window.removeEventListener("vostok:system-glitch", handleSystemGlitch);
       window.removeEventListener("vostok:system-glitch-sequence", handleSystemGlitchSequence);
     };
-  }, []);
+  }, [isFacebookLayout]);
 
   const handleRequestBuy = (continueToCheckout: () => void) => {
     continueToCheckout();
@@ -520,7 +526,7 @@ const Index = () => {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-background">
-      <section id="section-hero" className="min-h-[98vh] md:min-h-[140vh]">
+      <section id="section-hero" className={`md:min-h-[140vh] ${isFacebookLayout ? "min-h-[10vh]" : "min-h-[98vh]"}`}>
         <FeatureThumbnails
           renderStructureSection={false}
           renderWallpaperSection
@@ -530,44 +536,44 @@ const Index = () => {
       <div className="divider-line hidden md:block" />
       <section
         id="section-messianic"
-        className={getCollapseClassName("section-messianic")}
-        style={getCollapseStyle("section-messianic")}
+        className={isFacebookLayout ? "hidden" : getCollapseClassName("section-messianic")}
+        style={isFacebookLayout ? undefined : getCollapseStyle("section-messianic")}
       >
         <MessianicSection />
       </section>
       <section
         id="section-wall"
-        className={getCollapseClassName("section-wall")}
-        style={getCollapseStyle("section-wall")}
+        className={isFacebookLayout ? "hidden" : getCollapseClassName("section-wall")}
+        style={isFacebookLayout ? undefined : getCollapseStyle("section-wall")}
       >
         <WallSection />
       </section>
-      <section id="section-become" className="min-h-[78vh] md:min-h-[200vh]">
+      <section id="section-become" className={`min-h-[78vh] md:min-h-[200vh] ${isFacebookLayout ? "hidden" : ""}`}>
         <BecomingSection isBecomingYouActive={activeSectionId === "section-become"} />
       </section>
       <Suspense fallback={null}>
-        <TransitionThreshold variant="crossing" />
+        {!isFacebookLayout && <TransitionThreshold variant="crossing" />}
       </Suspense>
-      <section id="section-vostok">
+      <section id="section-vostok" className="hidden">
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
           <VostokProcess entrySource={entrySource} />
         </Suspense>
       </section>
-      <section id="section-what-is-it" className="min-h-0">
+      <section id="section-what-is-it" className={`min-h-0 ${isFacebookLayout ? "-mt-[15vh]" : ""}`}>
         <Suspense fallback={null}>
           <WhatIsItSection />
         </Suspense>
       </section>
       <Suspense fallback={null}>
-        <TransitionThreshold variant="chamber" />
+        {!isFacebookLayout && <TransitionThreshold variant="chamber" />}
       </Suspense>
-      <section id="section-research" className="min-h-[50vh]">
+      <section id="section-research" className={`min-h-[50vh] ${isFacebookLayout ? "hidden" : ""}`}>
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[50vh]" />}>
           <ResearchStudies entrySource={entrySource} />
         </Suspense>
       </section>
       <Suspense fallback={null}>
-        <TransitionThreshold variant="fracture" />
+        {!isFacebookLayout && <TransitionThreshold variant="fracture" />}
       </Suspense>
       <section id="section-cta" className="min-h-[40vh] md:min-h-[140vh]">
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[40vh] md:min-h-[140vh]" />}>

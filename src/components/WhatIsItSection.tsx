@@ -11,30 +11,13 @@ type IdentityScreen = {
   lines?: ScreenLine[];
   spacer?: boolean;
   holdClassName?: string;
+  embedUrl?: string;
+  gallery?: string[];
 };
 
 const vostokScreens: IdentityScreen[] = [
   {
-    lines: [
-      { text: "So What Is This?", tone: "question" },
-      {
-        text: "Vostok is a facial training system designed to improve the musculature of your face. It's about strengthening the face as we would at the gym, with various exercises and progressions — rebuilding it to have supermodel proportions.\n\nWe believe beauty should be democratized. It should not belong to just an elite class of models.\n\nOur skull is a combination of plates, not solid bone. The face is filled with cartilage, fat, nerves, and small muscles — and what we are offering here is the full service: building up the muscles, refining the facial structure, modifying the face in a very real way, to the point it'll look like you've had surgery.\n\nAll of this for the low price of $30 — about the price of six drinks.\n\nMost people never train this layer. Vostok exists to change that.",
-        tone: "answer",
-      },
-    ],
-    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
-  },
-  {
-    lines: [
-      { text: "But Why?", tone: "question" },
-      {
-        text: "If I were to tell you...\n\nThat I could make you hot, what would you say? That I could make you sexy?\n\nYou wouldn't believe me. You would say I'm crazy.\n\nWhat if I told you your personality is based on how attractive people perceive you to be? And not actually who you are?\n\nThis is not theory. This is observed behavior.\n\nBut here's the thing — you're going to have to work really hard, exactly as you would at the gym, but for your face. In fact, perhaps even more time into it.\n\nBut, again, here's the thing. Every hour you put in, every practice session, you get 1% hotter. And it stays that way — forever. So if you do 40 hours, you go about one point up on the scale. The scale of 1 to 10. If you're a 4 and you do forty hours, you should be visually looking like a 5. If you do another 40 hours, you'll look like a 6, and so on and so on. There really doesn't seem to be any limit — at least that I've seen.\n\nAnd yes, I started out as a low 8. I now feel like an 11. My photos don't really do it justice, and the beautiful thing is I'm constantly learning about Vostok — what it is. I myself couldn't fully describe it. It certainly isn't looksmaxxing. We won't be doing any bone smashing, as this can cause brain trauma that never heals. We won't be doing Botox or filler, as this will damage your face down the line and you won't be able to age gracefully. We won't be recommending peptides as those are just too intense for most people, although some may work. Everything we offer is very cheap — you just need the guide, some facial oil, and a mirror. That's it. And a way to wash your hands.\n\nWith a lot of work, dedication, and practically zero money — just effort and heart — you too can modify your face to become a version of yourself you've never even dreamed of.",
-        tone: "answer",
-      },
-    ],
-    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
-  },
-  {
+    embedUrl: "https://www.youtube.com/embed/eZ-hYKuglQw?autoplay=0&rel=0",
     lines: [
       { text: "What is Vostok?", tone: "question" },
       {
@@ -45,10 +28,11 @@ const vostokScreens: IdentityScreen[] = [
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
   {
+    embedUrl: "https://www.youtube.com/embed/HzVkX9z2onA?autoplay=0&rel=0",
     lines: [
-      { text: "What's the Catch?", tone: "question" },
+      { text: "So What Is This?", tone: "question" },
       {
-        text: "It's going to take a lot of work, a lot of hours to get to the level you'll want to be at. But you'll find the whole world changing around you as people begin to treat you better.",
+        text: "Vostok is a facial training system designed to improve the musculature of your face. It's about strengthening the face as we would at the gym, with various exercises and progressions — rebuilding it to have supermodel proportions.\n\nWe believe beauty should be democratized. It should not belong to just an elite class of models.\n\nOur skull is a combination of plates, not solid bone. The face is filled with cartilage, fat, nerves, and small muscles — and what we are offering here is the full service: building up the muscles, refining the facial structure, modifying the face in a very real way, to the point it'll look like you've had surgery.\n\nMost people never train this layer. Vostok exists to change that.",
         tone: "answer",
       },
     ],
@@ -56,19 +40,109 @@ const vostokScreens: IdentityScreen[] = [
   },
   {
     lines: [
-      { text: "Is There a Refund?", tone: "question" },
+      { text: "But Why?", tone: "question" },
       {
-        text: "If you're not totally satisfied after 10 session workouts, just send a before and after picture to my Instagram and I will give you a full refund — at any point: a week from now, a year from now, or ten years from now. If you do ten hours of Vostok and it's not the greatest book you've ever bought, I will give you a full refund.",
+        text: "If I were to tell you...\n\nThat I could make you hot, what would you say? That I could make you sexy?\n\nYou wouldn't believe me. You would say I'm crazy.\n\nWhat if I told you your personality is based on how attractive people perceive you to be? And not actually who you are?\n\nThis is not theory. This is observed behavior.\n\nBut here's the thing — you're going to have to work really hard, exactly as you would at the gym, but for your face. In fact, perhaps even more time into it.\n\nBut, again, here's the thing. Every hour you put in, every practice session, you get 1% hotter. And it stays that way — forever. So if you do 40 hours, you go about one point up on the scale. The scale of 1 to 10. If you're a 4 and you do forty hours, you should be visually looking like a 5. If you do another 40 hours, you'll look like a 6, and so on and so on. There really doesn't seem to be any limit — at least that I've seen.",
         tone: "answer",
       },
     ],
-    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+    holdClassName: "min-h-[8rem] md:min-h-[10rem]",
   },
 ];
+
+const PhotoGallery = ({ images }: { images: string[] }) => {
+  const [idx, setIdx] = useState(0);
+  const prev = () => setIdx((i) => Math.max(0, i - 1));
+  const next = () => setIdx((i) => Math.min(images.length - 1, i + 1));
+  const src = images[idx];
+
+  return (
+    <div className="relative w-full overflow-hidden rounded-xl">
+      <img
+        key={src}
+        src={src}
+        alt={`Photo ${idx + 1}`}
+        className="h-[340px] w-full object-cover object-top md:h-[460px]"
+        draggable={false}
+      />
+      {idx > 0 && (
+        <button
+          type="button"
+          onClick={prev}
+          className="absolute left-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white transition hover:bg-black/80"
+          aria-label="Previous"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4"><path d="M13 4l-6 6 6 6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      )}
+      {idx < images.length - 1 && (
+        <button
+          type="button"
+          onClick={next}
+          className="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-black/60 text-white transition hover:bg-black/80"
+          aria-label="Next"
+        >
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" className="h-4 w-4"><path d="M7 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </button>
+      )}
+      <span className="absolute bottom-2 right-3 text-[10px] uppercase tracking-[0.25em] text-white/50">{idx + 1} / {images.length}</span>
+    </div>
+  );
+};
+
+const SlideLines = ({
+  screen,
+  index,
+  withVideo,
+}: {
+  screen: IdentityScreen;
+  index: number;
+  withVideo: boolean;
+}) => (
+  <AnimatePresence mode="wait">
+    <m.div
+      key={index}
+      initial={{ opacity: 0, y: 26 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0.18, y: -10 }}
+      transition={{ duration: 0.55, ease: "easeOut" }}
+      className={`flex w-full flex-col justify-center ${screen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"} ${withVideo ? "items-start" : "items-center"}`}
+    >
+      {screen?.lines?.map((line, lineIndex) => (
+        <p
+          key={`${index}-${lineIndex}`}
+          className={`opacity-90 ${
+            line.tone === "emphasis"
+              ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-white md:text-[3.9rem]"
+              : line.tone === "question"
+                ? `max-w-full pb-1 text-[2.15rem] font-semibold leading-[1.08] text-white md:text-[3.8rem] md:leading-[1.02] ${withVideo ? "px-0" : "px-2"}`
+                : line.tone === "answer"
+                  ? `mt-6 whitespace-pre-wrap text-[1rem] font-normal leading-[1.68] text-[#e8ecf2] md:mt-8 md:text-[1.1rem] md:leading-[1.65] ${withVideo ? "max-w-none px-0 text-left" : "max-w-[46rem] px-3 text-left md:max-w-[56rem]"}`
+                  : line.tone === "italic"
+                    ? "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
+                    : "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
+          }`}
+          style={{
+            fontFamily:
+              line.tone === "answer"
+                ? "var(--font-body)"
+                : line.tone === "question"
+                  ? "Georgia, 'Times New Roman', serif"
+                  : "var(--font-display)",
+          }}
+        >
+          {line.text}
+        </p>
+      ))}
+    </m.div>
+  </AnimatePresence>
+);
 
 const WhatIsItSection = () => {
   const [sequenceScreenIndex, setSequenceScreenIndex] = useState(0);
   const currentSequenceScreen = vostokScreens[sequenceScreenIndex] ?? vostokScreens[0];
+  const hasVideo = !!currentSequenceScreen.embedUrl;
+  const hasGallery = !!currentSequenceScreen.gallery?.length;
 
   return (
     <section className="section-surface relative left-1/2 right-1/2 h-[92vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
@@ -94,58 +168,42 @@ const WhatIsItSection = () => {
             aria-hidden="true"
             className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,10,0)_0%,rgba(8,9,12,0)_14%,rgba(7,8,10,0)_100%)]"
           />
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,255,255,0),transparent_34%),linear-gradient(90deg,rgba(255,255,255,0),transparent_22%,transparent_78%,rgba(255,255,255,0)),repeating-linear-gradient(0deg,rgba(255,255,255,0)_0px,rgba(255,255,255,0)_1px,transparent_1px,transparent_3px)] opacity-0"
-          />
 
           <div className="relative z-10 flex h-full flex-col">
             <div className="relative z-10 flex-1 overflow-hidden px-7 pb-10 pt-10 text-[#b8bec6] md:px-12 md:py-12">
-              <div className="mx-auto grid h-full max-w-[50rem] grid-rows-[1fr_auto]">
-                <div className="flex min-h-0 flex-col overflow-y-auto text-center [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
-                  <div className="flex-1" />
-                  <div className="flex flex-col items-center">
-                  <AnimatePresence mode="wait">
-                    <m.div
-                      key={sequenceScreenIndex}
-                      initial={{ opacity: 0, y: 26 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0.18, y: -10 }}
-                      transition={{ duration: 0.55, ease: "easeOut" }}
-                      className={`flex w-full flex-col items-center justify-center ${
-                        currentSequenceScreen?.holdClassName ?? "min-h-[8rem] md:min-h-[10rem]"
-                      }`}
-                    >
-                      {currentSequenceScreen?.lines?.map((line, lineIndex) => (
-                        <p
-                          key={`${sequenceScreenIndex}-${lineIndex}`}
-                          className={`opacity-90 ${
-                            line.tone === "emphasis"
-                              ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-white md:text-[3.9rem]"
-                              : line.tone === "question"
-                                ? "max-w-full px-2 pb-1 text-[2.55rem] font-semibold leading-[1.08] text-white md:text-[5rem] md:leading-[1.02]"
-                                : line.tone === "answer"
-                                  ? "mt-8 max-w-[46rem] whitespace-pre-wrap px-3 text-left text-[1.1rem] font-normal leading-[1.68] text-[#e8ecf2] md:mt-10 md:max-w-[56rem] md:text-[1.18rem] md:leading-[1.65]"
-                                  : line.tone === "italic"
-                                    ? "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
-                                    : "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
-                          }`}
-                          style={{
-                            fontFamily:
-                              line.tone === "answer"
-                                ? "var(--font-body)"
-                                : line.tone === "question"
-                                  ? "Georgia, 'Times New Roman', serif"
-                                  : "var(--font-display)",
-                          }}
-                        >
-                          {line.text}
-                        </p>
-                      ))}
-                    </m.div>
-                  </AnimatePresence>
-                  </div>
-                  <div className="flex-1" />
+              <div className="mx-auto grid h-full max-w-[56rem] grid-rows-[1fr_auto]">
+                <div className="flex min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
+                  {hasVideo ? (
+                    <div className="flex w-full flex-col items-center gap-6 py-2 md:flex-row md:items-center md:gap-10">
+                      <div className="w-[220px] shrink-0 md:w-[360px]">
+                        <iframe
+                          src={currentSequenceScreen.embedUrl}
+                          title="Vostok short"
+                          className="aspect-[9/16] w-full rounded-xl border-0"
+                          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                      <div className="flex min-w-0 flex-1 flex-col">
+                        <SlideLines screen={currentSequenceScreen} index={sequenceScreenIndex} withVideo />
+                      </div>
+                    </div>
+                  ) : hasGallery ? (
+                    <div className="flex w-full flex-col py-2">
+                      <PhotoGallery images={currentSequenceScreen.gallery!} />
+                      <div className="mt-8 border-t border-white/10 pt-6">
+                        <SlideLines screen={currentSequenceScreen} index={sequenceScreenIndex} withVideo />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex w-full flex-col text-center">
+                      <div className="flex-1" />
+                      <div className="flex flex-col items-center">
+                        <SlideLines screen={currentSequenceScreen} index={sequenceScreenIndex} withVideo={false} />
+                      </div>
+                      <div className="flex-1" />
+                    </div>
+                  )}
                 </div>
 
                 <div className="relative z-20 mx-auto mt-8 flex w-full max-w-[24rem] items-center justify-between gap-8 pb-2 md:mt-8 md:max-w-none md:justify-center md:gap-16 md:pb-0">

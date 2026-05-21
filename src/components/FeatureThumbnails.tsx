@@ -226,7 +226,7 @@ const FeatureThumbnails = ({
   }, []);
 
   useEffect(() => {
-    if (isMobile || !wallpaperAutoAdvanceEnabledRef.current) {
+    if (isMobile || !wallpaperAutoAdvanceEnabledRef.current || entrySource === "facebook") {
       return;
     }
 
@@ -309,7 +309,8 @@ const FeatureThumbnails = ({
     if (
       isMobile ||
       !ENABLE_DESKTOP_HERO_ROTATION_TEST ||
-      desktopHeroRotationImages.length <= 1
+      desktopHeroRotationImages.length <= 1 ||
+      entrySource === "facebook"
     ) {
       setDesktopHeroRotationIndex(0);
       setIsDesktopHeroBlackoutVisible(false);
@@ -531,7 +532,7 @@ const FeatureThumbnails = ({
       wallpaperIsUserPausedRef.current = false;
       setIsWallpaperUserPaused(false);
       void playWallpaperVideos();
-      scheduleWallpaperGlitch();
+      if (entrySource !== "facebook") scheduleWallpaperGlitch();
       return;
     }
 
@@ -550,7 +551,7 @@ const FeatureThumbnails = ({
     setIsWallpaperUserPaused(false);
     setIsWallpaperBlackFlashVisible(false);
     setIsWallpaperPlaying(true);
-    scheduleWallpaperGlitch();
+    if (entrySource !== "facebook") scheduleWallpaperGlitch();
 
     return () => {
       clearWallpaperGlitchTimeouts();
