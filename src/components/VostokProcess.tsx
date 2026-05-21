@@ -101,8 +101,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
   const [activeStage, setActiveStage] = useState<StageKey>("20");
   const [activeImage, setActiveImage] = useState("/Comparison/5z.jpg");
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [showVideo2Modal, setShowVideo2Modal] = useState(false);
   const [showClientModal, setShowClientModal] = useState(false);
   const [clientModalExpanded, setClientModalExpanded] = useState(false);
 
@@ -802,29 +800,29 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           >
             <div className="mb-4 pb-4 border-b border-white/10">
               <div className="flex items-center justify-between gap-4">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">VIDEO #1</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK</p>
                 <button
                   type="button"
-                  onClick={() => setShowVideoModal(true)}
+                  onClick={openMyselfModal}
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M8 5v14l11-7z" />
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                   </svg>
-                  Play
+                  View
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">VIDEO #2</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK #2</p>
                 <button
                   type="button"
-                  onClick={() => setShowVideo2Modal(true)}
+                  onClick={openBigModal}
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M8 5v14l11-7z" />
+                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
                   </svg>
-                  Play
+                  View
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
@@ -845,32 +843,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 <button
                   type="button"
                   onClick={openClient2Modal}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-                  </svg>
-                  View
-                </button>
-              </div>
-              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK</p>
-                <button
-                  type="button"
-                  onClick={openMyselfModal}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-                  </svg>
-                  View
-                </button>
-              </div>
-              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK #2</p>
-                <button
-                  type="button"
-                  onClick={openBigModal}
                   className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
@@ -954,7 +926,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               className="mt-6 rounded-2xl panel-glass p-6 text-sm leading-relaxed text-white/85"
             >
               <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                {currentStage.title}
+                {activeStage === "non_ai" && isNonAiAfter ? "AFTER" : currentStage.title}
               </p>
               <div className="mt-4">
                 {renderStageText()}
@@ -963,34 +935,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           </div>
         </div>
       </div>
-      {showVideo2Modal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setShowVideo2Modal(false)}
-        >
-          <div
-            className="relative w-full max-w-3xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setShowVideo2Modal(false)}
-              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
-            >
-              Close
-            </button>
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl">
-              <iframe
-                src="https://www.youtube.com/embed/xeK0BKnvj7g?autoplay=1"
-                title="Video #2"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
-              />
-            </div>
-          </div>
-        </div>
-      )}
       {showBigModal && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
@@ -1014,7 +958,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               style={{ paddingBottom: "133.33%" }}
             >
               <img
-                src="/images/big.jpg"
+                src="/section_wallpaper/nyx/02.jpg"
                 alt="Pre/After Vostok #2"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -1045,7 +989,7 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               style={{ paddingBottom: "133.33%" }}
             >
               <img
-                src="/images/myself.jpg"
+                src="/section_wallpaper/nyx/01.jpg"
                 alt="Pre/After Vostok"
                 className="absolute inset-0 h-full w-full object-cover"
               />
@@ -1112,34 +1056,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </m.div>
-          </div>
-        </div>
-      )}
-      {showVideoModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
-          onClick={() => setShowVideoModal(false)}
-        >
-          <div
-            className="relative w-full max-w-sm"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setShowVideoModal(false)}
-              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
-            >
-              Close
-            </button>
-            <div className="relative aspect-[9/16] w-full overflow-hidden rounded-2xl">
-              <iframe
-                src="https://www.youtube.com/embed/kn5B87OUhcc?autoplay=1"
-                title="Video #1"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
-              />
-            </div>
           </div>
         </div>
       )}
