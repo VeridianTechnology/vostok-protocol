@@ -90,39 +90,12 @@ const features = [
   },
 ];
 
-const VIDEOS_CDN = "https://videos.vostok.guide";
-
 const wallpaperSlides = [
-  {
-    id: "01",
-    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/01_desktop.webm`,
-    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/01_mobile.webm`,
-    caption: "YOUR FACE",
-  },
-  {
-    id: "02",
-    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/02_desktop.webm`,
-    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/02_mobile.webm`,
-    caption: "YOUR FACE",
-  },
-  {
-    id: "03",
-    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/03_desktop.webm`,
-    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/03_mobile.webm`,
-    caption: "YOUR FACE",
-  },
-  {
-    id: "04",
-    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/04_desktop.webm`,
-    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/04_mobile.webm`,
-    caption: "YOUR FACE",
-  },
-  {
-    id: "05",
-    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/05_desktop.webm`,
-    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/05_mobile.webm`,
-    caption: "YOUR FACE",
-  },
+  { id: "01", caption: "YOUR FACE" },
+  { id: "02", caption: "YOUR FACE" },
+  { id: "03", caption: "YOUR FACE" },
+  { id: "04", caption: "YOUR FACE" },
+  { id: "05", caption: "YOUR FACE" },
 ] as const;
 
 type FeatureThumbnailsProps = {
@@ -169,7 +142,6 @@ const FeatureThumbnails = ({
   const [desktopHeroRotationIndex, setDesktopHeroRotationIndex] = useState(0);
   const [isDesktopHeroBlackoutVisible, setIsDesktopHeroBlackoutVisible] = useState(false);
   const [isWallpaperBlackFlashVisible, setIsWallpaperBlackFlashVisible] = useState(false);
-  const [isWallpaperPlaying, setIsWallpaperPlaying] = useState(true);
   const [isWallpaperUserPaused, setIsWallpaperUserPaused] = useState(false);
   const [wallpaperBlackFlashTransitionMs, setWallpaperBlackFlashTransitionMs] = useState(
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
@@ -177,8 +149,6 @@ const FeatureThumbnails = ({
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
-  const wallpaperVideoRef = useRef<HTMLVideoElement | null>(null);
-  const wallpaperOverlayVideoRef = useRef<HTMLVideoElement | null>(null);
   const wallpaperIntervalRef = useRef<number | null>(null);
   const wallpaperFlashTimeoutRef = useRef<number | null>(null);
   const wallpaperAdvanceTimeoutRef = useRef<number | null>(null);
@@ -384,46 +354,6 @@ const FeatureThumbnails = ({
     );
   };
 
-  const playWallpaperVideos = async (durationMs?: number) => {
-    const mainVideo = wallpaperVideoRef.current;
-    const overlayVideo = wallpaperOverlayVideoRef.current;
-
-    if (!mainVideo) {
-      return;
-    }
-
-    await Promise.allSettled([
-      mainVideo.play(),
-      overlayVideo ? overlayVideo.play() : Promise.resolve(),
-    ]);
-    setIsWallpaperPlaying(!mainVideo.paused);
-
-    if (durationMs !== undefined) {
-      await new Promise<void>((resolve) => {
-        const timeoutId = window.setTimeout(resolve, durationMs);
-        wallpaperGlitchTimeoutsRef.current.push(timeoutId);
-      });
-    }
-  };
-
-  const pauseWallpaperVideos = () => {
-    wallpaperVideoRef.current?.pause();
-    wallpaperOverlayVideoRef.current?.pause();
-    setIsWallpaperPlaying(false);
-  };
-
-  const rewindWallpaperVideos = (seconds: number) => {
-    const videos = [wallpaperVideoRef.current, wallpaperOverlayVideoRef.current];
-
-    videos.forEach((video) => {
-      if (!video) {
-        return;
-      }
-
-      video.currentTime = Math.max(0, video.currentTime - seconds);
-    });
-  };
-
   const clearWallpaperGlitchTimeouts = () => {
     wallpaperGlitchTimeoutsRef.current.forEach((timeoutId) => {
       window.clearTimeout(timeoutId);
@@ -460,20 +390,13 @@ const FeatureThumbnails = ({
       ) + WALLPAPER_GLITCH_MIN_DELAY_MS;
 
     wallpaperGlitchSequenceTimeoutRef.current = window.setTimeout(async () => {
-      const mainVideo = wallpaperVideoRef.current;
-
-      if (!mainVideo || wallpaperIsUserPausedRef.current || wallpaperIsGlitchingRef.current) {
+      if (wallpaperIsUserPausedRef.current || wallpaperIsGlitchingRef.current) {
         scheduleWallpaperGlitch();
         return;
       }
 
       wallpaperIsGlitchingRef.current = true;
-
-      pauseWallpaperVideos();
       await flashWallpaperBlack();
-      rewindWallpaperVideos(WALLPAPER_GLITCH_REWIND_SECONDS);
-      await playWallpaperVideos();
-
       wallpaperIsGlitchingRef.current = false;
       scheduleWallpaperGlitch();
     }, nextDelay);
@@ -522,24 +445,15 @@ const FeatureThumbnails = ({
       return;
     }
 
-    const mainVideo = wallpaperVideoRef.current;
-
-    if (!mainVideo) {
-      return;
-    }
-
-    if (mainVideo.paused) {
+    if (wallpaperIsUserPausedRef.current) {
       wallpaperIsUserPausedRef.current = false;
       setIsWallpaperUserPaused(false);
-      void playWallpaperVideos();
       if (entrySource !== "facebook") scheduleWallpaperGlitch();
-      return;
+    } else {
+      wallpaperIsUserPausedRef.current = true;
+      setIsWallpaperUserPaused(true);
+      clearWallpaperGlitchTimeouts();
     }
-
-    wallpaperIsUserPausedRef.current = true;
-    setIsWallpaperUserPaused(true);
-    clearWallpaperGlitchTimeouts();
-    pauseWallpaperVideos();
   };
 
   const triggerSystemGlitch = () => {
@@ -550,7 +464,6 @@ const FeatureThumbnails = ({
     wallpaperIsUserPausedRef.current = false;
     setIsWallpaperUserPaused(false);
     setIsWallpaperBlackFlashVisible(false);
-    setIsWallpaperPlaying(true);
     if (entrySource !== "facebook") scheduleWallpaperGlitch();
 
     return () => {
@@ -884,8 +797,7 @@ const FeatureThumbnails = ({
             aria-hidden="true"
             className="pointer-events-none absolute bottom-[-8%] right-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(270deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-56"
           />
-          {"desktopVideoSrc" in activeWallpaperSlide ? (
-            isMobile ? (
+          {isMobile ? (
               <img
                 src={mobileHeroImage}
                 alt="Vostok hero"
@@ -921,19 +833,7 @@ const FeatureThumbnails = ({
                 ) : null}
               </>
             )
-          ) : (
-            <picture>
-              <source media="(max-width: 767px)" srcSet={activeWallpaperSlide.mobileSrc} />
-              <img
-                key={activeWallpaperSlide.id}
-                src={activeWallpaperSlide.desktopSrc}
-                alt={`Vostok wallpaper ${activeWallpaperSlide.id}`}
-                className="absolute inset-0 h-full w-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            </picture>
-          )}
+          }
           {!isMobile && (
             <div aria-hidden="true" className="hero-tv-noise absolute inset-0 z-[7]">
               <div className="hero-tv-noise__grain absolute inset-0" />
@@ -955,7 +855,7 @@ const FeatureThumbnails = ({
             />
           )}
           <div className="pointer-events-none absolute inset-0 z-[8] bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.16)_35%,rgba(0,0,0,0.58)_100%)]" />
-          {!isMobile && !isWallpaperPlaying && isWallpaperUserPaused && (
+          {!isMobile && isWallpaperUserPaused && (
             <div className="pointer-events-none absolute inset-0 z-[12] flex items-center justify-center bg-black/10">
               <span className="flex h-20 w-20 items-center justify-center rounded-full border border-white/45 bg-black/45 text-white shadow-[0_18px_44px_rgba(0,0,0,0.35)] backdrop-blur-sm">
                 <svg
