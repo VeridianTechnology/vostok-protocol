@@ -45,7 +45,7 @@ const RadioArrow = () => {
            Button center: pl-3(12px)+33vw/2≈74px from left, 11px from vp bottom (bottom-0 state).
            left = 74-52 = 22px, bottom = 11-39 = -28px */}
       <img
-        src="/arrow.png"
+        src="/arrow.webp"
         alt=""
         aria-hidden="true"
         className="pointer-events-none fixed z-[58] w-[130px] md:hidden"
@@ -59,7 +59,7 @@ const RadioArrow = () => {
       {/* Desktop: tip 57px from image bottom, button center 9px from vp bottom (bottom-0 state).
            bottom = 9-57 = -48px */}
       <img
-        src="/arrow.png"
+        src="/arrow.webp"
         alt=""
         aria-hidden="true"
         className="pointer-events-none fixed z-[58] hidden w-[190px] md:block"

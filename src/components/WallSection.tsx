@@ -8,8 +8,8 @@ const WallSection = ({ sectionId }: WallSectionProps) => (
     tabLabel="WALL"
     hideTabLabel
     lines={[]}
-    desktopBackground="/section_wallpaper/wall/1_desktop.jpg?v=1"
-    mobileBackground="/section_wallpaper/interest/third_section.jpg?v=1"
+    desktopBackground="/section_wallpaper/wall/1_desktop.webp?v=1"
+    mobileBackground="/section_wallpaper/interest/third_section.webp?v=1"
     sectionClassName="h-[150vw] min-h-0 bg-black py-0 md:h-[42.9167vw] md:min-h-0"
     mobileBackgroundPosition="center"
     mobileBackgroundSize="cover"
@@ -19,7 +19,7 @@ const WallSection = ({ sectionId }: WallSectionProps) => (
     desktopBackgroundSize="cover"
     decoration={
       <img
-        src="/statues/2.png"
+        src=/statues/2.webp"
         alt=""
         aria-hidden="true"
         draggable={false}

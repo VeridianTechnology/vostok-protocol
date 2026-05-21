@@ -36,8 +36,8 @@ const researchSlides: ResearchSlide[] = [
       "Appearance has measurable economic value. Attractive people are hired faster, evaluated more favorably, and paid more over time, even when qualifications are identical. First impressions form in milliseconds, so your face affects judgment before your resume has a chance to speak. Better looks do not replace competence, but they improve the starting position.",
       "Social status is not just ego. It changes how you move through the world. Looking better raises your position in the social hierarchy, and that elevation, handled with humility, creates confidence that compounds. Appearance shapes status judgments quickly: attractive faces are assumed more competent, more socially skilled, and more worthy of attention. That response creates a feedback loop: better treatment improves self-perception, which improves presence, which invites more positive responses.",
     ],
-    desktopSrc: "/section_wallpaper/research/refined_images/07_desktop.jpg",
-    mobileSrc: "/section_wallpaper/research/07.jpg",
+    desktopSrc: "/section_wallpaper/research/refined_images/07_desktop.webp",
+    mobileSrc: "/section_wallpaper/research/07.webp",
     alt: "Looks and leverage infographic showing appearance, status, and hiring effects",
     sources: [
       {
@@ -77,8 +77,8 @@ const researchSlides: ResearchSlide[] = [
       "Now consider power. Look at the men who occupy the highest offices. America has never elected an ugly president. Washington, tall and handsome (despite the teeth). Lincoln, widely admired, strikingly tall and genuinely handsome as a young man before war aged him. Truman, sharp-featured. Eisenhower, the face of command. JFK, the literal definition of a hyper-chad. Even today, research shows that facial competence and attractiveness predict election outcomes. Leadership is perceived in a glance.",
       "It's not just politics. In corporate settings, looks play a massive role in who gets promoted to power positions. The \"Chad and Stacy\" effect is real: when two candidates are equally qualified, the better-looking one is disproportionately chosen. If you want career gains, whether climbing the corporate ladder, securing investors, or positioning yourself as an authority, you cannot afford to ignore your face. With looks comes not only modeling income but also access to positions of power. You must look the part and be the part.",
     ],
-    desktopSrc: "/section_wallpaper/research/refined_images/08_desktop.jpg",
-    mobileSrc: "/section_wallpaper/research/08.jpg",
+    desktopSrc: "/section_wallpaper/research/refined_images/08_desktop.webp",
+    mobileSrc: "/section_wallpaper/research/08.webp",
     alt: "Political leadership and attractiveness infographic",
     sources: [
       {
@@ -106,8 +106,8 @@ const researchSlides: ResearchSlide[] = [
       "But be careful. When your face improves, your social position shifts. You may find that your current friends-comfortable with the old hierarchy-do not know how to handle the new you. You may have to find a new group. You will also begin re-evaluating your relationships, because you can now attract a higher caliber of man. What once felt like settling now feels like compromise. And once you see the difference, you cannot unsee it.",
       "That is the cost of leveling up. Worth it.",
     ],
-    desktopSrc: "/section_wallpaper/research/09.jpg",
-    mobileSrc: "/section_wallpaper/research/09.jpg",
+    desktopSrc: "/section_wallpaper/research/09.webp",
+    mobileSrc: "/section_wallpaper/research/09.webp",
     alt: "Center of the frame infographic about beauty, status, and visual attention",
     sources: [
       {
@@ -160,8 +160,8 @@ const researchSlides: ResearchSlide[] = [
       "Men do not want to compete with a guy who clearly outranks them in the face. They see it. They register it. And once they do, they leave you alone. Not from fear-from recognition. The hierarchy is settled. No words needed.",
       "You won. He knows it. Now move on.",
     ],
-    desktopSrc: "/section_wallpaper/research/refined_images/10_desktop.jpg",
-    mobileSrc: "/section_wallpaper/research/refined_images/10_mobile.jpg",
+    desktopSrc: "/section_wallpaper/research/refined_images/10_desktop.webp",
+    mobileSrc: "/section_wallpaper/research/refined_images/10_mobile.webp",
     alt: "Masculine aesthetic advantage infographic",
     sources: [
       {
@@ -195,12 +195,12 @@ const researchSlides: ResearchSlide[] = [
     tabLabel: "Why",
     title: "Why",
     paragraphs: [],
-    desktopSrc: "/screen.png",
-    mobileSrc: "/screen.png",
+    desktopSrc: "/screen.webp",
+    mobileSrc: "/screen.webp",
     alt: "The Vostok Method",
     sources: [],
-    videoDesktopSrc: "/website_video_web.webm",
-    videoMobileSrc: "/website_video_compress_mobile.mp4",
+    videoDesktopSrc: "https://videos.vostok.guide/website_video_web.webm",
+    videoMobileSrc: "https://videos.vostok.guide/website_video_web_mobile.webm",
   },
 ];
 

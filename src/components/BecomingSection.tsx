@@ -55,10 +55,10 @@ const VideoCard = ({
       autoPlay
       muted
       playsInline
-      preload="metadata"
+      preload="none"
       onEnded={onEnded}
     >
-      <source data-video-src={dataSrc} src={src} type="video/mp4" />
+      <source data-video-src={dataSrc} src={src} type="video/webm" />
     </video>
     <div
       aria-hidden="true"
@@ -77,7 +77,7 @@ const CaptionCard = ({ children, className = "" }: { children: ReactNode; classN
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 opacity-[0.18] md:hidden"
       style={{
-        backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")',
+        backgroundImage: 'url("/section_wallpaper/interest/special-mobile.webp")',
         backgroundRepeat: "repeat",
         backgroundPosition: "center",
         backgroundSize: "116px 116px",
@@ -87,7 +87,7 @@ const CaptionCard = ({ children, className = "" }: { children: ReactNode; classN
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 hidden opacity-[0.16] md:block"
       style={{
-        backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")',
+        backgroundImage: 'url("/section_wallpaper/interest/special-desktop.webp")',
         backgroundRepeat: "repeat",
         backgroundPosition: "center",
         backgroundSize: "152px 152px",
@@ -290,8 +290,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
       tabLabel="BECOMING YOU"
       hideTabLabel
       lines={[]}
-      desktopBackground="/section_wallpaper/become_you/01.jpg"
-      mobileBackground="/section_wallpaper/become_you/01.jpg"
+      desktopBackground="/section_wallpaper/become_you/01.webp"
+      mobileBackground="/section_wallpaper/become_you/01.webp"
       sectionClassName="min-h-[78vh] py-0 md:min-h-[200vh]"
       contentClassName="flex min-h-[78vh] -translate-y-[4vh] flex-col justify-start md:min-h-[200vh] md:translate-y-0"
       innerContentClassName="pt-0 pb-[2vh] md:py-[5.5vh]"
@@ -311,9 +311,9 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
             <div className="absolute left-[-22vw] top-[48vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
             <div className="absolute left-[-14vw] top-[80vh] h-[8vw] w-[150vw] -rotate-[24deg] bg-black/82" />
           </div>
-          <img src="/section_wallpaper/explaination/03.png" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[38%] w-auto max-w-none object-contain md:block" />
-          <img src="/section_wallpaper/explaination/05.png" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-0 right-[-50px] z-0 hidden h-[74%] w-auto max-w-none object-contain md:block" />
-          <img src="/section_wallpaper/explaination/04.png" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-[-8%] left-[-30px] z-0 hidden h-[60%] w-auto max-w-none -scale-x-100 object-contain md:block" />
+          <img src=/section_wallpaper/explaination/03.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute left-0 top-0 z-[1] hidden h-[38%] w-auto max-w-none object-contain md:block" />
+          <img src=/section_wallpaper/explaination/05.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-0 right-[-50px] z-0 hidden h-[74%] w-auto max-w-none object-contain md:block" />
+          <img src=/section_wallpaper/explaination/04.webp" alt="" aria-hidden="true" draggable={false} className="pointer-events-none absolute bottom-[-8%] left-[-30px] z-0 hidden h-[60%] w-auto max-w-none -scale-x-100 object-contain md:block" />
         </>
       }
     >
@@ -327,8 +327,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BECØME</h2>
           <VideoCard
             videoRef={setBecomingYouVideoRef(0, "mobile")}
-            src={videoSrc("/section_wallpaper/explaination/01.mp4")}
-            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)}
+            src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/01.webm")}
+            dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/01.webm", isMobile)}
             isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0]}
             isFading={becomingYouVideoFading[0]}
             fadeDurationMs={becomingYouFadeDurationMs}
@@ -342,8 +342,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BECØME ALIVE</h2>
           <VideoCard
             videoRef={setBecomingYouVideoRef(1, "mobile")}
-            src={videoSrc("/section_wallpaper/explaination/02.mp4")}
-            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)}
+            src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/02.webm")}
+            dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/02.webm", isMobile)}
             isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1]}
             isFading={becomingYouVideoFading[1]}
             fadeDurationMs={becomingYouFadeDurationMs}
@@ -357,8 +357,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="-mb-[8px] pt-0 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BØY</h2>
           <VideoCard
             videoRef={setBecomingYouVideoRef(2, "mobile")}
-            src={videoSrc("/section_wallpaper/explaination/03.mp4")}
-            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)}
+            src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/03.webm")}
+            dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/03.webm", isMobile)}
             isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2]}
             isFading={becomingYouVideoFading[2]}
             fadeDurationMs={becomingYouFadeDurationMs}
@@ -373,8 +373,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">WØMAN</h2>
           <VideoCard
             videoRef={setBecomingYouVideoRef(3, "mobile")}
-            src={videoSrc("/section_wallpaper/explaination/06.mp4")}
-            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)}
+            src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/05.webm")}
+            dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/05.webm", isMobile)}
             isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3]}
             isFading={becomingYouVideoFading[3]}
             fadeDurationMs={becomingYouFadeDurationMs}
@@ -388,8 +388,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">FAMØUS</h2>
           <VideoCard
             videoRef={setBecomingYouVideoRef(4, "mobile")}
-            src={videoSrc("/section_wallpaper/explaination/04.mp4")}
-            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)}
+            src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/04.webm")}
+            dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/04.webm", isMobile)}
             isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4]}
             isFading={becomingYouVideoFading[4]}
             fadeDurationMs={becomingYouFadeDurationMs}
@@ -413,8 +413,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
             <div className="flex flex-col gap-[3vh] md:flex-row md:items-stretch md:gap-0">
               <VideoCard
                 videoRef={setBecomingYouVideoRef(0, "desktop")}
-                src={videoSrc("/section_wallpaper/explaination/01.mp4")}
-                dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)}
+                src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/01.webm")}
+                dataSrc={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/01.webm", isMobile)}
                 isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0]}
                 isFading={becomingYouVideoFading[0]}
                 fadeDurationMs={becomingYouFadeDurationMs}
@@ -423,16 +423,16 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
                 className="md:w-[32vw] md:min-w-[32vw]"
               />
               <CaptionCard className="px-8 py-7 md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:px-3 md:py-6">
-                <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "108px 108px" }} />
-                <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "128px 128px" }} />
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-mobile.webp")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "108px 108px" }} />
+                <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-desktop.webp")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "128px 128px" }} />
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-white/48" />
                 <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:whitespace-nowrap md:text-[1.9rem] md:leading-none md:[transform:rotate(90deg)]">{renderBecomingYouCaption(0)}</p>
               </CaptionCard>
             </div>
             <div className="md:translate-y-[20vh]">
               <div className="relative md:w-[32vw] md:min-w-[32vw]" onClick={(e) => handleBecomingYouVideoToggle(2, e)}>
-                <video ref={setBecomingYouVideoRef(2, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="metadata" onEnded={() => handleBecomingYouVideoEnded(2)}>
-                  <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)} src={videoSrc("/section_wallpaper/explaination/03.mp4")} type="video/mp4" />
+                <video ref={setBecomingYouVideoRef(2, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="none" onEnded={() => handleBecomingYouVideoEnded(2)}>
+                  <source data-video-src={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/03.webm", isMobile)} src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/03.webm")} type="video/webm" />
                 </video>
                 <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${becomingYouVideoFading[2] ? "opacity-100" : "opacity-0"}`} style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }} />
                 {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2] ? <PauseIcon /> : null}
@@ -444,8 +444,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
               <div className="md:w-[32vw] md:min-w-[32vw]">
                 <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">FAMØUS</h2>
                 <div className="relative mt-[3vh]" onClick={(e) => handleBecomingYouVideoToggle(4, e)}>
-                  <video ref={setBecomingYouVideoRef(4, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="metadata" onEnded={() => handleBecomingYouVideoEnded(4)}>
-                    <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)} src={videoSrc("/section_wallpaper/explaination/04.mp4")} type="video/mp4" />
+                  <video ref={setBecomingYouVideoRef(4, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="none" onEnded={() => handleBecomingYouVideoEnded(4)}>
+                    <source data-video-src={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/04.webm", isMobile)} src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/04.webm")} type="video/webm" />
                   </video>
                   <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${becomingYouVideoFading[4] ? "opacity-100" : "opacity-0"}`} style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }} />
                   {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4] ? <PauseIcon /> : null}
@@ -461,8 +461,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
         <div className="relative z-[1] max-w-[49.4rem] md:z-[1] md:max-w-[66.7rem] md:translate-x-[1vw] md:translate-y-[9%] md:justify-self-end">
           <h2 className="relative z-[9] mb-[3vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:w-[32vw] md:min-w-[32vw] md:-translate-x-[calc(2vw+85px)] md:text-[3.4rem]">DØll</h2>
           <div className="relative z-[5] md:w-[32vw] md:min-w-[32vw]" onClick={(e) => handleBecomingYouVideoToggle(1, e)}>
-            <video ref={setBecomingYouVideoRef(1, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="metadata" onEnded={() => handleBecomingYouVideoEnded(1)}>
-              <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)} src={videoSrc("/section_wallpaper/explaination/02.mp4")} type="video/mp4" />
+            <video ref={setBecomingYouVideoRef(1, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="none" onEnded={() => handleBecomingYouVideoEnded(1)}>
+              <source data-video-src={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/02.webm", isMobile)} src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/02.webm")} type="video/webm" />
             </video>
             <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${becomingYouVideoFading[1] ? "opacity-100" : "opacity-0"}`} style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }} />
             {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1] ? <PauseIcon /> : null}
@@ -472,8 +472,8 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           </CaptionCard>
           <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">WØMAN</h2>
           <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]" onClick={(e) => handleBecomingYouVideoToggle(3, e)}>
-            <video ref={setBecomingYouVideoRef(3, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="metadata" onEnded={() => handleBecomingYouVideoEnded(3)}>
-              <source data-video-src={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)} src={videoSrc("/section_wallpaper/explaination/06.mp4")} type="video/mp4" />
+            <video ref={setBecomingYouVideoRef(3, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="none" onEnded={() => handleBecomingYouVideoEnded(3)}>
+              <source data-video-src={getExplanationVideoSrc("https://videos.vostok.guide/section_wallpaper/explaination/05.webm", isMobile)} src={videoSrc("https://videos.vostok.guide/section_wallpaper/explaination/05.webm")} type="video/webm" />
             </video>
             <div aria-hidden="true" className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${becomingYouVideoFading[3] ? "opacity-100" : "opacity-0"}`} style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }} />
             {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3] ? <PauseIcon /> : null}

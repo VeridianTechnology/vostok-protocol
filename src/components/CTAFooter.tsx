@@ -226,7 +226,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         <div className="absolute inset-0 bg-[#d9d9d6] md:bg-[#17181A]" aria-hidden="true" />
         <div className="absolute inset-x-0 top-0 bottom-[2vh] overflow-hidden md:bottom-[10%]">
           <img
-            src="/section_wallpaper/buy/13.jpg"
+            src="/section_wallpaper/buy/13.webp"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 h-full w-full object-cover object-center md:hidden"
@@ -235,7 +235,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
             }}
           />
           <img
-            src="/section_wallpaper/buy/12.jpg"
+            src="/section_wallpaper/buy/12.webp"
             alt=""
             aria-hidden="true"
             className="absolute inset-0 hidden h-full w-full object-cover object-[center_18%] md:block"

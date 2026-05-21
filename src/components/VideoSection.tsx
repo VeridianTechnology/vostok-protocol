@@ -14,18 +14,13 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
   const [isMobile, setIsMobile] = useState(false);
   const [isClosed, setIsClosed] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
+  const VIDEOS_CDN = "https://videos.vostok.guide";
   const videoSources = isMobile
-    ? [
-        { src: "/website_video_compress_mobile.mp4", type: "video/mp4" },
-        { src: "/website_video_web_mobile.webm", type: "video/webm" },
-      ]
-    : [
-        { src: "/website_video_web.webm", type: "video/webm" },
-        { src: "/website_video_compress.mp4", type: "video/mp4" },
-      ];
-  const overlayVideoSrc = "/section_wallpaper/hero/01.mp4";
+    ? [{ src: `${VIDEOS_CDN}/website_video_web_mobile.webm`, type: "video/webm" }]
+    : [{ src: `${VIDEOS_CDN}/website_video_web.webm`, type: "video/webm" }];
+  const overlayVideoSrc = `${VIDEOS_CDN}/section_wallpaper/hero/01.webm`;
   const videoKey = isMobile ? "mobile" : "desktop";
-  const posterImage = "/1.jpg";
+  const posterImage = "/1.webp";
   const mobileHeroImage = "/section_wallpaper/mobile/refined_images/vostok_mobile.jpg";
   const mobileHeroImageWebp = "/section_wallpaper/mobile/refined_images/vostok_mobile.webp";
   useEffect(() => {
@@ -145,7 +140,7 @@ const VideoSection = ({ onClosed, entrySource = "direct" }: VideoSectionProps) =
                 preload="metadata"
                 aria-hidden="true"
               >
-                <source src={overlayVideoSrc} type="video/mp4" />
+                <source src={overlayVideoSrc} type="video/webm" />
               </video>
             </>
           )}

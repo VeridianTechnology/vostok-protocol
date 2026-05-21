@@ -90,35 +90,37 @@ const features = [
   },
 ];
 
+const VIDEOS_CDN = "https://videos.vostok.guide";
+
 const wallpaperSlides = [
   {
     id: "01",
-    desktopVideoSrc: "/wallpapers/refined_videos/01_desktop.mp4",
-    mobileVideoSrc: "/wallpapers/refined_videos/01_mobile.mp4",
+    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/01_desktop.webm`,
+    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/01_mobile.webm`,
     caption: "YOUR FACE",
   },
   {
     id: "02",
-    desktopVideoSrc: "/wallpapers/refined_videos/02_desktop.mp4",
-    mobileVideoSrc: "/wallpapers/refined_videos/02_mobile.mp4",
+    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/02_desktop.webm`,
+    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/02_mobile.webm`,
     caption: "YOUR FACE",
   },
   {
     id: "03",
-    desktopVideoSrc: "/wallpapers/refined_videos/03_desktop.mp4",
-    mobileVideoSrc: "/wallpapers/refined_videos/03_mobile.mp4",
+    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/03_desktop.webm`,
+    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/03_mobile.webm`,
     caption: "YOUR FACE",
   },
   {
     id: "04",
-    desktopVideoSrc: "/wallpapers/refined_videos/04_desktop.mp4",
-    mobileVideoSrc: "/wallpapers/refined_videos/04_mobile.mp4",
+    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/04_desktop.webm`,
+    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/04_mobile.webm`,
     caption: "YOUR FACE",
   },
   {
     id: "05",
-    desktopVideoSrc: "/wallpapers/refined_videos/05_desktop.mp4",
-    mobileVideoSrc: "/wallpapers/refined_videos/05_mobile.mp4",
+    desktopVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/05_desktop.webm`,
+    mobileVideoSrc: `${VIDEOS_CDN}/wallpapers/refined_videos/05_mobile.webm`,
     caption: "YOUR FACE",
   },
 ] as const;
@@ -134,8 +136,8 @@ const FeatureThumbnails = ({
   renderStructureSection = true,
   renderWallpaperSection = true,
 }: FeatureThumbnailsProps) => {
-  const mobileHeroImage = "/section_wallpaper/hero/xxz.jpg";
-  const desktopHeroImage = "/section_wallpaper/hero/01.jpg";
+  const mobileHeroImage = "/section_wallpaper/hero/xxz.webp";
+  const desktopHeroImage = "/section_wallpaper/hero/01.webp";
   // Desktop hero rotation test: remove this toggle, the image list, the state/effect below,
   // and the extra desktop image/blackout layers in the hero markup to roll the test back out.
   const ENABLE_DESKTOP_HERO_ROTATION_TEST = true;

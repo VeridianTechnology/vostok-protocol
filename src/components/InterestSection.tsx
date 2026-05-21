@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useRef, useState } from "react";
 import SectionSideTab from "@/components/SectionSideTab";
 
 const getExplanationVideoSrc = (src: string, isMobile: boolean) =>
-  src.replace(/\.mp4$/i, isMobile ? "_mobile.mp4" : "_desktop.mp4");
+  src.replace(/\.webm$/i, isMobile ? "_mobile.webm" : "_desktop.webm");
 
 export { getExplanationVideoSrc };
 
@@ -222,6 +222,7 @@ const InterestSection = ({
                     src={mobileBackground}
                     alt=""
                     aria-hidden="true"
+                    loading="lazy"
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1000ms] md:hidden ${
                       showFallbackImage ? "opacity-100" : "opacity-0"
                     }`}
@@ -235,6 +236,7 @@ const InterestSection = ({
                     src={desktopBackground}
                     alt=""
                     aria-hidden="true"
+                    loading="lazy"
                     className={`absolute inset-0 hidden h-full w-full object-cover transition-opacity duration-[1000ms] md:block ${
                       showFallbackImage ? "opacity-100" : "opacity-0"
                     }`}
@@ -257,6 +259,7 @@ const InterestSection = ({
                     src={mobileBackground}
                     alt=""
                     aria-hidden="true"
+                    loading="lazy"
                     className="absolute inset-0 h-full w-full scale-[1.08] object-cover md:hidden"
                     style={{
                       objectPosition: mobileBackgroundPosition,
@@ -280,6 +283,7 @@ const InterestSection = ({
                       src={desktopBackground}
                       alt=""
                       aria-hidden="true"
+                      loading="lazy"
                       className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
                       style={{
                         objectPosition: desktopBackgroundPosition,

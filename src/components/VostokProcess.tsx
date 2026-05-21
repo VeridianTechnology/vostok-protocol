@@ -14,8 +14,8 @@ type VostokProcessProps = {
 const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps) => {
   const isFourChan = entrySource === "4chan";
   const isTwitter = entrySource === "twitter";
-  const nonAiBeforeSrc = "/before/after/before.jpg";
-  const nonAiAfterSrc = "/me.png";
+  const nonAiBeforeSrc = "/before/after/before.webp";
+  const nonAiAfterSrc = "/me.webp";
   const stages = useMemo(
     () => [
       {
