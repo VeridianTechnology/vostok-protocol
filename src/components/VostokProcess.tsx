@@ -99,22 +99,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
     [nonAiAfterSrc, nonAiBeforeSrc]
   );
   const gumroadUrl = "https://vostok67.gumroad.com/l/vostokmethod?wanted=true";
-  const [activeStage, setActiveStage] = useState<StageKey>("20");
-  const [activeImage, setActiveImage] = useState("/Comparison/5z.jpg");
-  const [showMyselfModal, setShowMyselfModal] = useState(false);
-  const [myselfModalExpanded, setMyselfModalExpanded] = useState(false);
-
-  const openMyselfModal = () => {
-    setShowMyselfModal(true);
-    setMyselfModalExpanded(false);
-    requestAnimationFrame(() => requestAnimationFrame(() => setMyselfModalExpanded(true)));
-  };
-
-  const closeMyselfModal = () => {
-    setMyselfModalExpanded(false);
-    setTimeout(() => setShowMyselfModal(false), 1000);
-  };
-
+  const [activeStage, setActiveStage] = useState<StageKey>("non_ai");
+  const [activeImage, setActiveImage] = useState(nonAiBeforeSrc);
   const [showBigModal, setShowBigModal] = useState(false);
   const [bigModalExpanded, setBigModalExpanded] = useState(false);
 
@@ -729,9 +715,9 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                   srcSet={`${toMobileImage(activeImage)} 640w, ${toDesktopImage(activeImage)} 1600w`}
                   sizes="(max-width: 640px) 100vw, 60vw"
                   alt={`${currentStage.title} comparison`}
-                  className={`relative z-10 h-full w-full ${
-                    activeStage === "non_ai" ? "object-cover object-center" : "object-cover"
-                  }`}
+                  className={`relative z-10 h-full w-full transition-transform duration-500 ${
+                    activeStage === "non_ai" ? "object-cover object-top" : "object-cover"
+                  } ${isNonAiAfter ? "scale-[1.45] object-top" : activeStage === "non_ai" ? "scale-[1.15]" : ""}`}
                   onLoad={() => clearPendingSelection(activeSelectionKey)}
                   onError={() => clearPendingSelection(activeSelectionKey)}
                   loading="lazy"
@@ -772,20 +758,36 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
           >
             <div className="mb-4 pb-4 border-b border-white/10">
               <div className="flex items-center justify-between gap-4">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">BEFORE</p>
                 <button
                   type="button"
-                  onClick={openMyselfModal}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-transparent px-4 py-2 text-[11px] uppercase tracking-[0.28em] text-white/60 transition hover:border-white/30 hover:text-white/85"
+                  onClick={() => selectStage("non_ai", nonAiBeforeSrc)}
+                  className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
+                    activeStage === "non_ai" && !isNonAiAfter
+                      ? "border-chrome/60 bg-white/10 text-white"
+                      : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
+                  }`}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3">
-                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
-                  </svg>
-                  View
+                  Before
                 </button>
               </div>
               <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK #2</p>
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">AFTER</p>
+                <button
+                  type="button"
+                  onClick={() => selectStage("non_ai", nonAiAfterSrc)}
+                  className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
+                    isNonAiAfter
+                      ? "border-chrome/60 bg-white/10 text-white"
+                      : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
+                  }`}
+                  aria-pressed={isNonAiAfter}
+                >
+                  After
+                </button>
+              </div>
+              <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
+                <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">PRE/AFTER VOSTOK</p>
                 <button
                   type="button"
                   onClick={openBigModal}
@@ -798,52 +800,16 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                 </button>
               </div>
             </div>
-            {stages.map((stage) => {
-              const isActiveStage = activeStage === stage.key;
-              return (
-                <div
-                  key={stage.key}
-                  className={`mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0 ${
-                    isActiveStage ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
-                  }`}
-                >
-                  {stage.key === "non_ai" ? (
-                    <div>
-                      <div className="flex items-center justify-between gap-4">
-                        <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                          {stage.title}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => selectStage(stage.key as StageKey, stage.icons[0])}
-                          className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
-                            isActiveStage && !isNonAiAfter
-                              ? "border-chrome/60 bg-white/10 text-white"
-                              : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
-                          }`}
-                        >
-                          Before
-                        </button>
-                      </div>
-                      <div className="mt-3 flex items-center justify-between gap-4 border-t border-white/10 pt-3">
-                        <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
-                          AFTER
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => selectStage("non_ai", stage.icons[1])}
-                          className={`rounded-full border px-4 py-2 text-[11px] uppercase tracking-[0.28em] transition ${
-                            isNonAiAfter
-                              ? "border-chrome/60 bg-white/10 text-white"
-                              : "border-white/15 bg-transparent text-white/60 hover:border-white/30 hover:text-white/85"
-                          }`}
-                          aria-pressed={isNonAiAfter}
-                        >
-                          After
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
+            <div className="hidden">
+              {stages.filter((stage) => stage.key !== "non_ai").map((stage) => {
+                const isActiveStage = activeStage === stage.key;
+                return (
+                  <div
+                    key={stage.key}
+                    className={`mt-4 border-t border-white/10 pt-3 first:mt-0 first:border-t-0 first:pt-0 ${
+                      isActiveStage ? "shadow-[0_0_40px_rgba(255,255,255,0.05)]" : ""
+                    }`}
+                  >
                     <div className="flex items-center justify-between gap-4">
                       <p className="text-xs uppercase tracking-[0.35em] text-chrome/80">
                         {stage.title}
@@ -860,10 +826,10 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
                         View
                       </button>
                     </div>
-                  )}
-                </div>
-              );
-            })}
+                  </div>
+                );
+              })}
+            </div>
             <m.div
               key={activeStage}
               initial={{ opacity: 0 }}
@@ -906,37 +872,6 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
               <img
                 src="/section_wallpaper/nyx/02.jpg"
                 alt="Pre/After Vostok #2"
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            </m.div>
-          </div>
-        </div>
-      )}
-      {showMyselfModal && (
-        <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4"
-          onClick={closeMyselfModal}
-        >
-          <div
-            className="relative w-full max-w-3xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={closeMyselfModal}
-              className="absolute -top-8 right-0 text-white/60 hover:text-white text-xs uppercase tracking-[0.3em]"
-            >
-              Close
-            </button>
-            <m.div
-              animate={{ paddingBottom: myselfModalExpanded ? "55%" : "133.33%" }}
-              transition={{ duration: 1, ease: "easeInOut" }}
-              className="relative w-full overflow-hidden rounded-2xl"
-              style={{ paddingBottom: "133.33%" }}
-            >
-              <img
-                src="/section_wallpaper/nyx/01.jpg"
-                alt="Pre/After Vostok"
                 className="absolute inset-0 h-full w-full object-cover"
               />
             </m.div>
