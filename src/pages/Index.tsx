@@ -103,7 +103,7 @@ const Index = () => {
     const source = new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase();
     const known = ["facebook", "4chan", "instagram", "tiktok", "reddit", "twitter"];
     if (source && known.includes(source)) setEntrySource(source);
-    if (source === "facebook" || window.location.hostname === "localhost") {
+    if (source === "facebook") {
       setIsFacebookLayout(true);
     }
   }, []);
@@ -534,23 +534,29 @@ const Index = () => {
         />
       </section>
       <div className="divider-line hidden md:block" />
-      <section
-        id="section-messianic"
-        className={isFacebookLayout ? "hidden" : getCollapseClassName("section-messianic")}
-        style={isFacebookLayout ? undefined : getCollapseStyle("section-messianic")}
-      >
-        <MessianicSection />
-      </section>
-      <section
-        id="section-wall"
-        className={isFacebookLayout ? "hidden" : getCollapseClassName("section-wall")}
-        style={isFacebookLayout ? undefined : getCollapseStyle("section-wall")}
-      >
-        <WallSection />
-      </section>
-      <section id="section-become" className={`min-h-[78vh] md:min-h-[200vh] ${isFacebookLayout ? "hidden" : ""}`}>
-        <BecomingSection isBecomingYouActive={activeSectionId === "section-become"} />
-      </section>
+      {!isFacebookLayout && (
+        <section
+          id="section-messianic"
+          className={getCollapseClassName("section-messianic")}
+          style={getCollapseStyle("section-messianic")}
+        >
+          <MessianicSection />
+        </section>
+      )}
+      {!isFacebookLayout && (
+        <section
+          id="section-wall"
+          className={getCollapseClassName("section-wall")}
+          style={getCollapseStyle("section-wall")}
+        >
+          <WallSection />
+        </section>
+      )}
+      {!isFacebookLayout && (
+        <section id="section-become" className="min-h-[78vh] md:min-h-[200vh]">
+          <BecomingSection isBecomingYouActive={activeSectionId === "section-become"} />
+        </section>
+      )}
       <Suspense fallback={null}>
         {!isFacebookLayout && <TransitionThreshold variant="crossing" />}
       </Suspense>
@@ -567,11 +573,13 @@ const Index = () => {
       <Suspense fallback={null}>
         {!isFacebookLayout && <TransitionThreshold variant="chamber" />}
       </Suspense>
-      <section id="section-research" className={`min-h-[50vh] ${isFacebookLayout ? "hidden" : ""}`}>
-        <Suspense fallback={<SectionLoader minHeightClass="min-h-[50vh]" />}>
-          <ResearchStudies entrySource={entrySource} />
-        </Suspense>
-      </section>
+      {!isFacebookLayout && (
+        <section id="section-research" className="min-h-[50vh]">
+          <Suspense fallback={<SectionLoader minHeightClass="min-h-[50vh]" />}>
+            <ResearchStudies entrySource={entrySource} />
+          </Suspense>
+        </section>
+      )}
       <Suspense fallback={null}>
         {!isFacebookLayout && <TransitionThreshold variant="fracture" />}
       </Suspense>

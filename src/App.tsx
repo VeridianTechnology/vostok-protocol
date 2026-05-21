@@ -5,8 +5,7 @@ import RadioArrow from "@/components/RadioArrow";
 import Index from "./pages/Index";
 
 const isFacebookLayout =
-  new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase() === "facebook" ||
-  window.location.hostname === "localhost";
+  new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase() === "facebook";
 
 const App = () => (
   <MotionProvider>
