@@ -25,6 +25,52 @@ const PauseIcon = () => (
   </div>
 );
 
+type VideoCardProps = {
+  videoRef: (el: HTMLVideoElement | null) => void;
+  src: string | undefined;
+  dataSrc: string;
+  isPaused: boolean;
+  isFading: boolean;
+  fadeDurationMs: number;
+  onToggle: (e: React.MouseEvent<HTMLDivElement>) => void;
+  onEnded: () => void;
+  className?: string;
+};
+
+const VideoCard = ({
+  videoRef,
+  src,
+  dataSrc,
+  isPaused,
+  isFading,
+  fadeDurationMs,
+  onToggle,
+  onEnded,
+  className = "",
+}: VideoCardProps) => (
+  <div className={`relative ${className}`} onClick={onToggle}>
+    <video
+      ref={videoRef}
+      className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
+      autoPlay
+      muted
+      playsInline
+      preload="metadata"
+      onEnded={onEnded}
+    >
+      <source data-video-src={dataSrc} src={src} type="video/mp4" />
+    </video>
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
+        isFading ? "opacity-100" : "opacity-0"
+      }`}
+      style={{ transitionDuration: `${fadeDurationMs}ms` }}
+    />
+    {isPaused ? <PauseIcon /> : null}
+  </div>
+);
+
 const CaptionCard = ({ children, className = "" }: { children: ReactNode; className?: string }) => (
   <div className={`relative overflow-hidden border border-black/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.46)_0%,rgba(255,255,255,0.24)_100%)] text-center text-black shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] backdrop-blur-[2px] ${className}`}>
     <div
@@ -238,40 +284,6 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
       ? getExplanationVideoSrc(file, isMobile)
       : undefined;
 
-  const VideoCard = ({
-    index,
-    variant,
-    file,
-    className = "",
-  }: {
-    index: number;
-    variant: "mobile" | "desktop";
-    file: string;
-    className?: string;
-  }) => (
-    <div className={`relative ${className}`} onClick={(e) => handleBecomingYouVideoToggle(index, e)}>
-      <video
-        ref={setBecomingYouVideoRef(index, variant)}
-        className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]"
-        autoPlay
-        muted
-        playsInline
-        preload="metadata"
-        onEnded={() => handleBecomingYouVideoEnded(index)}
-      >
-        <source data-video-src={getExplanationVideoSrc(file, isMobile)} src={videoSrc(file)} type="video/mp4" />
-      </video>
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none absolute inset-0 bg-white transition-opacity ${
-          becomingYouVideoFading[index] ? "opacity-100" : "opacity-0"
-        }`}
-        style={{ transitionDuration: `${becomingYouFadeDurationMs}ms` }}
-      />
-      {areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[index] ? <PauseIcon /> : null}
-    </div>
-  );
-
   return (
     <InterestSection
       sectionId={sectionId}
@@ -313,31 +325,77 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
       >
         <div className="flex flex-col gap-[2vh]">
           <h2 className="text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BECØME</h2>
-          <VideoCard index={0} variant="mobile" file="/section_wallpaper/explaination/01.mp4" />
+          <VideoCard
+            videoRef={setBecomingYouVideoRef(0, "mobile")}
+            src={videoSrc("/section_wallpaper/explaination/01.mp4")}
+            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)}
+            isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0]}
+            isFading={becomingYouVideoFading[0]}
+            fadeDurationMs={becomingYouFadeDurationMs}
+            onToggle={(e) => handleBecomingYouVideoToggle(0, e)}
+            onEnded={() => handleBecomingYouVideoEnded(0)}
+          />
           <CaptionCard className="px-8 pt-5 pb-4">
             <p className="relative z-[1] px-8 font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:px-6 md:text-[1.7rem]">{renderBecomingYouCaption(0)}</p>
           </CaptionCard>
 
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BECØME ALIVE</h2>
-          <VideoCard index={1} variant="mobile" file="/section_wallpaper/explaination/02.mp4" />
+          <VideoCard
+            videoRef={setBecomingYouVideoRef(1, "mobile")}
+            src={videoSrc("/section_wallpaper/explaination/02.mp4")}
+            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/02.mp4", isMobile)}
+            isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[1]}
+            isFading={becomingYouVideoFading[1]}
+            fadeDurationMs={becomingYouFadeDurationMs}
+            onToggle={(e) => handleBecomingYouVideoToggle(1, e)}
+            onEnded={() => handleBecomingYouVideoEnded(1)}
+          />
           <CaptionCard className="px-8 py-5">
             <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">{renderBecomingYouCaption(1)}</p>
           </CaptionCard>
 
           <h2 className="-mb-[8px] pt-0 text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">BØY</h2>
-          <VideoCard index={2} variant="mobile" file="/section_wallpaper/explaination/03.mp4" className="-mt-[1.2vh]" />
+          <VideoCard
+            videoRef={setBecomingYouVideoRef(2, "mobile")}
+            src={videoSrc("/section_wallpaper/explaination/03.mp4")}
+            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/03.mp4", isMobile)}
+            isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[2]}
+            isFading={becomingYouVideoFading[2]}
+            fadeDurationMs={becomingYouFadeDurationMs}
+            onToggle={(e) => handleBecomingYouVideoToggle(2, e)}
+            onEnded={() => handleBecomingYouVideoEnded(2)}
+            className="-mt-[1.2vh]"
+          />
           <CaptionCard className="-mt-[1.2vh] px-8 py-5">
             <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-center md:text-[1.7rem]">{renderBecomingYouCaption(2)}</p>
           </CaptionCard>
 
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">WØMAN</h2>
-          <VideoCard index={3} variant="mobile" file="/section_wallpaper/explaination/06.mp4" />
+          <VideoCard
+            videoRef={setBecomingYouVideoRef(3, "mobile")}
+            src={videoSrc("/section_wallpaper/explaination/06.mp4")}
+            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/06.mp4", isMobile)}
+            isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[3]}
+            isFading={becomingYouVideoFading[3]}
+            fadeDurationMs={becomingYouFadeDurationMs}
+            onToggle={(e) => handleBecomingYouVideoToggle(3, e)}
+            onEnded={() => handleBecomingYouVideoEnded(3)}
+          />
           <CaptionCard className="px-8 py-5">
             <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-[1.7rem]">{renderBecomingYouCaption(3)}</p>
           </CaptionCard>
 
           <h2 className="pt-[0.25vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000]">FAMØUS</h2>
-          <VideoCard index={4} variant="mobile" file="/section_wallpaper/explaination/04.mp4" />
+          <VideoCard
+            videoRef={setBecomingYouVideoRef(4, "mobile")}
+            src={videoSrc("/section_wallpaper/explaination/04.mp4")}
+            dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/04.mp4", isMobile)}
+            isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[4]}
+            isFading={becomingYouVideoFading[4]}
+            fadeDurationMs={becomingYouFadeDurationMs}
+            onToggle={(e) => handleBecomingYouVideoToggle(4, e)}
+            onEnded={() => handleBecomingYouVideoEnded(4)}
+          />
           <CaptionCard className="px-8 py-7">
             <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black">{renderBecomingYouCaption(4)}</p>
           </CaptionCard>
@@ -353,7 +411,17 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <h2 className="mb-[3vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:mb-6 md:text-[3.4rem]">BECØME</h2>
           <div className="flex flex-col gap-[3vh] md:-translate-x-[8vw]">
             <div className="flex flex-col gap-[3vh] md:flex-row md:items-stretch md:gap-0">
-              <VideoCard index={0} variant="desktop" file="/section_wallpaper/explaination/01.mp4" className="md:w-[32vw] md:min-w-[32vw]" />
+              <VideoCard
+                videoRef={setBecomingYouVideoRef(0, "desktop")}
+                src={videoSrc("/section_wallpaper/explaination/01.mp4")}
+                dataSrc={getExplanationVideoSrc("/section_wallpaper/explaination/01.mp4", isMobile)}
+                isPaused={areBecomingYouVideosPaused || individuallyPausedBecomingYouVideos[0]}
+                isFading={becomingYouVideoFading[0]}
+                fadeDurationMs={becomingYouFadeDurationMs}
+                onToggle={(e) => handleBecomingYouVideoToggle(0, e)}
+                onEnded={() => handleBecomingYouVideoEnded(0)}
+                className="md:w-[32vw] md:min-w-[32vw]"
+              />
               <CaptionCard className="px-8 py-7 md:-ml-px md:flex md:w-[8.5rem] md:flex-none md:items-center md:justify-center md:px-3 md:py-6">
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.22] md:hidden" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-mobile.jpg")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "108px 108px" }} />
                 <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden opacity-[0.2] md:block" style={{ backgroundImage: 'url("/section_wallpaper/interest/special-desktop.jpg")', backgroundRepeat: "repeat", backgroundPosition: "center", backgroundSize: "128px 128px" }} />
