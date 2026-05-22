@@ -48,6 +48,8 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [isDesktop, setIsDesktop] = useState(false);
+  const [isFacebookLoading, setIsFacebookLoading] = useState(false);
+  const facebookLoadTimeoutRef = useRef<number | null>(null);
   const [buttonLabel, setButtonLabel] = useState<string>(
     isFacebook ? "JOIN THE REVOLUTION" : STEP_FORWARD_PHRASES[0]
   );
@@ -56,6 +58,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";
   const redirectIntervalRef = useRef<number | null>(null);
   const redirectTimeoutRef = useRef<number | null>(null);
+
   const sectionRef = useRef<HTMLElement | null>(null);
   const phraseIndexRef = useRef(0);
 
@@ -201,7 +204,18 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const handleCheckoutClick = (location: "footer" | "footer_secondary") => {
     const goToCheckout = () => {
       if (isFacebook) {
-        window.location.href = gumroadUrl;
+        setIsFacebookLoading(true);
+        const doRedirect = () => {
+          if (facebookLoadTimeoutRef.current) {
+            window.clearTimeout(facebookLoadTimeoutRef.current);
+            facebookLoadTimeoutRef.current = null;
+          }
+          window.location.href = gumroadUrl;
+        };
+        facebookLoadTimeoutRef.current = window.setTimeout(doRedirect, 8000);
+        fetch(gumroadUrl, { mode: "no-cors", method: "HEAD" })
+          .then(doRedirect)
+          .catch(doRedirect);
         return;
       }
       if (isDesktop) {
@@ -323,35 +337,51 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
         </m.div>
       </div>
 
-      {isRedirecting && isDesktop && createPortal(
+      {(isRedirecting && isDesktop || isFacebookLoading) && createPortal(
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 px-6">
           <div className="relative flex h-full w-full items-center justify-center bg-obsidian/95 p-6 text-center">
             <div className="relative w-full max-w-md rounded-2xl border border-white/10 p-6 shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
-            <button
-              type="button"
-              onClick={closeRedirect}
-              aria-label="Close redirect"
-              className="absolute right-4 top-4 text-foreground/70 transition-colors duration-300 hover:text-foreground"
-            >
-              <svg
-                aria-hidden="true"
-                className="h-4 w-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            {!isFacebookLoading && (
+              <button
+                type="button"
+                onClick={closeRedirect}
+                aria-label="Close redirect"
+                className="absolute right-4 top-4 text-foreground/70 transition-colors duration-300 hover:text-foreground"
               >
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </svg>
-            </button>
+                <svg
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M18 6 6 18" />
+                  <path d="m6 6 12 12" />
+                </svg>
+              </button>
+            )}
             <p className="text-[10px] uppercase tracking-[0.3em] text-chrome/80">
               Taking you to the secure checkout Gumroad, a third party checkout for Ebooks.
             </p>
-            <h3 className="mt-4 text-xl font-light text-foreground">Redirecting</h3>
-            <p className="mt-2 text-sm text-steel">Counting down {countdown}...</p>
+            {isFacebookLoading ? (
+              <>
+                <h3 className="mt-4 text-xl font-light text-foreground">Loading checkout…</h3>
+                <div className="mt-4 flex justify-center">
+                  <svg aria-hidden="true" className="h-6 w-6 animate-spin text-white/60" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                </div>
+              </>
+            ) : (
+              <>
+                <h3 className="mt-4 text-xl font-light text-foreground">Redirecting</h3>
+                <p className="mt-2 text-sm text-steel">Counting down {countdown}...</p>
+              </>
+            )}
             </div>
           </div>
         </div>,
