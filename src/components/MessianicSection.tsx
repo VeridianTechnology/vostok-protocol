@@ -21,6 +21,7 @@ const MessianicSection = ({ sectionId }: MessianicSectionProps) => (
     secondaryOverlayPosition="right"
     secondaryOverlayClassName="bottom-[-9vh] right-[-46vw] hidden h-[82%] -rotate-[25deg] opacity-100 md:top-0 md:right-[-14vw] md:block md:h-full"
     backgroundOverlayClassName="bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.03)_32%,rgba(0,0,0,0.12)_62%,rgba(0,0,0,0.46)_100%)]"
+    backgroundPriority
     disableParallax
     contentClassName="flex min-h-[72vh] flex-col items-center justify-center md:min-h-[calc(90vh-7.75rem)] md:max-w-none md:items-start md:justify-end"
     innerContentClassName="flex w-full items-center justify-center px-[6vw] pb-0 pt-0 md:items-end md:justify-start md:px-0 md:pb-[6vh] md:pl-[10vw] md:pt-0"

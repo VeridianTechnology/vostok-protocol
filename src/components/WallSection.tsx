@@ -26,6 +26,7 @@ const WallSection = ({ sectionId }: WallSectionProps) => (
         className="pointer-events-none absolute bottom-0 right-[-18vw] z-0 block h-[82%] w-auto max-w-none -scale-x-100 object-contain md:right-[-6vw] md:h-[88%]"
       />
     }
+    backgroundPriority
     disableParallax
     contentClassName="flex h-full min-h-0 items-start justify-center md:max-w-none md:items-end md:justify-start"
     innerContentClassName="relative z-10 flex w-full justify-center p-0 md:justify-start md:pb-[3vh] md:pl-[10vw] md:pt-0"

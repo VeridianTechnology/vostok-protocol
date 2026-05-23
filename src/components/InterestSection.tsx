@@ -42,6 +42,7 @@ export type InterestSectionProps = {
   overlayClassName?: string;
   secondaryOverlayClassName?: string;
   firstLineClassName?: string;
+  backgroundPriority?: boolean;
   disableParallax?: boolean;
   contentClassName?: string;
   innerContentClassName?: string;
@@ -86,6 +87,7 @@ const InterestSection = ({
   overlayClassName = "",
   secondaryOverlayClassName = "",
   firstLineClassName = "",
+  backgroundPriority = false,
   disableParallax = false,
   contentClassName = "",
   innerContentClassName = "",
@@ -259,7 +261,8 @@ const InterestSection = ({
                     src={mobileBackground}
                     alt=""
                     aria-hidden="true"
-                    loading="lazy"
+                    loading={backgroundPriority ? "eager" : "lazy"}
+                    fetchpriority={backgroundPriority ? "high" : undefined}
                     className="absolute inset-0 h-full w-full scale-[1.08] object-cover md:hidden"
                     style={{
                       objectPosition: mobileBackgroundPosition,
@@ -283,7 +286,8 @@ const InterestSection = ({
                       src={desktopBackground}
                       alt=""
                       aria-hidden="true"
-                      loading="lazy"
+                      loading={backgroundPriority ? "eager" : "lazy"}
+                      fetchpriority={backgroundPriority ? "high" : undefined}
                       className="absolute inset-0 hidden h-full w-full scale-[1.08] object-cover md:block"
                       style={{
                         objectPosition: desktopBackgroundPosition,
