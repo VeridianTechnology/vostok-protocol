@@ -1,7 +1,7 @@
 import { m } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { getImageVariants, toDesktopImage, toMobileImage } from "@/lib/utils";
-import { track } from "@vercel/analytics";
+import { trackSafe } from "@/lib/analytics";
 import SectionSideTab from "@/components/SectionSideTab";
 
 type StageKey = "20" | "70" | "100" | "non_ai";
@@ -618,8 +618,8 @@ const VostokProcess = ({ onLoaded, entrySource = "direct" }: VostokProcessProps)
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => {
-              track("buy_button_check", { location: "vostok_process", source: entrySource ?? "direct" });
-              track(`buy_button_${entrySource ?? "direct"}`, { location: "vostok_process" });
+              trackSafe("buy_click", { location: "vostok_process", source: entrySource ?? "direct" });
+              trackSafe(`buy_click_${entrySource ?? "direct"}`, { location: "vostok_process" });
               window.open(gumroadUrl, "_blank", "noopener,noreferrer");
             }}
             className="mt-4 inline-flex items-center justify-center rounded-sm border border-white/20 bg-white/10 px-5 py-3 text-[10px] uppercase tracking-[0.3em] text-white transition hover:text-white"

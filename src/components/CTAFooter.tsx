@@ -228,8 +228,8 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
     const source = entrySource ?? "direct";
     markBuyClicked();
     fireTikTokEvent();
-    trackSafe("buy_button_check", { location, source });
-    trackSafe(`buy_button_${source}`, { location });
+    trackSafe("buy_click", { location, source });
+    trackSafe(`buy_click_${source}`, { location });
     if (onRequestBuy) {
       onRequestBuy(goToCheckout);
       return;

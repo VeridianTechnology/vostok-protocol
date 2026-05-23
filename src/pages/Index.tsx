@@ -10,7 +10,7 @@ const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
 const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
-import { trackSafe, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
+import { trackSafe, trackBeacon, checkAndSetOwnerParam, isOwner, hasBuyClicked, CAT_KEY, BOUGHT_KEY } from "@/lib/analytics";
 
 const orderedSectionIds = [
   "section-hero",
@@ -108,14 +108,20 @@ const Index = () => {
     }
   }, []);
 
-  // Visitor category system — fires exactly one event per session on exit:
-  // "bot_activity" | "did_check" | "checked_it_well" | "buy_button_check"
+  // Visitor category system — fires exactly one beacon per session on exit:
+  // "canceled" | "bot_activity" | "did_check" | "checked_it_well" | "buy_button_check"
   useEffect(() => {
     if (isOwner()) return;
     if (sessionStorage.getItem(CAT_KEY)) return;
 
     const arrivalTime = Date.now();
     let hasScrolled = false;
+    let pageFullyLoaded = document.readyState === "complete";
+
+    const onPageLoad = () => { pageFullyLoaded = true; };
+    if (!pageFullyLoaded) {
+      window.addEventListener("load", onPageLoad);
+    }
 
     const onScroll = () => {
       hasScrolled = true;
@@ -126,7 +132,9 @@ const Index = () => {
       const elapsed = Date.now() - arrivalTime;
       let cat: string;
 
-      if (hasBuyClicked() || sessionStorage.getItem(BOUGHT_KEY)) {
+      if (!pageFullyLoaded) {
+        cat = "canceled";
+      } else if (hasBuyClicked() || sessionStorage.getItem(BOUGHT_KEY)) {
         cat = "buy_button_check";
       } else if (hasScrolled && elapsed >= 30000) {
         cat = "checked_it_well";
@@ -137,7 +145,7 @@ const Index = () => {
       }
 
       sessionStorage.setItem(CAT_KEY, cat);
-      trackSafe(cat);
+      trackBeacon(cat);
     };
 
     const onVisibility = () => {
@@ -147,11 +155,14 @@ const Index = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     document.addEventListener("visibilitychange", onVisibility);
     window.addEventListener("pagehide", fireCategory);
+    window.addEventListener("beforeunload", fireCategory);
 
     return () => {
+      window.removeEventListener("load", onPageLoad);
       window.removeEventListener("scroll", onScroll);
       document.removeEventListener("visibilitychange", onVisibility);
       window.removeEventListener("pagehide", fireCategory);
+      window.removeEventListener("beforeunload", fireCategory);
     };
   }, []);
 

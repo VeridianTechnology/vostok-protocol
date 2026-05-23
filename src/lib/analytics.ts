@@ -2,7 +2,6 @@ import { track } from "@vercel/analytics";
 
 type TrackProps = Record<string, string | number | boolean | null | undefined>;
 
-const oncePrefix = "vostok_analytics_once_";
 const OWNER_KEY = "vostok_owner";
 export const BOUGHT_KEY = "vostok_bought";
 export const CAT_KEY = "vostok_cat";
@@ -34,21 +33,12 @@ export const trackSafe = (event: string, props?: TrackProps) => {
   }
 };
 
-export const trackOnce = (event: string, props?: TrackProps) => {
+export const trackBeacon = (event: string, props?: TrackProps) => {
   if (isOwner()) return;
   try {
-    if (typeof window === "undefined" || !window.sessionStorage) {
-      track(event, props);
-      return;
-    }
-    const key = `${oncePrefix}${event}`;
-    if (window.sessionStorage.getItem(key)) {
-      return;
-    }
-    window.sessionStorage.setItem(key, "1");
-    track(event, props);
+    navigator.sendBeacon("/api/beacon", JSON.stringify({ event, props }));
   } catch {
-    // Ignore analytics failures.
+    // ignore
   }
 };
 
