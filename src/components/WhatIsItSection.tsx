@@ -21,7 +21,7 @@ const vostokScreens: IdentityScreen[] = [
     lines: [
       { text: "What is Vostok?", tone: "question" },
       {
-        text: "Vostok is not a collection of tips. It is a structured approach to facial optimization.\n\nIt focuses on three things:\n\n- Structure: The underlying form of the face — jaw, cheekbones, alignment, posture.\n- Function: The habits that shape that structure over time — tongue position, breathing, chewing, muscular engagement.\n- Signal: How that structure is interpreted — symmetry, tension, clarity, presence.\n\nThe goal is not artificial change. The goal is precision.",
+        text: "Vostok is not a collection of tips. It is a structured approach to facial optimization.\n\nIt focuses on three things:\n\n- Structure: The underlying form of the face — jaw, cheekbones, alignment, posture.\n- Function: The habits that shape that structure over time — tongue position, breathing, chewing, muscular engagement.\n- Signal: How that structure is interpreted — symmetry, tension, clarity, presence.\n\nThe goal is not artificial change. The goal is precision.\n\nMost people spend years in the gym sculpting everything below the neck, and ignore the most visible thing about them entirely. Vostok corrects that. The face is trainable. The results are permanent.",
         tone: "answer",
       },
     ],
@@ -173,7 +173,7 @@ const WhatIsItSection = () => {
           <div className="relative z-10 flex h-full flex-col">
             <div className="relative z-10 flex-1 overflow-hidden px-7 pb-10 pt-10 text-[#b8bec6] md:px-12 md:py-12">
               <div className="mx-auto grid h-full max-w-[56rem] grid-rows-[1fr_auto]">
-                <div className="flex min-h-0 overflow-y-auto [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20 [&::-webkit-scrollbar-track]:bg-transparent">
+                <div className="gold-scroll flex min-h-0 overflow-y-auto">
                   {hasVideo ? (
                     <div className="flex w-full flex-col items-center gap-6 py-2 md:flex-row md:items-center md:gap-10">
                       <div className="w-[220px] shrink-0 md:w-[360px]">

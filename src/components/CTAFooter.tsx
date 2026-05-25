@@ -50,9 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isDesktop, setIsDesktop] = useState(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState(false);
   const facebookLoadTimeoutRef = useRef<number | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>(
-    isFacebook ? "JOIN THE REVOLUTION" : STEP_FORWARD_PHRASES[0]
-  );
+  const [buttonLabel, setButtonLabel] = useState<string>("JOIN THE REVOLUTION");
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
   const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";
@@ -98,6 +96,9 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   }, [isRedirecting, gumroadUrl, isDesktop]);
 
   useEffect(() => {
+    // Button label is now static — cycling disabled
+    return;
+    // eslint-disable-next-line no-unreachable
     if (isFourChan || isFacebook) {
       return;
     }

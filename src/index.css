@@ -500,6 +500,28 @@
       linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)) right 16px center / 1px 56px no-repeat;
   }
 
+  .gold-scroll {
+    scrollbar-color: #b08a4a transparent;
+    scrollbar-width: thin;
+  }
+
+  .gold-scroll::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .gold-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .gold-scroll::-webkit-scrollbar-thumb {
+    background: #b08a4a;
+    border-radius: 999px;
+  }
+
+  .gold-scroll::-webkit-scrollbar-thumb:hover {
+    background: #d2aa63;
+  }
+
   .research-copy-scroll {
     scrollbar-color: #2b2d31 #050607;
     scrollbar-width: thin;

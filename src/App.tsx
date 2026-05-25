@@ -4,14 +4,11 @@ import RadioPlayer from "@/components/RadioPlayer";
 import RadioArrow from "@/components/RadioArrow";
 import Index from "./pages/Index";
 
-const isFacebookLayout =
-  new URLSearchParams(window.location.search).get("utm_source")?.toLowerCase() === "facebook";
-
 const App = () => (
   <MotionProvider>
     <Index />
     <RadioPlayer />
-    {!isFacebookLayout && <RadioArrow />}
+    <RadioArrow />
     <div aria-hidden="true" className="viewport-vignette" />
     <ChatbaseWidget />
   </MotionProvider>
