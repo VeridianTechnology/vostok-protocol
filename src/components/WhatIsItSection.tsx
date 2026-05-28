@@ -28,7 +28,6 @@ const vostokScreens: IdentityScreen[] = [
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
   {
-    embedUrl: "https://www.youtube.com/embed/HzVkX9z2onA?autoplay=0&rel=0",
     lines: [
       { text: "So What Is This?", tone: "question" },
       {
@@ -39,7 +38,6 @@ const vostokScreens: IdentityScreen[] = [
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
   },
   {
-    embedUrl: "https://www.youtube.com/embed/T2TrhlbT5lY?autoplay=0&rel=0",
     lines: [
       { text: "But Why?", tone: "question" },
       {

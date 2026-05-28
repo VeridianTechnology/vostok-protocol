@@ -106,11 +106,11 @@ const Index = () => {
     if (source && known.includes(source)) setEntrySource(source);
   }, []);
 
-  // Visitor category system — fires exactly one beacon per session on exit:
+  // Visitor category system — fires exactly one beacon per visitor (localStorage) on exit:
   // "canceled" | "bot_activity" | "did_check" | "checked_it_well" | "buy_button_check"
   useEffect(() => {
     if (isOwner()) return;
-    if (sessionStorage.getItem(CAT_KEY)) return;
+    if (localStorage.getItem(CAT_KEY)) return;
 
     const arrivalTime = Date.now();
     let hasScrolled = false;
@@ -126,7 +126,7 @@ const Index = () => {
     };
 
     const fireCategory = () => {
-      if (sessionStorage.getItem(CAT_KEY)) return;
+      if (localStorage.getItem(CAT_KEY)) return;
       const elapsed = Date.now() - arrivalTime;
       let cat: string;
 
@@ -142,7 +142,7 @@ const Index = () => {
         cat = "bot_activity";
       }
 
-      sessionStorage.setItem(CAT_KEY, cat);
+      localStorage.setItem(CAT_KEY, cat);
       trackBeacon(cat);
     };
 
