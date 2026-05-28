@@ -8,8 +8,8 @@ type VostokProcessProps = {
 };
 
 const SLIDES = [
-  { main: "/Differences2/03.png", companion: "/Differences2/01.jpg" },
-  { main: "/Differences2/04.png", companion: "/Differences2/02.jpg" },
+  { main: "/Differences2/03.png", companion: "/Differences2/01.webp" },
+  { main: "/Differences2/04.png", companion: "/Differences2/02.webp" },
 ] as const;
 
 const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
@@ -84,7 +84,7 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
       </div>
 
       <p
-        className="relative z-10 mb-3 text-center text-2xl uppercase tracking-[0.18em] text-black md:mb-8 md:text-4xl"
+        className="relative z-10 mb-8 text-center text-2xl uppercase tracking-[0.18em] text-black md:text-4xl"
         style={{ fontFamily: "'Cinzel', serif", fontWeight: 700 }}
       >
         NYX's Process
