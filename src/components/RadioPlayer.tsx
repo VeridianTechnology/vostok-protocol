@@ -1403,11 +1403,24 @@ const OUTPUT_LIMITER_RELEASE_S = 0.25;
 const RADIO_PLAYLIST_KEY = "te-radio-playlist";
 const RADIO_POSITION_KEY = "te-radio-position";
 
-const generateShuffledPlaylist = (): number[] => {
-  const indices = Array.from({ length: PLAYABLE_TRACKS.length }, (_, i) => i);
-  for (let i = indices.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
+const generateShuffledPlaylist = (recentlyPlayed: ReadonlySet<number> = new Set()): number[] => {
+  const n = PLAYABLE_TRACKS.length;
+  // Weighted shuffle via exponential key method: each track gets key = rand^(1/weight).
+  // Weight increases linearly from 1× (first track) to 4× (last track), so end-of-list
+  // tracks are ~4× more likely to land near the front of each shuffle cycle.
+  const weighted = Array.from({ length: n }, (_, i) => {
+    const weight = 1 + (i / Math.max(1, n - 1)) * 3;
+    return { index: i, key: Math.pow(Math.random(), 1 / weight) };
+  });
+  weighted.sort((a, b) => b.key - a.key);
+  const indices = weighted.map((w) => w.index);
+
+  // On cycle wrap-around, push recently played tracks to the end so they
+  // don't immediately repeat at the start of the new cycle.
+  if (recentlyPlayed.size > 0 && recentlyPlayed.size < n) {
+    const front = indices.filter((i) => !recentlyPlayed.has(i));
+    const back = indices.filter((i) => recentlyPlayed.has(i));
+    return [...front, ...back];
   }
   return indices;
 };
@@ -1560,7 +1573,10 @@ const RadioPlayer = () => {
     let nextPlaylist = playlist;
 
     if (nextPos >= playlist.length) {
-      nextPlaylist = generateShuffledPlaylist();
+      // Avoid replaying the last ~1/5 of the cycle at the start of the new one.
+      const tailLength = Math.min(playlist.length, Math.max(1, Math.floor(PLAYABLE_TRACKS.length / 5)));
+      const recentlyPlayed = new Set(playlist.slice(-tailLength));
+      nextPlaylist = generateShuffledPlaylist(recentlyPlayed);
       playlistRef.current = nextPlaylist;
       nextPos = 0;
     }
