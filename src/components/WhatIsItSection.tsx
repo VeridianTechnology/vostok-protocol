@@ -17,35 +17,14 @@ type IdentityScreen = {
 
 const vostokScreens: IdentityScreen[] = [
   {
-    embedUrl: "https://www.youtube.com/embed/eZ-hYKuglQw?autoplay=0&rel=0",
     lines: [
-      { text: "What is Vostok?", tone: "question" },
+      { text: "WHAT IS VØSTOK LABS?", tone: "question" },
       {
-        text: "Vostok is not a collection of tips. It is a structured approach to facial optimization.\n\nIt focuses on three things:\n\n- Structure: The underlying form of the face — jaw, cheekbones, alignment, posture.\n- Function: The habits that shape that structure over time — tongue position, breathing, chewing, muscular engagement.\n- Signal: How that structure is interpreted — symmetry, tension, clarity, presence.\n\nThe goal is not artificial change. The goal is precision.\n\nMost people spend years in the gym sculpting everything below the neck, and ignore the most visible thing about them entirely. Vostok corrects that. The face is trainable. The results are permanent.",
+        text: "It's an esoteric company. Bed Bath & Beyond + Apple.\n\nOur first product is a guide, and a series of tips on how to improve your looks.\n\nAnd I mean, radically... improve your looks.\n\nWe can only have so many people. Elite people.\n\nOne million exactly. I want to help you ascend.\n\nAnd with a lot of work — you will. You can become an entertainer, a leader, a companion.\n\nAnything you want, can be made and done because you look better than everyone.\n\nLet me give you the gift. The gift of Vostok.\n\nAscend with me.",
         tone: "answer",
       },
     ],
     holdClassName: "min-h-[14rem] md:min-h-[18rem]",
-  },
-  {
-    lines: [
-      { text: "So What Is This?", tone: "question" },
-      {
-        text: "Vostok is a facial training system designed to improve the musculature of your face. It's about strengthening the face as we would at the gym, with various exercises and progressions — rebuilding it to have supermodel proportions.\n\nWe believe beauty should be democratized. It should not belong to just an elite class of models.\n\nOur skull is a combination of plates, not solid bone. The face is filled with cartilage, fat, nerves, and small muscles — and what we are offering here is the full service: building up the muscles, refining the facial structure, modifying the face in a very real way, to the point it'll look like you've had surgery.\n\nMost people never train this layer. Vostok exists to change that.",
-        tone: "answer",
-      },
-    ],
-    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
-  },
-  {
-    lines: [
-      { text: "But Why?", tone: "question" },
-      {
-        text: "If I were to tell you...\n\nThat I could make you hot, what would you say? That I could make you sexy?\n\nYou wouldn't believe me. You would say I'm crazy.\n\nWhat if I told you your personality is based on how attractive people perceive you to be? And not actually who you are?\n\nThis is not theory. This is observed behavior.\n\nBut here's the thing — you're going to have to work really hard, exactly as you would at the gym, but for your face. In fact, perhaps even more time into it.\n\nBut, again, here's the thing. Every hour you put in, every practice session, you get 1% hotter. And it stays that way — forever. So if you do 40 hours, you go about one point up on the scale. The scale of 1 to 10. If you're a 4 and you do forty hours, you should be visually looking like a 5. If you do another 40 hours, you'll look like a 6, and so on and so on. There really doesn't seem to be any limit — at least that I've seen.",
-        tone: "answer",
-      },
-    ],
-    holdClassName: "min-h-[8rem] md:min-h-[10rem]",
   },
 ];
 
@@ -171,7 +150,7 @@ const WhatIsItSection = () => {
           <div className="relative z-10 flex h-full flex-col">
             <div className="relative z-10 flex-1 overflow-hidden px-7 pb-10 pt-10 text-[#b8bec6] md:px-12 md:py-12">
               <div className="mx-auto grid h-full max-w-[56rem] grid-rows-[1fr_auto]">
-                <div className="gold-scroll flex min-h-0 overflow-y-auto">
+                <div className="flex min-h-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {hasVideo ? (
                     <div className="flex w-full flex-col items-center gap-6 py-2 md:flex-row md:items-center md:gap-10">
                       <div className="w-[220px] shrink-0 md:w-[360px]">
@@ -196,59 +175,20 @@ const WhatIsItSection = () => {
                     </div>
                   ) : (
                     <div className="flex w-full flex-col text-center">
-                      <div className="flex-1" />
+                      <div className="mb-7 flex justify-center md:mb-9">
+                        <img
+                          src="/NYX_square.jpg"
+                          alt="Nyx"
+                          className="h-40 w-40 rounded-full object-cover shadow-[0_12px_48px_rgba(0,0,0,0.55)] md:h-56 md:w-56"
+                        />
+                      </div>
                       <div className="flex flex-col items-center">
                         <SlideLines screen={currentSequenceScreen} index={sequenceScreenIndex} withVideo={false} />
                       </div>
-                      <div className="flex-1" />
                     </div>
                   )}
                 </div>
 
-                <div className="relative z-20 mx-auto mt-8 flex w-full max-w-[24rem] items-center justify-between gap-8 pb-2 md:mt-8 md:max-w-none md:justify-center md:gap-16 md:pb-0">
-                  {sequenceScreenIndex > 0 ? (
-                    <button
-                      type="button"
-                      onClick={() => setSequenceScreenIndex((current) => Math.max(0, current - 1))}
-                      className="touch-manipulation border border-[#b08a4a] bg-black px-6 py-3 text-[11px] uppercase tracking-[0.34em] text-white/72 transition hover:border-[#d2aa63] hover:text-white md:px-7"
-                    >
-                      Prev
-                    </button>
-                  ) : null}
-                  <div className="flex min-w-0 items-center justify-center md:hidden">
-                    <span className="text-[11px] uppercase tracking-[0.28em] text-white/72">
-                      {sequenceScreenIndex + 1} / {vostokScreens.length}
-                    </span>
-                  </div>
-                  <div className="hidden items-center gap-2 md:flex">
-                    {vostokScreens.map((_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        aria-label={`Go to screen ${index + 1}`}
-                        onClick={() => setSequenceScreenIndex(index)}
-                        className={`h-2.5 w-2.5 rounded-full transition ${
-                          index === sequenceScreenIndex
-                            ? "bg-white"
-                            : "bg-white/24 hover:bg-white/45"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  {sequenceScreenIndex < vostokScreens.length - 1 ? (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setSequenceScreenIndex((current) =>
-                          Math.min(vostokScreens.length - 1, current + 1),
-                        )
-                      }
-                      className="touch-manipulation border border-[#b08a4a] bg-black px-6 py-3 text-[11px] uppercase tracking-[0.34em] text-white/72 transition hover:border-[#d2aa63] hover:text-white md:px-7"
-                    >
-                      Next
-                    </button>
-                  ) : null}
-                </div>
               </div>
             </div>
           </div>

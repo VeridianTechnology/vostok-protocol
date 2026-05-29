@@ -190,18 +190,6 @@ const researchSlides: ResearchSlide[] = [
       },
     ],
   },
-  {
-    id: "the-method",
-    tabLabel: "Why",
-    title: "Why",
-    paragraphs: [],
-    desktopSrc: "/screen.webp",
-    mobileSrc: "/screen.webp",
-    alt: "The Vostok Method",
-    sources: [],
-    videoDesktopSrc: "https://videos.vostok.guide/website_video_web.webm",
-    videoMobileSrc: "https://videos.vostok.guide/website_video_web_mobile.webm",
-  },
 ];
 
 const formatTime = (s: number) => {
@@ -377,82 +365,54 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -direction * 40 }}
                   transition={{ duration: 0.38, ease: "easeOut" }}
-                  className={activeSlide.videoDesktopSrc ? "" : "grid gap-5 md:grid-cols-[minmax(0,1.4fr)_minmax(22rem,0.9fr)] md:items-start md:gap-8"}
+                  className={activeSlide.videoDesktopSrc ? "" : "flex flex-col gap-6"}
                 >
                   {activeSlide.videoDesktopSrc ? (
                     <VideoSlidePlayer desktopSrc={activeSlide.videoDesktopSrc} mobileSrc={activeSlide.videoMobileSrc ?? activeSlide.videoDesktopSrc} />
                   ) : null}
                   {!activeSlide.videoDesktopSrc ? (
                     <>
-                    <m.button
-                    type="button"
-                    layoutId={`research-image-${activeSlide.id}`}
-                    onClick={() => setIsImageOpen(true)}
-                    className="block overflow-hidden rounded-[1.6rem] border border-white/10 bg-[rgba(8,8,10,0.88)] text-left shadow-[0_26px_70px_rgba(0,0,0,0.32)] outline-none transition hover:border-[#f1d27a]/55 focus-visible:border-[#f1d27a] md:mx-auto md:w-[94%]"
-                    transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-                    aria-label={`Open ${activeSlide.tabLabel} research image`}
-                  >
-                    <picture>
-                      <source media="(max-width: 767px)" srcSet={activeSlide.mobileSrc} />
-                      <source srcSet={activeSlide.desktopSrc} />
-                      <img
-                        src={activeSlide.desktopSrc}
-                        alt={activeSlide.alt}
-                        className="block h-auto w-full object-cover"
-                      />
-                    </picture>
-                  </m.button>
+                      <m.button
+                        type="button"
+                        layoutId={`research-image-${activeSlide.id}`}
+                        onClick={() => setIsImageOpen(true)}
+                        className="block w-full overflow-hidden rounded-[1.6rem] border border-white/10 bg-[rgba(8,8,10,0.88)] text-left shadow-[0_26px_70px_rgba(0,0,0,0.32)] outline-none transition hover:border-[#f1d27a]/55 focus-visible:border-[#f1d27a]"
+                        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+                        aria-label={`Open ${activeSlide.tabLabel} research image`}
+                      >
+                        <picture>
+                          <source media="(max-width: 767px)" srcSet={activeSlide.mobileSrc} />
+                          <source srcSet={activeSlide.desktopSrc} />
+                          <img
+                            src={activeSlide.desktopSrc}
+                            alt={activeSlide.alt}
+                            className="block h-auto w-full object-cover"
+                          />
+                        </picture>
+                      </m.button>
 
-                  <div className="research-copy-scroll rounded-[1.6rem] border border-white/10 bg-[#17181A] p-5 text-left text-white/88 shadow-[0_24px_64px_rgba(0,0,0,0.22)] md:max-h-[min(76vh,72rem)] md:overflow-y-auto md:p-7">
-                    <h2 className="text-[1.05rem] font-semibold uppercase leading-tight tracking-[0.12em] text-[#f1d27a] md:text-[1.35rem]">
-                      {activeSlide.title}
-                    </h2>
-                    {activeSlide.subtitle ? (
-                      <p className="mt-4 text-[1rem] font-medium leading-relaxed text-white md:text-[1.08rem]">
-                        {activeSlide.subtitle}
-                      </p>
-                    ) : null}
-
-                    <div className="mt-5 space-y-4 text-[0.97rem] leading-[1.78] md:mt-6 md:text-[1.02rem]">
-                      {activeSlide.paragraphs.map((paragraph) => (
-                        <p key={paragraph}>{paragraph}</p>
-                      ))}
-                    </div>
-
-                    {activeSlide.secondaryTitle ? (
-                      <div className="mt-8 border-t border-white/10 pt-6">
-                        <h3 className="text-[0.95rem] font-semibold uppercase leading-tight tracking-[0.12em] text-[#f1d27a] md:text-[1.08rem]">
-                          {activeSlide.secondaryTitle}
-                        </h3>
-                        <div className="mt-5 space-y-4 text-[0.97rem] leading-[1.78] md:text-[1.02rem]">
-                          {activeSlide.secondaryParagraphs?.map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-
-                    <div className="mt-8 border-t border-white/10 pt-5">
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-white/58">
-                        Sources
-                      </p>
-                      <div className="mt-3 space-y-2.5 text-[0.82rem] leading-relaxed text-white/74">
-                        {activeSlide.sources.map((source) => (
-                          <p key={source.href}>
-                            {source.label}{" "}
-                            <a
-                              href={source.href}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="text-white underline underline-offset-4 hover:text-white/84"
-                            >
-                              Link
-                            </a>
+                      {activeSlide.sources.length > 0 ? (
+                        <div className="rounded-[1.2rem] border border-white/10 bg-[#17181A] px-5 py-4 md:px-7 md:py-5">
+                          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-white/58">
+                            Sources
                           </p>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                          <div className="mt-3 space-y-2.5 text-[0.82rem] leading-relaxed text-white/74">
+                            {activeSlide.sources.map((source) => (
+                              <p key={source.href}>
+                                {source.label}{" "}
+                                <a
+                                  href={source.href}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-white underline underline-offset-4 hover:text-white/84"
+                                >
+                                  Link
+                                </a>
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
                     </>
                   ) : null}
                 </m.div>
