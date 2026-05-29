@@ -470,7 +470,7 @@ const BecomingSection = ({ sectionId, isBecomingYouActive = true }: BecomingSect
           <CaptionCard className="relative z-[1] mt-[3vh] max-w-[38rem] px-8 py-7 md:mt-[calc(-16vw+18vh-15px)] md:w-[calc(32vw-3px)] md:max-w-none md:-translate-x-[calc(31.5vw+3px)] md:px-10 md:py-8">
             <p className="relative z-[1] font-['Tektur'] text-[1.45rem] font-black leading-[1.05] text-black md:text-right md:text-[2rem]">{renderBecomingYouCaption(1)}</p>
           </CaptionCard>
-          <h2 className="hidden pt-[1vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">WØMAN</h2>
+          <h2 className="hidden pt-[4vh] text-center font-['Tektur'] text-[2rem] font-black uppercase tracking-[0.14em] text-white [paint-order:stroke_fill] [text-shadow:0_6px_16px_rgba(0,0,0,0.18)] [-webkit-text-stroke:3px_#000] md:block md:mb-6 md:w-[32vw] md:min-w-[32vw] md:text-[3.4rem]">WØMAN</h2>
           <div className="relative z-[5] mt-[3vh] md:w-[32vw] md:min-w-[32vw]" onClick={(e) => handleBecomingYouVideoToggle(3, e)}>
             <video ref={setBecomingYouVideoRef(3, "desktop")} className="w-full border border-black/15 object-cover shadow-[0_28px_80px_rgba(0,0,0,0.22)]" autoPlay muted playsInline preload="none" onEnded={() => handleBecomingYouVideoEnded(3)}>
               <source data-video-src={getExplanationVideoSrc("https://videos.vostok.guide/05.webm", isMobile)} src={videoSrc("https://videos.vostok.guide/05.webm")} type="video/webm" />

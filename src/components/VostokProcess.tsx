@@ -7,6 +7,8 @@ type VostokProcessProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
 };
 
+type GlitchTear = { y: number; h: number; x: number };
+
 const SLIDES = [
   { main: "/Differences2/03.png", companion: "/Differences2/01.webp" },
   { main: "/Differences2/04.png", companion: "/Differences2/02.webp" },
@@ -19,6 +21,9 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
   const [mainZoom, setMainZoom] = useState(false);
   const [iconZoom, setIconZoom] = useState(false);
   const parallaxRef = useRef<number | null>(null);
+  const noiseCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [glitchTears, setGlitchTears] = useState<GlitchTear[]>([]);
+  const [contentShift, setContentShift] = useState(0);
 
   const handleGridShift = () => {
     const nextX = Math.round((Math.random() - 0.5) * 120);
@@ -29,6 +34,57 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
   useEffect(() => {
     onLoaded?.();
   }, [onLoaded]);
+
+  useEffect(() => {
+    const canvas = noiseCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    canvas.width = 320;
+    canvas.height = 180;
+    let animId: number;
+    let frame = 0;
+    const draw = () => {
+      animId = requestAnimationFrame(draw);
+      if (++frame % 4 !== 0) return;
+      const img = ctx.createImageData(320, 180);
+      const d = img.data;
+      for (let i = 0; i < d.length; i += 4) {
+        if (Math.random() < 0.07) {
+          const v = Math.floor(Math.random() * 255);
+          d[i] = v; d[i + 1] = v; d[i + 2] = v; d[i + 3] = 48;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+    };
+    draw();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  useEffect(() => {
+    let outer: number;
+    let inner: number;
+    const schedule = () => {
+      outer = window.setTimeout(() => {
+        const count = 1 + Math.floor(Math.random() * 2);
+        setGlitchTears(
+          Array.from({ length: count }, () => ({
+            y: 10 + Math.random() * 80,
+            h: 2 + Math.random() * 14,
+            x: (Math.random() - 0.5) * 30,
+          }))
+        );
+        setContentShift((Math.random() - 0.5) * 6);
+        inner = window.setTimeout(() => {
+          setGlitchTears([]);
+          setContentShift(0);
+          schedule();
+        }, 60 + Math.random() * 280);
+      }, 2500 + Math.random() * 7000);
+    };
+    schedule();
+    return () => { clearTimeout(outer); clearTimeout(inner); };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -82,6 +138,44 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
         </m.div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
       </div>
+
+      {/* Noise / glitch overlay */}
+      <div className="pointer-events-none absolute inset-0 z-20 overflow-hidden">
+        <canvas
+          ref={noiseCanvasRef}
+          className="absolute inset-0"
+          style={{ width: "100%", height: "100%", imageRendering: "pixelated", opacity: 0.11, mixBlendMode: "overlay" }}
+        />
+        <m.div
+          className="absolute left-0 right-0 h-[2px] bg-white/40"
+          animate={{ top: ["0%", "102%"], opacity: [0, 0.7, 0.7, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "linear", repeatDelay: 4 }}
+          style={{ top: 0 }}
+        />
+        {glitchTears.map((tear, i) => (
+          <div
+            key={i}
+            className="absolute left-0 right-0"
+            style={{
+              top: `${tear.y}%`,
+              height: `${tear.h}px`,
+              transform: `translateX(${tear.x}px)`,
+              background: "rgba(255,255,255,0.22)",
+              mixBlendMode: "overlay",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Content wrapper — shifts + chroma-aberrates during glitch bursts */}
+      <div
+        style={{
+          transform: `translateX(${contentShift}px)`,
+          filter: contentShift !== 0
+            ? `drop-shadow(${Math.round(contentShift * 2)}px 0 1px rgba(255,20,80,0.65)) drop-shadow(${Math.round(-contentShift * 1.5)}px 0 1px rgba(0,180,255,0.65))`
+            : undefined,
+        }}
+      >
 
       <p
         className="relative z-10 mb-8 text-center text-2xl uppercase tracking-[0.18em] text-black md:text-4xl"
@@ -174,6 +268,8 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
           ))}
         </div>
       </div>
+
+      </div>{/* end content shift wrapper */}
 
       {/* Main image zoom overlay */}
       <AnimatePresence>
