@@ -132,8 +132,8 @@ const StructureSection = () => {
   return (
     <section className="relative isolate bg-black px-6 pt-14 pb-14 overflow-hidden left-1/2 right-1/2 w-screen -translate-x-1/2">
       <p
-        className="relative z-10 mb-8 text-center text-2xl uppercase tracking-[0.18em] text-white md:text-4xl"
-        style={{ fontFamily: "'Cinzel', serif", fontWeight: 700 }}
+        className="relative z-10 mb-8 text-center text-[0.7rem] font-black uppercase tracking-[0.32em] text-[#f1d27a] md:text-[0.82rem]"
+        style={{ fontFamily: "var(--font-display, 'Tektur', sans-serif)" }}
       >
         What Vostok Will Do For You
       </p>
