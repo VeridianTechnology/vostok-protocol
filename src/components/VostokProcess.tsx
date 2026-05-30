@@ -111,32 +111,32 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
   return (
     <section
       id="vostok-process"
-      className="section-surface relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[3vh] pb-8 md:mt-0 md:py-14 overflow-hidden"
+      className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[3vh] pb-8 md:mt-0 md:py-14 overflow-hidden bg-[#0b0c0e]"
       onClick={handleGridShift}
     >
       <SectionSideTab label="MY PROCESS" />
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-        <div className="section-surface-fill absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-transparent to-black/15" />
-        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-white/35 blur-[90px]" />
-        <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-black/15 blur-[110px]" />
+        <div className="absolute inset-0 bg-[#0b0c0e]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/40" />
+        <div className="absolute -left-24 top-8 h-72 w-72 rounded-full bg-[#f1d27a]/4 blur-[110px]" />
+        <div className="absolute -right-24 bottom-6 h-80 w-80 rounded-full bg-white/3 blur-[130px]" />
         <m.div
           className="absolute inset-0"
           animate={{ y: -10 }}
           transition={{ duration: 20, repeat: Infinity, repeatType: "mirror", ease: "linear" }}
         >
           <div
-            className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 opacity-35 transition-transform duration-700"
+            className="absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 opacity-[0.06] transition-transform duration-700"
             style={{
               transform: `translate3d(calc(-50% + ${gridShift.x + parallaxShift}px), calc(-50% + ${gridShift.y - parallaxShift}px), 0)`,
               backgroundImage:
-                "linear-gradient(90deg, rgba(0,0,0,0.22) 1px, transparent 1px), linear-gradient(0deg, rgba(0,0,0,0.22) 1px, transparent 1px)",
+                "linear-gradient(90deg, rgba(255,255,255,0.9) 1px, transparent 1px), linear-gradient(0deg, rgba(255,255,255,0.9) 1px, transparent 1px)",
               backgroundSize: "40px 40px, 40px 40px",
               backgroundPosition: "0 0, 0 0",
             }}
           />
         </m.div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,0,0,0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(241,210,122,0.03),transparent_60%)]" />
       </div>
 
       {/* Noise / glitch overlay */}
@@ -178,8 +178,8 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
       >
 
       <p
-        className="relative z-10 mb-8 text-center text-2xl uppercase tracking-[0.18em] text-black md:text-4xl"
-        style={{ fontFamily: "'Cinzel', serif", fontWeight: 700 }}
+        className="relative z-10 mb-8 text-center text-[0.7rem] font-black uppercase tracking-[0.32em] text-[#f1d27a] md:text-[0.82rem]"
+        style={{ fontFamily: "var(--font-display, 'Tektur', sans-serif)" }}
       >
         NYX's Process
       </p>
@@ -187,7 +187,7 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
       {/* Slideshow */}
       <div className="relative z-10 mx-auto w-full max-w-5xl">
         {/* Image frame */}
-        <div className="relative overflow-hidden rounded-2xl border border-white/40 bg-black shadow-[0_0_70px_rgba(255,255,255,0.45)]">
+        <div className="relative overflow-hidden rounded-2xl border border-[#f1d27a]/20 bg-black shadow-[0_0_60px_rgba(0,0,0,0.8)]">
           <AnimatePresence mode="wait">
             <m.img
               key={slide.main}
@@ -260,8 +260,8 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
               key={i}
               type="button"
               onClick={(e) => { e.stopPropagation(); setCurrentSlide(i); }}
-              className={`h-2 rounded-full transition-all duration-300 ${
-                i === currentSlide ? "w-6 bg-black/60" : "w-2 bg-black/25 hover:bg-black/45"
+              className={`h-[3px] rounded-full transition-all duration-300 ${
+                i === currentSlide ? "w-6 bg-[#f1d27a]/70" : "w-2 bg-white/20 hover:bg-white/40"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />

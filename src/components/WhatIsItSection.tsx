@@ -18,9 +18,9 @@ type IdentityScreen = {
 const vostokScreens: IdentityScreen[] = [
   {
     lines: [
-      { text: "WHAT IS VØSTOK LABS?", tone: "question" },
+      { text: "WHAT IS VØSTOK?", tone: "question" },
       {
-        text: "It's an esoteric company. Bed Bath & Beyond + Apple.\n\nOur first product is a guide, and a series of tips on how to improve your looks.\n\nAnd I mean, radically... improve your looks.\n\nWe can only have so many people. Elite people.\n\nOne million exactly. I want to help you ascend.\n\nAnd with a lot of work — you will. You can become an entertainer, a leader, a companion.\n\nAnything you want, can be made and done because you look better than everyone.\n\nLet me give you the gift. The gift of Vostok.\n\nAscend with me.",
+        text: "Just something I came up with to help focus everyone's attention on using facial exercises, massages, and certain stretching dynamics to improve their facial architecture in radicalized and concentrated ways for excessive nature points. \"Nature points\" are of three vecta — a vecta being a multidimensional form of social reward. For example, there is confidence, competence, and compliance: How capable is one? How able is one to learn? And lastly, how able is one to gain compliance from others in order to act on what they learn?\n\nVostok gives you an advantage across these three vecta. It makes you more confident — able to show up and lighten the energy of any place, find your role in social situations, avoid unpleasant social confrontations over hierarchy, and give the room a good environment. It also increases competence. The competence vecta gives you authority, possession, and capability. It allows you to get things done — faster, with the help of people — and learn more about yourself. It's the ability to say, \"I've been in worse situations and made it out. I know how to handle this.\" Believe it or not, beauty is linked to competence. There are no studies that show this; there is no innate human knowledge — but it's fundamentally true.\n\nThe last vecta is compliance: the ability to get compliance from people. What's the difference between someone making a fool of themselves and impressing the entire scene? How they look. By having higher-acting people in society due to their looks, we can improve society itself — but that's for another story. The point of Vostok is to ascend the spirit. Everyone else will call it crazy, and that's fine — leave them behind. We are here to ascend spiritually, and it starts with getting the Vostok Life Pass: lifetime Vostok updates.\n\nThat may be too much for most people, so I'll leave some links to my writing on Substack — which I will get to. Until then, when you feel ready, go ahead on your own — and join the rest of us.",
         tone: "answer",
       },
     ],
@@ -89,24 +89,20 @@ const SlideLines = ({
       {screen?.lines?.map((line, lineIndex) => (
         <p
           key={`${index}-${lineIndex}`}
-          className={`opacity-90 ${
-            line.tone === "emphasis"
-              ? "max-w-full px-2 text-[2.15rem] font-semibold leading-[1.22] tracking-[0.03em] text-white md:text-[3.9rem]"
-              : line.tone === "question"
-                ? `max-w-full pb-1 text-[2.15rem] font-semibold leading-[1.08] text-white md:text-[3.8rem] md:leading-[1.02] ${withVideo ? "px-0" : "px-2"}`
-                : line.tone === "answer"
-                  ? `mt-6 whitespace-pre-wrap text-[1rem] font-normal leading-[1.68] text-[#e8ecf2] md:mt-8 md:text-[1.1rem] md:leading-[1.65] ${withVideo ? "max-w-none px-0 text-left" : "max-w-[46rem] px-3 text-left md:max-w-[56rem]"}`
-                  : line.tone === "italic"
-                    ? "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
-                    : "max-w-full px-2 text-[1.52rem] italic leading-[1.32] text-[#d0d4dc] md:text-[3rem]"
+          className={`${
+            line.tone === "question"
+              ? "mb-5 text-[0.7rem] font-black uppercase tracking-[0.28em] text-[#f1d27a] opacity-90"
+              : line.tone === "answer"
+                ? `whitespace-pre-wrap text-[0.88rem] font-normal leading-[1.82] text-white/70 md:text-[0.95rem] ${withVideo ? "max-w-none text-left" : "text-left"}`
+                : line.tone === "emphasis"
+                  ? "text-[1.1rem] font-semibold leading-[1.3] tracking-[0.04em] text-white/90"
+                  : "text-[0.88rem] italic leading-[1.7] text-white/55"
           }`}
           style={{
             fontFamily:
-              line.tone === "answer"
-                ? "var(--font-body)"
-                : line.tone === "question"
-                  ? "Georgia, 'Times New Roman', serif"
-                  : "var(--font-display)",
+              line.tone === "question"
+                ? "var(--font-display, 'Tektur', sans-serif)"
+                : "var(--font-body)",
           }}
         >
           {line.text}
@@ -137,20 +133,15 @@ const WhatIsItSection = () => {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover brightness-[1.2] md:hidden"
         />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.35)_38%,rgba(0,0,0,0.62)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.72)_60%,rgba(0,0,0,0.88)_100%)]" />
       </div>
 
-      <div className="relative z-10 flex h-full items-center justify-center px-4 py-[5vh] md:px-8 md:py-[8vh]">
-        <div className="relative flex h-full max-h-[82vh] w-full max-w-[68rem] flex-col overflow-hidden rounded-[28px] bg-[rgba(8,10,14,0.62)] backdrop-blur-sm md:max-h-[94vh]">
-          <div
-            aria-hidden="true"
-            className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,10,0)_0%,rgba(8,9,12,0)_14%,rgba(7,8,10,0)_100%)]"
-          />
-
+      <div className="relative z-10 flex h-full items-center justify-center px-6 py-[6vh] md:px-16 md:py-[10vh]">
+        <div className="relative flex h-full w-full max-w-[72rem] flex-col">
           <div className="relative z-10 flex h-full flex-col">
-            <div className="relative z-10 flex-1 overflow-hidden px-7 pb-10 pt-10 text-[#b8bec6] md:px-12 md:py-12">
-              <div className="mx-auto grid h-full max-w-[56rem] grid-rows-[1fr_auto]">
-                <div className="flex min-h-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="relative z-10 flex-1 overflow-hidden">
+              <div className="mx-auto h-full max-w-[64rem]">
+                <div className="flex h-full min-h-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {hasVideo ? (
                     <div className="flex w-full flex-col items-center gap-6 py-2 md:flex-row md:items-center md:gap-10">
                       <div className="w-[220px] shrink-0 md:w-[360px]">
@@ -174,15 +165,16 @@ const WhatIsItSection = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex w-full flex-col text-center">
-                      <div className="mb-7 flex justify-center md:mb-9">
+                    <div className="flex w-full flex-col gap-8 md:flex-row md:items-start md:gap-10">
+                      <div className="flex shrink-0 justify-center md:justify-start">
                         <img
-                          src="/NYX_square.jpg"
-                          alt="Nyx"
-                          className="h-40 w-40 rounded-full object-cover shadow-[0_12px_48px_rgba(0,0,0,0.55)] md:h-56 md:w-56"
+                          src="/Differences2/04.jpg"
+                          alt=""
+                          aria-hidden="true"
+                          className="w-full max-w-[16rem] rounded-2xl object-cover shadow-[0_16px_56px_rgba(0,0,0,0.65)] md:max-w-[22rem]"
                         />
                       </div>
-                      <div className="flex flex-col items-center">
+                      <div className="flex min-w-0 flex-1 flex-col text-left">
                         <SlideLines screen={currentSequenceScreen} index={sequenceScreenIndex} withVideo={false} />
                       </div>
                     </div>
