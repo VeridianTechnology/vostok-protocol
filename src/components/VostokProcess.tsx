@@ -1,6 +1,6 @@
 import { m, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import SectionSideTab from "@/components/SectionSideTab";
+import { createPortal } from "react-dom";
 
 type VostokProcessProps = {
   onLoaded?: () => void;
@@ -114,7 +114,6 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
       className="relative isolate left-1/2 right-1/2 w-screen -translate-x-1/2 px-6 -mt-8 pt-[3vh] pb-8 md:mt-0 md:py-14 overflow-hidden bg-[#0b0c0e]"
       onClick={handleGridShift}
     >
-      <SectionSideTab label="MY PROCESS" />
       <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[#0b0c0e]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/40" />
@@ -271,72 +270,93 @@ const VostokProcess = ({ onLoaded }: VostokProcessProps) => {
 
       </div>{/* end content shift wrapper */}
 
-      {/* Main image zoom overlay */}
-      <AnimatePresence>
-        {mainZoom && (
-          <m.div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            onClick={() => setMainZoom(false)}
-          >
-            <button
-              type="button"
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-lg text-white transition hover:bg-white/25"
+      {createPortal(
+        <AnimatePresence>
+          {mainZoom && (
+            <m.div
+              className="fixed inset-0 z-[200] bg-black/92"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
               onClick={() => setMainZoom(false)}
-              aria-label="Close"
             >
-              ✕
-            </button>
-            <m.img
-              src={slide.main}
-              alt="Zoomed"
-              className="max-h-[90vh] max-w-[90vw] rounded-xl object-contain shadow-2xl"
-              initial={{ scale: 0.88, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.88, opacity: 0 }}
-              transition={{ duration: 0.28, ease: "easeOut" }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </m.div>
-        )}
-      </AnimatePresence>
+              <button
+                type="button"
+                className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-lg text-white transition hover:bg-white/25"
+                onClick={(e) => { e.stopPropagation(); setMainZoom(false); }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+              <div
+                className="absolute inset-0 overflow-auto"
+                style={{ touchAction: "pinch-zoom pan-x pan-y" }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex min-h-full min-w-full items-center justify-center p-4 md:p-10">
+                  <m.img
+                    src={slide.main}
+                    alt="Zoomed"
+                    className="rounded-xl shadow-2xl"
+                    style={{ maxWidth: "min(100%, 1600px)", maxHeight: "96vh", objectFit: "contain" }}
+                    initial={{ scale: 0.92, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.92, opacity: 0 }}
+                    transition={{ duration: 0.28, ease: "easeOut" }}
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
-      {/* Companion icon zoom overlay — zooms from bottom-right corner */}
-      <AnimatePresence>
-        {iconZoom && (
-          <m.div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.22 }}
-            onClick={() => setIconZoom(false)}
-          >
-            <button
-              type="button"
-              className="absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-lg text-white transition hover:bg-white/25"
+      {createPortal(
+        <AnimatePresence>
+          {iconZoom && (
+            <m.div
+              className="fixed inset-0 z-[200] bg-black/92"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.22 }}
               onClick={() => setIconZoom(false)}
-              aria-label="Close"
             >
-              ✕
-            </button>
-            <m.img
-              src={slide.companion}
-              alt="Non-AI comparison"
-              className="max-h-[97vh] max-w-[97vw] rounded-xl object-contain shadow-2xl"
-              initial={{ scale: 0.06, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.06, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
-              style={{ transformOrigin: "bottom right" }}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </m.div>
-        )}
-      </AnimatePresence>
+              <button
+                type="button"
+                className="absolute right-5 top-5 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/15 text-lg text-white transition hover:bg-white/25"
+                onClick={(e) => { e.stopPropagation(); setIconZoom(false); }}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+              <div
+                className="absolute inset-0 overflow-auto"
+                style={{ touchAction: "pinch-zoom pan-x pan-y" }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex min-h-full min-w-full items-center justify-center p-4 md:p-10">
+                  <m.img
+                    src={slide.companion}
+                    alt="Non-AI comparison"
+                    className="rounded-xl shadow-2xl"
+                    style={{ maxWidth: "min(100%, 1600px)", maxHeight: "96vh", objectFit: "contain" }}
+                    initial={{ scale: 0.06, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.06, opacity: 0 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                    draggable={false}
+                  />
+                </div>
+              </div>
+            </m.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </section>
   );
 };

@@ -20,11 +20,11 @@ const vostokScreens: IdentityScreen[] = [
     lines: [
       { text: "WHAT IS VØSTOK?", tone: "question" },
       {
-        text: "Just something I came up with to help focus everyone's attention on using facial exercises, massages, and certain stretching dynamics to improve their facial architecture in radicalized and concentrated ways for excessive nature points. \"Nature points\" are of three vecta — a vecta being a multidimensional form of social reward. For example, there is confidence, competence, and compliance: How capable is one? How able is one to learn? And lastly, how able is one to gain compliance from others in order to act on what they learn?\n\nVostok gives you an advantage across these three vecta. It makes you more confident — able to show up and lighten the energy of any place, find your role in social situations, avoid unpleasant social confrontations over hierarchy, and give the room a good environment. It also increases competence. The competence vecta gives you authority, possession, and capability. It allows you to get things done — faster, with the help of people — and learn more about yourself. It's the ability to say, \"I've been in worse situations and made it out. I know how to handle this.\" Believe it or not, beauty is linked to competence. There are no studies that show this; there is no innate human knowledge — but it's fundamentally true.\n\nThe last vecta is compliance: the ability to get compliance from people. What's the difference between someone making a fool of themselves and impressing the entire scene? How they look. By having higher-acting people in society due to their looks, we can improve society itself — but that's for another story. The point of Vostok is to ascend the spirit. Everyone else will call it crazy, and that's fine — leave them behind. We are here to ascend spiritually, and it starts with getting the Vostok Life Pass: lifetime Vostok updates.\n\nThat may be too much for most people, so I'll leave some links to my writing on Substack — which I will get to. Until then, when you feel ready, go ahead on your own — and join the rest of us.",
+        text: "Vostok gives you an advantage across these three vecta. It makes you more confident — able to show up and lighten the energy of any place, find your role in social situations, avoid unpleasant social confrontations over hierarchy, and give the room a good environment. It also increases competence. The competence vecta gives you authority, possession, and capability. It allows you to get things done — faster, with the help of people — and learn more about yourself. It's the ability to say, \"I've been in worse situations and made it out. I know how to handle this.\" Believe it or not, beauty is linked to competence. There are no studies that show this; there is no innate human knowledge — but it's fundamentally true.\n\nThe last vecta is compliance: the ability to get compliance from people. What's the difference between someone making a fool of themselves and impressing the entire scene? How they look. By having higher-acting people in society due to their looks, we can improve society itself — but that's for another story. The point of Vostok is to ascend the spirit. Everyone else will call it crazy, and that's fine — leave them behind. We are here to ascend spiritually, and it starts with getting the Vostok Life Pass: lifetime Vostok updates.\n\nThat may be too much for most people, so I'll leave some links to my writing on Substack — which I will get to. Until then, when you feel ready, go ahead on your own — and join the rest of us.",
         tone: "answer",
       },
     ],
-    holdClassName: "min-h-[14rem] md:min-h-[18rem]",
+    holdClassName: "",
   },
 ];
 
@@ -119,7 +119,7 @@ const WhatIsItSection = () => {
   const hasGallery = !!currentSequenceScreen.gallery?.length;
 
   return (
-    <section className="section-surface relative left-1/2 right-1/2 h-[92vh] w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black md:h-[110vh]">
+    <section className="section-surface relative left-1/2 right-1/2 w-screen -translate-x-1/2 overflow-hidden border-t-[3px] border-black">
       <div className="absolute inset-0 -z-10">
         <img
           src="/section_wallpaper/whatisit/3.webp"
@@ -136,12 +136,12 @@ const WhatIsItSection = () => {
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.72)_60%,rgba(0,0,0,0.88)_100%)]" />
       </div>
 
-      <div className="relative z-10 flex h-full items-center justify-center px-6 py-[6vh] md:px-16 md:py-[10vh]">
-        <div className="relative flex h-full w-full max-w-[72rem] flex-col">
-          <div className="relative z-10 flex h-full flex-col">
-            <div className="relative z-10 flex-1 overflow-hidden">
-              <div className="mx-auto h-full max-w-[64rem]">
-                <div className="flex h-full min-h-0 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-10 flex items-start justify-center px-6 py-[8vh] md:px-16 md:py-[10vh]">
+        <div className="relative flex w-full max-w-[72rem] flex-col">
+          <div className="relative z-10 flex flex-col">
+            <div className="relative z-10">
+              <div className="mx-auto max-w-[64rem]">
+                <div className="flex flex-col">
                   {hasVideo ? (
                     <div className="flex w-full flex-col items-center gap-6 py-2 md:flex-row md:items-center md:gap-10">
                       <div className="w-[220px] shrink-0 md:w-[360px]">

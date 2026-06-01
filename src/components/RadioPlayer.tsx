@@ -2172,6 +2172,8 @@ const RadioPlayer = () => {
       }
 
       if (!isScrollingDown) {
+        clearScrollPlayerTimeout();
+        setIsScrollPlayerVisible(false);
         return;
       }
 
@@ -2256,10 +2258,13 @@ const RadioPlayer = () => {
       <audio ref={audioRef} src={currentTrack.audioSrc} preload="auto" crossOrigin="anonymous" />
       <audio ref={djStingerAudioRef} crossOrigin="anonymous" />
       <div
-        className={`pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0 ${
-          isScrollPlayerVisible ? "bottom-[36px] md:bottom-[42px]" : "bottom-0"
-        }`}
-        style={{ transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms` }}
+        className="pointer-events-none fixed inset-x-0 z-[59] flex items-end justify-start pl-3 transition-[bottom] ease-in-out md:inset-x-auto md:right-[8vw] md:justify-start md:pl-0"
+        style={{
+          transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms`,
+          bottom: isScrollPlayerVisible
+            ? `calc(36px + env(safe-area-inset-bottom, 0px))`
+            : `env(safe-area-inset-bottom, 0px)`,
+        }}
       >
         <div
           className="pointer-events-auto relative transition-transform ease-in-out"
@@ -2373,7 +2378,10 @@ const RadioPlayer = () => {
             ? "translate-y-0 opacity-100"
             : "pointer-events-none translate-y-full opacity-0"
         }`}
-        style={{ transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms` }}
+        style={{
+          transitionDuration: `${RADIO_PLAYER_CLOSE_DURATION_MS}ms`,
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        }}
       >
         <div className="relative mx-auto flex h-[42px] w-full items-center overflow-hidden px-2 md:h-[48px] md:px-5">
           <div className="pointer-events-none absolute inset-0">
