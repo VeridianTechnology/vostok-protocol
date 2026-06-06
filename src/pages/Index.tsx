@@ -7,7 +7,6 @@ import BecomingSection from "@/components/BecomingSection";
 import SectionLoader from "@/components/SectionLoader";
 const ResearchStudies = lazy(() => import("@/components/ResearchStudies"));
 const StructureSection = lazy(() => import("@/components/StructureSection"));
-const VostokProcess = lazy(() => import("@/components/VostokProcess"));
 const CTAFooter = lazy(() => import("@/components/CTAFooter"));
 const TransitionThreshold = lazy(() => import("@/components/TransitionThreshold"));
 const WhatIsItSection = lazy(() => import("@/components/WhatIsItSection"));
@@ -65,7 +64,7 @@ const createInitialCollapseState = () => ({
 });
 
 const Index = () => {
-  const [systemGlitchWord, setSystemGlitchWord] = useState<"КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ" | null>(null);
+  const [systemGlitchWord, setSystemGlitchWord] = useState<"WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [entrySource, setEntrySource] = useState("direct");
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
@@ -375,10 +374,11 @@ const Index = () => {
     const seenIds = new Set<string>();
     const glitchTargets: Array<{
       id: string;
-      word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
+      word: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ";
     }> = [
-      { id: "section-hero", word: "КОПИРОВАТЬ" },
-      { id: "section-messianic", word: "ДЕЛАЙ" },
+      { id: "section-hero", word: "WELCOME" },
+      { id: "section-messianic", word: "YØUR TIME" },
+      { id: "section-wall", word: "IS NØW" },
     ];
 
     const connectObserver = () => {
@@ -429,7 +429,7 @@ const Index = () => {
 
   useEffect(() => {
     const triggerSystemGlitchWord = (
-      word: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ",
+      word: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ",
       durationMs = 520
     ) => {
       clearSystemGlitchTimeouts();
@@ -441,18 +441,18 @@ const Index = () => {
 
     const triggerSystemGlitchSequence = () => {
       clearSystemGlitchTimeouts();
-      setSystemGlitchWord("КОПИРОВАТЬ");
+      setSystemGlitchWord("WELCOME");
 
       systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
         setSystemGlitchWord(null);
       }, 220);
 
       systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("ДЕЛАЙ");
+        setSystemGlitchWord("YØUR TIME");
       }, 320);
 
       systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("СБОЙ СИСТЕМЫ");
+        setSystemGlitchWord("IS NØW");
       }, 640);
 
       systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
@@ -462,7 +462,7 @@ const Index = () => {
 
     const handleSystemGlitch = (event: Event) => {
       const customEvent = event as CustomEvent<{
-        word?: "КОПИРОВАТЬ" | "ДЕЛАЙ" | "СБОЙ СИСТЕМЫ";
+        word?: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ";
       }>;
       const word = customEvent.detail?.word;
 
@@ -564,11 +564,6 @@ const Index = () => {
       <section id="section-structure" className="min-h-0">
         <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
           <StructureSection />
-        </Suspense>
-      </section>
-      <section id="section-vostok" className="min-h-[60vh]">
-        <Suspense fallback={<SectionLoader minHeightClass="min-h-[60vh]" />}>
-          <VostokProcess entrySource={entrySource} />
         </Suspense>
       </section>
       <section id="section-what-is-it" className="min-h-0">

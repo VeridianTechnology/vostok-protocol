@@ -342,7 +342,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                         src={slide.desktopSrc}
                         alt=""
                         aria-hidden="true"
-                        className="h-12 w-12 object-cover md:h-14 md:w-14"
+                        className="h-12 w-12 object-cover md:h-9 md:w-9"
                         loading="lazy"
                       />
                     </picture>
@@ -386,7 +386,7 @@ const ResearchStudies = ({ entrySource = "direct" }: ResearchStudiesProps) => {
                           <img
                             src={activeSlide.desktopSrc}
                             alt={activeSlide.alt}
-                            className="block h-auto w-full object-cover"
+                            className="block h-auto w-full object-contain md:max-w-[80%] md:mx-auto"
                           />
                         </picture>
                       </m.button>

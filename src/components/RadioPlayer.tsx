@@ -2274,6 +2274,7 @@ const RadioPlayer = () => {
           }}
         >
         <button
+          id="radio-pod-toggle-btn"
           type="button"
           onClick={() => {
             setPodTransitionDurationMs(RADIO_PLAYER_ICON_TOGGLE_DURATION_MS);

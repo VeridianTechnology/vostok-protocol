@@ -474,6 +474,7 @@ const FeatureThumbnails = ({
   }, [wallpaperSlideIndex]);
 
 
+
   return (
     <>
       {renderStructureSection && (
