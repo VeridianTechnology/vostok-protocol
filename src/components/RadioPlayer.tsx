@@ -2022,6 +2022,7 @@ const RadioPlayer = () => {
 
     if (isFirstTrackMountRef.current) {
       isFirstTrackMountRef.current = false;
+      audio.load();
       return;
     }
 
