@@ -50,7 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isDesktop, setIsDesktop] = useState(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState(false);
   const facebookLoadTimeoutRef = useRef<number | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("ASCEND");
+  const [buttonLabel, setButtonLabel] = useState<string>("Vøstok");
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
   const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";

@@ -574,11 +574,13 @@ const Index = () => {
       <Suspense fallback={null}>
         <TransitionThreshold variant="chamber" />
       </Suspense>
+      {/* ResearchStudies hidden — uncomment to restore
       <section id="section-research" className="min-h-[50vh]">
           <Suspense fallback={<SectionLoader minHeightClass="min-h-[50vh]" />}>
             <ResearchStudies entrySource={entrySource} />
           </Suspense>
         </section>
+      */}
       <Suspense fallback={null}>
         <TransitionThreshold variant="fracture" />
       </Suspense>
