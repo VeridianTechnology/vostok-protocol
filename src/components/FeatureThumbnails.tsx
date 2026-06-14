@@ -1,5 +1,6 @@
 import { m } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { getImageVariants } from "@/lib/utils";
 import SectionSideTab from "@/components/SectionSideTab";
 
@@ -111,6 +112,12 @@ const FeatureThumbnails = ({
 }: FeatureThumbnailsProps) => {
   const mobileHeroImage = "/section_wallpaper/hero/xxz.webp";
   const desktopHeroImage = "/section_wallpaper/hero/01.webp";
+  const SALE_IMAGE_DESKTOP = "/section_wallpaper/hero/sale/01.jpg";
+  const SALE_IMAGE_MOBILE = "/section_wallpaper/hero/sale/02.jpg";
+  const SALE_TRIGGER_MS = 5000;
+  const SALE_FADE_TO_BLACK_MS = 1200;
+  const SALE_BLACK_HOLD_MS = 500;
+  const SALE_FADE_IN_MS = 1500;
   // Desktop hero rotation test: remove this toggle, the image list, the state/effect below,
   // and the extra desktop image/blackout layers in the hero markup to roll the test back out.
   const ENABLE_DESKTOP_HERO_ROTATION_TEST = true;
@@ -147,6 +154,11 @@ const FeatureThumbnails = ({
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
   );
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
+  const [saleImageActive, setSaleImageActive] = useState(false);
+  const [isSaleBlackoutVisible, setIsSaleBlackoutVisible] = useState(false);
+  const [saleFlashPhrase, setSaleFlashPhrase] = useState<string | null>(null);
+  const [saleFlashKey, setSaleFlashKey] = useState(0);
+  const saleTimeoutsRef = useRef<number[]>([]);
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const wallpaperIntervalRef = useRef<number | null>(null);
@@ -473,6 +485,39 @@ const FeatureThumbnails = ({
     };
   }, [wallpaperSlideIndex]);
 
+  useEffect(() => {
+    const desktopImg = new Image();
+    desktopImg.src = SALE_IMAGE_DESKTOP;
+    const mobileImg = new Image();
+    mobileImg.src = SALE_IMAGE_MOBILE;
+
+    const t1 = window.setTimeout(() => {
+      setIsSaleBlackoutVisible(true);
+      const t2 = window.setTimeout(() => {
+        setSaleImageActive(true);
+        setIsSaleBlackoutVisible(false);
+        setSaleFlashKey((k) => k + 1);
+        setSaleFlashPhrase("Use Code VOSTOK1000");
+        const t3 = window.setTimeout(() => {
+          setSaleFlashKey((k) => k + 1);
+          setSaleFlashPhrase("And Pay Only $1");
+          const t4 = window.setTimeout(() => {
+            setSaleFlashPhrase(null);
+          }, 1500);
+          saleTimeoutsRef.current.push(t4);
+        }, 1500);
+        saleTimeoutsRef.current.push(t3);
+      }, SALE_FADE_TO_BLACK_MS + SALE_BLACK_HOLD_MS);
+      saleTimeoutsRef.current.push(t2);
+    }, SALE_TRIGGER_MS);
+    saleTimeoutsRef.current.push(t1);
+
+    return () => {
+      saleTimeoutsRef.current.forEach((id) => window.clearTimeout(id));
+      saleTimeoutsRef.current = [];
+    };
+  }, []);
+
 
 
   return (
@@ -792,15 +837,15 @@ const FeatureThumbnails = ({
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-[-8%] left-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(90deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-56"
+            className="pointer-events-none absolute bottom-[-8%] left-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(90deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-[18%] md:blur-[48px]"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute bottom-[-8%] right-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(270deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-56"
+            className="pointer-events-none absolute bottom-[-8%] right-[-44px] top-[-8%] z-[9] w-44 bg-[linear-gradient(270deg,rgba(0,0,0,0.84)_0%,rgba(0,0,0,0.56)_22%,rgba(0,0,0,0.26)_48%,rgba(0,0,0,0.08)_72%,rgba(0,0,0,0)_100%)] blur-[48px] md:w-[18%] md:blur-[48px]"
           />
           {isMobile ? (
               <img
-                src={mobileHeroImage}
+                src={saleImageActive ? SALE_IMAGE_MOBILE : mobileHeroImage}
                 alt="Vostok hero"
                 className="absolute inset-x-0 top-0 h-[92%] w-[92%] object-cover object-top"
                 style={{ left: "50%", transform: "translateX(-50%)" }}
@@ -811,9 +856,13 @@ const FeatureThumbnails = ({
             ) : (
               <>
                 <img
-                  src={activeDesktopHeroImage}
+                  src={saleImageActive ? SALE_IMAGE_DESKTOP : activeDesktopHeroImage}
                   alt="Vostok hero"
-                  className="absolute left-1/2 top-1/2 h-[92%] w-[92%] -translate-x-1/2 -translate-y-1/2 object-cover"
+                  className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${
+                    saleImageActive
+                      ? "h-[92%] w-[92%] object-contain object-center"
+                      : "h-[92%] w-[92%] object-cover"
+                  }`}
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
@@ -878,10 +927,35 @@ const FeatureThumbnails = ({
             }`}
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-[5] bg-black"
+            style={{
+              opacity: isSaleBlackoutVisible ? 1 : 0,
+              transition: `opacity ${isSaleBlackoutVisible ? SALE_FADE_TO_BLACK_MS : SALE_FADE_IN_MS}ms ease`,
+            }}
+          />
           </div>
           {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
         </section>
       )}
+      {saleFlashPhrase && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              key={saleFlashKey}
+              className="radio-song-flash-overlay"
+              style={{ "--flash-color": "#cc5500" } as React.CSSProperties}
+              aria-hidden="true"
+            >
+              <div className="radio-song-flash-overlay__bg" />
+              <div className="radio-song-flash-overlay__scanlines" />
+              <p className="radio-song-flash-overlay__text" data-text={saleFlashPhrase}>
+                {saleFlashPhrase}
+              </p>
+            </div>,
+            document.body
+          )
+        : null}
     </>
   );
 };
