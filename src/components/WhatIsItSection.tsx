@@ -40,7 +40,7 @@ const WhatIsItSection = () => {
           <div className="flex flex-col items-start w-[300px] shrink-0 md:w-[420px]">
             <p className={goldLabel} style={goldLabelStyle}>NYX's Story</p>
             <iframe
-              src="https://www.youtube.com/embed/4XI2GrkWeG8"
+              src="https://www.youtube.com/embed/30fmJup59xY"
               title="NYX's Story"
               className="aspect-[9/16] w-full rounded-xl border-0"
               allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

@@ -64,7 +64,7 @@ const createInitialCollapseState = () => ({
 });
 
 const Index = () => {
-  const [systemGlitchWord, setSystemGlitchWord] = useState<"WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ" | null>(null);
+  const [systemGlitchWord, setSystemGlitchWord] = useState<"Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [entrySource, setEntrySource] = useState("direct");
   const [discordFading, setDiscordFading] = useState(false);
   const discordFadeTimerRef = useRef<number | null>(null);
@@ -397,11 +397,11 @@ const Index = () => {
     const seenIds = new Set<string>();
     const glitchTargets: Array<{
       id: string;
-      word: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ";
+      word: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ";
     }> = [
-      { id: "section-hero", word: "WELCOME" },
-      { id: "section-messianic", word: "YØUR TIME" },
-      { id: "section-wall", word: "IS NØW" },
+      { id: "section-hero", word: "Use code vostok1000" },
+      { id: "section-messianic", word: "Get 99% off and pay just $1" },
+      { id: "section-wall", word: "Offer lasts till June 23rd ONLY!" },
     ];
 
     const connectObserver = () => {
@@ -452,8 +452,8 @@ const Index = () => {
 
   useEffect(() => {
     const triggerSystemGlitchWord = (
-      word: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ",
-      durationMs = 520
+      word: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ",
+      durationMs = 2000
     ) => {
       clearSystemGlitchTimeouts();
       setSystemGlitchWord(word);
@@ -464,28 +464,28 @@ const Index = () => {
 
     const triggerSystemGlitchSequence = () => {
       clearSystemGlitchTimeouts();
-      setSystemGlitchWord("WELCOME");
+      setSystemGlitchWord("Use code vostok1000");
 
       systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
         setSystemGlitchWord(null);
-      }, 220);
+      }, 2000);
 
       systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("YØUR TIME");
-      }, 320);
+        setSystemGlitchWord("Get 99% off and pay just $1");
+      }, 2100);
 
       systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("IS NØW");
-      }, 640);
+        setSystemGlitchWord("Offer lasts till June 23rd ONLY!");
+      }, 4100);
 
       systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
         setSystemGlitchWord(null);
-      }, 920);
+      }, 6100);
     };
 
     const handleSystemGlitch = (event: Event) => {
       const customEvent = event as CustomEvent<{
-        word?: "WELCOME" | "YØUR TIME" | "IS NØW" | "СБОЙ СИСТЕМЫ";
+        word?: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ";
       }>;
       const word = customEvent.detail?.word;
 
@@ -624,7 +624,7 @@ const Index = () => {
               onMouseLeave={handleDiscordMouseLeave}
             >
               <a
-                href="https://discord.gg/SaKHHdSWN"
+                href="https://discord.gg/JbPTFwJB"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Vøstok Discord"
