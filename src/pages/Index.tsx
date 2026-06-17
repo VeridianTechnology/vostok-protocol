@@ -64,7 +64,7 @@ const createInitialCollapseState = () => ({
 });
 
 const Index = () => {
-  const [systemGlitchWord, setSystemGlitchWord] = useState<"Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ" | null>(null);
+  const [systemGlitchWord, setSystemGlitchWord] = useState<"Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [entrySource, setEntrySource] = useState("direct");
   const [discordFading, setDiscordFading] = useState(false);
   const discordFadeTimerRef = useRef<number | null>(null);
@@ -397,11 +397,10 @@ const Index = () => {
     const seenIds = new Set<string>();
     const glitchTargets: Array<{
       id: string;
-      word: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ";
+      word: "Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ";
     }> = [
       { id: "section-hero", word: "Use code vostok1000" },
-      { id: "section-messianic", word: "Get 99% off and pay just $1" },
-      { id: "section-wall", word: "Offer lasts till June 23rd ONLY!" },
+      { id: "section-messianic", word: "Get 99% Off" },
     ];
 
     const connectObserver = () => {
@@ -452,8 +451,8 @@ const Index = () => {
 
   useEffect(() => {
     const triggerSystemGlitchWord = (
-      word: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ",
-      durationMs = 2000
+      word: "Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ",
+      durationMs = 1700
     ) => {
       clearSystemGlitchTimeouts();
       setSystemGlitchWord(word);
@@ -468,24 +467,20 @@ const Index = () => {
 
       systemGlitchCopyTimeoutRef.current = window.setTimeout(() => {
         setSystemGlitchWord(null);
-      }, 2000);
+      }, 1700);
 
       systemGlitchDoTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("Get 99% off and pay just $1");
-      }, 2100);
-
-      systemGlitchSystemTimeoutRef.current = window.setTimeout(() => {
-        setSystemGlitchWord("Offer lasts till June 23rd ONLY!");
-      }, 4100);
+        setSystemGlitchWord("Get 99% Off");
+      }, 1800);
 
       systemGlitchClearTimeoutRef.current = window.setTimeout(() => {
         setSystemGlitchWord(null);
-      }, 6100);
+      }, 3500);
     };
 
     const handleSystemGlitch = (event: Event) => {
       const customEvent = event as CustomEvent<{
-        word?: "Use code vostok1000" | "Get 99% off and pay just $1" | "Offer lasts till June 23rd ONLY!" | "СБОЙ СИСТЕМЫ";
+        word?: "Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ";
       }>;
       const word = customEvent.detail?.word;
 
