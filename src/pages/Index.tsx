@@ -398,10 +398,7 @@ const Index = () => {
     const glitchTargets: Array<{
       id: string;
       word: "Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ";
-    }> = [
-      { id: "section-hero", word: "Use code vostok1000" },
-      { id: "section-messianic", word: "Get 99% Off" },
-    ];
+    }> = [];
 
     const connectObserver = () => {
       observer?.disconnect();
