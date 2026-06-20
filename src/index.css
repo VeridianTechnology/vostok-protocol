@@ -326,7 +326,7 @@
     position: absolute;
     inset: 0;
     background-color: var(--flash-color, #cc0022);
-    animation: radio-flash-bg-in 1500ms steps(1) forwards;
+    animation: radio-flash-bg-in 400ms steps(1) forwards;
   }
 
   .radio-song-flash-overlay__scanlines {
@@ -351,8 +351,8 @@
       0 0 22px rgba(255, 255, 255, 0.58),
       0 0 64px rgba(255, 255, 255, 0.28);
     animation:
-      radio-flash-text-in 1500ms steps(1) forwards,
-      radio-flash-text-glitch 1500ms steps(1) forwards;
+      radio-flash-text-in 400ms steps(1) forwards,
+      radio-flash-text-glitch 400ms steps(1) forwards;
     text-align: center;
     padding: 0 1rem;
     max-width: 90vw;
@@ -371,12 +371,12 @@
 
   .radio-song-flash-overlay__text::before {
     color: rgba(255, 48, 48, 0.50);
-    animation: radio-flash-split-a 1500ms steps(1) forwards;
+    animation: radio-flash-split-a 400ms steps(1) forwards;
   }
 
   .radio-song-flash-overlay__text::after {
     color: rgba(48, 210, 255, 0.44);
-    animation: radio-flash-split-b 1500ms steps(1) forwards;
+    animation: radio-flash-split-b 400ms steps(1) forwards;
   }
 
   .radio-song-flash-overlay__sub {

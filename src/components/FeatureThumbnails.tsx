@@ -167,11 +167,14 @@ const FeatureThumbnails = ({
   const [videoMuted, setVideoMuted] = useState(true);
   const [videoDismissed, setVideoDismissed] = useState(false);
   const [videoFadingOut, setVideoFadingOut] = useState(false);
+  const [videoExpanded, setVideoExpanded] = useState(false);
+  const [videoExpandedVisible, setVideoExpandedVisible] = useState(false);
   const saleTimeoutsRef = useRef<number[]>([]);
   const beforeAfterTouchXRef = useRef<number>(0);
   const beforeAfterModalTouchXRef = useRef<number>(0);
   const galleryTouchXRef = useRef<number>(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const videoExpandedRef = useRef<HTMLVideoElement | null>(null);
 
   const BEFORE_AFTER = [
     { src: "/before/before.jpg", label: "Before" },
@@ -197,16 +200,42 @@ const FeatureThumbnails = ({
   };
 
   useEffect(() => {
-    if (!shortsOpen && !beforeAfterOpen) return;
+    if (!shortsOpen && !beforeAfterOpen && !videoExpanded) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         if (shortsOpen) closeShorts();
         if (beforeAfterOpen) closeBeforeAfter();
+        if (videoExpanded) collapseVideo();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [shortsOpen, beforeAfterOpen]);
+  }, [shortsOpen, beforeAfterOpen, videoExpanded]);
+
+  const expandVideo = () => {
+    const t = videoRef.current?.currentTime ?? 0;
+    setVideoExpanded(true);
+    setTimeout(() => {
+      setVideoExpandedVisible(true);
+      if (videoExpandedRef.current) {
+        videoExpandedRef.current.currentTime = t;
+        videoExpandedRef.current.muted = videoMuted;
+        videoExpandedRef.current.play().catch(() => {});
+      }
+    }, 16);
+  };
+
+  const collapseVideo = () => {
+    const t = videoExpandedRef.current?.currentTime ?? videoRef.current?.currentTime ?? 0;
+    setVideoExpandedVisible(false);
+    setTimeout(() => {
+      setVideoExpanded(false);
+      if (videoRef.current) {
+        videoRef.current.currentTime = t;
+        if (!videoRef.current.paused) videoRef.current.play().catch(() => {});
+      }
+    }, 320);
+  };
 
   const openBeforeAfter = (index: number) => {
     setBeforeAfterIndex(index);
@@ -550,7 +579,7 @@ const FeatureThumbnails = ({
       setSaleFlashPhrase("Welcome");
       const t2 = window.setTimeout(() => {
         setSaleFlashPhrase(null);
-      }, 1700);
+      }, 400);
       saleTimeoutsRef.current.push(t2);
     }, 400);
     saleTimeoutsRef.current.push(t1);
@@ -990,9 +1019,9 @@ const FeatureThumbnails = ({
             <div
               className="absolute left-1/2 top-[calc(6vh+9rem)] z-[15] -translate-x-1/2 md:left-auto md:right-[8%] md:top-[17vh] md:translate-x-0"
               style={{
-                opacity: videoFadingOut ? 0 : 1,
-                transition: "opacity 1000ms ease",
-                pointerEvents: videoFadingOut ? "none" : "auto",
+                opacity: videoFadingOut || videoExpanded ? 0 : 1,
+                transition: "opacity 300ms ease",
+                pointerEvents: videoFadingOut || videoExpanded ? "none" : "auto",
               }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -1003,7 +1032,8 @@ const FeatureThumbnails = ({
                   autoPlay
                   muted={videoMuted}
                   playsInline
-                  className="w-[130px] rounded-xl md:w-[220px]"
+                  className="w-[110px] cursor-pointer rounded-xl md:w-[150px] md:max-h-[260px] md:object-cover"
+                  onClick={expandVideo}
                   onEnded={() => {
                     setVideoFadingOut(true);
                     window.setTimeout(() => setVideoDismissed(true), 1000);
@@ -1271,12 +1301,78 @@ const FeatureThumbnails = ({
           {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
         </section>
       )}
+      {videoExpanded && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[200] flex items-center justify-center"
+              style={{
+                backgroundColor: videoExpandedVisible ? "rgba(0,0,0,0.9)" : "rgba(0,0,0,0)",
+                transition: "background-color 300ms ease",
+              }}
+              onClick={collapseVideo}
+            >
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={collapseVideo}
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
+              <div
+                style={{
+                  transform: videoExpandedVisible ? "scale(1)" : "scale(0.06)",
+                  opacity: videoExpandedVisible ? 1 : 0,
+                  transition: "transform 360ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 260ms ease",
+                  position: "relative",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <video
+                  ref={videoExpandedRef}
+                  src="/videos/clav_conspiracy.mp4"
+                  muted={videoMuted}
+                  playsInline
+                  controls={false}
+                  className="max-h-[88vh] max-w-[92vw] rounded-2xl shadow-[0_16px_48px_rgba(0,0,0,0.7)]"
+                />
+                <button
+                  type="button"
+                  aria-label={videoMuted ? "Unmute" : "Mute"}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const next = !videoMuted;
+                    setVideoMuted(next);
+                    if (videoRef.current) videoRef.current.muted = next;
+                    if (videoExpandedRef.current) videoExpandedRef.current.muted = next;
+                  }}
+                  className="absolute bottom-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black/75"
+                >
+                  {videoMuted ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" /><line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" /><path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
       {saleFlashPhrase && typeof document !== "undefined"
         ? createPortal(
             <div
               key={saleFlashKey}
               className="radio-song-flash-overlay"
-              style={{ "--flash-color": "#cc5500" } as React.CSSProperties}
+              style={{ "--flash-color": "#7a2800" } as React.CSSProperties}
               aria-hidden="true"
             >
               <div className="radio-song-flash-overlay__bg" />
