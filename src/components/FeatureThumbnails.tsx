@@ -165,6 +165,8 @@ const FeatureThumbnails = ({
   const [beforeAfterOpen, setBeforeAfterOpen] = useState(false);
   const [beforeAfterVisible, setBeforeAfterVisible] = useState(false);
   const saleTimeoutsRef = useRef<number[]>([]);
+  const beforeAfterTouchXRef = useRef<number>(0);
+  const galleryTouchXRef = useRef<number>(0);
 
   const BEFORE_AFTER = [
     { src: "/before/before.jpg", label: "Before" },
@@ -983,23 +985,24 @@ const FeatureThumbnails = ({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Before / After slideshow */}
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label="Previous"
-                onClick={() => setBeforeAfterIndex((i) => (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                  <path d="M15 18l-6-6 6-6" />
-                </svg>
-              </button>
+            <div className="opacity-45 transition-opacity duration-300 hover:opacity-100">
               <div
                 className="relative overflow-hidden rounded-2xl"
                 style={{
                   width: isMobile ? 210 : 276,
                   height: isMobile ? 128 : 168,
                   background: "rgba(0,0,0,0.62)",
+                }}
+                onTouchStart={(e) => { beforeAfterTouchXRef.current = e.touches[0].clientX; }}
+                onTouchEnd={(e) => {
+                  const dx = e.changedTouches[0].clientX - beforeAfterTouchXRef.current;
+                  if (Math.abs(dx) > 36) {
+                    setBeforeAfterIndex((i) =>
+                      dx < 0
+                        ? (i + 1) % BEFORE_AFTER.length
+                        : (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length
+                    );
+                  }
                 }}
               >
                 <img
@@ -1009,6 +1012,28 @@ const FeatureThumbnails = ({
                   className="h-full w-full cursor-pointer object-cover transition-opacity duration-300"
                   onClick={() => openBeforeAfter(beforeAfterIndex)}
                 />
+                {/* Left arrow — inside image */}
+                <button
+                  type="button"
+                  aria-label="Previous"
+                  onClick={() => setBeforeAfterIndex((i) => (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length)}
+                  className="absolute left-2 top-1/2 z-10 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black/65"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                {/* Right arrow — inside image */}
+                <button
+                  type="button"
+                  aria-label="Next"
+                  onClick={() => setBeforeAfterIndex((i) => (i + 1) % BEFORE_AFTER.length)}
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black/65"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
                 <div className="absolute bottom-2 left-3 rounded bg-black/55 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-sm">
                   {BEFORE_AFTER[beforeAfterIndex].label}
                 </div>
@@ -1023,16 +1048,6 @@ const FeatureThumbnails = ({
                   ))}
                 </div>
               </div>
-              <button
-                type="button"
-                aria-label="Next"
-                onClick={() => setBeforeAfterIndex((i) => (i + 1) % BEFORE_AFTER.length)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
-                  <path d="M9 18l6-6-6-6" />
-                </svg>
-              </button>
             </div>
             {/* Gallery */}
             {(() => {
@@ -1045,7 +1060,7 @@ const FeatureThumbnails = ({
               const containerW = isMobile ? 210 : 276;
               const containerH = isMobile ? 128 : 168;
               return (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 opacity-45 transition-opacity duration-300 hover:opacity-100">
                   <button
                     type="button"
                     aria-label="Previous video"
@@ -1059,6 +1074,17 @@ const FeatureThumbnails = ({
                 <div
                   className="relative overflow-hidden rounded-2xl"
                   style={{ width: containerW, height: containerH, background: "rgba(0,0,0,0.62)" }}
+                  onTouchStart={(e) => { galleryTouchXRef.current = e.touches[0].clientX; }}
+                  onTouchEnd={(e) => {
+                    const dx = e.changedTouches[0].clientX - galleryTouchXRef.current;
+                    if (Math.abs(dx) > 36) {
+                      setShortsIndex((i) =>
+                        dx < 0
+                          ? (i + 1) % SHORTS.length
+                          : (i - 1 + SHORTS.length) % SHORTS.length
+                      );
+                    }
+                  }}
                 >
                   {/* Left peek — clickable to go prev */}
                   <button
@@ -1123,6 +1149,7 @@ const FeatureThumbnails = ({
                 </div>
               );
             })()}
+
             {/* Buy button */}
             <button
               type="button"
