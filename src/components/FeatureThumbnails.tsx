@@ -164,9 +164,14 @@ const FeatureThumbnails = ({
   const [beforeAfterIndex, setBeforeAfterIndex] = useState(0);
   const [beforeAfterOpen, setBeforeAfterOpen] = useState(false);
   const [beforeAfterVisible, setBeforeAfterVisible] = useState(false);
+  const [videoMuted, setVideoMuted] = useState(true);
+  const [videoDismissed, setVideoDismissed] = useState(false);
+  const [videoFadingOut, setVideoFadingOut] = useState(false);
   const saleTimeoutsRef = useRef<number[]>([]);
   const beforeAfterTouchXRef = useRef<number>(0);
+  const beforeAfterModalTouchXRef = useRef<number>(0);
   const galleryTouchXRef = useRef<number>(0);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const BEFORE_AFTER = [
     { src: "/before/before.jpg", label: "Before" },
@@ -980,6 +985,69 @@ const FeatureThumbnails = ({
               The Facial Restructuring Protocol
             </p>
           </div>
+          {/* Hero video */}
+          {!videoDismissed && (
+            <div
+              className="absolute left-1/2 top-[calc(6vh+9rem)] z-[15] -translate-x-1/2 md:left-auto md:right-[8%] md:top-[17vh] md:translate-x-0"
+              style={{
+                opacity: videoFadingOut ? 0 : 1,
+                transition: "opacity 1000ms ease",
+                pointerEvents: videoFadingOut ? "none" : "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="relative">
+                <video
+                  ref={videoRef}
+                  src="/videos/clav_conspiracy.mp4"
+                  autoPlay
+                  muted={videoMuted}
+                  playsInline
+                  className="w-[130px] rounded-xl md:w-[220px]"
+                  onEnded={() => {
+                    setVideoFadingOut(true);
+                    window.setTimeout(() => setVideoDismissed(true), 1000);
+                  }}
+                />
+                {/* X close */}
+                <button
+                  type="button"
+                  aria-label="Close video"
+                  onClick={() => { setVideoFadingOut(true); window.setTimeout(() => setVideoDismissed(true), 1000); }}
+                  className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black/75"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-3 w-3">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+                {/* Audio toggle */}
+                <button
+                  type="button"
+                  aria-label={videoMuted ? "Unmute" : "Mute"}
+                  onClick={() => {
+                    const next = !videoMuted;
+                    setVideoMuted(next);
+                    if (videoRef.current) videoRef.current.muted = next;
+                  }}
+                  className="absolute bottom-2 right-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-black/75"
+                >
+                  {videoMuted ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <line x1="23" y1="9" x2="17" y2="15" />
+                      <line x1="17" y1="9" x2="23" y2="15" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+            </div>
+          )}
           <div
             className="absolute bottom-14 left-1/2 z-[15] -translate-x-1/2 flex flex-col items-center gap-4 md:bottom-[30vh] md:left-[10%] md:translate-x-0"
             onClick={(e) => e.stopPropagation()}
@@ -989,8 +1057,8 @@ const FeatureThumbnails = ({
               <div
                 className="relative overflow-hidden rounded-2xl"
                 style={{
-                  width: isMobile ? 210 : 276,
-                  height: isMobile ? 128 : 168,
+                  width: isMobile ? 170 : 276,
+                  height: isMobile ? 104 : 168,
                   background: "rgba(0,0,0,0.62)",
                 }}
                 onTouchStart={(e) => { beforeAfterTouchXRef.current = e.touches[0].clientX; }}
@@ -1250,6 +1318,15 @@ const FeatureThumbnails = ({
                   maxWidth: "90vw",
                 }}
                 onClick={(e) => e.stopPropagation()}
+                onTouchStart={(e) => { beforeAfterModalTouchXRef.current = e.touches[0].clientX; }}
+                onTouchEnd={(e) => {
+                  const dx = e.changedTouches[0].clientX - beforeAfterModalTouchXRef.current;
+                  if (Math.abs(dx) > 40) {
+                    setBeforeAfterIndex((i) =>
+                      dx < 0 ? (i + 1) % BEFORE_AFTER.length : (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length
+                    );
+                  }
+                }}
               >
                 <img
                   src={BEFORE_AFTER[beforeAfterIndex].src}
@@ -1328,7 +1405,7 @@ const FeatureThumbnails = ({
               >
                 <iframe
                   key={SHORTS[shortsIndex].id || String(shortsIndex)}
-                  src={SHORTS[shortsIndex].id ? `https://www.youtube.com/embed/${SHORTS[shortsIndex].id}?autoplay=1` : "about:blank"}
+                  src={SHORTS[shortsIndex].id ? `https://www.youtube.com/embed/${SHORTS[shortsIndex].id}?autoplay=1&playsinline=1` : "about:blank"}
                   className="h-full w-full rounded-2xl"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen

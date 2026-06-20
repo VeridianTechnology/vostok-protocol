@@ -171,15 +171,15 @@ const WhatIsItSection = () => {
           {/* Main row: Video + Articles (+ Ratings on desktop) */}
           <div className="flex w-full max-w-5xl items-start justify-center gap-8 md:gap-12">
 
-            {/* YouTube Short */}
+            {/* NYX's Story video */}
             <div className="flex w-[300px] shrink-0 flex-col items-start md:w-[420px]">
               <p className={goldLabel} style={goldLabelStyle}>NYX's Story</p>
-              <iframe
-                src="https://www.youtube.com/embed/30fmJup59xY"
-                title="NYX's Story"
-                className="aspect-[9/16] w-full rounded-xl border-0"
-                allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+              <video
+                src="/videos/main_site.mp4"
+                className="w-full rounded-xl"
+                controls
+                playsInline
+                preload="metadata"
               />
             </div>
 
