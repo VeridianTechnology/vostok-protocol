@@ -1150,24 +1150,54 @@ const FeatureThumbnails = ({
               );
             })()}
 
-            {/* Buy button */}
-            <button
-              type="button"
-              onClick={() =>
-                onRequestBuy?.(() =>
-                  window.open(
-                    "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true",
-                    "_blank",
-                    "noopener,noreferrer"
+            {/* Buy button + mini trust badges */}
+            <div className="flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={() =>
+                  onRequestBuy?.(() =>
+                    window.open(
+                      "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true",
+                      "_blank",
+                      "noopener,noreferrer"
+                    )
                   )
-                )
-              }
-              className="group relative inline-flex items-center justify-center overflow-hidden rounded-[10px] border-2 border-[#a8a8a8] bg-[rgba(8,9,11,0.82)] px-8 py-4 shadow-[0_4px_14px_rgba(0,0,0,0.3)] backdrop-blur-[8px] transition-[border-color,background-color] duration-300 ease-in hover:border-[#d0d0d0] md:px-14 md:py-5"
-            >
-              <span className="relative z-[1] font-sans text-[0.88rem] font-semibold uppercase tracking-[0.18em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white md:text-[1.12rem]">
-                Vøstok — $1
-              </span>
-            </button>
+                }
+                className="group relative inline-flex items-center justify-center overflow-hidden rounded-[10px] border-2 border-[#a8a8a8] bg-[rgba(8,9,11,0.82)] px-8 py-4 shadow-[0_4px_14px_rgba(0,0,0,0.3)] backdrop-blur-[8px] transition-[border-color,background-color] duration-300 ease-in hover:border-[#d0d0d0] md:px-14 md:py-5"
+              >
+                <span className="relative z-[1] font-sans text-[0.88rem] font-semibold uppercase tracking-[0.18em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white md:text-[1.12rem]">
+                  Vøstok — $1
+                </span>
+              </button>
+              {/* Mini trust badges */}
+              <div className="flex flex-col gap-1.5">
+                {/* Mini book */}
+                <div className="group relative">
+                  <div className="flex h-8 w-8 cursor-default items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors duration-200 group-hover:bg-black/65">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-white/80">
+                      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                    </svg>
+                  </div>
+                  <div className="pointer-events-none absolute bottom-full right-0 mb-2 w-52 rounded-xl bg-black/90 px-3 py-2.5 text-[0.65rem] leading-relaxed text-white/85 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+                    Full 294 Page EBook detailing how to improve every part of the face.
+                  </div>
+                </div>
+                {/* Mini shield */}
+                <div className="group relative">
+                  <div className="flex h-8 w-8 cursor-default items-center justify-center rounded-full bg-black/45 text-white backdrop-blur-sm transition-colors duration-200 group-hover:bg-black/65">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-white/80">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                      <path d="M9 12l2 2 4-4" strokeWidth="2" />
+                    </svg>
+                  </div>
+                  <div className="pointer-events-none absolute bottom-full right-0 mb-2 w-52 rounded-xl bg-black/90 px-3 py-2.5 text-[0.65rem] leading-relaxed text-white/85 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.5)] backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+                    <p className="mb-1 font-semibold uppercase tracking-[0.15em] text-white">30 Day Guarantee</p>
+                    If after doing five workouts you're not satisfied, get ahold of me for a full refund.
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           </div>
           {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
