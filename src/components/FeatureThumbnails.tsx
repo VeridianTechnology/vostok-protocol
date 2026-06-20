@@ -103,12 +103,14 @@ type FeatureThumbnailsProps = {
   entrySource?: "facebook" | "4chan" | "instagram" | "tiktok" | "reddit" | "twitter" | "direct";
   renderStructureSection?: boolean;
   renderWallpaperSection?: boolean;
+  onRequestBuy?: (continueToCheckout: () => void) => void;
 };
 
 const FeatureThumbnails = ({
   entrySource = "direct",
   renderStructureSection = true,
   renderWallpaperSection = true,
+  onRequestBuy,
 }: FeatureThumbnailsProps) => {
   const mobileHeroImage = "/section_wallpaper/hero/xxz.webp";
   const desktopHeroImage = "/section_wallpaper/hero/01.webp";
@@ -154,11 +156,61 @@ const FeatureThumbnails = ({
     WALLPAPER_GLITCH_BLACKOUT_FADE_IN_MS
   );
   const [parallaxOffset, setParallaxOffset] = useState({ x: 0, y: 0 });
-  const [saleImageActive, setSaleImageActive] = useState(false);
-  const [isSaleBlackoutVisible, setIsSaleBlackoutVisible] = useState(false);
   const [saleFlashPhrase, setSaleFlashPhrase] = useState<string | null>(null);
   const [saleFlashKey, setSaleFlashKey] = useState(0);
+  const [shortsOpen, setShortsOpen] = useState(false);
+  const [shortsVisible, setShortsVisible] = useState(false);
+  const [shortsIndex, setShortsIndex] = useState(0);
+  const [beforeAfterIndex, setBeforeAfterIndex] = useState(0);
+  const [beforeAfterOpen, setBeforeAfterOpen] = useState(false);
+  const [beforeAfterVisible, setBeforeAfterVisible] = useState(false);
   const saleTimeoutsRef = useRef<number[]>([]);
+
+  const BEFORE_AFTER = [
+    { src: "/before/before.jpg", label: "Before" },
+    { src: "/before/after1.JPG", label: "After" },
+  ];
+
+  const SHORTS = [
+    { id: "9ceMrcgmUO4", title: "Vøstok Short 1", icon: "/videos/01.png" },
+    { id: "0ai0oLcatcw", title: "Vøstok Short 2", icon: "/videos/02.png" },
+    { id: "eZ-hYKuglQw", title: "Vøstok Short 3", icon: "/videos/03.png" },
+    { id: "WfzbGuhYjTY", title: "Vøstok Short 4", icon: "/videos/04.png" },
+  ];
+
+  const openShorts = (index = 0) => {
+    setShortsIndex(index);
+    setShortsOpen(true);
+    setTimeout(() => setShortsVisible(true), 16);
+  };
+
+  const closeShorts = () => {
+    setShortsVisible(false);
+    setTimeout(() => setShortsOpen(false), 380);
+  };
+
+  useEffect(() => {
+    if (!shortsOpen && !beforeAfterOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        if (shortsOpen) closeShorts();
+        if (beforeAfterOpen) closeBeforeAfter();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [shortsOpen, beforeAfterOpen]);
+
+  const openBeforeAfter = (index: number) => {
+    setBeforeAfterIndex(index);
+    setBeforeAfterOpen(true);
+    setTimeout(() => setBeforeAfterVisible(true), 16);
+  };
+
+  const closeBeforeAfter = () => {
+    setBeforeAfterVisible(false);
+    setTimeout(() => setBeforeAfterOpen(false), 380);
+  };
   const rafRef = useRef<number | null>(null);
   const sectionRef = useRef<HTMLElement | null>(null);
   const wallpaperIntervalRef = useRef<number | null>(null);
@@ -486,30 +538,14 @@ const FeatureThumbnails = ({
   }, [wallpaperSlideIndex]);
 
   useEffect(() => {
-    const desktopImg = new Image();
-    desktopImg.src = SALE_IMAGE_DESKTOP;
-    const mobileImg = new Image();
-    mobileImg.src = SALE_IMAGE_MOBILE;
-
     const t1 = window.setTimeout(() => {
-      setIsSaleBlackoutVisible(true);
+      setSaleFlashKey((k) => k + 1);
+      setSaleFlashPhrase("Welcome");
       const t2 = window.setTimeout(() => {
-        setSaleImageActive(true);
-        setIsSaleBlackoutVisible(false);
-        setSaleFlashKey((k) => k + 1);
-        setSaleFlashPhrase("Use Code VOSTOK1000");
-        const t3 = window.setTimeout(() => {
-          setSaleFlashKey((k) => k + 1);
-          setSaleFlashPhrase("And Pay Only $1");
-          const t4 = window.setTimeout(() => {
-            setSaleFlashPhrase(null);
-          }, 1500);
-          saleTimeoutsRef.current.push(t4);
-        }, 1500);
-        saleTimeoutsRef.current.push(t3);
-      }, SALE_FADE_TO_BLACK_MS + SALE_BLACK_HOLD_MS);
+        setSaleFlashPhrase(null);
+      }, 1700);
       saleTimeoutsRef.current.push(t2);
-    }, SALE_TRIGGER_MS);
+    }, 400);
     saleTimeoutsRef.current.push(t1);
 
     return () => {
@@ -845,7 +881,7 @@ const FeatureThumbnails = ({
           />
           {isMobile ? (
               <img
-                src={saleImageActive ? SALE_IMAGE_MOBILE : mobileHeroImage}
+                src={mobileHeroImage}
                 alt="Vostok hero"
                 className="absolute inset-x-0 top-0 h-[92%] w-[92%] object-cover object-top"
                 style={{ left: "50%", transform: "translateX(-50%)" }}
@@ -856,13 +892,9 @@ const FeatureThumbnails = ({
             ) : (
               <>
                 <img
-                  src={saleImageActive ? SALE_IMAGE_DESKTOP : activeDesktopHeroImage}
+                  src={activeDesktopHeroImage}
                   alt="Vostok hero"
-                  className={`absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${
-                    saleImageActive
-                      ? "h-[92%] w-[92%] object-contain object-center"
-                      : "h-[92%] w-[92%] object-cover"
-                  }`}
+                  className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[92%] w-[92%] object-cover"
                   loading="eager"
                   fetchpriority="high"
                   decoding="async"
@@ -927,14 +959,189 @@ const FeatureThumbnails = ({
             }`}
             style={{ transitionDuration: `${wallpaperBlackFlashTransitionMs}ms` }}
           />
+          {/* Hero title */}
+          <div className="pointer-events-none absolute left-1/2 top-[6vh] z-[15] -translate-x-1/2 flex flex-col items-center text-center md:top-[8vh]">
+            <h1
+              className="text-[2.8rem] font-semibold tracking-[0.08em] md:text-[5rem]"
+              style={{
+                fontFamily: "'Cinzel', Georgia, serif",
+                color: "#ccd4de",
+                textShadow:
+                  "0 -2px 4px rgba(0,0,0,0.98), 0 1px 1px rgba(255,255,255,0.07), 2px 0 4px rgba(0,0,0,0.45), -2px 0 4px rgba(0,0,0,0.45), 0 0 18px rgba(0,0,0,0.6)",
+              }}
+            >
+              Vøstok
+            </h1>
+            <p className="mt-1 text-[0.56rem] font-light uppercase tracking-[0.42em] text-white/50 md:text-[0.72rem] md:tracking-[0.46em]"
+              style={{ fontFamily: "'Cinzel', Georgia, serif" }}
+            >
+              The Facial Restructuring Protocol
+            </p>
+          </div>
           <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 z-[5] bg-black"
-            style={{
-              opacity: isSaleBlackoutVisible ? 1 : 0,
-              transition: `opacity ${isSaleBlackoutVisible ? SALE_FADE_TO_BLACK_MS : SALE_FADE_IN_MS}ms ease`,
-            }}
-          />
+            className="absolute bottom-14 left-1/2 z-[15] -translate-x-1/2 flex flex-col items-center gap-4 md:bottom-[30vh] md:left-[10%] md:translate-x-0"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Before / After slideshow */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                aria-label="Previous"
+                onClick={() => setBeforeAfterIndex((i) => (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length)}
+                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+              </button>
+              <div
+                className="relative overflow-hidden rounded-2xl"
+                style={{
+                  width: isMobile ? 210 : 276,
+                  height: isMobile ? 128 : 168,
+                  background: "rgba(0,0,0,0.62)",
+                }}
+              >
+                <img
+                  key={BEFORE_AFTER[beforeAfterIndex].src}
+                  src={BEFORE_AFTER[beforeAfterIndex].src}
+                  alt={BEFORE_AFTER[beforeAfterIndex].label}
+                  className="h-full w-full cursor-pointer object-cover transition-opacity duration-300"
+                  onClick={() => openBeforeAfter(beforeAfterIndex)}
+                />
+                <div className="absolute bottom-2 left-3 rounded bg-black/55 px-2 py-0.5 text-[0.6rem] font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-sm">
+                  {BEFORE_AFTER[beforeAfterIndex].label}
+                </div>
+                <div className="absolute bottom-2 right-3 flex gap-1.5">
+                  {BEFORE_AFTER.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      onClick={() => setBeforeAfterIndex(i)}
+                      className={`h-1.5 w-1.5 rounded-full transition-colors duration-200 ${i === beforeAfterIndex ? "bg-white" : "bg-white/30"}`}
+                    />
+                  ))}
+                </div>
+              </div>
+              <button
+                type="button"
+                aria-label="Next"
+                onClick={() => setBeforeAfterIndex((i) => (i + 1) % BEFORE_AFTER.length)}
+                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                  <path d="M9 18l6-6-6-6" />
+                </svg>
+              </button>
+            </div>
+            {/* Gallery */}
+            {(() => {
+              const prevIdx = (shortsIndex - 1 + SHORTS.length) % SHORTS.length;
+              const nextIdx = (shortsIndex + 1) % SHORTS.length;
+              const cW = isMobile ? 82 : 108;
+              const cH = isMobile ? 110 : 144;
+              const sW = isMobile ? 64 : 84;
+              const sH = isMobile ? 86 : 112;
+              const containerW = isMobile ? 210 : 276;
+              const containerH = isMobile ? 128 : 168;
+              return (
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    aria-label="Previous video"
+                    onClick={() => setShortsIndex(prevIdx)}
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                <div
+                  className="relative overflow-hidden rounded-2xl"
+                  style={{ width: containerW, height: containerH, background: "rgba(0,0,0,0.62)" }}
+                >
+                  {/* Left peek — clickable to go prev */}
+                  <button
+                    type="button"
+                    aria-label="Previous video"
+                    onClick={() => setShortsIndex(prevIdx)}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 overflow-hidden rounded-xl opacity-45 transition-opacity duration-200 hover:opacity-65"
+                    style={{ width: sW, height: sH }}
+                  >
+                    <img src={SHORTS[prevIdx].icon} alt="" className="h-full w-full object-cover" />
+                  </button>
+                  {/* Center — selected */}
+                  <button
+                    type="button"
+                    aria-label={`Watch ${SHORTS[shortsIndex].title}`}
+                    onClick={() => SHORTS[shortsIndex].id && openShorts(shortsIndex)}
+                    className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                    style={{ width: cW, height: cH }}
+                  >
+                    <img src={SHORTS[shortsIndex].icon} alt={SHORTS[shortsIndex].title} className="h-full w-full object-cover" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/85 shadow-lg">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 translate-x-[1px] text-black">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </span>
+                    </div>
+                  </button>
+                  {/* Right peek — clickable to go next */}
+                  <button
+                    type="button"
+                    aria-label="Next video"
+                    onClick={() => setShortsIndex(nextIdx)}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 overflow-hidden rounded-xl opacity-45 transition-opacity duration-200 hover:opacity-65"
+                    style={{ width: sW, height: sH }}
+                  >
+                    <img src={SHORTS[nextIdx].icon} alt="" className="h-full w-full object-cover" />
+                  </button>
+                  {/* Edge fades */}
+                  <div className="pointer-events-none absolute inset-y-0 left-0 z-20 w-6 bg-gradient-to-r from-black/70 to-transparent" />
+                  <div className="pointer-events-none absolute inset-y-0 right-0 z-20 w-6 bg-gradient-to-l from-black/70 to-transparent" />
+                  {/* Dots */}
+                  <div className="absolute bottom-2 left-1/2 z-20 flex -translate-x-1/2 gap-1.5">
+                    {SHORTS.map((_, i) => (
+                      <span
+                        key={i}
+                        className={`inline-block h-1.5 w-1.5 rounded-full transition-colors duration-200 ${i === shortsIndex ? "bg-white" : "bg-white/30"}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+                  <button
+                    type="button"
+                    aria-label="Next video"
+                    onClick={() => setShortsIndex(nextIdx)}
+                    className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+              );
+            })()}
+            {/* Buy button */}
+            <button
+              type="button"
+              onClick={() =>
+                onRequestBuy?.(() =>
+                  window.open(
+                    "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true",
+                    "_blank",
+                    "noopener,noreferrer"
+                  )
+                )
+              }
+              className="group relative inline-flex items-center justify-center overflow-hidden rounded-[10px] border-2 border-[#a8a8a8] bg-[rgba(8,9,11,0.82)] px-8 py-4 shadow-[0_4px_14px_rgba(0,0,0,0.3)] backdrop-blur-[8px] transition-[border-color,background-color] duration-300 ease-in hover:border-[#d0d0d0] md:px-14 md:py-5"
+            >
+              <span className="relative z-[1] font-sans text-[0.88rem] font-semibold uppercase tracking-[0.18em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white md:text-[1.12rem]">
+                Vøstok — $1
+              </span>
+            </button>
+          </div>
           </div>
           {isMobile && <div aria-hidden="true" className="h-[10vh] w-full bg-black" />}
         </section>
@@ -952,6 +1159,156 @@ const FeatureThumbnails = ({
               <p className="radio-song-flash-overlay__text" data-text={saleFlashPhrase}>
                 {saleFlashPhrase}
               </p>
+            </div>,
+            document.body
+          )
+        : null}
+      {beforeAfterOpen && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[200] flex items-center justify-center"
+              style={{
+                backgroundColor: beforeAfterVisible ? "rgba(0,0,0,0.92)" : "rgba(0,0,0,0)",
+                transition: "background-color 300ms ease",
+              }}
+              onClick={closeBeforeAfter}
+            >
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={closeBeforeAfter}
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
+              <div
+                style={{
+                  transform: beforeAfterVisible ? "scale(1)" : "scale(0.05)",
+                  opacity: beforeAfterVisible ? 1 : 0,
+                  transition: "transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 280ms ease",
+                  position: "relative",
+                  maxHeight: "90vh",
+                  maxWidth: "90vw",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <img
+                  src={BEFORE_AFTER[beforeAfterIndex].src}
+                  alt={BEFORE_AFTER[beforeAfterIndex].label}
+                  className="max-h-[88vh] max-w-[88vw] rounded-2xl object-contain"
+                />
+                <div className="absolute bottom-4 left-4 rounded bg-black/60 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/90 backdrop-blur-sm">
+                  {BEFORE_AFTER[beforeAfterIndex].label}
+                </div>
+                <button
+                  type="button"
+                  aria-label="Previous image"
+                  onClick={(e) => { e.stopPropagation(); setBeforeAfterIndex((i) => (i - 1 + BEFORE_AFTER.length) % BEFORE_AFTER.length); }}
+                  className="absolute left-[-52px] top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next image"
+                  onClick={(e) => { e.stopPropagation(); setBeforeAfterIndex((i) => (i + 1) % BEFORE_AFTER.length); }}
+                  className="absolute right-[-52px] top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+                <div className="absolute bottom-[-36px] left-1/2 flex -translate-x-1/2 gap-2">
+                  {BEFORE_AFTER.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={BEFORE_AFTER[i].label}
+                      onClick={(e) => { e.stopPropagation(); setBeforeAfterIndex(i); }}
+                      className={`h-2 w-2 rounded-full transition-colors duration-200 ${i === beforeAfterIndex ? "bg-white" : "bg-white/35 hover:bg-white/60"}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
+      {shortsOpen && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[200] flex items-center justify-center"
+              style={{
+                backgroundColor: shortsVisible ? "rgba(0,0,0,0.88)" : "rgba(0,0,0,0)",
+                transition: "background-color 300ms ease",
+              }}
+              onClick={closeShorts}
+            >
+              <button
+                type="button"
+                aria-label="Close"
+                onClick={closeShorts}
+                className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors duration-200 hover:bg-white/20"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5">
+                  <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+              </button>
+              <div
+                style={{
+                  transform: shortsVisible ? "scale(1)" : "scale(0.05)",
+                  opacity: shortsVisible ? 1 : 0,
+                  transition: "transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 280ms ease",
+                  height: "min(88vh, 600px)",
+                  aspectRatio: "9 / 16",
+                  position: "relative",
+                }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <iframe
+                  key={SHORTS[shortsIndex].id || String(shortsIndex)}
+                  src={SHORTS[shortsIndex].id ? `https://www.youtube.com/embed/${SHORTS[shortsIndex].id}?autoplay=1` : "about:blank"}
+                  className="h-full w-full rounded-2xl"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title={SHORTS[shortsIndex].title}
+                />
+                <button
+                  type="button"
+                  aria-label="Previous short"
+                  onClick={(e) => { e.stopPropagation(); setShortsIndex((i) => (i - 1 + SHORTS.length) % SHORTS.length); }}
+                  className="absolute left-[-52px] top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                    <path d="M15 18l-6-6 6-6" />
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next short"
+                  onClick={(e) => { e.stopPropagation(); setShortsIndex((i) => (i + 1) % SHORTS.length); }}
+                  className="absolute right-[-52px] top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white transition-colors duration-200 hover:bg-white/20"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">
+                    <path d="M9 18l6-6-6-6" />
+                  </svg>
+                </button>
+                <div className="absolute bottom-[-36px] left-1/2 flex -translate-x-1/2 gap-2">
+                  {SHORTS.map((_, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      aria-label={`Short ${i + 1}`}
+                      onClick={(e) => { e.stopPropagation(); setShortsIndex(i); }}
+                      className={`h-2 w-2 rounded-full transition-colors duration-200 ${i === shortsIndex ? "bg-white" : "bg-white/35 hover:bg-white/60"}`}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>,
             document.body
           )

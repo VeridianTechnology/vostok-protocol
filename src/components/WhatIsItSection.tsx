@@ -6,8 +6,8 @@ const ARTICLES = [
   },
   {
     src: "/section_wallpaper/articles/2.jpeg",
-    alt: "Defend Your Money — Spiritually",
-    href: "https://open.substack.com/pub/nyxvostok/p/defend-your-money-spiritually?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true",
+    alt: "Looksmaxxing will usher in the end times",
+    href: "https://nyxvostok.substack.com/p/looksmaxxing-will-usher-in-the-end",
   },
 ];
 

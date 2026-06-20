@@ -50,7 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isDesktop, setIsDesktop] = useState(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState(false);
   const facebookLoadTimeoutRef = useRef<number | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("Vøstok");
+  const [buttonLabel, setButtonLabel] = useState<string>("Vøstok — $1");
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
   const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";
@@ -321,6 +321,20 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
           </div>
 
         </m.div>
+      </div>
+
+      {/* Shield guarantee badge */}
+      <div className="group absolute bottom-12 right-5 z-20">
+        <div className="flex h-11 w-11 cursor-default items-center justify-center rounded-full bg-black/50 backdrop-blur-sm transition-colors duration-200 group-hover:bg-black/70">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-white/80">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+            <path d="M9 12l2 2 4-4" strokeWidth="1.8" />
+          </svg>
+        </div>
+        <div className="pointer-events-none absolute bottom-full right-0 mb-2 w-64 rounded-xl bg-black/90 px-4 py-3 text-[0.72rem] leading-relaxed text-white/85 opacity-0 shadow-[0_8px_24px_rgba(0,0,0,0.4)] backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+          <p className="mb-1 font-semibold uppercase tracking-[0.15em] text-white">30 Day Guarantee</p>
+          If after doing five workouts you're not satisfied, get ahold of me for a full refund.
+        </div>
       </div>
 
       {(isRedirecting && isDesktop || isFacebookLoading) && createPortal(

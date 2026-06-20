@@ -66,8 +66,6 @@ const createInitialCollapseState = () => ({
 const Index = () => {
   const [systemGlitchWord, setSystemGlitchWord] = useState<"Use code vostok1000" | "Get 99% Off" | "СБОЙ СИСТЕМЫ" | null>(null);
   const [entrySource, setEntrySource] = useState("direct");
-  const [discordFading, setDiscordFading] = useState(false);
-  const discordFadeTimerRef = useRef<number | null>(null);
   const [activeSectionId, setActiveSectionId] =
     useState<(typeof orderedSectionIds)[number]>("section-hero");
   const collapseRafRef = useRef<number | null>(null);
@@ -171,26 +169,7 @@ const Index = () => {
     };
   }, []);
 
-  useEffect(() => {
-    discordFadeTimerRef.current = window.setTimeout(() => {
-      setDiscordFading(true);
-    }, 3000);
-    return () => {
-      if (discordFadeTimerRef.current) window.clearTimeout(discordFadeTimerRef.current);
-    };
-  }, []);
 
-  const handleDiscordMouseEnter = () => {
-    if (discordFadeTimerRef.current) window.clearTimeout(discordFadeTimerRef.current);
-    setDiscordFading(false);
-  };
-
-  const handleDiscordMouseLeave = () => {
-    if (discordFadeTimerRef.current) window.clearTimeout(discordFadeTimerRef.current);
-    discordFadeTimerRef.current = window.setTimeout(() => {
-      setDiscordFading(true);
-    }, 1500);
-  };
 
   useEffect(() => {
     activeSectionIdRef.current = activeSectionId;
@@ -553,6 +532,7 @@ const Index = () => {
           renderStructureSection={false}
           renderWallpaperSection
           entrySource={entrySource}
+          onRequestBuy={handleRequestBuy}
         />
       </section>
       <div className="divider-line hidden md:block" />
@@ -606,15 +586,44 @@ const Index = () => {
       </section>
       {typeof document !== "undefined"
         ? createPortal(
-            <div
-              className="group fixed right-4 top-4 z-[80]"
-              style={{
-                opacity: discordFading ? 0 : 1,
-                transition: discordFading ? "opacity 5s ease" : "opacity 0.4s ease",
-              }}
-              onMouseEnter={handleDiscordMouseEnter}
-              onMouseLeave={handleDiscordMouseLeave}
-            >
+            <div className="fixed right-4 top-4 z-[80] flex items-center gap-2">
+              {/* Facebook */}
+              <a
+                href="https://www.facebook.com/nyx.vostok/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vøstok Facebook"
+                className="flex items-center rounded-full bg-black px-3 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="white">
+                  <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                </svg>
+              </a>
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/vostok.guide/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vøstok Instagram"
+                className="flex items-center rounded-full bg-black px-3 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="white">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+              </a>
+              {/* Twitter / X */}
+              <a
+                href="https://x.com/Nyxvostok"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Vøstok Twitter"
+                className="flex items-center rounded-full bg-black px-3 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="white">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+                </svg>
+              </a>
+              {/* Discord */}
               <a
                 href="https://discord.gg/JbPTFwJB"
                 target="_blank"
@@ -622,21 +631,10 @@ const Index = () => {
                 aria-label="Vøstok Discord"
                 className="flex items-center rounded-full bg-black px-3 py-2 shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  className="h-5 w-5"
-                  fill="black"
-                  stroke="white"
-                  strokeWidth="0.8"
-                  strokeLinejoin="round"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="h-5 w-5" fill="black" stroke="white" strokeWidth="0.8" strokeLinejoin="round">
                   <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.01.04.027.078.056.1a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
                 </svg>
               </a>
-              <span className="pointer-events-none absolute right-0 top-full mt-2 whitespace-nowrap rounded bg-black px-3 py-1.5 text-[10px] uppercase tracking-[0.25em] text-white opacity-0 shadow-[0_4px_16px_rgba(0,0,0,0.4)] transition-opacity duration-200 group-hover:opacity-100">
-                Vøstok Discord
-              </span>
             </div>,
             document.body
           )

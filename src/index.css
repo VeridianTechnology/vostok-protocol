@@ -316,7 +316,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 30vh;
     gap: clamp(0.6rem, 2vw, 1.4rem);
     isolation: isolate;
   }
