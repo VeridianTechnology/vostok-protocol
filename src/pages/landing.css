@@ -1,0 +1,1425 @@
+/* ============================================================
+   Vostok landing — light editorial theme with dark interludes
+   Palette: ink navy #1a2744 · slate #6a7a9a · paper #f6f5f2
+   ============================================================ */
+
+body:has(.vl) {
+  background: #f6f5f2;
+  color: #1a2744;
+}
+
+.vl {
+  --ink: #1a2744;
+  --ink-soft: rgba(26, 39, 68, 0.72);
+  --slate: #6a7a9a;
+  --paper: #f6f5f2;
+  --hairline: rgba(26, 39, 68, 0.16);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--paper);
+  overflow-x: hidden;
+}
+
+.vl *,
+.vl *::before,
+.vl *::after {
+  box-sizing: border-box;
+}
+
+.vl ::selection {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* the old site's base layer forces Fira Sans on headings — reclaim them */
+.vl h1,
+.vl h2,
+.vl h3,
+.vl h4 {
+  font-family: var(--serif);
+}
+
+/* ---------- shared type ---------- */
+
+.vl-kicker {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin: 0 0 22px;
+}
+
+.vl-h2 {
+  font-family: var(--serif);
+  font-size: clamp(34px, 4.6vw, 58px);
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  line-height: 1.08;
+  margin: 0 0 26px;
+}
+
+.vl-h2 em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.vl-lead {
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 62ch;
+  margin: 0;
+}
+
+/* ---------- scroll reveal ---------- */
+
+.vl-reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vl-reveal.vl-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vl-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- sticky bar ---------- */
+
+.vl-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px clamp(20px, 4vw, 44px);
+  background: rgba(246, 245, 242, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+  transform: translateY(-110%);
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vl-bar.vl-bar--shown {
+  transform: translateY(0);
+}
+
+.vl-bar-mark {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.vl-bar-buy {
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #fff;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 10px 26px;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.vl-bar-buy:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+/* ---------- hero ---------- */
+
+.vl-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* extra bottom padding keeps the stack clear of the bottom-left wordmark */
+  padding: clamp(20px, 4vh, 48px) 20px clamp(110px, 16vh, 170px);
+  overflow: hidden;
+}
+
+.vl-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("/landing/bg-desktop.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.vl-hero-bg::after {
+  /* soften the book art so the slideshow reads on top */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(246, 245, 242, 0.3);
+}
+
+.vl-hero-title {
+  position: absolute;
+  bottom: 34px;
+  left: 42px;
+  z-index: 2;
+  font-size: clamp(52px, 6.6vw, 96px);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.vl-hero-subtitle {
+  font-size: clamp(10px, 1vw, 14px);
+  font-weight: 500;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin-top: 12px;
+}
+
+.vl-hero-stack {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: min(92vw, 640px);
+}
+
+.vl-hero-eyebrow {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- carousel ---------- */
+
+.vl-carousel {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 67 / 60;
+  max-height: 52svh;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 30px 70px rgba(26, 39, 68, 0.22);
+}
+
+.vl-carousel-track {
+  display: flex;
+  height: 100%;
+  transition: transform 0.85s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.vl-carousel-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.vl-carousel-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: linear-gradient(to top, rgba(20, 28, 48, 0.55), rgba(20, 28, 48, 0));
+  color: #fff;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.vl-carousel-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(246, 245, 242, 0.65);
+  border: none;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.25s ease, background 0.2s ease;
+}
+
+.vl-carousel:hover .vl-carousel-nav,
+.vl-carousel-nav:focus-visible {
+  opacity: 1;
+}
+
+.vl-carousel-nav:hover {
+  background: rgba(246, 245, 242, 0.92);
+}
+
+.vl-carousel-nav--prev {
+  left: 0;
+}
+
+.vl-carousel-nav--next {
+  right: 0;
+}
+
+/* thumbnails */
+
+.vl-thumbs {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  max-width: 100%;
+  padding: 2px;
+}
+
+.vl-thumbs::-webkit-scrollbar {
+  display: none;
+}
+
+.vl-thumb {
+  flex: 0 0 auto;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--hairline);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.vl-thumb.vl-thumb--active {
+  border-color: var(--ink);
+  opacity: 1;
+}
+
+/* ---------- buttons ---------- */
+
+.vl-button-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.vl-buy {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #fff;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  padding: 15px 44px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.vl-buy:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.vl-ghost {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  background: rgba(246, 245, 242, 0.6);
+  border: 1px solid rgba(26, 39, 68, 0.45);
+  padding: 13px 32px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.vl-ghost:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.vl-price-note {
+  font-size: 14px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- light sections ---------- */
+
+.vl-section {
+  position: relative;
+  padding: clamp(76px, 11vh, 128px) clamp(24px, 6vw, 72px);
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.vl-section + .vl-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: clamp(24px, 6vw, 72px);
+  right: clamp(24px, 6vw, 72px);
+  height: 1px;
+  background: var(--hairline);
+}
+
+/* ---------- dark interludes ---------- */
+
+.vl-dark {
+  position: relative;
+  overflow: hidden;
+  background-color: #06070b;
+  color: #f0efec;
+  padding: clamp(110px, 18vh, 200px) clamp(24px, 7vw, 90px);
+}
+
+.vl-dark-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.vl-dark-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(4, 5, 9, 0.55), rgba(4, 5, 9, 0.25) 40%, rgba(4, 5, 9, 0.62));
+}
+
+.vl-dark-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1036px;
+  margin: 0 auto;
+}
+
+.vl-dark .vl-kicker {
+  color: rgba(240, 239, 236, 0.62);
+}
+
+.vl-dark-quote {
+  font-family: var(--serif);
+  font-size: clamp(30px, 4.4vw, 56px);
+  font-weight: 300;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
+  margin: 0 0 22px;
+  max-width: 22ch;
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.65);
+}
+
+.vl-dark-quote em {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.vl-dark-text {
+  font-size: clamp(17px, 1.5vw, 21px);
+  line-height: 1.7;
+  color: rgba(240, 239, 236, 0.82);
+  max-width: 58ch;
+  margin: 0;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6);
+}
+
+.vl-dark-sig {
+  margin-top: 26px;
+  font-size: 14px;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: rgba(240, 239, 236, 0.6);
+}
+
+.vl-dark .vl-button-row {
+  justify-content: flex-start;
+  margin-top: 38px;
+}
+
+.vl-buy--light {
+  color: var(--ink);
+  background: #f0efec;
+  border-color: #f0efec;
+}
+
+.vl-buy--light:hover {
+  background: transparent;
+  color: #f0efec;
+}
+
+/* Nyx section: challenge text + phone video */
+
+.vl-nyx-grid {
+  display: grid;
+  grid-template-columns: 1fr clamp(200px, 22vw, 264px);
+  gap: clamp(36px, 6vw, 90px);
+  align-items: center;
+}
+
+.vl-nyx-video {
+  margin: 0;
+}
+
+.vl-nyx-video video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  object-fit: cover;
+  border: 1px solid rgba(240, 239, 236, 0.3);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+  background: #000;
+  cursor: zoom-in;
+}
+
+.vl-nyx-video figcaption {
+  margin-top: 12px;
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: rgba(240, 239, 236, 0.6);
+  text-align: center;
+}
+
+/* centered dark CTA variant */
+
+.vl-dark--center {
+  text-align: center;
+}
+
+.vl-dark--center .vl-dark-bg::after {
+  background: radial-gradient(
+      ellipse 62% 70% at 50% 48%,
+      rgba(4, 5, 9, 0.78),
+      rgba(4, 5, 9, 0.42) 62%,
+      rgba(4, 5, 9, 0.3)
+    ),
+    linear-gradient(to bottom, rgba(4, 5, 9, 0.5), rgba(4, 5, 9, 0.15) 45%, rgba(4, 5, 9, 0.55));
+}
+
+.vl-dark--center .vl-dark-quote,
+.vl-dark--center .vl-dark-text {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vl-dark--center .vl-button-row {
+  justify-content: center;
+}
+
+.vl-dark--center .vl-price-note {
+  color: rgba(240, 239, 236, 0.65);
+  margin-top: 16px;
+}
+
+/* ---------- diagnosis grid ---------- */
+
+.vl-diagnosis-grid {
+  display: grid;
+  grid-template-columns: 1fr clamp(240px, 26vw, 320px);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+
+.vl-fat-figure {
+  margin: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.vl-fat-slides {
+  position: relative;
+  aspect-ratio: 10 / 11;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.vl-fat-slides img {
+  position: absolute;
+  inset: 12px;
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+
+.vl-fat-slides img.vl-fat-slide--active {
+  opacity: 1;
+}
+
+.vl-fat-dots {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+.vl-fat-dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--slate);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.vl-fat-dots button.vl-fat-dot--active {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.vl-fat-figure figcaption {
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-align: center;
+}
+
+.vl-video-band {
+  position: relative;
+  margin-bottom: clamp(44px, 6vh, 70px);
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: #0a0e18;
+}
+
+.vl-video-band video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  object-fit: cover;
+  filter: saturate(0.4);
+}
+
+.vl-video-band p {
+  position: absolute;
+  left: clamp(20px, 4vw, 48px);
+  right: clamp(20px, 4vw, 48px);
+  bottom: clamp(16px, 3vw, 34px);
+  margin: 0;
+  font-size: clamp(17px, 1.9vw, 24px);
+  font-style: italic;
+  line-height: 1.5;
+  color: #fff;
+  max-width: 52ch;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.75);
+}
+
+.vl-video-band::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(10, 14, 24, 0.72), rgba(10, 14, 24, 0.06) 55%);
+  pointer-events: none;
+}
+
+/* while the explanation video plays, drop the gradient so controls read clearly */
+.vl-video-band--plain::after {
+  display: none;
+}
+
+.vl-video-band--plain video {
+  filter: none;
+}
+
+.vl-video-band p {
+  z-index: 1;
+}
+
+.vl-band-label {
+  position: absolute;
+  top: 16px;
+  left: clamp(20px, 4vw, 48px);
+  z-index: 1;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #fff;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+}
+
+.vl-band-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 46px;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(246, 245, 242, 0.7);
+  border: none;
+  color: var(--ink);
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vl-band-nav:hover {
+  background: rgba(246, 245, 242, 0.95);
+}
+
+.vl-band-nav--next {
+  right: 0;
+}
+
+.vl-band-nav--prev {
+  left: 0;
+}
+
+.vl-decay-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 clamp(28px, 4vw, 56px);
+  margin-top: 8px;
+}
+
+.vl-decay {
+  border-top: 1px solid var(--hairline);
+  padding: 20px 0 26px;
+}
+
+.vl-decay h3 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.vl-decay p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.vl-diagnosis-answer {
+  margin-top: 40px;
+  font-size: clamp(20px, 2vw, 26px);
+  font-style: italic;
+  color: var(--ink);
+  max-width: 46ch;
+}
+
+/* ---------- method: manifesto with anatomy plate ---------- */
+
+.vl-method-grid {
+  display: grid;
+  grid-template-columns: 1.05fr clamp(230px, 24vw, 310px) 1fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.vl-method-figure {
+  margin: 0;
+}
+
+.vl-method-figure img {
+  display: block;
+  width: 100%;
+  border: 1px solid var(--hairline);
+  background: #fff;
+}
+
+.vl-method-figure figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-align: center;
+}
+
+.vl-beliefs {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--hairline);
+}
+
+.vl-belief {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.vl-belief h3 {
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0 0 6px;
+  letter-spacing: 0.02em;
+}
+
+.vl-belief p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.vl-not-line {
+  margin-top: 34px;
+  font-size: 15px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+/* ---------- results grid ---------- */
+
+.vl-results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0 clamp(28px, 4vw, 56px);
+  margin-top: 14px;
+}
+
+.vl-result {
+  border-top: 1px solid var(--hairline);
+  padding: 22px 0 30px;
+}
+
+.vl-result-img {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  margin-bottom: 16px;
+}
+
+.vl-result-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.vl-result:hover .vl-result-img img {
+  transform: scale(1.04);
+}
+
+.vl-result-num {
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  color: var(--slate);
+  display: block;
+  margin-bottom: 12px;
+}
+
+.vl-result h3 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0 0 8px;
+}
+
+.vl-result p {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- inside the book ---------- */
+
+.vl-pages-strip {
+  display: flex;
+  gap: clamp(14px, 2vw, 24px);
+  overflow-x: auto;
+  padding: 8px 4px 22px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 39, 68, 0.3) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+
+.vl-page-card {
+  flex: 0 0 auto;
+  width: clamp(200px, 22vw, 264px);
+  padding: 0;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(26, 39, 68, 0.12);
+  cursor: zoom-in;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vl-page-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px rgba(26, 39, 68, 0.18);
+}
+
+.vl-page-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vl-pages-hint {
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin: 0 0 26px;
+}
+
+.vl-chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  margin: 0 0 26px;
+}
+
+.vl-chapter {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  border: 1px solid var(--hairline);
+  padding: 7px 16px;
+  background: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.vl-chapter:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.vl-chapter--active,
+.vl-chapter--active:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+  -webkit-text-fill-color: #fff;
+}
+
+.vl-book-quotes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 26px);
+  margin-top: 44px;
+}
+
+.vl-book-quote {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 24px 24px 22px;
+}
+
+.vl-book-quote p {
+  font-size: 18px;
+  font-style: italic;
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+
+.vl-book-quote span {
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+/* ---------- journey belts ---------- */
+
+.vl-belts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(16px, 2vw, 26px);
+  margin-top: 10px;
+}
+
+.vl-belt {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 26px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vl-belt-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  overflow: hidden;
+  cursor: zoom-in;
+  margin-bottom: 6px;
+}
+
+.vl-belt-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.vl-belt-photo:hover img {
+  transform: scale(1.05);
+}
+
+.vl-belt-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 9px;
+}
+
+.vl-belt h3 {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.vl-belt-hours {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.vl-belt p {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.vl-journey-facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: 40px;
+}
+
+.vl-journey-fact {
+  border-top: 1px solid var(--hairline);
+  padding-top: 16px;
+}
+
+.vl-journey-fact strong {
+  display: block;
+  font-size: 21px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.vl-journey-fact p {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* ---------- articles / dispatches ---------- */
+
+.vl-articles-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(20px, 3vw, 40px);
+  margin-top: 8px;
+}
+
+.vl-article {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(26, 39, 68, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.vl-article:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 22px 48px rgba(26, 39, 68, 0.16);
+}
+
+.vl-article-thumb {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.vl-article-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.vl-article-body {
+  padding: 20px 24px 22px;
+}
+
+.vl-article-body h3 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+
+.vl-article-body p {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0 0 12px;
+}
+
+.vl-article-body span {
+  font-size: 12px;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.vl-substack-link {
+  display: inline-block;
+  margin-top: 34px;
+  font-size: 14px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  border: 1px solid rgba(26, 39, 68, 0.45);
+  padding: 13px 32px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.vl-substack-link:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+/* ---------- footer ---------- */
+
+.vl-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 44px 24px 46px;
+}
+
+.vl-socials {
+  display: flex;
+  gap: 14px;
+}
+
+.vl-socials a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--hairline);
+  border-radius: 50%;
+  color: var(--ink-soft);
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.vl-socials a:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.vl-socials svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.vl-fineprint {
+  font-size: 13px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin: 0;
+}
+
+/* ---------- lightbox ---------- */
+
+.vl-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(10, 14, 24, 0.93);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  animation: vl-fade 0.25s ease-out;
+}
+
+@keyframes vl-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.vl-lightbox img,
+.vl-lightbox video {
+  max-width: 92vw;
+  max-height: 90vh;
+  object-fit: contain;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+.vl-info-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  max-width: min(920px, 92vw);
+  max-height: 88vh;
+  background: var(--paper);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+.vl-info-card img {
+  width: min(48vw, 460px);
+  max-height: 88vh;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+.vl-info-card > div {
+  padding: clamp(24px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.vl-info-card h3 {
+  font-size: clamp(24px, 2.6vw, 34px);
+  font-weight: 500;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+.vl-info-card p {
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .vl-info-card {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .vl-info-card img {
+    width: 100%;
+    max-height: 46vh;
+  }
+}
+
+.vl-lightbox-close {
+  position: absolute;
+  top: 20px;
+  right: 28px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 40px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .vl-method-grid,
+  .vl-diagnosis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-method-figure {
+    order: 3;
+    max-width: 340px;
+    margin: 0 auto;
+  }
+
+  .vl-fat-figure {
+    max-width: 320px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .vl-nyx-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-nyx-video {
+    max-width: 250px;
+    margin: 0 auto;
+  }
+
+  .vl-video-band video {
+    aspect-ratio: 3 / 2;
+  }
+
+  .vl-results-grid,
+  .vl-decay-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .vl-belts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .vl-book-quotes,
+  .vl-journey-facts {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .vl-articles-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .vl-hero {
+    justify-content: flex-start;
+    padding-top: 132px;
+    padding-bottom: 48px;
+  }
+
+  .vl-hero-eyebrow {
+    display: none;
+  }
+
+  .vl-hero-bg {
+    background-image: url("/landing/bg-mobile.jpg");
+  }
+
+  .vl-hero-title {
+    top: 30px;
+    bottom: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .vl-hero-subtitle {
+    text-align: center;
+  }
+
+  .vl-carousel {
+    max-height: none;
+  }
+
+  .vl-carousel-nav {
+    opacity: 1;
+    background: rgba(246, 245, 242, 0.55);
+    width: 38px;
+    height: 54px;
+    font-size: 22px;
+  }
+
+  .vl-buy {
+    font-size: 13px;
+    padding: 13px 34px;
+  }
+
+  .vl-ghost {
+    font-size: 12px;
+    padding: 11px 24px;
+  }
+
+  .vl-dark {
+    padding: clamp(84px, 14vh, 130px) 24px;
+  }
+
+  .vl-page-card {
+    width: 214px;
+  }
+}
+
+@media (max-width: 560px) {
+  .vl-results-grid,
+  .vl-decay-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-belts {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-result {
+    padding: 18px 0 22px;
+  }
+
+  .vl-decay {
+    padding: 16px 0 20px;
+  }
+}
