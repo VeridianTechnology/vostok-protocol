@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# nested side project with its own repo (VeridianTechnology/vostok2)
+one slide/app/
