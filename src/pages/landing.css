@@ -577,6 +577,41 @@ a.vl-topnav-tab:hover {
   cursor: zoom-in;
 }
 
+.vl-nyx-frame {
+  position: relative;
+}
+
+.vl-nyx-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 36px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: rgba(246, 245, 242, 0.72);
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vl-nyx-nav:hover {
+  background: rgba(246, 245, 242, 0.95);
+}
+
+.vl-nyx-nav--prev {
+  left: 0;
+}
+
+.vl-nyx-nav--next {
+  right: 0;
+}
+
 .vl-nyx-video figcaption {
   margin-top: 12px;
   font-size: 12px;

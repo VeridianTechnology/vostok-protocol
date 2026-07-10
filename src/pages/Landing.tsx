@@ -333,6 +333,12 @@ const faqs: { q: string; sub?: string; a: string }[] = [
   },
 ];
 
+// side-profile videos in the Nyx challenge section — arrows cycle through them
+const nyxVideos = [
+  { src: "/landing/video/nyx-profile.mp4", caption: "Nyx — side profile, unedited." },
+  { src: "/videos/le_mogge.mp4", caption: "Le mog — side profile, unedited." },
+];
+
 type JourneyImage = string | { mobile: string; desktop: string };
 
 const journeyStages: {
@@ -436,6 +442,7 @@ const Landing = () => {
   const [fatIndex, setFatIndex] = useState(0);
   const [chapterIndex, setChapterIndex] = useState(0);
   const [bandIndex, setBandIndex] = useState(0);
+  const [nyxIndex, setNyxIndex] = useState(0);
   // default to "After" — lead with the destination
   const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
   // FAQ: one open question at a time; its answer crossfades in over the
@@ -1151,15 +1158,32 @@ const Landing = () => {
             </div>
           </div>
           <figure className="vl-nyx-video vl-reveal">
-            <video
-              src="/landing/video/nyx-profile.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              onClick={() => setVideoZoom("/landing/video/nyx-profile.mp4")}
-            />
-            <figcaption>Nyx — side profile, unedited.</figcaption>
+            <div className="vl-nyx-frame">
+              <video
+                key={nyxVideos[nyxIndex].src}
+                src={nyxVideos[nyxIndex].src}
+                autoPlay
+                muted
+                loop
+                playsInline
+                onClick={() => setVideoZoom(nyxVideos[nyxIndex].src)}
+              />
+              <button
+                className="vl-nyx-nav vl-nyx-nav--prev"
+                aria-label="Previous side profile"
+                onClick={() => setNyxIndex((nyxIndex + nyxVideos.length - 1) % nyxVideos.length)}
+              >
+                ‹
+              </button>
+              <button
+                className="vl-nyx-nav vl-nyx-nav--next"
+                aria-label="Next side profile"
+                onClick={() => setNyxIndex((nyxIndex + 1) % nyxVideos.length)}
+              >
+                ›
+              </button>
+            </div>
+            <figcaption>{nyxVideos[nyxIndex].caption}</figcaption>
           </figure>
         </div>
       </section>
