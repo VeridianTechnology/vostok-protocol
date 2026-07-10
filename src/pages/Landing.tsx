@@ -211,6 +211,16 @@ const journeyStages: {
 
 const journeyZoomSrc = (img: JourneyImage) => (typeof img === "string" ? img : img.desktop);
 
+const journeyImg = (img: JourneyImage, alt: string) =>
+  typeof img === "string" ? (
+    <img src={img} alt={alt} loading="lazy" />
+  ) : (
+    <picture>
+      <source media="(min-width: 768px)" srcSet={img.desktop} />
+      <img src={img.mobile} alt={alt} loading="lazy" />
+    </picture>
+  );
+
 const fatSlides = [
   { src: "/landing/anatomy/fat-map.jpg", alt: "Map of facial fat distribution, front view" },
   { src: "/landing/anatomy/fat-map-side.jpg", alt: "Map of facial fat distribution, three-quarter view" },
@@ -238,6 +248,9 @@ const Landing = () => {
   const [fatIndex, setFatIndex] = useState(0);
   const [chapterIndex, setChapterIndex] = useState(0);
   const [bandIndex, setBandIndex] = useState(0);
+  const [journeyIndex, setJourneyIndex] = useState(0);
+  const [explainMuted, setExplainMuted] = useState(true);
+  const explainRef = useRef<HTMLVideoElement | null>(null);
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
   const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
   const pagesStripRef = useRef<HTMLDivElement | null>(null);
@@ -387,6 +400,40 @@ const Landing = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxSrc, videoZoom, infoZoom]);
 
+  // When the explanation video appears, try to play it with sound. Browsers
+  // only allow this after a user gesture (e.g. the band arrow); if blocked,
+  // fall back to muted playback and let the big audio button unmute it.
+  useEffect(() => {
+    if (bandIndex !== 1) {
+      setExplainMuted(true);
+      return;
+    }
+    const video = explainRef.current;
+    if (!video) return;
+    video.muted = false;
+    video.volume = 1;
+    video
+      .play()
+      .then(() => setExplainMuted(false))
+      .catch(() => {
+        video.muted = true;
+        setExplainMuted(true);
+        video.play().catch(() => {});
+      });
+  }, [bandIndex]);
+
+  const toggleExplainAudio = () => {
+    const video = explainRef.current;
+    if (!video) return;
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    if (!nextMuted) {
+      video.volume = 1;
+      if (video.paused) video.play().catch(() => {});
+    }
+    setExplainMuted(nextMuted);
+  };
+
   const selectChapter = (index: number) => {
     setChapterIndex(index);
     pagesStripRef.current?.scrollTo({ left: 0, behavior: "smooth" });
@@ -426,6 +473,24 @@ const Landing = () => {
 
   const scrollToMethod = () => {
     document.getElementById("method")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const journeyThumb = (i: number) => {
+    const stage = journeyStages[i];
+    return (
+      <button
+        key={stage.title}
+        className={`vl-journey-thumb${i === journeyIndex ? " vl-journey-thumb--active" : ""}`}
+        onClick={() => setJourneyIndex(i)}
+        aria-label={`${stage.title} — ${stage.hours}`}
+      >
+        <span className="vl-journey-thumb-img">{journeyImg(stage.img, `${stage.title} — ${stage.hours}`)}</span>
+        <span className="vl-journey-thumb-label">
+          {stage.color && <span className="vl-belt-dot" style={{ background: stage.color }} />}
+          {stage.title}
+        </span>
+      </button>
+    );
   };
 
   return (
@@ -574,6 +639,7 @@ const Landing = () => {
           ) : (
             <video
               key="explain"
+              ref={explainRef}
               src={
                 typeof window !== "undefined" && window.innerWidth >= 900
                   ? "/website_video_compress.mp4"
@@ -585,6 +651,26 @@ const Landing = () => {
               playsInline
               onEnded={() => setBandIndex(0)}
             />
+          )}
+          {bandIndex === 1 && (
+            <button
+              className={`vl-band-audio${explainMuted ? " vl-band-audio--muted" : ""}`}
+              aria-label={explainMuted ? "Unmute video" : "Mute video"}
+              onClick={toggleExplainAudio}
+            >
+              {explainMuted ? (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                  <path d="M16.6 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                  <path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z" />
+                  <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                </svg>
+              )}
+            </button>
           )}
           {bandIndex === 0 ? (
             <p>
@@ -804,37 +890,60 @@ const Landing = () => {
             Four belts. <em>Measured</em> progress.
           </h2>
         </div>
-        <div className="vl-belts">
-          {journeyStages.map((stage) => (
-            <div key={stage.title} className="vl-belt vl-reveal">
-              <button
-                className="vl-belt-photo"
-                onClick={() =>
-                  setInfoZoom({
-                    src: journeyZoomSrc(stage.img),
-                    title: `${stage.title} — ${stage.hours}`,
-                    text: stage.zoom,
-                  })
-                }
-                aria-label={`Enlarge: ${stage.title}, ${stage.hours}`}
-              >
-                {typeof stage.img === "string" ? (
-                  <img src={stage.img} alt={`${stage.title} — ${stage.hours}`} loading="lazy" />
+        <div className="vl-journey-slide vl-reveal">
+          <button
+            className="vl-journey-main"
+            onClick={() =>
+              setInfoZoom({
+                src: journeyZoomSrc(journeyStages[journeyIndex].img),
+                title: `${journeyStages[journeyIndex].title} — ${journeyStages[journeyIndex].hours}`,
+                text: journeyStages[journeyIndex].zoom,
+              })
+            }
+            aria-label={`Enlarge: ${journeyStages[journeyIndex].title}, ${journeyStages[journeyIndex].hours}`}
+          >
+            {journeyImg(
+              journeyStages[journeyIndex].img,
+              `${journeyStages[journeyIndex].title} — ${journeyStages[journeyIndex].hours}`
+            )}
+          </button>
+          <div className="vl-journey-caption">
+            <h3>
+              {journeyStages[journeyIndex].color && (
+                <span className="vl-belt-dot" style={{ background: journeyStages[journeyIndex].color }} />
+              )}
+              {journeyStages[journeyIndex].title}
+            </h3>
+            <span className="vl-belt-hours">{journeyStages[journeyIndex].hours}</span>
+            <p>{journeyStages[journeyIndex].focus}</p>
+          </div>
+          <div className="vl-journey-strip">
+            <button
+              className="vl-journey-arrow"
+              aria-label="Previous stage"
+              onClick={() => setJourneyIndex((journeyIndex + journeyStages.length - 1) % journeyStages.length)}
+            >
+              ‹
+            </button>
+            <div className="vl-journey-thumbs">
+              {[0, null, 5].map((slot) =>
+                slot === null ? (
+                  <div key="belts" className="vl-journey-belt-group">
+                    {[1, 2, 3, 4].map((i) => journeyThumb(i))}
+                  </div>
                 ) : (
-                  <picture>
-                    <source media="(min-width: 768px)" srcSet={stage.img.desktop} />
-                    <img src={stage.img.mobile} alt={`${stage.title} — ${stage.hours}`} loading="lazy" />
-                  </picture>
-                )}
-              </button>
-              <h3>
-                {stage.color && <span className="vl-belt-dot" style={{ background: stage.color }} />}
-                {stage.title}
-              </h3>
-              <span className="vl-belt-hours">{stage.hours}</span>
-              <p>{stage.focus}</p>
+                  journeyThumb(slot)
+                )
+              )}
             </div>
-          ))}
+            <button
+              className="vl-journey-arrow"
+              aria-label="Next stage"
+              onClick={() => setJourneyIndex((journeyIndex + 1) % journeyStages.length)}
+            >
+              ›
+            </button>
+          </div>
         </div>
         <div className="vl-journey-facts">
           <div className="vl-journey-fact vl-reveal">

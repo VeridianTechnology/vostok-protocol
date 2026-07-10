@@ -724,6 +724,49 @@ body:has(.vl) {
   left: 0;
 }
 
+/* big audio toggle for the explanation video — sits above the native controls */
+.vl-band-audio {
+  position: absolute;
+  right: clamp(14px, 2.5vw, 28px);
+  bottom: clamp(58px, 9vw, 78px);
+  z-index: 2;
+  width: clamp(56px, 8vw, 72px);
+  height: clamp(56px, 8vw, 72px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  background: rgba(10, 14, 24, 0.62);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.vl-band-audio svg {
+  width: 55%;
+  height: 55%;
+}
+
+.vl-band-audio:hover {
+  background: rgba(10, 14, 24, 0.85);
+  transform: scale(1.05);
+}
+
+.vl-band-audio--muted {
+  animation: vl-audio-pulse 2s ease-in-out infinite;
+}
+
+@keyframes vl-audio-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 255, 255, 0);
+  }
+}
+
 .vl-decay-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -976,45 +1019,154 @@ body:has(.vl) {
   color: var(--slate);
 }
 
-/* ---------- journey belts ---------- */
+/* ---------- journey slide ---------- */
 
-.vl-belts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(16px, 2vw, 26px);
+.vl-journey-slide {
   margin-top: 10px;
 }
 
-.vl-belt {
-  border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
-  padding: 26px 22px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.vl-belt-photo {
+.vl-journey-main {
   display: block;
-  width: 100%;
-  aspect-ratio: 1 / 1;
+  width: min(100%, 440px);
+  margin: 0 auto;
   padding: 0;
   border: 1px solid var(--hairline);
   background: #fff;
   overflow: hidden;
   cursor: zoom-in;
-  margin-bottom: 6px;
 }
 
-.vl-belt-photo img {
+.vl-journey-main img {
+  display: block;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   transition: transform 0.5s ease;
 }
 
-.vl-belt-photo:hover img {
-  transform: scale(1.05);
+.vl-journey-main:hover img {
+  transform: scale(1.03);
+}
+
+.vl-journey-caption {
+  text-align: center;
+  margin: 18px auto 28px;
+  max-width: 52ch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.vl-journey-caption h3 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.vl-journey-caption p {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.vl-journey-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(8px, 1.6vw, 18px);
+}
+
+.vl-journey-arrow {
+  flex: none;
+  width: 44px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vl-journey-arrow:hover {
+  background: #fff;
+}
+
+.vl-journey-thumbs {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  padding: 4px 2px;
+}
+
+.vl-journey-belt-group {
+  display: flex;
+  gap: clamp(8px, 1.2vw, 14px);
+  padding: 0 clamp(10px, 1.8vw, 20px);
+  margin: 0 clamp(10px, 1.8vw, 20px);
+  border-left: 1px solid var(--hairline);
+  border-right: 1px solid var(--hairline);
+}
+
+.vl-journey-thumb {
+  flex: none;
+  width: clamp(64px, 8.5vw, 104px);
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+
+.vl-journey-thumb-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  background: #fff;
+}
+
+.vl-journey-thumb-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.vl-journey-thumb:hover .vl-journey-thumb-img img {
+  transform: scale(1.06);
+}
+
+.vl-journey-thumb--active .vl-journey-thumb-img {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.vl-journey-thumb-label {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+}
+
+.vl-journey-thumb-label .vl-belt-dot {
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
 }
 
 .vl-belt-dot {
@@ -1025,25 +1177,12 @@ body:has(.vl) {
   margin-right: 9px;
 }
 
-.vl-belt h3 {
-  font-size: 22px;
-  font-weight: 500;
-  margin: 0;
-}
-
 .vl-belt-hours {
   font-size: 12.5px;
   font-weight: 700;
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--ink);
-}
-
-.vl-belt p {
-  font-size: 15.5px;
-  line-height: 1.5;
-  color: var(--ink-soft);
-  margin: 0;
 }
 
 .vl-journey-facts {
@@ -1331,10 +1470,6 @@ body:has(.vl) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .vl-belts {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .vl-book-quotes,
   .vl-journey-facts {
     grid-template-columns: 1fr;
@@ -1411,8 +1546,42 @@ body:has(.vl) {
     grid-template-columns: 1fr;
   }
 
-  .vl-belts {
-    grid-template-columns: 1fr;
+  .vl-journey-strip {
+    gap: 4px;
+  }
+
+  .vl-journey-arrow {
+    width: 28px;
+    height: 46px;
+    font-size: 19px;
+  }
+
+  .vl-journey-thumb {
+    width: 40px;
+    gap: 5px;
+  }
+
+  .vl-journey-thumbs {
+    padding: 2px 0;
+  }
+
+  .vl-journey-thumb-label {
+    font-size: 8.5px;
+    letter-spacing: 0.04em;
+  }
+
+  .vl-journey-thumb-label .vl-belt-dot {
+    display: none;
+  }
+
+  .vl-journey-belt-group {
+    gap: 3px;
+    padding: 0 5px;
+    margin: 0 5px;
+  }
+
+  .vl-band-audio {
+    bottom: 52px;
   }
 
   .vl-result {
