@@ -131,6 +131,53 @@ const results = [
   },
 ];
 
+// The reading list beside the results grid — external evidence that the
+// premise (attractiveness matters, faces respond to training) holds up.
+const evidenceArticles = [
+  {
+    title: "Do facial exercises actually work?",
+    source: "Quora",
+    note: "The eternal thread — skeptics and the converted, arguing it out.",
+    href: "https://www.quora.com/search?q=do%20facial%20exercises%20actually%20work",
+  },
+  {
+    title: "Why are some faces more symmetrical?",
+    source: "Quora",
+    note: "Genetics deals the hand; the answers argue how it's played.",
+    href: "https://www.quora.com/search?q=why%20are%20some%20faces%20more%20symmetrical",
+  },
+  {
+    title: "Koinophilia",
+    source: "Wikipedia",
+    note: "Why average faces read as beautiful — the mechanism.",
+    href: "https://en.wikipedia.org/wiki/Koinophilia",
+  },
+  {
+    title: "Neoteny",
+    source: "Wikipedia",
+    note: "Youthful features, and why keeping them wins.",
+    href: "https://en.wikipedia.org/wiki/Neoteny",
+  },
+  {
+    title: "Facial symmetry",
+    source: "Wikipedia",
+    note: "Symmetry as an honest signal of health and fitness.",
+    href: "https://en.wikipedia.org/wiki/Facial_symmetry",
+  },
+  {
+    title: "Halo effect",
+    source: "Wikipedia",
+    note: "Attractive is assumed good, smart, and trustworthy.",
+    href: "https://en.wikipedia.org/wiki/Halo_effect",
+  },
+  {
+    title: "Physical attractiveness stereotype",
+    source: "Wikipedia",
+    note: "What beauty is worth socially — measured, repeatedly.",
+    href: "https://en.wikipedia.org/wiki/Physical_attractiveness_stereotype",
+  },
+];
+
 const bookQuotes = [
   {
     quote: "The Butt-Jaw Connection: the chain that runs from your hamstrings to your jawline.",
@@ -143,6 +190,146 @@ const bookQuotes = [
   {
     quote: "The five historical nose types — Greek, Roman, Nubian, Snub, Hawk — and how to work each one.",
     source: "Chapter 7.2",
+  },
+];
+
+// FAQ — Nyx answers in her own voice; lightly edited, never sanitized.
+const faqs: { q: string; sub?: string; a: string }[] = [
+  {
+    q: "What even is this?",
+    sub: "Is this a fitness guide or a face hack?",
+    a: "Both. It's the most definitive looksmaxxing guide on the internet to date — packed with exercises and special routines, tested across races, ages, young and old, with definitive results on what works and what doesn't. Pieced together from countless Instagram shorts, reels, and research done with AI. It took a long time, and it works — it took my face from a 6.5 to a 9.5.",
+  },
+  {
+    q: "Does this stuff actually work, bro?",
+    sub: "Or is this just more TikTok cope?",
+    a: "I love doubtful questions like this. It 100% works. Sometimes it'll just make your face a little puffier because the muscles are sore — but do two hours a day and you'll wake up the next morning to definitive changes. I love watching my face get better and better every day. And everyone treats me better, every single day.",
+  },
+  {
+    q: "Fr tho, how long until I see results?",
+    sub: "A week? A month? Be honest.",
+    a: "It's based on the hours you put in. At four to five hours a week max, after about 80 hours I personally found my phone no longer recognized my face. It's taken me a year and a half (plus the research) to pass 100 hours, but the results have been massive — in my dating life, my success, and how I'm perceived. Try every chapter for one hour each. If you don't see improvement after that — a ten-hour commitment — then this book is not for you.",
+  },
+  {
+    q: "What if I just don't like it?",
+    sub: "Can I get my bread back?",
+    a: "Nope. No refunds. My goal is to drop the hardest guide of all time, make my bread, and continue on to other work. Don't want to change your life? Don't want to take the number one asset you own — not your car, not your 401k, not your watch, but your face — and improve it? Then this is not for you.",
+  },
+  {
+    q: "How does this voodoo even work?",
+    sub: "Explain it to me like I'm 5.",
+    a: "Face like body. Body build muscle. Face build muscle. Face sit correctly, face look good. Very, very good.",
+  },
+  {
+    q: "Is this for dudes only, or can girls do it too?",
+    a: "It honestly works a little better for women of age — but really, it works for anyone.",
+  },
+  {
+    q: "Do I need to buy a bunch of weird gadgets?",
+    sub: "Or can I just start?",
+    a: "A face roller and a gua sha if you want, but those only appear in the ninth chapter. Just get a little face oil — coconut, almond, or grapeseed — clean your hands, grab a mirror and a timer, and you're good to go.",
+  },
+  {
+    q: "Is this, like, medical advice?",
+    sub: "Are you a doctor?",
+    a: "I am NOT a doctor and this is not medical advice. If you have a condition, please go get it checked out. If you have braces or skin issues — particularly on the face — definitely consult a dermatologist or dentist before doing some of these exercises.",
+  },
+  {
+    q: "Will this make me look weird or overdone?",
+    sub: "I don't wanna look like a PS2 character.",
+    a: "Not even close. It makes the face look more natural and more attractive — something surgeons can't do. Surgery can definitely improve a face, but I recommend doing this for months before any procedure, to help the face sit first.",
+  },
+  {
+    q: "How much time do I need to commit per day?",
+    sub: "I'm not trying to make this my personality.",
+    a: "An hour or two a week will bring positive results.",
+  },
+  {
+    q: "What if I skip a day?",
+    sub: "Is all my progress cooked?",
+    a: "I did no face routines for six months and the progress stayed with me. Hard to say definitively, but for the most part it's lifelong — just like any other muscle.",
+  },
+  {
+    q: "Can I just do the exercises I like and skip the rest?",
+    a: "Do whatever you want — it's a complete guide.",
+  },
+  {
+    q: "My face hurts after one exercise. Did I break it?",
+    a: "Of course not. Take a breather and relax. Take some rest days.",
+  },
+  {
+    q: "What's the most important exercise I shouldn't skip?",
+    a: "People's cheeks and side-jaw muscles seem to be pretty weak nowadays.",
+  },
+  {
+    q: "Do I need to be in a gym, or can I do this in my room?",
+    a: "You won't want to do this routine in public, lol — it can look quite silly.",
+  },
+  {
+    q: "Is there a best time of day to do this?",
+    sub: "Morning vs. night?",
+    a: "No difference.",
+  },
+  {
+    q: "Do I need to take “before” pics?",
+    sub: "Lowkey don't wanna.",
+    a: "I didn't, and I regret it — if only to show my progress. Take them.",
+  },
+  {
+    q: "Do I need to change my diet for this to work?",
+    a: "This is not a guide on diet.",
+  },
+  {
+    q: "Can I still get cosmetic surgery after doing this?",
+    a: "Always consult with your surgeon, but generally yes.",
+  },
+  {
+    q: "What's your source for all this?",
+    sub: "Did you just make it up?",
+    a: "Trial and error.",
+  },
+  {
+    q: "Why should I listen to you?",
+    sub: "What's your background?",
+    a: "I'm one of the most competent looksmaxxers out there — sophisticated AI models, personal experience, and the results of others, distilled into the correct methods.",
+  },
+  {
+    q: "Is there a secret or a hack to make it work faster?",
+    a: "Eat less sugar, don't drink alcohol or smoke cigarettes, brush and floss your teeth. Basically: take care of yourself. But no — there are no hacks here.",
+  },
+  {
+    q: "What's the biggest mistake people make?",
+    a: "Thinking the face doesn't change. It changes rapidly when worked.",
+  },
+  {
+    q: "My jaw clicks when I do this. Is that a W or an L?",
+    a: "Big L. Never let the jaw click. Relax it and don't overdo it — I had it happen a few times early on as well.",
+  },
+  {
+    q: "What if I'm already decent-looking?",
+    sub: "Will this still do anything?",
+    a: "Absolutely. It takes your look to the next level — that's what this guide is about.",
+  },
+  {
+    q: "Can I listen to music or watch a show while I do this?",
+    a: "I do all the time. I sort of get into a trance.",
+  },
+  {
+    q: "What's the most slept-on exercise in the whole guide?",
+    a: "Anything forehead-related. A lot of women think it'll make their forehead bigger, when the opposite happens with the fat.",
+  },
+  {
+    q: "Is this just for your face, or does it help your body too?",
+    a: "This is purely a guide for the face.",
+  },
+  {
+    q: "Will my face snap back to normal if I stop?",
+    a: "The improvements will linger. If a certain part of your face ever feels overdone, just stop working that area.",
+  },
+  {
+    q: "Okay, but is this all just massive cope?",
+    sub: "Give it to me straight.",
+    a: "This has been the biggest life-changing thing I've done. It's gotten me hotter women — women who were previously wayyyy out of my league. It's made me more popular and given me a social confidence that's hard to describe. Wherever I go, I'm generally the best-looking guy in the room — at least in the face — thanks to this guide alone. I can't guarantee the same results for everyone; if you're chopped, you're chopped. But this is the only thing that will help.",
   },
 ];
 
@@ -249,7 +436,8 @@ const Landing = () => {
   const [fatIndex, setFatIndex] = useState(0);
   const [chapterIndex, setChapterIndex] = useState(0);
   const [bandIndex, setBandIndex] = useState(0);
-  const [journeyIndex, setJourneyIndex] = useState(0);
+  // default to "After" — lead with the destination
+  const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
   const [explainMuted, setExplainMuted] = useState(true);
   const explainRef = useRef<HTMLVideoElement | null>(null);
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
@@ -512,6 +700,9 @@ const Landing = () => {
           <Link className="vl-bar-link" to="/radio">
             Radio
           </Link>
+          <Link className="vl-bar-link" to="/agora">
+            Agora
+          </Link>
           <a
             className="vl-bar-buy"
             href={BUY_URL}
@@ -531,6 +722,9 @@ const Landing = () => {
           <span className="vl-topnav-tab vl-topnav-tab--active">The Method</span>
           <Link className="vl-topnav-tab" to="/radio">
             Radio
+          </Link>
+          <Link className="vl-topnav-tab" to="/agora">
+            Agora
           </Link>
         </nav>
         <h1 className="vl-hero-title">
@@ -799,17 +993,71 @@ const Landing = () => {
             Trained, not <em>inherited.</em>
           </h2>
         </div>
-        <div className="vl-results-grid">
-          {results.map((result, i) => (
-            <div key={result.title} className="vl-result vl-reveal">
-              <div className="vl-result-img">
-                <img src={result.img} alt={result.title} loading="lazy" />
+        <div className="vl-results-layout">
+          <div className="vl-results-grid">
+            {results.map((result, i) => (
+              <div key={result.title} className="vl-result vl-reveal">
+                <div className="vl-result-img">
+                  <img src={result.img} alt={result.title} loading="lazy" />
+                </div>
+                <span className="vl-result-num">{String(i + 1).padStart(2, "0")}</span>
+                <h3>{result.title}</h3>
+                <p>{result.text}</p>
               </div>
-              <span className="vl-result-num">{String(i + 1).padStart(2, "0")}</span>
-              <h3>{result.title}</h3>
-              <p>{result.text}</p>
-            </div>
-          ))}
+            ))}
+          </div>
+          <aside className="vl-evidence vl-reveal">
+            <p className="vl-evidence-kicker">The Evidence</p>
+            <h3>Articles that prove attractiveness matters.</h3>
+            <p className="vl-evidence-sub">
+              Don't take our word for it — the literature has been saying this for decades.
+            </p>
+            <ul>
+              {evidenceArticles.map((article) => (
+                <li key={article.title}>
+                  <a href={article.href} target="_blank" rel="noopener noreferrer">
+                    <span className="vl-evidence-source">{article.source}</span>
+                    <span className="vl-evidence-title">{article.title}</span>
+                    <span className="vl-evidence-note">{article.note}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        </div>
+
+        {/* Signal Coherence — the concept behind the results */}
+        <div className="vl-signal vl-reveal">
+          <div className="vl-signal-lead">
+            <p className="vl-kicker">Signal Coherence</p>
+            <h3>
+              A face is not a collection of features. It's a <em>transmission.</em>
+            </h3>
+          </div>
+          <div className="vl-signal-body">
+            <p>
+              Facial aesthetics research has a name for a quiet phenomenon — <strong>structural
+              legibility</strong>: a face becomes easier to read, easier to trust, easier to find
+              attractive not because any single feature improved dramatically, but because the whole
+              system starts broadcasting one coherent signal. Your face before wasn't a bad face. It
+              was a good face not fully online. Training brings the hardware into alignment with the
+              signal it was always supposed to send.
+            </p>
+            <p>
+              Vostok's name for that moment is <strong>Signal Coherence</strong> — when a face stops
+              being a collection of features and becomes a transmission. It's why people respond
+              differently to you in person before they can explain why. It's why photos never fully
+              capture it. It's why it feels like magic: the change isn't in any one measurable place,
+              it's in the relationship between all the parts. The jaw, the neck, the eyes, the resting
+              expression — trained and coordinated, the face broadcasts presence instead of just
+              existing in the frame.
+            </p>
+            <p>
+              Which is also why it's nearly impossible to fake in a photo, and nearly impossible to
+              deny in person. Signal Coherence isn't a feature you can point at. It's the output of
+              the whole system — and it's what the hundred hours are for.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -899,8 +1147,12 @@ const Landing = () => {
         <div className="vl-reveal">
           <p className="vl-kicker">The Journey</p>
           <h2 className="vl-h2">
-            Four belts. <em>Measured</em> progress.
+            One hundred hours. <em>Measured</em> progress.
           </h2>
+          <p className="vl-lead">
+            Vostok counts in hours, not luck. Twenty hours in, the face wakes up; a hundred hours in,
+            it's rebuilt. The belts are just mile markers along the way.
+          </p>
         </div>
         <div className="vl-journey-slide vl-reveal">
           <button
@@ -1005,6 +1257,40 @@ const Landing = () => {
           <a className="vl-substack-link" href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer">
             Read the Substack
           </a>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="vl-section" id="faq">
+        <div className="vl-faq-layout">
+          <div className="vl-faq-intro vl-reveal">
+            <p className="vl-kicker">The FAQ</p>
+            <h2 className="vl-h2">
+              Asked, <em>answered.</em>
+            </h2>
+            <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
+            <figure className="vl-faq-portrait">
+              <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
+              <figcaption>Nyx — the one answering. Unedited.</figcaption>
+            </figure>
+          </div>
+          <div className="vl-faq vl-reveal">
+          {faqs.map((faq, i) => (
+            <details key={faq.q} className="vl-faq-item">
+              <summary>
+                <span className="vl-faq-num">{String(i + 1).padStart(2, "0")}</span>
+                <span className="vl-faq-q">
+                  {faq.q}
+                  {faq.sub && <em> {faq.sub}</em>}
+                </span>
+                <span className="vl-faq-mark" aria-hidden="true">
+                  +
+                </span>
+              </summary>
+              <p>{faq.a}</p>
+            </details>
+          ))}
+          </div>
         </div>
       </section>
 

@@ -913,11 +913,107 @@ a.vl-topnav-tab:hover {
 
 /* ---------- results grid ---------- */
 
+.vl-results-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(280px, 26vw, 340px);
+  gap: clamp(28px, 4vw, 56px);
+  align-items: start;
+  margin-top: 14px;
+}
+
 .vl-results-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 0 clamp(28px, 4vw, 56px);
   margin-top: 14px;
+}
+
+.vl-results-layout .vl-results-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 0;
+}
+
+/* ---------- evidence rail ---------- */
+
+.vl-evidence {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  padding: clamp(24px, 2.6vw, 34px);
+  position: sticky;
+  top: 84px;
+}
+
+.vl-evidence-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--slate);
+  margin: 0 0 12px;
+}
+
+.vl-evidence h3 {
+  font-size: clamp(21px, 1.8vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  margin: 0 0 10px;
+}
+
+.vl-evidence-sub {
+  font-size: 14px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--slate);
+  margin: 0 0 6px;
+}
+
+.vl-evidence ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.vl-evidence li {
+  border-top: 1px solid var(--hairline);
+}
+
+.vl-evidence li:first-child {
+  border-top: none;
+}
+
+.vl-evidence li a {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px 0;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.vl-evidence-source {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.vl-evidence-title {
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.25;
+  transition: color 0.2s ease;
+}
+
+.vl-evidence li a:hover .vl-evidence-title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.vl-evidence-note {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-soft);
 }
 
 .vl-result {
@@ -1066,6 +1162,167 @@ a.vl-topnav-tab:hover {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: var(--slate);
+}
+
+/* ---------- signal coherence ---------- */
+
+.vl-signal {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4vw, 64px);
+  margin-top: clamp(44px, 6vh, 72px);
+  padding: clamp(30px, 4vw, 54px);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.vl-signal-lead h3 {
+  font-size: clamp(26px, 2.6vw, 38px);
+  font-weight: 400;
+  line-height: 1.18;
+  margin: 0;
+}
+
+.vl-signal-lead h3 em {
+  font-style: italic;
+}
+
+.vl-signal-body p {
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
+}
+
+.vl-signal-body p:last-child {
+  margin-bottom: 0;
+}
+
+.vl-signal-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .vl-signal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- FAQ ---------- */
+
+.vl-faq-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 5fr) minmax(0, 7fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+.vl-faq-intro {
+  position: sticky;
+  top: 84px;
+}
+
+.vl-faq-portrait {
+  margin: 28px 0 0;
+  max-width: 380px;
+  border: 1px solid var(--hairline);
+  background: #fff;
+}
+
+.vl-faq-portrait img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 9 / 10;
+  object-fit: cover;
+}
+
+.vl-faq-portrait figcaption {
+  padding: 12px 14px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.vl-faq {
+  margin-top: 18px;
+  max-height: 74vh;
+  overflow-y: auto;
+  overscroll-behavior: auto;
+  padding-right: 16px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  scrollbar-width: thin;
+}
+
+.vl-faq-item {
+  border-bottom: 1px solid var(--hairline);
+}
+
+.vl-faq-item summary {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(14px, 2vw, 24px);
+  padding: 18px 4px;
+  cursor: pointer;
+  list-style: none;
+  transition: background 0.2s ease;
+}
+
+.vl-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.vl-faq-item summary:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.vl-faq-num {
+  flex: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--slate);
+}
+
+.vl-faq-q {
+  flex: 1;
+  font-size: clamp(17px, 1.6vw, 21px);
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+.vl-faq-q em {
+  font-weight: 400;
+  font-style: italic;
+  color: var(--slate);
+}
+
+.vl-faq-mark {
+  flex: none;
+  align-self: center;
+  font-size: 22px;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--slate);
+  transition: transform 0.25s ease;
+}
+
+.vl-faq-item[open] .vl-faq-mark {
+  transform: rotate(45deg);
+  color: var(--ink);
+}
+
+.vl-faq-item > p {
+  margin: 0;
+  padding: 2px 4px 22px calc(clamp(14px, 2vw, 24px) + 26px);
+  max-width: 68ch;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-soft);
 }
 
 /* ---------- journey slide ---------- */
@@ -1519,6 +1776,31 @@ a.vl-topnav-tab:hover {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .vl-results-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-evidence {
+    position: static;
+  }
+
+  .vl-faq-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .vl-faq-intro {
+    position: static;
+  }
+
+  .vl-faq-portrait {
+    max-width: 300px;
+  }
+
+  .vl-faq {
+    max-height: 62vh;
+    padding-right: 10px;
+  }
+
   .vl-book-quotes,
   .vl-journey-facts {
     grid-template-columns: 1fr;
@@ -1541,10 +1823,18 @@ a.vl-topnav-tab:hover {
     display: none;
   }
 
-  /* keep only the Radio tab in the corner — the centered title needs the room */
+  /* corner tabs stack vertically — the centered title needs the room */
   .vl-topnav {
     top: 14px;
     right: 14px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .vl-topnav-tab {
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
   }
 
   .vl-topnav-tab--active {
@@ -1605,7 +1895,8 @@ a.vl-topnav-tab:hover {
 
 @media (max-width: 560px) {
   .vl-results-grid,
-  .vl-decay-grid {
+  .vl-decay-grid,
+  .vl-results-layout .vl-results-grid {
     grid-template-columns: 1fr;
   }
 

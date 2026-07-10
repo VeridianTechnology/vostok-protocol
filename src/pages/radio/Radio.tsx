@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import SiteNav from "@/components/SiteNav";
 import { radioTracks, trackSrc } from "./tracks";
 import "../landing.css";
 import "./radio.css";
@@ -18,18 +19,27 @@ const Radio = () => {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const tilesRef = useRef<HTMLDivElement | null>(null);
+  const scrollDotRef = useRef<HTMLSpanElement | null>(null);
   const startedRef = useRef(false);
 
   const track = radioTracks[trackIndex];
 
-  const selectTrack = useCallback((index: number) => {
-    const next = ((index % radioTracks.length) + radioTracks.length) % radioTracks.length;
-    startedRef.current = true;
-    setTrackIndex(next);
-    setCurrentTime(0);
-    setDuration(0);
-    setPlaying(true);
-  }, []);
+  const selectTrack = useCallback(
+    (index: number) => {
+      const next = ((index % radioTracks.length) + radioTracks.length) % radioTracks.length;
+      startedRef.current = true;
+      if (next === trackIndex) {
+        // same tile — the index effect won't fire, so play directly
+        audioRef.current?.play().catch(() => {});
+        return;
+      }
+      setTrackIndex(next);
+      setCurrentTime(0);
+      setDuration(0);
+      setPlaying(true);
+    },
+    [trackIndex]
+  );
 
   // Load + (auto)play whenever the track changes after first interaction
   useEffect(() => {
@@ -38,6 +48,67 @@ const Radio = () => {
     audio.load();
     audio.play().catch(() => setPlaying(false));
   }, [trackIndex]);
+
+  // Weighted scroll on the tile pane: wheel input moves a target position and
+  // the pane eases toward it each frame, so the list hesitates just slightly
+  // instead of snapping. Touch and scrollbar dragging stay fully native.
+  useEffect(() => {
+    const pane = tilesRef.current;
+    if (!pane) return undefined;
+    let target = pane.scrollTop;
+    let raf = 0;
+
+    const animate = () => {
+      const diff = target - pane.scrollTop;
+      if (Math.abs(diff) < 0.5) {
+        pane.scrollTop = target;
+        raf = 0;
+        return;
+      }
+      pane.scrollTop += diff * 0.16;
+      raf = requestAnimationFrame(animate);
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      const delta = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY;
+      const max = pane.scrollHeight - pane.clientHeight;
+      const next = Math.max(0, Math.min(max, target + delta));
+      // already resting at an edge — hand the wheel back to the page
+      if (next === target && (target <= 0 || target >= max)) return;
+      event.preventDefault();
+      target = next;
+      if (!raf) raf = requestAnimationFrame(animate);
+    };
+
+    // keep the target honest when the pane scrolls by other means
+    const onScroll = () => {
+      if (!raf) target = pane.scrollTop;
+    };
+
+    pane.addEventListener("wheel", onWheel, { passive: false });
+    pane.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      pane.removeEventListener("wheel", onWheel);
+      pane.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Scroll-position dot: the native scrollbar is hidden, so a white dot on a
+  // hairline rail shows where you are in the list.
+  useEffect(() => {
+    const pane = tilesRef.current;
+    const dot = scrollDotRef.current;
+    if (!pane || !dot) return undefined;
+    const update = () => {
+      const max = pane.scrollHeight - pane.clientHeight;
+      const frac = max > 0 ? pane.scrollTop / max : 0;
+      dot.style.top = `calc(${(frac * 100).toFixed(3)}% - ${(frac * 14).toFixed(2)}px)`;
+    };
+    update();
+    pane.addEventListener("scroll", update, { passive: true });
+    return () => pane.removeEventListener("scroll", update);
+  }, []);
 
   // Keep the active tile in view inside the tile pane (never scroll the page)
   useEffect(() => {
@@ -68,20 +139,13 @@ const Radio = () => {
 
   return (
     <div className="vl vr">
-      <header className="vr-nav">
-        <Link className="vr-nav-mark" to="/">
-          VØSTOK
-        </Link>
-        <nav className="vr-nav-tabs">
-          <Link className="vr-nav-tab" to="/">
-            The Method
-          </Link>
-          <span className="vr-nav-tab vr-nav-tab--active">Radio</span>
-        </nav>
-      </header>
+      <SiteNav suffix="RADIO" active="Radio" />
 
       <section className="vl-section vr-head">
-        <p className="vl-kicker">Radio Vostok</p>
+        <p className="vl-kicker vr-kicker">
+          Radio Vostok
+          <img className="vr-kicker-logo" src="/logo/logo-mark.png" alt="" aria-hidden="true" />
+        </p>
         <h1 className="vl-h2">
           The station of the <em>restructured.</em>
         </h1>
@@ -148,19 +212,24 @@ const Radio = () => {
           </div>
 
           {/* Tile selection */}
-          <div className="vr-tiles" ref={tilesRef}>
-            {radioTracks.map((t, i) => (
-              <button
-                key={t.id}
-                className={`vr-tile${i === trackIndex ? " vr-tile--active" : ""}`}
-                onClick={() => selectTrack(i)}
-                aria-label={`Play track ${t.id}: ${t.title}`}
-                title={t.title}
-              >
-                <span className="vr-tile-num">{t.id}</span>
-                <span className="vr-tile-title">{t.title}</span>
-              </button>
-            ))}
+          <div className="vr-tiles-wrap">
+            <div className="vr-tiles" ref={tilesRef}>
+              {radioTracks.map((t, i) => (
+                <button
+                  key={t.id}
+                  className={`vr-tile${i === trackIndex ? " vr-tile--active" : ""}`}
+                  onClick={() => selectTrack(i)}
+                  aria-label={`Play track ${t.id}: ${t.title}`}
+                  title={t.title}
+                >
+                  <span className="vr-tile-num">{t.id}</span>
+                  <span className="vr-tile-title">{t.title}</span>
+                </button>
+              ))}
+            </div>
+            <div className="vr-scroll-rail" aria-hidden="true">
+              <span className="vr-scroll-dot" ref={scrollDotRef} />
+            </div>
           </div>
         </div>
       </section>

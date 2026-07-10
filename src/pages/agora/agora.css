@@ -1,0 +1,156 @@
+/* ============================================================
+   Agora — Nyx's link collection. Same light editorial theme;
+   nav + footer styles come from radio.css (vr-), page-specific
+   classes are prefixed va-.
+   ============================================================ */
+
+.va {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.va-head {
+  padding-bottom: 0;
+}
+
+.va-head .vl-h2 {
+  margin-bottom: 18px;
+}
+
+.va-main {
+  padding-top: clamp(36px, 5vh, 56px);
+}
+
+/* ---------- category chips ---------- */
+
+.va-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.va-chip {
+  font-family: var(--serif);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.va-chip:hover {
+  background: #fff;
+  color: var(--ink);
+}
+
+.va-chip--active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.va-tagline {
+  font-size: clamp(16px, 1.4vw, 19px);
+  font-style: italic;
+  color: var(--slate);
+  margin: 0 0 26px;
+}
+
+/* ---------- link cards ---------- */
+
+.va-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: clamp(14px, 2vw, 22px);
+}
+
+.va-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: clamp(22px, 2.6vw, 32px);
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+a.va-card:hover {
+  background: #fff;
+  border-color: var(--slate);
+  transform: translateY(-2px);
+}
+
+.va-card h3 {
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.va-card-handle {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--slate);
+}
+
+.va-card p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0;
+  flex: 1;
+}
+
+.va-card-open {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--slate);
+  transition: color 0.2s ease;
+}
+
+a.va-card:hover .va-card-open {
+  color: var(--ink);
+}
+
+.va-card--reserved {
+  border-style: dashed;
+  background: transparent;
+}
+
+.va-card--reserved h3,
+.va-card--reserved p {
+  color: var(--slate);
+}
+
+/* ---------- creed ---------- */
+
+.va-creed {
+  margin-top: clamp(40px, 7vh, 80px);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 560px) {
+  .va-chip {
+    font-size: 11px;
+    padding: 8px 12px;
+    letter-spacing: 0.1em;
+  }
+
+  .va-grid {
+    grid-template-columns: 1fr;
+  }
+}
