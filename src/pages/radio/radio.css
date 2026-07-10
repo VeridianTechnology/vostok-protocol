@@ -259,13 +259,25 @@ a.vr-nav-tab:hover {
   display: none;
 }
 
-/* scroll-position rail: hairline track + white dot */
+/* scroll rail: hairline track + white dot — click to jump, drag to scrub */
 .vr-scroll-rail {
   position: absolute;
   top: 4px;
   bottom: 4px;
-  right: 5px;
+  right: 0;
+  width: 16px;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.vr-scroll-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
   width: 2px;
+  transform: translateX(-50%);
   background: var(--hairline);
 }
 
@@ -280,6 +292,12 @@ a.vr-nav-tab:hover {
   background: #fff;
   border: 1px solid var(--ink);
   box-shadow: 0 1px 5px rgba(26, 39, 68, 0.28);
+  cursor: grab;
+}
+
+.vr-scroll-rail:active .vr-scroll-dot {
+  cursor: grabbing;
+  transform: translateX(-50%) scale(1.15);
 }
 
 @media (min-width: 901px) {

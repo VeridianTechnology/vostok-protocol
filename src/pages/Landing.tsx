@@ -438,6 +438,27 @@ const Landing = () => {
   const [bandIndex, setBandIndex] = useState(0);
   // default to "After" — lead with the destination
   const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
+  // FAQ: one open question at a time; its answer crossfades in over the
+  // portrait (photo shows when nothing is open; × closes back to the photo)
+  const [faqIndex, setFaqIndex] = useState<number | null>(null);
+  const [faqFading, setFaqFading] = useState(false);
+  const faqTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (faqTimer.current) window.clearTimeout(faqTimer.current);
+    };
+  }, []);
+
+  const selectFaq = (index: number) => {
+    const target = index === faqIndex ? null : index;
+    setFaqFading(true);
+    if (faqTimer.current) window.clearTimeout(faqTimer.current);
+    faqTimer.current = window.setTimeout(() => {
+      setFaqIndex(target);
+      setFaqFading(false);
+    }, 200);
+  };
   const [explainMuted, setExplainMuted] = useState(true);
   const explainRef = useRef<HTMLVideoElement | null>(null);
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
@@ -728,6 +749,7 @@ const Landing = () => {
           </Link>
         </nav>
         <h1 className="vl-hero-title">
+          <img className="vl-hero-logo" src="/logo/logo-mark.png" alt="" aria-hidden="true" />
           VØSTOK
           <div className="vl-hero-subtitle">The Facial Restructuring Protocol</div>
         </h1>
@@ -1269,27 +1291,45 @@ const Landing = () => {
               Asked, <em>answered.</em>
             </h2>
             <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
-            <figure className="vl-faq-portrait">
-              <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
-              <figcaption>Nyx — the one answering. Unedited.</figcaption>
-            </figure>
+            <div className="vl-faq-frame">
+              <figure className="vl-faq-portrait">
+                <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
+                <figcaption>Nyx — the one answering. Unedited.</figcaption>
+              </figure>
+              <div
+                className={`vl-faq-answer${
+                  faqIndex !== null && !faqFading ? " vl-faq-answer--shown" : ""
+                }`}
+                aria-live="polite"
+              >
+                {faqIndex !== null && (
+                  <>
+                    <p className="vl-faq-answer-kicker">
+                      № {String(faqIndex + 1).padStart(2, "0")} · Nyx answers
+                    </p>
+                    <p className="vl-faq-answer-text">{faqs[faqIndex].a}</p>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
           <div className="vl-faq vl-reveal">
-          {faqs.map((faq, i) => (
-            <details key={faq.q} className="vl-faq-item">
-              <summary>
+            {faqs.map((faq, i) => (
+              <button
+                key={faq.q}
+                className={`vl-faq-item${i === faqIndex ? " vl-faq-item--open" : ""}`}
+                onClick={() => selectFaq(i)}
+              >
                 <span className="vl-faq-num">{String(i + 1).padStart(2, "0")}</span>
                 <span className="vl-faq-q">
                   {faq.q}
                   {faq.sub && <em> {faq.sub}</em>}
                 </span>
                 <span className="vl-faq-mark" aria-hidden="true">
-                  +
+                  {i === faqIndex ? "×" : "+"}
                 </span>
-              </summary>
-              <p>{faq.a}</p>
-            </details>
-          ))}
+              </button>
+            ))}
           </div>
         </div>
       </section>

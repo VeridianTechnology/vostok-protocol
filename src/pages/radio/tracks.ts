@@ -7,7 +7,11 @@ export type RadioTrack = {
   file: string;
 };
 
-export const trackSrc = (track: RadioTrack) => `/audio/radio/${encodeURIComponent(track.file)}`;
+// NFC normalization matters: git stores the filenames NFC (macOS precompose),
+// so the deployed URLs are NFC — while this file was generated from an NFD
+// directory listing. Without it, tracks with accented/Cyrillic names 404.
+export const trackSrc = (track: RadioTrack) =>
+  `/audio/radio/${encodeURIComponent(track.file.normalize("NFC"))}`;
 
 export const radioTracks: RadioTrack[] = [
   { id: "01", title: "BJ Lips - Love Potion", score: "10/10", file: "01_bj_lips.m4a" },
@@ -30,11 +34,11 @@ export const radioTracks: RadioTrack[] = [
   { id: "18", title: "Snow Strippers x Adore x Crystal Castles type beat - 'sleez'", score: "6/10", file: "18_Snow_Strippers_x_Adore_x_Crystal_Castles_type_beat_-_'sleez'.m4a" },
   { id: "19", title: "Charli xcx - b2b (qyurisuu remix)", score: "6/10", file: "19_Charli_xcx_-_b2b_(qyurisuu_remix).m4a" },
   { id: "20", title: "2000 (slowed)", score: "7/10", file: "20_2000_(slowed).m4a" },
-  { id: "21&", title: "Schleini - Liebe (Techno)", score: "8/10", file: "21&_Schleini_-_Liebe_(Techno).m4a" },
+  { id: "21", title: "Schleini - Liebe (Techno)", score: "8/10", file: "21&_Schleini_-_Liebe_(Techno).m4a" },
   { id: "22", title: "TENSA (Ultra Slowed)", score: "10/10", file: "22_TENSA_(Ultra_Slowed).m4a" },
-  { id: "23&", title: "Big Boogie - Kush Breath", score: "9/10", file: "23&_Big_Boogie_-_Kush_Breath_(Official_Music_Video).m4a" },
+  { id: "23", title: "Big Boogie - Kush Breath", score: "9/10", file: "23&_Big_Boogie_-_Kush_Breath_(Official_Music_Video).m4a" },
   { id: "24", title: "me pierdo", score: "8/10", file: "24_me_pierdo.m4a" },
-  { id: "25&", title: "Habits (Stay High) x Stereo Love", score: "10/10", file: "25&_Habits_(Stay_High)_x_Stereo_Love_(slowed_to_perfection).m4a" },
+  { id: "25", title: "Habits (Stay High) x Stereo Love", score: "10/10", file: "25&_Habits_(Stay_High)_x_Stereo_Love_(slowed_to_perfection).m4a" },
   { id: "26", title: "Saxo Funk (Super Slowed)", score: "NR", file: "26Saxo_Funk_(Super_Slowed).m4a" },
   { id: "27", title: "Lost Sky - Fearless (Ultra Slowed + Reverb)", score: "NR", file: "27_𝗟𝗼𝘀𝘁_𝗦𝗸𝘆_-_𝗙𝗲𝗮𝗿𝗹𝗲𝘀𝘀_(Ultra_Slowed__Reverb).m4a" },
   { id: "28", title: "TIKI TIKI", score: "NR", file: "28_TIKI_TIKI.m4a" },
@@ -160,7 +164,7 @@ export const radioTracks: RadioTrack[] = [
   { id: "149", title: "On The Floor x I Wanna Go", score: "NR", file: "149_On_The_Floor_x_I_Wanna_Go.mp3" },
   { id: "150", title: "Queen St (Slowed + Reverb)", score: "NR", file: "150_Queen_St_(Slowed__Reverb).mp3" },
   { id: "151", title: "SMS", score: "NR", file: "151_SMS.mp3" },
-  { id: "151b", title: "Playboi Carti - Long Time (Sanikwave Remix) (slowed and reverb)", score: "NR", file: "151_Playboi_Carti_-_Long_Time_(Sanikwave_Remix)_(slowed_and_reverb).mp3" },
+  { id: "151", title: "Playboi Carti - Long Time (Sanikwave Remix) (slowed and reverb)", score: "NR", file: "151_Playboi_Carti_-_Long_Time_(Sanikwave_Remix)_(slowed_and_reverb).mp3" },
   { id: "152", title: "fake ur face", score: "NR", file: "152_fake_ur_face.mp3" },
   { id: "153", title: "FOR LYFE", score: "NR", file: "153_FOR_LYFE.mp3" },
   { id: "154", title: "Love Potions X Vacation Bible School - Ayesha Erotica & bjlips (mashup)", score: "NR", file: "154_Love_Potions_X_Vacation_Bible_School_-_Ayesha_Erotica_&_bjlips_(mashup).mp3" },

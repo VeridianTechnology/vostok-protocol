@@ -20,6 +20,7 @@ const Radio = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const tilesRef = useRef<HTMLDivElement | null>(null);
   const scrollDotRef = useRef<HTMLSpanElement | null>(null);
+  const scrollRailRef = useRef<HTMLDivElement | null>(null);
   const startedRef = useRef(false);
 
   const track = radioTracks[trackIndex];
@@ -108,6 +109,48 @@ const Radio = () => {
     update();
     pane.addEventListener("scroll", update, { passive: true });
     return () => pane.removeEventListener("scroll", update);
+  }, []);
+
+  // The rail is a real scrollbar: click to jump, drag the dot to scrub.
+  useEffect(() => {
+    const pane = tilesRef.current;
+    const rail = scrollRailRef.current;
+    if (!pane || !rail) return undefined;
+    let dragging = false;
+
+    const scrollToPointer = (event: PointerEvent) => {
+      const rect = rail.getBoundingClientRect();
+      const frac = Math.min(1, Math.max(0, (event.clientY - rect.top) / rect.height));
+      pane.scrollTop = frac * (pane.scrollHeight - pane.clientHeight);
+    };
+    const onDown = (event: PointerEvent) => {
+      dragging = true;
+      rail.setPointerCapture(event.pointerId);
+      scrollToPointer(event);
+      event.preventDefault();
+    };
+    const onMove = (event: PointerEvent) => {
+      if (dragging) scrollToPointer(event);
+    };
+    const onUp = (event: PointerEvent) => {
+      dragging = false;
+      try {
+        rail.releasePointerCapture(event.pointerId);
+      } catch {
+        // pointer capture may already be gone
+      }
+    };
+
+    rail.addEventListener("pointerdown", onDown);
+    rail.addEventListener("pointermove", onMove);
+    rail.addEventListener("pointerup", onUp);
+    rail.addEventListener("pointercancel", onUp);
+    return () => {
+      rail.removeEventListener("pointerdown", onDown);
+      rail.removeEventListener("pointermove", onMove);
+      rail.removeEventListener("pointerup", onUp);
+      rail.removeEventListener("pointercancel", onUp);
+    };
   }, []);
 
   // Keep the active tile in view inside the tile pane (never scroll the page)
@@ -216,7 +259,7 @@ const Radio = () => {
             <div className="vr-tiles" ref={tilesRef}>
               {radioTracks.map((t, i) => (
                 <button
-                  key={t.id}
+                  key={t.file}
                   className={`vr-tile${i === trackIndex ? " vr-tile--active" : ""}`}
                   onClick={() => selectTrack(i)}
                   aria-label={`Play track ${t.id}: ${t.title}`}
@@ -227,7 +270,7 @@ const Radio = () => {
                 </button>
               ))}
             </div>
-            <div className="vr-scroll-rail" aria-hidden="true">
+            <div className="vr-scroll-rail" ref={scrollRailRef} aria-hidden="true">
               <span className="vr-scroll-dot" ref={scrollDotRef} />
             </div>
           </div>
