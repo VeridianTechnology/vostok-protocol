@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   trackSafe,
   trackBeacon,
@@ -507,20 +508,31 @@ const Landing = () => {
         >
           VØSTOK
         </a>
-        <a
-          className="vl-bar-buy"
-          href={BUY_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => fireBuyTracking("sticky_bar")}
-        >
-          Get the Method — $30
-        </a>
+        <div className="vl-bar-right">
+          <Link className="vl-bar-link" to="/radio">
+            Radio
+          </Link>
+          <a
+            className="vl-bar-buy"
+            href={BUY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => fireBuyTracking("sticky_bar")}
+          >
+            Get the Method — $30
+          </a>
+        </div>
       </div>
 
       {/* Hero: title + slideshow centerpiece */}
       <section className="vl-hero" id="top" ref={heroRef}>
         <div className="vl-hero-bg" aria-hidden="true" />
+        <nav className="vl-topnav">
+          <span className="vl-topnav-tab vl-topnav-tab--active">The Method</span>
+          <Link className="vl-topnav-tab" to="/radio">
+            Radio
+          </Link>
+        </nav>
         <h1 className="vl-hero-title">
           VØSTOK
           <div className="vl-hero-subtitle">The Facial Restructuring Protocol</div>

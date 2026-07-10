@@ -1,0 +1,334 @@
+/* ============================================================
+   Radio Vostok — same light editorial theme as the landing page.
+   Builds on the .vl tokens from landing.css; page-specific
+   classes are prefixed vr-.
+   ============================================================ */
+
+.vr {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- top nav ---------- */
+
+.vr-nav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px clamp(20px, 4vw, 44px);
+  background: rgba(246, 245, 242, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.vr-nav-mark {
+  font-size: 17px;
+  letter-spacing: 0.34em;
+  font-weight: 600;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.vr-nav-tabs {
+  display: flex;
+  gap: clamp(16px, 3vw, 34px);
+}
+
+.vr-nav-tab {
+  font-size: 12.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+a.vr-nav-tab:hover {
+  color: var(--ink);
+}
+
+.vr-nav-tab--active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+/* ---------- header ---------- */
+
+.vr-head {
+  padding-bottom: 0;
+}
+
+.vr-head .vl-h2 {
+  margin-bottom: 18px;
+}
+
+/* ---------- player + tiles ---------- */
+
+.vr-main {
+  padding-top: clamp(40px, 6vh, 64px);
+}
+
+.vr-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 5fr) minmax(300px, 7fr);
+  gap: clamp(24px, 3.5vw, 48px);
+  align-items: stretch;
+}
+
+.vr-player {
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  padding: clamp(28px, 4vw, 48px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  position: sticky;
+  top: 90px;
+  align-self: start;
+}
+
+.vr-player-num {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.vr-player-title {
+  font-size: clamp(26px, 2.6vw, 38px);
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.vr-player-score {
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--slate);
+  border: 1px solid var(--hairline);
+  padding: 5px 12px;
+}
+
+.vr-seek {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.vr-seek span {
+  font-size: 13px;
+  color: var(--slate);
+  min-width: 38px;
+  font-variant-numeric: tabular-nums;
+}
+
+.vr-seek input[type="range"] {
+  flex: 1;
+  appearance: none;
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--hairline);
+  cursor: pointer;
+}
+
+.vr-seek input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: none;
+}
+
+.vr-seek input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--ink);
+  border: none;
+}
+
+.vr-controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 12px auto 0;
+}
+
+.vr-skip {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--hairline);
+  background: transparent;
+  color: var(--ink);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vr-skip:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.vr-play {
+  width: 74px;
+  height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.vr-play svg {
+  width: 42%;
+  height: 42%;
+}
+
+.vr-play:hover {
+  transform: scale(1.05);
+}
+
+.vr-player-note {
+  margin: 14px auto 0;
+  font-size: 13.5px;
+  font-style: italic;
+  color: var(--slate);
+}
+
+/* ---------- tiles ---------- */
+
+.vr-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+  align-content: start;
+  max-height: 72vh;
+  overflow-y: auto;
+  padding: 2px 6px 2px 2px;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  scrollbar-width: thin;
+}
+
+.vr-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  aspect-ratio: 1 / 1;
+  padding: 8px 6px;
+  border: 1px solid var(--hairline);
+  background: rgba(255, 255, 255, 0.55);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  font-family: var(--serif);
+}
+
+.vr-tile:hover {
+  background: #fff;
+  border-color: var(--slate);
+}
+
+.vr-tile--active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.vr-tile-num {
+  font-size: clamp(20px, 1.8vw, 26px);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.vr-tile-title {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  opacity: 0.75;
+  max-width: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ---------- coming soon ---------- */
+
+.vr-soon {
+  margin-top: clamp(40px, 7vh, 80px);
+}
+
+.vr-soon .vl-dark-text strong {
+  color: #fff;
+}
+
+.vr-soon-note {
+  margin-top: 18px;
+  font-style: italic;
+  opacity: 0.82;
+}
+
+/* ---------- footer ---------- */
+
+.vr-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.vr-footer-link {
+  font-size: 12.5px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-decoration: none;
+}
+
+.vr-footer-link:hover {
+  color: var(--ink);
+}
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 900px) {
+  .vr-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vr-player {
+    position: static;
+  }
+
+  .vr-tiles {
+    max-height: 54vh;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  }
+}

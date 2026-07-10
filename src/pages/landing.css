@@ -119,6 +119,55 @@ body:has(.vl) {
   transform: translateY(0);
 }
 
+.vl-bar-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 30px);
+}
+
+.vl-bar-link {
+  font-size: 12.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.vl-bar-link:hover {
+  color: var(--ink);
+}
+
+/* top-of-page tabs on the hero */
+.vl-topnav {
+  position: absolute;
+  top: 22px;
+  right: clamp(20px, 4vw, 44px);
+  z-index: 5;
+  display: flex;
+  gap: clamp(14px, 2.5vw, 28px);
+}
+
+.vl-topnav-tab {
+  font-size: 12.5px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--slate);
+  text-decoration: none;
+  padding-bottom: 3px;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+a.vl-topnav-tab:hover {
+  color: var(--ink);
+}
+
+.vl-topnav-tab--active {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
 .vl-bar-mark {
   font-family: var(--serif);
   font-size: 20px;
@@ -1489,6 +1538,20 @@ body:has(.vl) {
   }
 
   .vl-hero-eyebrow {
+    display: none;
+  }
+
+  /* keep only the Radio tab in the corner — the centered title needs the room */
+  .vl-topnav {
+    top: 14px;
+    right: 14px;
+  }
+
+  .vl-topnav-tab--active {
+    display: none;
+  }
+
+  .vl-bar-link {
     display: none;
   }
 
