@@ -1,17 +1,22 @@
-// Radio Vostok track list — files live in public/audio/radio and are
-// served as static assets from the Cloudflare deployment.
+// Radio Vostok track list — audio streams from the Cloudflare R2 bucket
+// `vostok-site-audio` via its custom domain. Tracks flagged `local` are the
+// few missing from the bucket; they ship with the site in public/audio/radio.
 export type RadioTrack = {
   id: string;
   title: string;
   score: string | null;
   file: string;
+  local?: boolean;
 };
 
-// NFC normalization matters: git stores the filenames NFC (macOS precompose),
-// so the deployed URLs are NFC — while this file was generated from an NFD
-// directory listing. Without it, tracks with accented/Cyrillic names 404.
+const AUDIO_BASE = "https://audio.vostok.guide";
+
+// NFC normalization matters: the bucket keys and git-stored filenames are
+// NFC. Without it, tracks with accented/Cyrillic names 404.
 export const trackSrc = (track: RadioTrack) =>
-  `/audio/radio/${encodeURIComponent(track.file.normalize("NFC"))}`;
+  track.local
+    ? `/audio/radio/${encodeURIComponent(track.file.normalize("NFC"))}`
+    : `${AUDIO_BASE}/${encodeURIComponent(track.file.normalize("NFC"))}`;
 
 export const radioTracks: RadioTrack[] = [
   { id: "01", title: "BJ Lips - Love Potion", score: "10/10", file: "01_bj_lips.m4a" },
@@ -71,7 +76,7 @@ export const radioTracks: RadioTrack[] = [
   { id: "55", title: "Templar (Versions) (Super Slowed)", score: "NR", file: "55_Templar_(Versions)_(Super_Slowed).m4a" },
   { id: "56", title: "The Haunted Youth - Coming Home", score: "NR", file: "56_The_Haunted_Youth_-_Coming_Home.m4a" },
   { id: "57", title: "HERO! - Sped Up", score: "NR", file: "57_HERO!_-_Sped_Up.m4a" },
-  { id: "58", title: "OBLXKQ, eyfect, +w - Untitled#39", score: "NR", file: "58_OBLXKQ_eyfect_w_Untitled39.m4a" },
+  { id: "58", title: "OBLXKQ, eyfect, +w - Untitled#39", score: "NR", file: "58_OBLXKQ,_eyfect,_w__-__Untitled#39.m4a" },
   { id: "59", title: "Criminal x Love Potions", score: "NR", file: "59_Criminal_x_Love_Potions.m4a" },
   { id: "60", title: "You Could Be The One [Slowed To Perfection] Snow Strippers", score: "NR", file: "60_You_Could_Be_The_One_[Slowed_To_Perfection]_Snow_Strippers.m4a" },
   { id: "61", title: "Porter Robinson - Mirror", score: "NR", file: "61_Porter_Robinson_-_Mirror_(Official_Music_Video)_4.m4a" },
@@ -110,9 +115,9 @@ export const radioTracks: RadioTrack[] = [
   { id: "94", title: "All Aboard - Yelawolf", score: "NR", file: "94_All_Aboard_-_Yelawolf_(youtube).m4a" },
   { id: "95", title: "SAKUREYE - IN YOUR EYES / Extended", score: "NR", file: "95_SAKUREYE_-_IN_YOUR_EYES___Extended_-_S.P_(youtube).m4a" },
   { id: "96", title: "Popstar (Yokimo Remix)", score: "NR", file: "96_Popstar_(Yokimo_Remix)_-_Kill_Eva_(youtube).m4a" },
-  { id: "97", title: "Dirty - Hit Da Floe", score: "NR", file: "97_Dirty_-_Hit_Da_Floe_-_DirtyVEVO_(youtube).m4a" },
+  { id: "97", title: "Dirty - Hit Da Floe", score: "NR", file: "97_Dirty_-_Hit_Da_Floe_-_DirtyVEVO_(youtube).m4a", local: true },
   { id: "98", title: "I'm Miles Morales - lovin", score: "NR", file: "98_I'm_Miles_Morales_-_lovin_(youtube).m4a" },
-  { id: "99", title: "Purity Ring - Belispeak - Purity Ring", score: "NR", file: "99_Purity_Ring_-_Belispeak_-_Purity_Ring_(youtube).m4a" },
+  { id: "99", title: "Purity Ring - Belispeak - Purity Ring", score: "NR", file: "99_Purity_Ring_-_Belispeak_-_Purity_Ring_(youtube).m4a", local: true },
   { id: "100", title: "the craft (portishead glory box ) scorn remix 1994", score: "NR", file: "100_the_craft_(portishead_glory_box_)_scorn_remix_1994_-_musique_cinema_et_série_télévisée_(youtube).m4a" },
   { id: "101", title: "KAIZXKU - Under my skin", score: "NR", file: "101_KAIZXKU_-_Under_my_skin.m4a" },
   { id: "102", title: "MARINA - Bubblegum Bitch", score: "NR", file: "102_Bubblegum_Bitch_(Hardtekk).m4a" },
@@ -193,6 +198,6 @@ export const radioTracks: RadioTrack[] = [
   { id: "177", title: "в клубе", score: "NR", file: "177_вклубе.mp3" },
   { id: "178", title: "Pooh Shiesty - At It Again", score: "NR", file: "178_Pooh Shiesty - At It Again (Official Music Video).mp3" },
   { id: "179", title: "falling in love x mylancore/hoodtrap", score: "NR", file: "179_falling in love x mylancorehoodtrap.mp3" },
-  { id: "180", title: "#4freestyle", score: "NR", file: "180_4freestyle.mp3" },
+  { id: "180", title: "#4freestyle", score: "NR", file: "180_#4freestyle.mp3" },
   { id: "181", title: "don't care (opium)", score: "NR", file: "181_don't care (opium).mp3" },
 ];
