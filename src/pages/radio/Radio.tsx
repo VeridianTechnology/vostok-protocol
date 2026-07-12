@@ -14,6 +14,7 @@ const formatTime = (seconds: number) => {
 
 const Radio = () => {
   const [trackIndex, setTrackIndex] = useState(0);
+  const [shuffle, setShuffle] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -41,6 +42,17 @@ const Radio = () => {
     },
     [trackIndex]
   );
+
+  // Advance: in order normally, anywhere-but-here when shuffle is on
+  const nextTrack = useCallback(() => {
+    if (shuffle && radioTracks.length > 1) {
+      let next = trackIndex;
+      while (next === trackIndex) next = Math.floor(Math.random() * radioTracks.length);
+      selectTrack(next);
+    } else {
+      selectTrack(trackIndex + 1);
+    }
+  }, [shuffle, trackIndex, selectTrack]);
 
   // Load + (auto)play whenever the track changes after first interaction
   useEffect(() => {
@@ -205,6 +217,16 @@ const Radio = () => {
             <span className="vr-player-num">№ {track.id}</span>
             <h2 className="vr-player-title">{track.title}</h2>
             {track.score && <span className="vr-player-score">Nyx rating · {track.score}</span>}
+            {track.youtube && (
+              <a
+                className="vr-player-yt"
+                href={track.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Original on YouTube ↗
+              </a>
+            )}
 
             <audio
               ref={audioRef}
@@ -214,7 +236,7 @@ const Radio = () => {
               onPause={() => setPlaying(false)}
               onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
               onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
-              onEnded={() => selectTrack(trackIndex + 1)}
+              onEnded={nextTrack}
             />
 
             <div className="vr-seek">
@@ -246,12 +268,31 @@ const Radio = () => {
                   </svg>
                 )}
               </button>
-              <button className="vr-skip" aria-label="Next track" onClick={() => selectTrack(trackIndex + 1)}>
+              <button className="vr-skip" aria-label="Next track" onClick={nextTrack}>
                 ›
               </button>
             </div>
 
-            <p className="vr-player-note">Tracks play in order — leave it running like a station.</p>
+            <button
+              className={`vr-shuffle${shuffle ? " vr-shuffle--on" : ""}`}
+              aria-pressed={shuffle}
+              onClick={() => setShuffle((s) => !s)}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <path d="M16 3h5v5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 20L21 3" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M21 16v5h-5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M15 15l6 6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M4 4l5 5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Shuffle {shuffle ? "on" : "off"}
+            </button>
+
+            <p className="vr-player-note">
+              {shuffle
+                ? "Shuffle is on — the station picks the next track at random."
+                : "Tracks play in order — leave it running like a station."}
+            </p>
           </div>
 
           {/* Tile selection */}
