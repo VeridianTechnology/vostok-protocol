@@ -466,6 +466,32 @@ const Landing = () => {
       setFaqFading(false);
     }, 200);
   };
+  // Collapsible sections — every big content block can be folded away behind
+  // its heading (open by default) so mobile isn't one endless scroll.
+  const [closedSections, setClosedSections] = useState<Record<string, boolean>>({});
+  const toggleSection = (id: string) =>
+    setClosedSections((prev) => ({ ...prev, [id]: !prev[id] }));
+
+  // Collapsed content is hidden with CSS, never unmounted: the scroll-reveal
+  // observer runs once on mount, so re-mounted nodes would stay invisible.
+  const collapseClass = (id: string) =>
+    `vl-collapse${closedSections[id] ? " vl-collapse--closed" : ""}`;
+
+  // The arrow carries the a11y state; clicks bubble to the heading row, which
+  // owns the single onClick, so the button itself doesn't toggle twice.
+  const sectionArrow = (id: string) => (
+    <button
+      type="button"
+      className={`vl-sec-toggle${closedSections[id] ? " vl-sec-toggle--closed" : ""}`}
+      aria-expanded={!closedSections[id]}
+      aria-label={closedSections[id] ? "Expand section" : "Collapse section"}
+    >
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+        <path d="M5 9l7 7 7-7" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  );
+
   const [explainMuted, setExplainMuted] = useState(true);
   const explainRef = useRef<HTMLVideoElement | null>(null);
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
@@ -617,26 +643,15 @@ const Landing = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [lightboxSrc, videoZoom, infoZoom]);
 
-  // When the explanation video appears, try to play it with sound. Browsers
-  // only allow this after a user gesture (e.g. the band arrow); if blocked,
-  // fall back to muted playback and let the big audio button unmute it.
+  // The explanation video always starts muted — the big audio button (or the
+  // native controls) unmutes it on demand.
   useEffect(() => {
-    if (bandIndex !== 1) {
-      setExplainMuted(true);
-      return;
-    }
+    setExplainMuted(true);
+    if (bandIndex !== 1) return;
     const video = explainRef.current;
     if (!video) return;
-    video.muted = false;
-    video.volume = 1;
-    video
-      .play()
-      .then(() => setExplainMuted(false))
-      .catch(() => {
-        video.muted = true;
-        setExplainMuted(true);
-        video.play().catch(() => {});
-      });
+    video.muted = true;
+    video.play().catch(() => {});
   }, [bandIndex]);
 
   const toggleExplainAudio = () => {
@@ -745,7 +760,17 @@ const Landing = () => {
 
       {/* Hero: title + slideshow centerpiece */}
       <section className="vl-hero" id="top" ref={heroRef}>
-        <div className="vl-hero-bg" aria-hidden="true" />
+        <div className="vl-hero-bg" aria-hidden="true">
+          <video
+            className="vl-hero-video"
+            src="/landing/video/hero-loop.mp4"
+            poster="/landing/bg-desktop.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        </div>
         <nav className="vl-topnav">
           <span className="vl-topnav-tab vl-topnav-tab--active">The Method</span>
           <Link className="vl-topnav-tab" to="/radio">
@@ -835,12 +860,15 @@ const Landing = () => {
               What is the Vostok Method
             </button>
           </div>
+          <p className="vl-hero-note">One-time purchase · instant digital access · yours for life</p>
         </div>
       </section>
 
       {/* Dark interlude — the origin myth */}
       <section className="vl-dark" id="origin">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/temple.jpg)" }} aria-hidden="true" />
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/temple.jpg)" }} aria-hidden="true">
+          <video className="vl-dark-video" src="/landing/video/temple-loop.mp4" autoPlay muted loop playsInline />
+        </div>
         <div className="vl-dark-inner">
           <p className="vl-kicker vl-reveal">The Origin</p>
           <h2 className="vl-dark-quote vl-reveal">
@@ -935,10 +963,14 @@ const Landing = () => {
         </div>
         <div className="vl-reveal">
           <p className="vl-kicker">The Diagnosis</p>
-          <h2 className="vl-h2">
-            The modern world <em>un-sculpted</em> you.
-          </h2>
+          <div className="vl-h2-row" onClick={() => toggleSection("diagnosis")}>
+            <h2 className="vl-h2">
+              The modern world <em>un-sculpted</em> you.
+            </h2>
+            {sectionArrow("diagnosis")}
+          </div>
         </div>
+        <div className={collapseClass("diagnosis")}>
         <div className="vl-diagnosis-grid">
           <div className="vl-decay-grid">
             {decay.map((item) => (
@@ -973,16 +1005,21 @@ const Landing = () => {
             <figcaption>Where facial fat sits — the map Vostok resculpts.</figcaption>
           </figure>
         </div>
+        </div>
       </section>
 
       {/* The Method */}
       <section className="vl-section" id="method">
         <div className="vl-reveal">
           <p className="vl-kicker">The Method</p>
-          <h2 className="vl-h2">
-            Your face is <em>not</em> fate.
-          </h2>
+          <div className="vl-h2-row" onClick={() => toggleSection("method")}>
+            <h2 className="vl-h2">
+              Your face is <em>not</em> fate.
+            </h2>
+            {sectionArrow("method")}
+          </div>
         </div>
+        <div className={collapseClass("method")}>
         <div className="vl-method-grid">
           <div className="vl-reveal">
             <p className="vl-lead">
@@ -1012,16 +1049,21 @@ const Landing = () => {
             ))}
           </div>
         </div>
+        </div>
       </section>
 
       {/* Results */}
       <section className="vl-section" id="results">
         <div className="vl-reveal">
           <p className="vl-kicker">What It Gives You</p>
-          <h2 className="vl-h2">
-            Trained, not <em>inherited.</em>
-          </h2>
+          <div className="vl-h2-row" onClick={() => toggleSection("results")}>
+            <h2 className="vl-h2">
+              Trained, not <em>inherited.</em>
+            </h2>
+            {sectionArrow("results")}
+          </div>
         </div>
+        <div className={collapseClass("results")}>
         <div className="vl-results-layout">
           <div className="vl-results-grid">
             {results.map((result, i) => (
@@ -1054,15 +1096,20 @@ const Landing = () => {
             </ul>
           </aside>
         </div>
+        </div>
 
         {/* Signal Coherence — the concept behind the results */}
         <div className="vl-signal vl-reveal">
           <div className="vl-signal-lead">
             <p className="vl-kicker">Signal Coherence</p>
-            <h3>
-              A face is not a collection of features. It's a <em>transmission.</em>
-            </h3>
+            <div className="vl-h2-row" onClick={() => toggleSection("signal")}>
+              <h3>
+                A face is not a collection of features. It's a <em>transmission.</em>
+              </h3>
+              {sectionArrow("signal")}
+            </div>
           </div>
+          <div className={collapseClass("signal")}>
           <div className="vl-signal-body">
             <p>
               Facial aesthetics research has a name for a quiet phenomenon — <strong>structural
@@ -1087,6 +1134,7 @@ const Landing = () => {
               the whole system — and it's what the hundred hours are for.
             </p>
           </div>
+          </div>
         </div>
       </section>
 
@@ -1094,11 +1142,15 @@ const Landing = () => {
       <section className="vl-section" id="book">
         <div className="vl-reveal">
           <p className="vl-kicker">Inside the Book</p>
-          <h2 className="vl-h2">
-            Open the <em>manual.</em>
-          </h2>
-          <p className="vl-pages-hint">Real pages from The Vostok Method — pick a chapter, tap any page to enlarge</p>
+          <div className="vl-h2-row" onClick={() => toggleSection("book")}>
+            <h2 className="vl-h2">
+              Open the <em>guide.</em>
+            </h2>
+            {sectionArrow("book")}
+          </div>
         </div>
+        <div className={collapseClass("book")}>
+        <p className="vl-pages-hint">Real pages from The Vostok Method — pick a chapter, tap any page to enlarge</p>
         <div className="vl-chapters vl-reveal">
           {chapterFilters.map((chapter, i) => (
             <button
@@ -1128,6 +1180,7 @@ const Landing = () => {
               <span>{q.source}</span>
             </div>
           ))}
+        </div>
         </div>
       </section>
 
@@ -1192,14 +1245,18 @@ const Landing = () => {
       <section className="vl-section" id="journey">
         <div className="vl-reveal">
           <p className="vl-kicker">The Journey</p>
-          <h2 className="vl-h2">
-            One hundred hours. <em>Measured</em> progress.
-          </h2>
-          <p className="vl-lead">
-            Vostok counts in hours, not luck. Twenty hours in, the face wakes up; a hundred hours in,
-            it's rebuilt. The belts are just mile markers along the way.
-          </p>
+          <div className="vl-h2-row" onClick={() => toggleSection("journey")}>
+            <h2 className="vl-h2">
+              One hundred hours. <em>Measured</em> progress.
+            </h2>
+            {sectionArrow("journey")}
+          </div>
         </div>
+        <div className={collapseClass("journey")}>
+        <p className="vl-lead">
+          Vostok counts in hours, not luck. Twenty hours in, the face wakes up; a hundred hours in,
+          it's rebuilt. The belts are just mile markers along the way.
+        </p>
         <div className="vl-journey-slide vl-reveal">
           <button
             className="vl-journey-main"
@@ -1269,16 +1326,21 @@ const Landing = () => {
             <p>Then you're done — and never have to do it again.</p>
           </div>
         </div>
+        </div>
       </section>
 
       {/* Dispatches / articles */}
       <section className="vl-section" id="dispatches">
         <div className="vl-reveal">
           <p className="vl-kicker">Dispatches</p>
-          <h2 className="vl-h2">
-            From the <em>Vostok</em> Substack.
-          </h2>
+          <div className="vl-h2-row" onClick={() => toggleSection("dispatches")}>
+            <h2 className="vl-h2">
+              From the <em>Vostok</em> Substack.
+            </h2>
+            {sectionArrow("dispatches")}
+          </div>
         </div>
+        <div className={collapseClass("dispatches")}>
         <div className="vl-articles-grid">
           {articles.map((article) => (
             <a
@@ -1304,16 +1366,23 @@ const Landing = () => {
             Read the Substack
           </a>
         </div>
+        </div>
       </section>
 
       {/* FAQ */}
       <section className="vl-section" id="faq">
-        <div className="vl-faq-layout">
-          <div className="vl-faq-intro vl-reveal">
-            <p className="vl-kicker">The FAQ</p>
+        <div className="vl-reveal">
+          <p className="vl-kicker">The FAQ</p>
+          <div className="vl-h2-row" onClick={() => toggleSection("faq")}>
             <h2 className="vl-h2">
               Asked, <em>answered.</em>
             </h2>
+            {sectionArrow("faq")}
+          </div>
+        </div>
+        <div className={collapseClass("faq")}>
+        <div className="vl-faq-layout">
+          <div className="vl-faq-intro vl-reveal">
             <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
             <div className="vl-faq-frame">
               <figure className="vl-faq-portrait">
@@ -1356,17 +1425,77 @@ const Landing = () => {
             ))}
           </div>
         </div>
+        </div>
+      </section>
+
+      {/* The Offer — what $30 actually buys */}
+      <section className="vl-section vl-offer" id="offer">
+        <div className="vl-reveal">
+          <p className="vl-kicker">The Offer</p>
+          <div className="vl-h2-row" onClick={() => toggleSection("offer")}>
+            <h2 className="vl-h2">
+              One guide. <em>Everything</em> in it.
+            </h2>
+            {sectionArrow("offer")}
+          </div>
+        </div>
+        <div className={collapseClass("offer")}>
+        <div className="vl-offer-card vl-reveal">
+          <div className="vl-offer-list">
+            <h3>The Vostok Method — complete</h3>
+            <ul>
+              <li>
+                <strong>Every region, its own chapter.</strong> Jawline, chin, lips, eyes, cheeks,
+                brow, nose, tongue, ears, scalp and neck — exercises for each, with pages you can
+                preview above.
+              </li>
+              <li>
+                <strong>The massage and gua sha protocols.</strong> What to press, in which
+                direction, and for how long — including the tools chapter for roller and stone.
+              </li>
+              <li>
+                <strong>The hundred-hour journey.</strong> Levels, hours and measurable checkpoints,
+                from the first twenty hours to the other side.
+              </li>
+              <li>
+                <strong>Asymmetry work.</strong> Ninety percent of the battle — the
+                mirror-versus-camera test and the corrections that follow it.
+              </li>
+              <li>
+                <strong>Supplements and lifestyle notes.</strong> What supports the work, and what
+                quietly undoes it.
+              </li>
+            </ul>
+          </div>
+          <aside className="vl-offer-buy">
+            <span className="vl-offer-price">$30</span>
+            <span className="vl-offer-price-note">One-time. No subscription. Instant digital access.</span>
+            <a
+              className="vl-buy"
+              href={BUY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fireBuyTracking("offer")}
+            >
+              Get the Method
+            </a>
+            <span className="vl-offer-fine">Read it tonight. Start tomorrow morning.</span>
+          </aside>
+        </div>
+        </div>
       </section>
 
       {/* Final CTA — dark */}
       <section className="vl-dark vl-dark--center" id="purchase">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/angel.jpg)" }} aria-hidden="true" />
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/angel.jpg)" }} aria-hidden="true">
+          <video className="vl-dark-video" src="/landing/video/angel-loop.mp4" autoPlay muted loop playsInline />
+        </div>
         <div className="vl-dark-inner">
           <p className="vl-kicker vl-reveal">The Vostok Method</p>
           <h2 className="vl-dark-quote vl-reveal">
             Begin your <em>restructuring.</em>
           </h2>
-          <p className="vl-dark-text vl-reveal">One book. The complete protocol, from Yellow to Black.</p>
+          <p className="vl-dark-text vl-reveal">One book. The complete protocol, start to finish.</p>
           <div className="vl-button-row vl-reveal">
             <a
               className="vl-buy vl-buy--light"

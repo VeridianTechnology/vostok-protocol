@@ -15,7 +15,10 @@ const Agora = () => {
       <SiteNav suffix="AGORA" active="Agora" />
 
       <section className="vl-section va-head">
-        <p className="vl-kicker">Agora</p>
+        <p className="vl-kicker vr-kicker">
+          Agora
+          <img className="vr-kicker-logo" src="/logo/logo-agora.png" alt="" aria-hidden="true" />
+        </p>
         <h1 className="vl-h2">
           The digital <em>meeting place.</em>
         </h1>

@@ -82,6 +82,8 @@ a.vr-nav-tab:hover {
   height: 40px;
   width: auto;
   opacity: 0.92;
+  /* engraved medallions keep a white core — multiply melts it into the paper */
+  mix-blend-mode: multiply;
 }
 
 .vr-head .vl-h2 {
