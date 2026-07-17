@@ -571,24 +571,26 @@ const Landing = () => {
     };
   }, []);
 
-  // Slideshow autoplay
-  useEffect(() => {
-    if (lightboxSrc || paused) return undefined;
-    const id = setInterval(() => {
-      setSlideIndex((i) => (i + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(id);
-  }, [lightboxSrc, paused]);
+  // Hero slideshow effects — temporarily hidden along with the hero carousel JSX,
+  // uncomment both together to restore
+  // // Slideshow autoplay
+  // useEffect(() => {
+  //   if (lightboxSrc || paused) return undefined;
+  //   const id = setInterval(() => {
+  //     setSlideIndex((i) => (i + 1) % slides.length);
+  //   }, 6000);
+  //   return () => clearInterval(id);
+  // }, [lightboxSrc, paused]);
 
-  // Keep the active thumbnail in view — scroll ONLY the strip itself,
-  // never the page (scrollIntoView can hijack the page's vertical scroll)
-  useEffect(() => {
-    const strip = thumbsRef.current;
-    const active = strip?.children[slideIndex] as HTMLElement | undefined;
-    if (!strip || !active) return;
-    const left = active.offsetLeft - strip.clientWidth / 2 + active.clientWidth / 2;
-    strip.scrollTo({ left, behavior: "smooth" });
-  }, [slideIndex]);
+  // // Keep the active thumbnail in view — scroll ONLY the strip itself,
+  // // never the page (scrollIntoView can hijack the page's vertical scroll)
+  // useEffect(() => {
+  //   const strip = thumbsRef.current;
+  //   const active = strip?.children[slideIndex] as HTMLElement | undefined;
+  //   if (!strip || !active) return;
+  //   const left = active.offsetLeft - strip.clientWidth / 2 + active.clientWidth / 2;
+  //   strip.scrollTo({ left, behavior: "smooth" });
+  // }, [slideIndex]);
 
   // Fat-map figure slideshow
   useEffect(() => {
@@ -787,6 +789,7 @@ const Landing = () => {
         </h1>
 
         <div className="vl-hero-stack">
+          {/* Hero slideshow — temporarily hidden, remove this comment wrapper to restore
           <p className="vl-hero-eyebrow">Documented Transformations</p>
           <div
             className="vl-carousel"
@@ -845,6 +848,7 @@ const Landing = () => {
               />
             ))}
           </div>
+          */}
 
           <div className="vl-button-row">
             <a
