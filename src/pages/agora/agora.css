@@ -1,5 +1,5 @@
 /* ============================================================
-   Agora — Nyx's link collection. Same light editorial theme;
+   Agora — Nyx's link collection. Obsidian architecture theme;
    nav + footer styles come from radio.css (vr-), page-specific
    classes are prefixed va-.
    ============================================================ */
@@ -38,21 +38,21 @@
   text-transform: uppercase;
   padding: 10px 18px;
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ink-soft);
   cursor: pointer;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .va-chip:hover {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.1);
   color: var(--ink);
 }
 
 .va-chip--active {
   background: var(--ink);
   border-color: var(--ink);
-  color: #fff;
+  color: #060910;
 }
 
 .va-tagline {
@@ -76,14 +76,14 @@
   gap: 10px;
   padding: clamp(22px, 2.6vw, 32px);
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ink);
   text-decoration: none;
   transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 a.va-card:hover {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.09);
   border-color: var(--slate);
   transform: translateY(-2px);
 }

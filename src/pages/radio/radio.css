@@ -1,5 +1,5 @@
 /* ============================================================
-   Radio Vostok — same light editorial theme as the landing page.
+   Radio Vostok — obsidian architecture theme shared with the landing page.
    Builds on the .vl tokens from landing.css; page-specific
    classes are prefixed vr-.
    ============================================================ */
@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px clamp(20px, 4vw, 44px);
-  background: rgba(246, 245, 242, 0.86);
+  background: rgba(6, 9, 16, 0.78);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--hairline);
@@ -82,8 +82,9 @@ a.vr-nav-tab:hover {
   height: 40px;
   width: auto;
   opacity: 0.92;
-  /* engraved medallions keep a white core — multiply melts it into the paper */
-  mix-blend-mode: multiply;
+  /* engraved medallions — inverted to white-line art, screen melts the dark ground into obsidian */
+  filter: invert(1);
+  mix-blend-mode: screen;
 }
 
 .vr-head .vl-h2 {
@@ -105,7 +106,7 @@ a.vr-nav-tab:hover {
 
 .vr-player {
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
   padding: clamp(28px, 4vw, 48px);
   display: flex;
   flex-direction: column;
@@ -205,7 +206,7 @@ a.vr-nav-tab:hover {
 }
 
 .vr-skip:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .vr-play {
@@ -217,7 +218,7 @@ a.vr-nav-tab:hover {
   border: none;
   border-radius: 50%;
   background: var(--ink);
-  color: #fff;
+  color: #060910;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -291,9 +292,9 @@ a.vr-nav-tab:hover {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--ink);
   border: 1px solid var(--ink);
-  box-shadow: 0 1px 5px rgba(26, 39, 68, 0.28);
+  box-shadow: 0 0 8px rgba(77, 169, 255, 0.6);
   cursor: grab;
 }
 
@@ -321,7 +322,7 @@ a.vr-nav-tab:hover {
   width: 100%;
   padding: 13px 18px;
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ink);
   text-align: left;
   cursor: pointer;
@@ -330,14 +331,14 @@ a.vr-nav-tab:hover {
 }
 
 .vr-tile:hover {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.1);
   border-color: var(--slate);
 }
 
 .vr-tile--active {
   background: var(--ink);
   border-color: var(--ink);
-  color: #fff;
+  color: #060910;
 }
 
 .vr-tile-num {
@@ -478,14 +479,14 @@ a.vr-nav-tab:hover {
 }
 
 .vr-shuffle:hover {
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--ink);
 }
 
 .vr-shuffle--on,
 .vr-shuffle--on:hover {
   background: var(--ink);
-  color: #fff;
+  color: #060910;
   border-color: var(--ink);
 }
 

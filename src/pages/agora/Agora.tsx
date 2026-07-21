@@ -72,6 +72,7 @@ const Agora = () => {
       </section>
 
       <section className="vl-dark vl-dark--center va-creed">
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/path.webp)" }} aria-hidden="true" />
         <div className="vl-dark-inner">
           <p className="vl-kicker">The Square, Not the Market</p>
           <h2 className="vl-dark-quote">

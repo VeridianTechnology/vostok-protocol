@@ -320,6 +320,7 @@ const Radio = () => {
 
       {/* The business to be */}
       <section className="vl-dark vl-dark--center vr-soon">
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/beacon.webp)" }} aria-hidden="true" />
         <div className="vl-dark-inner">
           <p className="vl-kicker">Coming — Radio Vostok Live</p>
           <h2 className="vl-dark-quote">

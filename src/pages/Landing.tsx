@@ -762,17 +762,7 @@ const Landing = () => {
 
       {/* Hero: title + slideshow centerpiece */}
       <section className="vl-hero" id="top" ref={heroRef}>
-        <div className="vl-hero-bg" aria-hidden="true">
-          <video
-            className="vl-hero-video"
-            src="/landing/video/hero-loop.mp4"
-            poster="/landing/bg-desktop.jpg"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        </div>
+        <div className="vl-hero-bg" aria-hidden="true" />
         <nav className="vl-topnav">
           <span className="vl-topnav-tab vl-topnav-tab--active">The Method</span>
           <Link className="vl-topnav-tab" to="/radio">
@@ -870,9 +860,7 @@ const Landing = () => {
 
       {/* Dark interlude — the origin myth */}
       <section className="vl-dark" id="origin">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/temple.jpg)" }} aria-hidden="true">
-          <video className="vl-dark-video" src="/landing/video/temple-loop.mp4" autoPlay muted loop playsInline />
-        </div>
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/corridor.webp)" }} aria-hidden="true" />
         <div className="vl-dark-inner">
           <p className="vl-kicker vl-reveal">The Origin</p>
           <h2 className="vl-dark-quote vl-reveal">
@@ -1190,7 +1178,7 @@ const Landing = () => {
 
       {/* Dark interlude — Nyx's challenge */}
       <section className="vl-dark" id="nyx">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/dawn.jpg)" }} aria-hidden="true" />
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/pyramid.webp)" }} aria-hidden="true" />
         <div className="vl-dark-inner vl-nyx-grid">
           <div>
             <p className="vl-kicker vl-reveal">A Challenge from Nyx</p>
@@ -1491,9 +1479,7 @@ const Landing = () => {
 
       {/* Final CTA — dark */}
       <section className="vl-dark vl-dark--center" id="purchase">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/landing/art/angel.jpg)" }} aria-hidden="true">
-          <video className="vl-dark-video" src="/landing/video/angel-loop.mp4" autoPlay muted loop playsInline />
-        </div>
+        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/portal.webp)" }} aria-hidden="true" />
         <div className="vl-dark-inner">
           <p className="vl-kicker vl-reveal">The Vostok Method</p>
           <h2 className="vl-dark-quote vl-reveal">
