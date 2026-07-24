@@ -37,6 +37,18 @@ body:has(.vl) {
   color: #060910;
 }
 
+.vl-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* the old site's base layer forces Fira Sans on headings — reclaim them */
 .vl h1,
 .vl h2,
@@ -281,7 +293,7 @@ a.vl-topnav-tab:hover {
 .vl-hero-bg {
   position: absolute;
   inset: 0;
-  background-image: url("/obsidian/plaza.webp");
+  background-image: url("/obsidian/hero-tree.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -309,12 +321,10 @@ a.vl-topnav-tab:hover {
 
 .vl-hero-logo {
   display: block;
-  height: clamp(52px, 6vw, 88px);
+  height: clamp(72px, 8vw, 110px);
   width: auto;
   margin-bottom: 16px;
   opacity: 0.94;
-  /* the mark is near-black art — render it as white marble on obsidian */
-  filter: brightness(0) invert(1);
 }
 
 .vl-hero-subtitle {
@@ -333,7 +343,55 @@ a.vl-topnav-tab:hover {
   flex-direction: column;
   align-items: center;
   gap: 18px;
-  width: min(92vw, 640px);
+  width: min(92vw, 1000px);
+}
+
+.vl-hero-manifesto {
+  position: relative;
+  width: 100%;
+  min-height: clamp(220px, 38svh, 360px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 64px);
+  text-align: center;
+}
+
+.vl-hero-message {
+  grid-area: 1 / 1;
+  max-width: 24ch;
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: clamp(24px, 3.3vw, 50px);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  line-height: 1.13;
+  text-wrap: balance;
+  text-shadow: 0 3px 34px rgba(0, 0, 0, 0.92);
+  will-change: opacity, transform;
+  transition: opacity 0.52s ease, transform 0.65s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.vl-hero-message--enter {
+  opacity: 0;
+  transform: translateX(12vw);
+}
+
+.vl-hero-message--hold {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.vl-hero-message--exit {
+  opacity: 0;
+  transform: translateX(-12vw);
+}
+
+.vl-hero-message--fade {
+  opacity: 0;
+  transform: translateX(0);
+  transition: opacity 0.9s ease;
 }
 
 .vl-hero-eyebrow {
@@ -492,26 +550,6 @@ a.vl-topnav-tab:hover {
   color: var(--ink);
 }
 
-.vl-ghost {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-decoration: none;
-  color: var(--ink);
-  background: rgba(6, 9, 16, 0.5);
-  border: 1px solid rgba(232, 236, 244, 0.35);
-  padding: 13px 32px;
-  cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-.vl-ghost:hover {
-  background: var(--ink);
-  color: #060910;
-}
-
 .vl-price-note {
   font-size: 14px;
   letter-spacing: 0.14em;
@@ -558,6 +596,14 @@ a.vl-topnav-tab:hover {
   background-repeat: no-repeat;
 }
 
+.vl-dark-bg--video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .vl-dark-bg::after {
   content: "";
   position: absolute;
@@ -601,6 +647,10 @@ a.vl-topnav-tab:hover {
   text-shadow: 0 1px 18px rgba(0, 0, 0, 0.6);
 }
 
+.vl-dark-text--continued {
+  margin-top: 18px;
+}
+
 .vl-dark-sig {
   margin-top: 26px;
   font-size: 14px;
@@ -625,67 +675,62 @@ a.vl-topnav-tab:hover {
   color: #f0efec;
 }
 
-/* Nyx section: challenge text + phone video */
+/* Nyx section: challenge text + compact video launcher */
 
 .vl-nyx-grid {
   display: grid;
-  grid-template-columns: 1fr clamp(200px, 22vw, 264px);
+  grid-template-columns: 1fr auto;
   gap: clamp(36px, 6vw, 90px);
   align-items: center;
 }
 
-.vl-nyx-video {
+.vl-nyx-video-launcher {
   margin: 0;
+  width: 190px;
+  text-align: center;
 }
 
-.vl-nyx-video video {
-  display: block;
-  width: 100%;
-  aspect-ratio: 9 / 16;
-  object-fit: cover;
+.vl-nyx-play {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto;
+  padding: 0;
   border: 1px solid rgba(240, 239, 236, 0.3);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
-  background: #000;
-  cursor: zoom-in;
-}
-
-.vl-nyx-frame {
-  position: relative;
-}
-
-.vl-nyx-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 36px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: rgba(6, 9, 16, 0.72);
+  border-radius: 50%;
+  background: rgba(6, 9, 16, 0.58);
   color: var(--ink);
-  font-size: 24px;
-  line-height: 1;
   cursor: pointer;
-  transition: background 0.2s ease;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(8px);
+  transition: border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
 }
 
-.vl-nyx-nav:hover {
-  background: rgba(6, 9, 16, 0.95);
+.vl-nyx-play:hover {
+  border-color: rgba(240, 239, 236, 0.72);
+  background: rgba(6, 9, 16, 0.82);
+  transform: scale(1.04);
 }
 
-.vl-nyx-nav--prev {
-  left: 0;
+.vl-nyx-play svg {
+  width: 46px;
+  height: 46px;
+  overflow: visible;
 }
 
-.vl-nyx-nav--next {
-  right: 0;
+.vl-nyx-play circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.25;
 }
 
-.vl-nyx-video figcaption {
-  margin-top: 12px;
+.vl-nyx-play path {
+  fill: currentColor;
+}
+
+.vl-nyx-video-launcher figcaption {
+  margin-top: 16px;
   font-size: 12px;
   letter-spacing: 0.26em;
   text-transform: uppercase;
@@ -697,6 +742,11 @@ a.vl-topnav-tab:hover {
 
 .vl-dark--center {
   text-align: center;
+}
+
+.vl-purchase-kicker {
+  font-size: clamp(16px, 1.3vw, 20px);
+  letter-spacing: 0.38em;
 }
 
 /* lighter center veil so the portal's glow reads through the CTA text */
@@ -718,11 +768,6 @@ a.vl-topnav-tab:hover {
 
 .vl-dark--center .vl-button-row {
   justify-content: center;
-}
-
-.vl-dark--center .vl-price-note {
-  color: rgba(240, 239, 236, 0.65);
-  margin-top: 16px;
 }
 
 /* ---------- diagnosis grid ---------- */
@@ -858,37 +903,6 @@ a.vl-topnav-tab:hover {
   pointer-events: none;
 }
 
-.vl-band-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 2;
-  width: 46px;
-  height: 68px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(6, 9, 16, 0.7);
-  border: none;
-  color: var(--ink);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.vl-band-nav:hover {
-  background: rgba(6, 9, 16, 0.95);
-}
-
-.vl-band-nav--next {
-  right: 0;
-}
-
-.vl-band-nav--prev {
-  left: 0;
-}
-
 /* big audio toggle for the explanation video — sits above the native controls */
 .vl-band-audio {
   position: absolute;
@@ -974,6 +988,57 @@ a.vl-topnav-tab:hover {
   align-items: start;
 }
 
+.vl-method-copy-inner {
+  animation: vl-method-copy-in 0.38s ease both;
+}
+
+@keyframes vl-method-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.vl-method-copy-kicker {
+  margin: 0 0 15px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
+.vl-method-copy h3 {
+  margin: 0 0 18px;
+  font-size: clamp(26px, 2.5vw, 34px);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.vl-method-copy p:not(.vl-method-copy-kicker, .vl-method-tagline) {
+  margin: 0 0 18px;
+  font-size: clamp(17px, 1.35vw, 19px);
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+.vl-method-tagline {
+  margin: 32px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  color: var(--slate);
+}
+
 .vl-method-figure {
   margin: 0;
 }
@@ -1001,30 +1066,86 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-belief {
+  position: relative;
+  width: 100%;
+  appearance: none;
+  display: block;
   padding: 20px 0;
   border-bottom: 1px solid var(--hairline);
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--serif);
+  text-align: left;
+  cursor: pointer;
+  transition: padding 0.25s ease, background-color 0.25s ease;
 }
 
-.vl-belief h3 {
+.vl-belief::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  left: 0;
+  width: 1px;
+  background: var(--slate);
+  opacity: 0;
+  transform: scaleY(0.4);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.vl-belief:hover,
+.vl-belief:focus-visible,
+.vl-belief--active {
+  padding-left: 18px;
+  background: linear-gradient(90deg, rgba(143, 163, 194, 0.09), transparent 82%);
+}
+
+.vl-belief:focus-visible {
+  outline: 1px solid var(--slate);
+  outline-offset: 4px;
+}
+
+.vl-belief--active::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.vl-belief-title {
+  display: block;
   font-size: 21px;
   font-weight: 500;
   margin: 0 0 6px;
   letter-spacing: 0.02em;
 }
 
-.vl-belief p {
+.vl-belief-summary {
+  display: block;
+  padding-right: 42px;
   font-size: 16px;
   line-height: 1.55;
   color: var(--ink-soft);
-  margin: 0;
 }
 
-.vl-not-line {
-  margin-top: 34px;
-  font-size: 15px;
-  letter-spacing: 0.22em;
+.vl-belief-cue {
+  position: absolute;
+  right: 0;
+  bottom: 23px;
+  font-size: 9px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--slate);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.vl-belief:hover .vl-belief-cue,
+.vl-belief:focus-visible .vl-belief-cue,
+.vl-belief--active .vl-belief-cue {
+  opacity: 0.8;
 }
 
 /* ---------- results grid ---------- */
@@ -1913,8 +2034,7 @@ a.vl-topnav-tab:hover {
     grid-template-columns: 1fr;
   }
 
-  .vl-nyx-video {
-    max-width: 250px;
+  .vl-nyx-video-launcher {
     margin: 0 auto;
   }
 
@@ -1997,7 +2117,7 @@ a.vl-topnav-tab:hover {
   }
 
   .vl-hero-bg {
-    background-image: url("/obsidian/plaza-mobile.webp");
+    background-image: url("/obsidian/hero-tree.webp");
   }
 
   .vl-hero-title {
@@ -2013,8 +2133,23 @@ a.vl-topnav-tab:hover {
     text-align: center;
   }
 
+  .vl-hero-stack {
+    width: 100%;
+  }
+
+  .vl-hero-manifesto {
+    min-height: 58svh;
+    padding: 64px 4px 96px;
+  }
+
+  .vl-hero-message {
+    max-width: 18ch;
+    font-size: clamp(22px, 6.4vw, 30px);
+    line-height: 1.16;
+  }
+
   .vl-hero-logo {
-    height: 40px;
+    height: 58px;
     margin: 0 auto 10px;
   }
 
@@ -2033,11 +2168,6 @@ a.vl-topnav-tab:hover {
   .vl-buy {
     font-size: 13px;
     padding: 13px 34px;
-  }
-
-  .vl-ghost {
-    font-size: 12px;
-    padding: 11px 24px;
   }
 
   .vl-dark {
@@ -2127,17 +2257,12 @@ a.vl-topnav-tab:hover {
   .vl-dark-video {
     display: none;
   }
-}
 
-/* ---------- hero fine print ---------- */
-
-.vl-hero-note {
-  font-size: 12px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin: 14px 0 0;
-  text-align: center;
+  .vl-hero-message {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* ---------- the offer ---------- */

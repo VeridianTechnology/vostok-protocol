@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   trackSafe,
@@ -15,17 +15,34 @@ import "./landing.css";
 const BUY_URL = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
 const SUBSTACK_URL = "https://nyxvostok.substack.com";
 
-const slides = [
-  "/landing/slideshow/01.jpg",
-  "/landing/slideshow/02.jpg",
-  "/landing/slideshow/03.jpg",
-  "/landing/slideshow/04.jpg",
-  "/landing/slideshow/05.jpg",
-  "/landing/slideshow/06.jpg",
-  "/landing/slideshow/07.jpg",
-  "/landing/slideshow/08.jpg",
-  "/landing/slideshow/09.jpg",
+const heroStatements = [
+  "What is Vostok?",
+  "It's an esoteric company",
+  "Bed Bath & Beyond + Apple",
+  "Our first product is a guide",
+  "And a series of tips on how to improve your looks.",
+  "And I mean, radically... improve your looks.",
+  "We can only have so many people.",
+  "Elite people.",
+  "One million exactly.",
+  "I want you to help you, ascend.",
+  "And with a lot of work - you will.",
+  "You can become an entertainer, a leader, a companion.",
+  "Anything you want.",
+  "Can be made and done.",
+  "Because you look better than everyone.",
+  "Let me give you the gift.",
+  "The gift of Vostok.",
+  "Ascend.",
+  "With Me.",
+  "NYX.",
 ];
+
+type HeroStatementPhase = "enter" | "hold" | "exit" | "fade";
+
+const HERO_STATEMENT_DURATION = 3000;
+// Kept for easy restoration if the explanation video returns later.
+const SHOW_EXPLANATION_VIDEO = false;
 
 const page = (n: number) => `/landing/pages/page-${String(n).padStart(2, "0")}.jpg`;
 
@@ -82,19 +99,39 @@ const decay = [
 const beliefs = [
   {
     title: "Your face is not fate",
-    text: "Genetics are a starting point, not a final verdict.",
+    summary: "Facial muscles respond to deliberate, consistent training.",
+    body: [
+      "Genetics are a starting point, not a final verdict. Like the rest of the body, the face contains muscles that respond to consistent use. Targeted facial exercises, massage, and better resting patterns can build tone, balance movement, and change how the face is held over time.",
+      "The goal is not to become someone else. It is to train what is already yours so your natural structure looks more defined, balanced, and alive.",
+    ],
+    tagline: "Inherited features. Trainable expression.",
   },
   {
     title: "Structure follows tension",
-    text: "Muscles pull bone; consistent tension remodels the structure beneath.",
+    summary: "Balanced work helps uneven muscular patterns return to harmony.",
+    body: [
+      "The face is a connected system of muscles, and those muscles do not always pull evenly. Habit, posture, expression, and favoring one side can create competing lines of tension that make the face rest out of alignment and appear less harmonious.",
+      "Training both sides deliberately helps rebalance those patterns. As the muscles learn to work together, the face can settle into a cleaner, more symmetrical expression of its natural structure.",
+    ],
+    tagline: "Balance the pull. Restore the line.",
   },
   {
-    title: "The back anchors the front",
-    text: "The neck and occiput control the jaw, the cheeks, the eyes.",
+    title: "Signal Coherence",
+    summary: "When expression aligns, the face broadcasts presence—and people respond.",
+    body: [
+      "How you feel and how you look are not separate systems. When the jaw, neck, eyes, posture, and resting expression work together, the face becomes easier to read: it broadcasts one coherent signal instead of a collection of competing tensions. Vostok calls this Signal Coherence.",
+      "That outward signal shapes the social loop. When you look present and self-possessed, people respond more positively; their response reinforces how you feel, and that inner state returns to the face. Appearance, reaction, and confidence begin to support one another.",
+    ],
+    tagline: "Look aligned. Feel aligned. Be read clearly.",
   },
   {
     title: "Refinement is a system",
-    text: "Levels, hours, and measurable results — not habits and hope.",
+    summary: "The right routine turns small changes into visible progress.",
+    body: [
+      "Refinement does not come from one magic movement. It comes from a proper routine: the right exercises, performed with the right form, in a sequence that develops the whole face instead of chasing isolated features.",
+      "Small improvements compound through consistent practice. With structure, progression, and enough time, the face naturally becomes stronger, more balanced, and more refined.",
+    ],
+    tagline: "Routine creates refinement.",
   },
 ];
 
@@ -333,11 +370,10 @@ const faqs: { q: string; sub?: string; a: string }[] = [
   },
 ];
 
-// side-profile videos in the Nyx challenge section — arrows cycle through them
-const nyxVideos = [
-  { src: "/landing/video/nyx-profile.mp4", caption: "Nyx — side profile, unedited." },
-  { src: "/videos/le_mogge.mp4", caption: "Le mog — side profile, unedited." },
-];
+const nyxVideo = {
+  src: "/landing/video/nyx-profile.mp4",
+  caption: "Nyx — side profile, unedited.",
+};
 
 type JourneyImage = string | { mobile: string; desktop: string };
 
@@ -346,14 +382,12 @@ const journeyStages: {
   hours: string;
   color?: string;
   img: JourneyImage;
-  focus: string;
   zoom: string;
 }[] = [
   {
     title: "Before",
     hours: "Hour zero",
     img: { mobile: "/landing/journey/before-mobile.webp", desktop: "/landing/journey/before-desktop.webp" },
-    focus: "The starting point — untrained, unsculpted.",
     zoom:
       "Hour zero. Untrained muscles, a forward neck, asymmetry left to run for years. This is the raw material every face in the program starts from.",
   },
@@ -362,7 +396,6 @@ const journeyStages: {
     hours: "20 hours",
     color: "#d4b04a",
     img: "/landing/journey/belt-yellow.jpg",
-    focus: "Build the muscles. 90% exercises, 10% massage.",
     zoom:
       "Yellow belt — the first twenty hours. Pure construction: 90% exercises, 10% massage. The muscles of the face wake up and begin pulling the structure taut.",
   },
@@ -371,7 +404,6 @@ const journeyStages: {
     hours: "40 hours",
     color: "#3d5a99",
     img: "/landing/journey/belt-blue.jpg",
-    focus: "Refine. 65% exercises, 30% massage, 5% refinement.",
     zoom:
       "Blue belt — forty hours in, roughly one full point gained on the scale. Exercises still lead, massage grows to 30%, and the first refinement work begins.",
   },
@@ -380,7 +412,6 @@ const journeyStages: {
     hours: "70 hours",
     color: "#4a7a5a",
     img: "/landing/journey/belt-green.jpg",
-    focus: "Precision. 50% exercises, 40% massage, 10% refinement.",
     zoom:
       "Green belt — seventy hours. Precision work: the split moves to 50/40/10 as massage and targeted refinement take over from raw building.",
   },
@@ -389,7 +420,6 @@ const journeyStages: {
     hours: "100+ hours",
     color: "#1b1b1f",
     img: "/landing/journey/belt-black.jpg",
-    focus: "Mastery. 20% exercises, 40% massage, 40% refinement.",
     zoom:
       "Black belt — one hundred hours and beyond. Mastery: 20% exercises, 40% massage, 40% refinement. The structure now holds itself.",
   },
@@ -397,7 +427,6 @@ const journeyStages: {
     title: "After",
     hours: "The other side",
     img: { mobile: "/landing/journey/after-mobile.webp", desktop: "/landing/journey/after-desktop.webp" },
-    focus: "Trained, symmetrical, restructured.",
     zoom:
       "The other side of one hundred hours. Trained, symmetrical, restructured — and permanent. This is what the protocol builds.",
   },
@@ -414,12 +443,6 @@ const journeyImg = (img: JourneyImage, alt: string) =>
       <img src={img.mobile} alt={alt} loading="lazy" />
     </picture>
   );
-
-const fatSlides = [
-  { src: "/landing/anatomy/fat-map.jpg", alt: "Map of facial fat distribution, front view" },
-  { src: "/landing/anatomy/fat-map-side.jpg", alt: "Map of facial fat distribution, three-quarter view" },
-  { src: "/landing/anatomy/fat-map-etch.jpg", alt: "Engraved anatomical profile of the head" },
-];
 
 const articles = [
   {
@@ -438,11 +461,10 @@ const articles = [
 
 const Landing = () => {
   const [entrySource, setEntrySource] = useState("direct");
-  const [slideIndex, setSlideIndex] = useState(0);
-  const [fatIndex, setFatIndex] = useState(0);
+  const [heroStatementIndex, setHeroStatementIndex] = useState(0);
+  const [heroStatementPhase, setHeroStatementPhase] = useState<HeroStatementPhase>("enter");
   const [chapterIndex, setChapterIndex] = useState(0);
-  const [bandIndex, setBandIndex] = useState(0);
-  const [nyxIndex, setNyxIndex] = useState(0);
+  const [beliefIndex, setBeliefIndex] = useState(0);
   // default to "After" — lead with the destination
   const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
   // FAQ: one open question at a time; its answer crossfades in over the
@@ -466,9 +488,12 @@ const Landing = () => {
       setFaqFading(false);
     }, 200);
   };
-  // Collapsible sections — every big content block can be folded away behind
-  // its heading (open by default) so mobile isn't one endless scroll.
-  const [closedSections, setClosedSections] = useState<Record<string, boolean>>({});
+  // These denser sections start folded and open when the reader requests them.
+  const [closedSections, setClosedSections] = useState<Record<string, boolean>>({
+    diagnosis: true,
+    method: true,
+    book: true,
+  });
   const toggleSection = (id: string) =>
     setClosedSections((prev) => ({ ...prev, [id]: !prev[id] }));
 
@@ -497,12 +522,9 @@ const Landing = () => {
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
   const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
   const pagesStripRef = useRef<HTMLDivElement | null>(null);
-  const [paused, setPaused] = useState(false);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [barShown, setBarShown] = useState(false);
   const heroRef = useRef<HTMLElement | null>(null);
-  const thumbsRef = useRef<HTMLDivElement | null>(null);
-  const touchStartX = useRef<number | null>(null);
 
   useEffect(() => {
     checkAndSetOwnerParam();
@@ -571,34 +593,38 @@ const Landing = () => {
     };
   }, []);
 
-  // Hero slideshow effects — temporarily hidden along with the hero carousel JSX,
-  // uncomment both together to restore
-  // // Slideshow autoplay
-  // useEffect(() => {
-  //   if (lightboxSrc || paused) return undefined;
-  //   const id = setInterval(() => {
-  //     setSlideIndex((i) => (i + 1) % slides.length);
-  //   }, 6000);
-  //   return () => clearInterval(id);
-  // }, [lightboxSrc, paused]);
-
-  // // Keep the active thumbnail in view — scroll ONLY the strip itself,
-  // // never the page (scrollIntoView can hijack the page's vertical scroll)
-  // useEffect(() => {
-  //   const strip = thumbsRef.current;
-  //   const active = strip?.children[slideIndex] as HTMLElement | undefined;
-  //   if (!strip || !active) return;
-  //   const left = active.offsetLeft - strip.clientWidth / 2 + active.clientWidth / 2;
-  //   strip.scrollTo({ left, behavior: "smooth" });
-  // }, [slideIndex]);
-
-  // Fat-map figure slideshow
+  // The hero manifesto enters from the right, holds for a reading-length
+  // interval, and exits left. The final line fades before the loop restarts.
   useEffect(() => {
-    const id = setInterval(() => {
-      setFatIndex((i) => (i + 1) % fatSlides.length);
-    }, 4200);
-    return () => clearInterval(id);
-  }, []);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setHeroStatementPhase("hold");
+      return undefined;
+    }
+
+    const isLast = heroStatementIndex === heroStatements.length - 1;
+    const enterDuration = 650;
+    const exitDuration = isLast ? 900 : 650;
+    let secondFrame = 0;
+
+    const firstFrame = window.requestAnimationFrame(() => {
+      secondFrame = window.requestAnimationFrame(() => setHeroStatementPhase("hold"));
+    });
+    const exitTimer = window.setTimeout(
+      () => setHeroStatementPhase(isLast ? "fade" : "exit"),
+      enterDuration + HERO_STATEMENT_DURATION
+    );
+    const advanceTimer = window.setTimeout(() => {
+      setHeroStatementPhase("enter");
+      setHeroStatementIndex((index) => (index + 1) % heroStatements.length);
+    }, enterDuration + HERO_STATEMENT_DURATION + exitDuration);
+
+    return () => {
+      window.cancelAnimationFrame(firstFrame);
+      window.cancelAnimationFrame(secondFrame);
+      window.clearTimeout(exitTimer);
+      window.clearTimeout(advanceTimer);
+    };
+  }, [heroStatementIndex]);
 
   // Sticky buy bar appears once the hero is mostly gone
   useEffect(() => {
@@ -648,13 +674,11 @@ const Landing = () => {
   // The explanation video always starts muted — the big audio button (or the
   // native controls) unmutes it on demand.
   useEffect(() => {
-    setExplainMuted(true);
-    if (bandIndex !== 1) return;
     const video = explainRef.current;
     if (!video) return;
     video.muted = true;
     video.play().catch(() => {});
-  }, [bandIndex]);
+  }, []);
 
   const toggleExplainAudio = () => {
     const video = explainRef.current;
@@ -672,11 +696,6 @@ const Landing = () => {
     setChapterIndex(index);
     pagesStripRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
-
-  const goToSlide = useCallback((index: number) => {
-    setSlideIndex(((index % slides.length) + slides.length) % slides.length);
-    setPaused(true);
-  }, []);
 
   const fireBuyTracking = (location: string) => {
     markBuyClicked();
@@ -703,10 +722,6 @@ const Landing = () => {
     }
     trackSafe("buy_click", { location, source: entrySource });
     trackSafe(`buy_click_${entrySource}`, { location });
-  };
-
-  const scrollToMethod = () => {
-    document.getElementById("method")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const journeyThumb = (i: number) => {
@@ -773,186 +788,83 @@ const Landing = () => {
           </Link>
         </nav>
         <h1 className="vl-hero-title">
-          <img className="vl-hero-logo" src="/logo/logo-mark.png" alt="" aria-hidden="true" />
+          <img className="vl-hero-logo" src="/logo/logo-runner.webp" alt="" aria-hidden="true" />
           VØSTOK
-          <div className="vl-hero-subtitle">The Facial Restructuring Protocol</div>
+          <div className="vl-hero-subtitle">To Raise the Spirit of Man</div>
         </h1>
 
         <div className="vl-hero-stack">
-          {/* Hero slideshow — temporarily hidden, remove this comment wrapper to restore
-          <p className="vl-hero-eyebrow">Documented Transformations</p>
-          <div
-            className="vl-carousel"
-            onClick={() => setLightboxSrc(slides[slideIndex])}
-            onTouchStart={(event) => {
-              touchStartX.current = event.touches[0].clientX;
-            }}
-            onTouchEnd={(event) => {
-              if (touchStartX.current === null) return;
-              const delta = event.changedTouches[0].clientX - touchStartX.current;
-              touchStartX.current = null;
-              if (Math.abs(delta) > 45) goToSlide(slideIndex + (delta < 0 ? 1 : -1));
-            }}
-          >
-            <div className="vl-carousel-track" style={{ transform: `translateX(-${slideIndex * 100}%)` }}>
-              {slides.map((slide) => (
-                <div key={slide} className="vl-carousel-slide" style={{ backgroundImage: `url(${slide})` }} />
-              ))}
-            </div>
-            <div className="vl-carousel-caption">
-              <span>Before · After</span>
-              <span>
-                {slideIndex + 1} / {slides.length}
-              </span>
-            </div>
-            <button
-              className="vl-carousel-nav vl-carousel-nav--prev"
-              aria-label="Previous transformation"
-              onClick={(event) => {
-                event.stopPropagation();
-                goToSlide(slideIndex - 1);
-              }}
+          <div className="vl-hero-manifesto">
+            <p
+              className={`vl-hero-message vl-hero-message--${heroStatementPhase}`}
+              aria-hidden="true"
             >
-              ‹
-            </button>
-            <button
-              className="vl-carousel-nav vl-carousel-nav--next"
-              aria-label="Next transformation"
-              onClick={(event) => {
-                event.stopPropagation();
-                goToSlide(slideIndex + 1);
-              }}
-            >
-              ›
-            </button>
+              {heroStatements[heroStatementIndex]}
+            </p>
+            <p className="vl-sr-only">{heroStatements.join(" ")}</p>
           </div>
-
-          <div className="vl-thumbs" ref={thumbsRef}>
-            {slides.map((slide, i) => (
-              <button
-                key={slide}
-                className={`vl-thumb${i === slideIndex ? " vl-thumb--active" : ""}`}
-                style={{ backgroundImage: `url(${slide})` }}
-                onClick={() => goToSlide(i)}
-                aria-label={`Show transformation ${i + 1}`}
-              />
-            ))}
-          </div>
-          */}
-
-          <div className="vl-button-row">
-            <a
-              className="vl-buy"
-              href={BUY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fireBuyTracking("hero")}
-            >
-              Buy Now — $30
-            </a>
-            <button className="vl-ghost" onClick={scrollToMethod}>
-              What is the Vostok Method
-            </button>
-          </div>
-          <p className="vl-hero-note">One-time purchase · instant digital access · yours for life</p>
         </div>
       </section>
 
       {/* Dark interlude — the origin myth */}
       <section className="vl-dark" id="origin">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/corridor.webp)" }} aria-hidden="true" />
+        <div
+          className="vl-dark-bg"
+          style={{ backgroundImage: "url(/obsidian/origin-stairway.webp)" }}
+          aria-hidden="true"
+        />
         <div className="vl-dark-inner">
-          <p className="vl-kicker vl-reveal">The Origin</p>
           <h2 className="vl-dark-quote vl-reveal">
             We are the angels <em>mixed with apes.</em>
           </h2>
           <p className="vl-dark-text vl-reveal">
-            There are many stories of men mixing with angels. The truth is — we are the angels. They gave
-            us strength; we gave them beauty and intelligence. Before language could promise trust, the
-            face already did. The ancient face led tribes, brokered peace, and chose kings. It was built
-            by a life we no longer live.
+            Before language could promise trust, the face already did.
+          </p>
+          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
+            The face communicates more than language ever could. So why is your face unworked. Why is it
+            like a fat lazy guy. Start the journey, to have the face of an angel.
           </p>
         </div>
       </section>
 
       {/* The Diagnosis */}
       <section className="vl-section" id="diagnosis">
-        {/* no vl-reveal here: this element's className changes with bandIndex and a
-            React re-render would wipe the observer-added vl-visible class */}
-        <div className={`vl-video-band${bandIndex === 1 ? " vl-video-band--plain" : ""}`}>
-          {bandIndex === 0 ? (
-            <video
-              key="city"
-              src="/landing/video/city.mp4"
-              poster="/landing/video/city-poster.jpg"
-              autoPlay
-              muted
-              playsInline
-              onEnded={() => setBandIndex(1)}
-              aria-hidden="true"
-            />
-          ) : (
-            <video
-              key="explain"
-              ref={explainRef}
-              src={
-                typeof window !== "undefined" && window.innerWidth >= 900
-                  ? "/website_video_compress.mp4"
-                  : "/website_video_compress_mobile.mp4"
-              }
-              autoPlay
-              muted
-              controls
-              playsInline
-              onEnded={() => setBandIndex(0)}
-            />
-          )}
-          {bandIndex === 1 && (
-            <button
-              className={`vl-band-audio${explainMuted ? " vl-band-audio--muted" : ""}`}
-              aria-label={explainMuted ? "Unmute video" : "Mute video"}
-              onClick={toggleExplainAudio}
-            >
-              {explainMuted ? (
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
-                  <path d="M16.6 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4z" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
-                  <path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z" />
-                  <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                </svg>
-              )}
-            </button>
-          )}
-          {bandIndex === 0 ? (
-            <p>
-              The ancient caveman was a supermodel — by lifestyle and force of movement alone. So why
-              can't we recreate it? <em>The answer: we can.</em>
-            </p>
-          ) : (
+        {/* Disabled for now. Change SHOW_EXPLANATION_VIDEO to true to restore this video. */}
+        {SHOW_EXPLANATION_VIDEO && (
+          <div className="vl-video-band vl-video-band--plain">
+          <video
+            ref={explainRef}
+            src={
+              typeof window !== "undefined" && window.innerWidth >= 900
+                ? "/website_video_compress.mp4"
+                : "/website_video_compress_mobile.mp4"
+            }
+            autoPlay
+            muted
+            controls
+            playsInline
+          />
+          <button
+            className={`vl-band-audio${explainMuted ? " vl-band-audio--muted" : ""}`}
+            aria-label={explainMuted ? "Unmute video" : "Mute video"}
+            onClick={toggleExplainAudio}
+          >
+            {explainMuted ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                <path d="M16.6 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4z" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                <path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z" />
+                <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+              </svg>
+            )}
+          </button>
             <span className="vl-band-label">Why use the Vostok Method</span>
-          )}
-          {bandIndex === 0 ? (
-            <button
-              className="vl-band-nav vl-band-nav--next"
-              aria-label="Play: Why use the Vostok Method"
-              onClick={() => setBandIndex(1)}
-            >
-              ›
-            </button>
-          ) : (
-            <button
-              className="vl-band-nav vl-band-nav--prev"
-              aria-label="Back to the first video"
-              onClick={() => setBandIndex(0)}
-            >
-              ‹
-            </button>
-          )}
-        </div>
+          </div>
+        )}
         <div className="vl-reveal">
           <p className="vl-kicker">The Diagnosis</p>
           <div className="vl-h2-row" onClick={() => toggleSection("diagnosis")}>
@@ -963,7 +875,6 @@ const Landing = () => {
           </div>
         </div>
         <div className={collapseClass("diagnosis")}>
-        <div className="vl-diagnosis-grid">
           <div className="vl-decay-grid">
             {decay.map((item) => (
               <div key={item.title} className="vl-decay vl-reveal">
@@ -972,31 +883,6 @@ const Landing = () => {
               </div>
             ))}
           </div>
-          <figure className="vl-fat-figure vl-reveal">
-            <div className="vl-fat-slides" onClick={() => setFatIndex((i) => (i + 1) % fatSlides.length)}>
-              {fatSlides.map((slide, i) => (
-                <img
-                  key={slide.src}
-                  src={slide.src}
-                  alt={slide.alt}
-                  loading="lazy"
-                  className={i === fatIndex ? "vl-fat-slide--active" : ""}
-                />
-              ))}
-            </div>
-            <div className="vl-fat-dots">
-              {fatSlides.map((slide, i) => (
-                <button
-                  key={slide.src}
-                  className={i === fatIndex ? "vl-fat-dot--active" : ""}
-                  onClick={() => setFatIndex(i)}
-                  aria-label={`Show anatomy image ${i + 1}`}
-                />
-              ))}
-            </div>
-            <figcaption>Where facial fat sits — the map Vostok resculpts.</figcaption>
-          </figure>
-        </div>
         </div>
       </section>
 
@@ -1013,16 +899,17 @@ const Landing = () => {
         </div>
         <div className={collapseClass("method")}>
         <div className="vl-method-grid">
-          <div className="vl-reveal">
-            <p className="vl-lead">
-              The Vostok Method is a structured system of facial muscle training and massage designed to
-              maximize your natural appearance. The face is treated as a trainable system: natural
-              exercises, targeted massage, and postural correction lift, define, and refine facial
-              architecture — permanently.
-            </p>
-            <p className="vl-not-line">
-              Not skincare · Not surgery · Not bro&#8209;science — <strong>structural engineering</strong>
-            </p>
+          <div className="vl-method-copy vl-reveal" aria-live="polite">
+            <div className="vl-method-copy-inner" key={beliefs[beliefIndex].title}>
+              <p className="vl-method-copy-kicker">
+                Principle {String(beliefIndex + 1).padStart(2, "0")}
+              </p>
+              <h3>{beliefs[beliefIndex].title}</h3>
+              {beliefs[beliefIndex].body.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              <p className="vl-method-tagline">{beliefs[beliefIndex].tagline}</p>
+            </div>
           </div>
           <figure className="vl-method-figure vl-reveal">
             <img
@@ -1033,11 +920,20 @@ const Landing = () => {
             <figcaption>The trainable system — every muscle in the book.</figcaption>
           </figure>
           <div className="vl-beliefs vl-reveal">
-            {beliefs.map((belief) => (
-              <div key={belief.title} className="vl-belief">
-                <h3>{belief.title}</h3>
-                <p>{belief.text}</p>
-              </div>
+            {beliefs.map((belief, index) => (
+              <button
+                type="button"
+                key={belief.title}
+                className={`vl-belief${index === beliefIndex ? " vl-belief--active" : ""}`}
+                onClick={() => setBeliefIndex(index)}
+                aria-pressed={index === beliefIndex}
+              >
+                <span className="vl-belief-title">{belief.title}</span>
+                <span className="vl-belief-summary">{belief.summary}</span>
+                <span className="vl-belief-cue" aria-hidden="true">
+                  {index === beliefIndex ? "Reading" : "Read"}
+                </span>
+              </button>
             ))}
           </div>
         </div>
@@ -1090,40 +986,33 @@ const Landing = () => {
         </div>
         </div>
 
-        {/* Signal Coherence — the concept behind the results */}
+        {/* Vostok — the company behind the method */}
         <div className="vl-signal vl-reveal">
           <div className="vl-signal-lead">
-            <p className="vl-kicker">Signal Coherence</p>
-            <div className="vl-h2-row" onClick={() => toggleSection("signal")}>
+            <p className="vl-kicker">The Company</p>
+            <div className="vl-h2-row" onClick={() => toggleSection("vostok")}>
               <h3>
-                A face is not a collection of features. It's a <em>transmission.</em>
+                What is <em>VØSTOK?</em>
               </h3>
-              {sectionArrow("signal")}
+              {sectionArrow("vostok")}
             </div>
           </div>
-          <div className={collapseClass("signal")}>
+          <div className={collapseClass("vostok")}>
           <div className="vl-signal-body">
             <p>
-              Facial aesthetics research has a name for a quiet phenomenon — <strong>structural
-              legibility</strong>: a face becomes easier to read, easier to trust, easier to find
-              attractive not because any single feature improved dramatically, but because the whole
-              system starts broadcasting one coherent signal. Your face before wasn't a bad face. It
-              was a good face not fully online. Training brings the hardware into alignment with the
-              signal it was always supposed to send.
+              <strong>VOSTOK is a human-evolution company</strong> founded on a single belief: human
+              beings were meant to evolve. Its purpose extends beyond profit, technology or any one
+              product category—to create physical, spiritual and technological systems that help
+              people become more capable, conscious and complete.
             </p>
             <p>
-              Vostok's name for that moment is <strong>Signal Coherence</strong> — when a face stops
-              being a collection of features and becomes a transmission. It's why people respond
-              differently to you in person before they can explain why. It's why photos never fully
-              capture it. It's why it feels like magic: the change isn't in any one measurable place,
-              it's in the relationship between all the parts. The jaw, the neck, the eyes, the resting
-              expression — trained and coordinated, the face broadcasts presence instead of just
-              existing in the frame.
-            </p>
-            <p>
-              Which is also why it's nearly impossible to fake in a photo, and nearly impossible to
-              deny in person. Signal Coherence isn't a feature you can point at. It's the output of
-              the whole system — and it's what the hundred hours are for.
+              VOSTOK begins with the face because appearance shapes daily perception, confidence and
+              human interaction; its first product is a practical guide to developing that signal
+              through discipline and intentional practice. From there, VOSTOK will expand into
+              enduring personal and household technologies—from self-restoring footwear to adaptive
+              silverware and furniture—designed to replace disposable consumption with intelligent
+              objects that continuously reform around human needs. <strong>The face is simply the
+              first frontier.</strong>
             </p>
           </div>
           </div>
@@ -1178,57 +1067,32 @@ const Landing = () => {
 
       {/* Dark interlude — Nyx's challenge */}
       <section className="vl-dark" id="nyx">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/pyramid.webp)" }} aria-hidden="true" />
+        <div
+          className="vl-dark-bg"
+          style={{ backgroundImage: "url(/obsidian/nyx-challenge.webp)" }}
+          aria-hidden="true"
+        />
         <div className="vl-dark-inner vl-nyx-grid">
           <div>
-            <p className="vl-kicker vl-reveal">A Challenge from Nyx</p>
-            <h2 className="vl-dark-quote vl-reveal">
-              Give me the first <em>twenty hours.</em>
-            </h2>
+            <h2 className="vl-dark-quote vl-reveal">Just try it.</h2>
             <p className="vl-dark-text vl-reveal">
-              Take before-and-after photos. You're ugly. It's society's fault. But my job is to fix it —
-              and fix it, I will.
+              You're ugly. It's society's fault. But my job is to fix it — and fix it, I will.
             </p>
-            <p className="vl-dark-sig vl-reveal">— Nyx, author of the Vostok Method</p>
-            <div className="vl-button-row vl-reveal">
-              <a
-                className="vl-buy vl-buy--light"
-                href={BUY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => fireBuyTracking("nyx")}
-              >
-                Accept the Challenge — $30
-              </a>
-            </div>
+            <p className="vl-dark-sig vl-reveal">-NYX</p>
           </div>
-          <figure className="vl-nyx-video vl-reveal">
-            <div className="vl-nyx-frame">
-              <video
-                key={nyxVideos[nyxIndex].src}
-                src={nyxVideos[nyxIndex].src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                onClick={() => setVideoZoom(nyxVideos[nyxIndex].src)}
-              />
-              <button
-                className="vl-nyx-nav vl-nyx-nav--prev"
-                aria-label="Previous side profile"
-                onClick={() => setNyxIndex((nyxIndex + nyxVideos.length - 1) % nyxVideos.length)}
-              >
-                ‹
-              </button>
-              <button
-                className="vl-nyx-nav vl-nyx-nav--next"
-                aria-label="Next side profile"
-                onClick={() => setNyxIndex((nyxIndex + 1) % nyxVideos.length)}
-              >
-                ›
-              </button>
-            </div>
-            <figcaption>{nyxVideos[nyxIndex].caption}</figcaption>
+          <figure className="vl-nyx-video-launcher vl-reveal">
+            <button
+              type="button"
+              className="vl-nyx-play"
+              aria-label="Play Nyx side-profile video"
+              onClick={() => setVideoZoom(nyxVideo.src)}
+            >
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <circle cx="32" cy="32" r="29" />
+                <path d="M26 20l20 12-20 12z" />
+              </svg>
+            </button>
+            <figcaption>{nyxVideo.caption}</figcaption>
           </figure>
         </div>
       </section>
@@ -1239,16 +1103,12 @@ const Landing = () => {
           <p className="vl-kicker">The Journey</p>
           <div className="vl-h2-row" onClick={() => toggleSection("journey")}>
             <h2 className="vl-h2">
-              One hundred hours. <em>Measured</em> progress.
+              One hundred hours.
             </h2>
             {sectionArrow("journey")}
           </div>
         </div>
         <div className={collapseClass("journey")}>
-        <p className="vl-lead">
-          Vostok counts in hours, not luck. Twenty hours in, the face wakes up; a hundred hours in,
-          it's rebuilt. The belts are just mile markers along the way.
-        </p>
         <div className="vl-journey-slide vl-reveal">
           <button
             className="vl-journey-main"
@@ -1274,7 +1134,6 @@ const Landing = () => {
               {journeyStages[journeyIndex].title}
             </h3>
             <span className="vl-belt-hours">{journeyStages[journeyIndex].hours}</span>
-            <p>{journeyStages[journeyIndex].focus}</p>
           </div>
           <div className="vl-journey-strip">
             <button
@@ -1302,20 +1161,6 @@ const Landing = () => {
             >
               ›
             </button>
-          </div>
-        </div>
-        <div className="vl-journey-facts">
-          <div className="vl-journey-fact vl-reveal">
-            <strong>40 hours ≈ one full point</strong>
-            <p>Consistent work moves a 6/10 toward a 7/10. The world responds — subtly at first, then unmistakably.</p>
-          </div>
-          <div className="vl-journey-fact vl-reveal">
-            <strong>1–2 hours a week</strong>
-            <p>That's the baseline. Precision matters more than intensity — this is a long game.</p>
-          </div>
-          <div className="vl-journey-fact vl-reveal">
-            <strong>Twice a week, one year</strong>
-            <p>Then you're done — and never have to do it again.</p>
           </div>
         </div>
         </div>
@@ -1477,27 +1322,24 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Final CTA — dark */}
+      {/* Closing statement — dark */}
       <section className="vl-dark vl-dark--center" id="purchase">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/portal.webp)" }} aria-hidden="true" />
+        <div className="vl-dark-bg vl-dark-bg--video" aria-hidden="true">
+          <video
+            src="/landing/video/evolution-portal-loop.mp4"
+            poster="/obsidian/evolution-portal.webp"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          />
+        </div>
         <div className="vl-dark-inner">
-          <p className="vl-kicker vl-reveal">The Vostok Method</p>
+          <p className="vl-kicker vl-purchase-kicker vl-reveal">The Vostok Method</p>
           <h2 className="vl-dark-quote vl-reveal">
-            Begin your <em>restructuring.</em>
+            The Evolution of the <em>Human Spirit</em>
           </h2>
-          <p className="vl-dark-text vl-reveal">One book. The complete protocol, start to finish.</p>
-          <div className="vl-button-row vl-reveal">
-            <a
-              className="vl-buy vl-buy--light"
-              href={BUY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fireBuyTracking("footer")}
-            >
-              Buy Now — $30
-            </a>
-          </div>
-          <p className="vl-price-note vl-reveal">Instant digital access</p>
         </div>
       </section>
 
