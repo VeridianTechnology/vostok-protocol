@@ -52,21 +52,12 @@ const chapterFilters: { name: string; items: string[] }[] = [
   { name: "All", items: [22, 20, 1, 3, 8, 12, 15, 13, 21, 24].map(page) },
   { name: "Jawline", items: [22, 21, 13, 15].map(page) },
   { name: "Chin", items: [page(20), page(19)] },
-  { name: "Lips", items: [page(18), page(19)] },
   { name: "Eyes", items: [1, 2, 3].map(page) },
-  { name: "Cheeks", items: [page(4), page(17)] },
-  { name: "Brow", items: [page(5), page(7)] },
   { name: "Scalp & Hair", items: [page(6), "/landing/technique/scalp-lift.jpg"] },
   { name: "Nose", items: [page(8), page(9)] },
   { name: "Tongue", items: [10, 11, 12].map(page) },
   { name: "Ears", items: [page(14), "/landing/technique/ear-pull.jpg"] },
   { name: "Neck", items: [page(23), page(24), "/landing/technique/neck-rotation.jpg"] },
-  {
-    name: "Gua Sha",
-    items: [page(15), "/landing/technique/jaw-guasha.jpg", "/landing/technique/guasha-forehead.jpg"],
-  },
-  { name: "Supplements", items: [page(16)] },
-  { name: "Lifestyle", items: [page(13)] },
 ];
 
 const decay = [
@@ -215,21 +206,6 @@ const evidenceArticles = [
   },
 ];
 
-const bookQuotes = [
-  {
-    quote: "The Butt-Jaw Connection: the chain that runs from your hamstrings to your jawline.",
-    source: "Chapter 2.5",
-  },
-  {
-    quote: "The mirror lies. Take an unflattering straight-on selfie — that's where the truth shows.",
-    source: "On asymmetry",
-  },
-  {
-    quote: "The five historical nose types — Greek, Roman, Nubian, Snub, Hawk — and how to work each one.",
-    source: "Chapter 7.2",
-  },
-];
-
 // FAQ — Nyx answers in her own voice; lightly edited, never sanitized.
 const faqs: { q: string; sub?: string; a: string }[] = [
   {
@@ -370,10 +346,17 @@ const faqs: { q: string; sub?: string; a: string }[] = [
   },
 ];
 
-const nyxVideo = {
-  src: "/landing/video/nyx-profile.mp4",
-  caption: "Nyx — side profile, unedited.",
-};
+const nyxVideos = [
+  {
+    src: "/videos/le_mogge-muted.mp4",
+    caption: "NYX Side Profile #1",
+    thumbnail: "/videos/03.jpg",
+  },
+  {
+    src: "/videos/nyx-profile.mp4",
+    caption: "NYX Side Profile #2",
+  },
+];
 
 type JourneyImage = string | { mobile: string; desktop: string };
 
@@ -467,10 +450,10 @@ const Landing = () => {
   const [beliefIndex, setBeliefIndex] = useState(0);
   // default to "After" — lead with the destination
   const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
-  // FAQ: one open question at a time; its answer crossfades in over the
-  // portrait (photo shows when nothing is open; × closes back to the photo)
+  // FAQ: one open question at a time. The selected row exits to the right
+  // before its larger answer panel is revealed above the remaining questions.
   const [faqIndex, setFaqIndex] = useState<number | null>(null);
-  const [faqFading, setFaqFading] = useState(false);
+  const [faqExitingIndex, setFaqExitingIndex] = useState<number | null>(null);
   const faqTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -480,19 +463,27 @@ const Landing = () => {
   }, []);
 
   const selectFaq = (index: number) => {
-    const target = index === faqIndex ? null : index;
-    setFaqFading(true);
+    if (index === faqIndex) {
+      setFaqIndex(null);
+      return;
+    }
+
     if (faqTimer.current) window.clearTimeout(faqTimer.current);
+    setFaqExitingIndex(index);
     faqTimer.current = window.setTimeout(() => {
-      setFaqIndex(target);
-      setFaqFading(false);
-    }, 200);
+      setFaqIndex(index);
+      setFaqExitingIndex(null);
+    }, 360);
   };
   // These denser sections start folded and open when the reader requests them.
   const [closedSections, setClosedSections] = useState<Record<string, boolean>>({
     diagnosis: true,
     method: true,
+    results: true,
     book: true,
+    journey: true,
+    dispatches: true,
+    faq: true,
   });
   const toggleSection = (id: string) =>
     setClosedSections((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -789,7 +780,7 @@ const Landing = () => {
         </nav>
         <h1 className="vl-hero-title">
           <img className="vl-hero-logo" src="/logo/logo-runner.webp" alt="" aria-hidden="true" />
-          VØSTOK
+          <span className="vl-hero-wordmark">VØSTOK</span>
           <div className="vl-hero-subtitle">To Raise the Spirit of Man</div>
         </h1>
 
@@ -869,7 +860,7 @@ const Landing = () => {
           <p className="vl-kicker">The Diagnosis</p>
           <div className="vl-h2-row" onClick={() => toggleSection("diagnosis")}>
             <h2 className="vl-h2">
-              The modern world <em>un-sculpted</em> you.
+              Society Keeps You <em>Ugly.</em>
             </h2>
             {sectionArrow("diagnosis")}
           </div>
@@ -892,7 +883,7 @@ const Landing = () => {
           <p className="vl-kicker">The Method</p>
           <div className="vl-h2-row" onClick={() => toggleSection("method")}>
             <h2 className="vl-h2">
-              Your face is <em>not</em> fate.
+              You Can Change the <em>Face</em>
             </h2>
             {sectionArrow("method")}
           </div>
@@ -913,11 +904,24 @@ const Landing = () => {
           </div>
           <figure className="vl-method-figure vl-reveal">
             <img
-              src="/landing/anatomy/muscle-plate.jpg"
-              alt="Anatomical plate of the facial and neck muscles"
+              key={beliefIndex}
+              src={
+                beliefIndex === 0
+                  ? "/Differences2/02.webp"
+                  : "/landing/anatomy/muscle-plate.jpg"
+              }
+              alt={
+                beliefIndex === 0
+                  ? "Side-by-side views showing visible facial change"
+                  : "Anatomical plate of the facial and neck muscles"
+              }
               loading="lazy"
             />
-            <figcaption>The trainable system — every muscle in the book.</figcaption>
+            <figcaption>
+              {beliefIndex === 0
+                ? "You can change the face — visible progress, side by side."
+                : "The trainable system — every muscle in the book."}
+            </figcaption>
           </figure>
           <div className="vl-beliefs vl-reveal">
             {beliefs.map((belief, index) => (
@@ -946,7 +950,7 @@ const Landing = () => {
           <p className="vl-kicker">What It Gives You</p>
           <div className="vl-h2-row" onClick={() => toggleSection("results")}>
             <h2 className="vl-h2">
-              Trained, not <em>inherited.</em>
+              Vostok is the <em>Way</em>
             </h2>
             {sectionArrow("results")}
           </div>
@@ -1025,7 +1029,7 @@ const Landing = () => {
           <p className="vl-kicker">Inside the Book</p>
           <div className="vl-h2-row" onClick={() => toggleSection("book")}>
             <h2 className="vl-h2">
-              Open the <em>guide.</em>
+              Test Before You <em>Buy</em>
             </h2>
             {sectionArrow("book")}
           </div>
@@ -1054,14 +1058,6 @@ const Landing = () => {
             </button>
           ))}
         </div>
-        <div className="vl-book-quotes">
-          {bookQuotes.map((q) => (
-            <div key={q.source} className="vl-book-quote vl-reveal">
-              <p>“{q.quote}”</p>
-              <span>{q.source}</span>
-            </div>
-          ))}
-        </div>
         </div>
       </section>
 
@@ -1074,36 +1070,41 @@ const Landing = () => {
         />
         <div className="vl-dark-inner vl-nyx-grid">
           <div>
-            <h2 className="vl-dark-quote vl-reveal">Just try it.</h2>
+            <h2 className="vl-dark-quote vl-reveal">Nothing to Lose</h2>
             <p className="vl-dark-text vl-reveal">
               You're ugly. It's society's fault. But my job is to fix it — and fix it, I will.
             </p>
             <p className="vl-dark-sig vl-reveal">-NYX</p>
           </div>
-          <figure className="vl-nyx-video-launcher vl-reveal">
-            <button
-              type="button"
-              className="vl-nyx-play"
-              aria-label="Play Nyx side-profile video"
-              onClick={() => setVideoZoom(nyxVideo.src)}
-            >
-              <svg viewBox="0 0 64 64" aria-hidden="true">
-                <circle cx="32" cy="32" r="29" />
-                <path d="M26 20l20 12-20 12z" />
-              </svg>
-            </button>
-            <figcaption>{nyxVideo.caption}</figcaption>
-          </figure>
+          <div className="vl-nyx-video-launchers vl-reveal">
+            {nyxVideos.map((video) => (
+              <figure className="vl-nyx-video-launcher" key={video.src}>
+                <button
+                  type="button"
+                  className={`vl-nyx-play${video.thumbnail ? " vl-nyx-play--thumb" : ""}`}
+                  aria-label={`Play ${video.caption}`}
+                  onClick={() => setVideoZoom(video.src)}
+                >
+                  {video.thumbnail && <img src={video.thumbnail} alt="" aria-hidden="true" />}
+                  <svg viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="29" />
+                    <path d="M26 20l20 12-20 12z" />
+                  </svg>
+                </button>
+                <figcaption>{video.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* The Journey */}
       <section className="vl-section" id="journey">
         <div className="vl-reveal">
-          <p className="vl-kicker">The Journey</p>
+          <p className="vl-kicker">100 HOURS+</p>
           <div className="vl-h2-row" onClick={() => toggleSection("journey")}>
             <h2 className="vl-h2">
-              One hundred hours.
+              My Progress
             </h2>
             {sectionArrow("journey")}
           </div>
@@ -1169,10 +1170,10 @@ const Landing = () => {
       {/* Dispatches / articles */}
       <section className="vl-section" id="dispatches">
         <div className="vl-reveal">
-          <p className="vl-kicker">Dispatches</p>
+          <p className="vl-kicker">SUBSTACK</p>
           <div className="vl-h2-row" onClick={() => toggleSection("dispatches")}>
             <h2 className="vl-h2">
-              From the <em>Vostok</em> Substack.
+              Vostok <em>Consciousness</em>
             </h2>
             {sectionArrow("dispatches")}
           </div>
@@ -1212,54 +1213,66 @@ const Landing = () => {
           <p className="vl-kicker">The FAQ</p>
           <div className="vl-h2-row" onClick={() => toggleSection("faq")}>
             <h2 className="vl-h2">
-              Asked, <em>answered.</em>
+              Q&amp;A
             </h2>
             {sectionArrow("faq")}
           </div>
         </div>
         <div className={collapseClass("faq")}>
         <div className="vl-faq-layout">
-          <div className="vl-faq-intro vl-reveal">
-            <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
-            <div className="vl-faq-frame">
-              <figure className="vl-faq-portrait">
-                <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
-                <figcaption>Nyx — the one answering. Unedited.</figcaption>
-              </figure>
-              <div
-                className={`vl-faq-answer${
-                  faqIndex !== null && !faqFading ? " vl-faq-answer--shown" : ""
-                }`}
-                aria-live="polite"
-              >
-                {faqIndex !== null && (
-                  <>
-                    <p className="vl-faq-answer-kicker">
-                      № {String(faqIndex + 1).padStart(2, "0")} · Nyx answers
-                    </p>
-                    <p className="vl-faq-answer-text">{faqs[faqIndex].a}</p>
-                  </>
-                )}
+          {faqIndex === null && (
+            <div
+              className={`vl-faq-intro vl-reveal${
+                faqExitingIndex !== null ? " vl-faq-intro--exiting" : ""
+              }`}
+            >
+              <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
+              <div className="vl-faq-frame">
+                <figure className="vl-faq-portrait">
+                  <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
+                  <figcaption>Nyx — the one answering. Unedited.</figcaption>
+                </figure>
               </div>
             </div>
-          </div>
-          <div className="vl-faq vl-reveal">
-            {faqs.map((faq, i) => (
+          )}
+          {faqIndex !== null && (
+            <article className="vl-faq-answer" aria-live="polite">
               <button
-                key={faq.q}
-                className={`vl-faq-item${i === faqIndex ? " vl-faq-item--open" : ""}`}
-                onClick={() => selectFaq(i)}
+                type="button"
+                className="vl-faq-answer-close"
+                aria-label="Close answer"
+                onClick={() => setFaqIndex(null)}
               >
-                <span className="vl-faq-num">{String(i + 1).padStart(2, "0")}</span>
-                <span className="vl-faq-q">
-                  {faq.q}
-                  {faq.sub && <em> {faq.sub}</em>}
-                </span>
-                <span className="vl-faq-mark" aria-hidden="true">
-                  {i === faqIndex ? "×" : "+"}
-                </span>
+                ×
               </button>
-            ))}
+              <p className="vl-faq-answer-kicker">
+                № {String(faqIndex + 1).padStart(2, "0")} · Nyx answers
+              </p>
+              <h3 className="vl-faq-answer-question">
+                {faqs[faqIndex].q}
+                {faqs[faqIndex].sub && <em> {faqs[faqIndex].sub}</em>}
+              </h3>
+              <p className="vl-faq-answer-text">{faqs[faqIndex].a}</p>
+            </article>
+          )}
+          <div className="vl-faq vl-reveal">
+            {faqs.map((faq, i) =>
+              i === faqIndex ? null : (
+                <button
+                  key={faq.q}
+                  className={`vl-faq-item${i === faqExitingIndex ? " vl-faq-item--exiting" : ""}`}
+                  onClick={() => selectFaq(i)}
+                  disabled={faqExitingIndex !== null}
+                >
+                  <span className="vl-faq-num">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="vl-faq-q">
+                    {faq.q}
+                    {faq.sub && <em> {faq.sub}</em>}
+                  </span>
+                  <span className="vl-faq-mark" aria-hidden="true">+</span>
+                </button>
+              )
+            )}
           </div>
         </div>
         </div>
@@ -1268,10 +1281,10 @@ const Landing = () => {
       {/* The Offer — what $30 actually buys */}
       <section className="vl-section vl-offer" id="offer">
         <div className="vl-reveal">
-          <p className="vl-kicker">The Offer</p>
+          <p className="vl-kicker">THE WAY TO CHANGE YOUR LIFE</p>
           <div className="vl-h2-row" onClick={() => toggleSection("offer")}>
             <h2 className="vl-h2">
-              One guide. <em>Everything</em> in it.
+              The Vostok <em>Method</em>
             </h2>
             {sectionArrow("offer")}
           </div>
@@ -1282,25 +1295,29 @@ const Landing = () => {
             <h3>The Vostok Method — complete</h3>
             <ul>
               <li>
-                <strong>Every region, its own chapter.</strong> Jawline, chin, lips, eyes, cheeks,
-                brow, nose, tongue, ears, scalp and neck — exercises for each, with pages you can
-                preview above.
+                <strong>11 Chapters with every part of the face.</strong> Back of the head, jaw,
+                lips, eyes, cheeks, nose, tongue, ears, scalp and neck — something to radically
+                improve every part of the face.
               </li>
               <li>
-                <strong>The massage and gua sha protocols.</strong> What to press, in which
-                direction, and for how long — including the tools chapter for roller and stone.
+                <strong>People have become professional models.</strong> I've seen the same thing
+                over and over; first doubt, then feeling triumphant then too much ego, before
+                finding one's true self.
               </li>
               <li>
-                <strong>The hundred-hour journey.</strong> Levels, hours and measurable checkpoints,
-                from the first twenty hours to the other side.
+                <strong>This is tried and true.</strong> I've seen it work with countless people,
+                young and old, male and female. If you put in the work, you'll become beautiful in
+                ways you've understood till now.
               </li>
               <li>
-                <strong>Asymmetry work.</strong> Ninety percent of the battle — the
-                mirror-versus-camera test and the corrections that follow it.
+                <strong>I've personally used it.</strong> It has changed every aspect on how I deal
+                with humanity. The results are shocking, but well worth it. It's tiring, it takes
+                work but the results speak for themselves.
               </li>
               <li>
-                <strong>Supplements and lifestyle notes.</strong> What supports the work, and what
-                quietly undoes it.
+                <strong>If you actually want to change your life, this is it.</strong> This is the
+                train that leaves the station, this is your exit. It's only $30 and some face oil
+                and practice. The results, are incredible to say the least.
               </li>
             </ul>
           </div>
@@ -1316,7 +1333,6 @@ const Landing = () => {
             >
               Get the Method
             </a>
-            <span className="vl-offer-fine">Read it tonight. Start tomorrow morning.</span>
           </aside>
         </div>
         </div>
@@ -1345,39 +1361,9 @@ const Landing = () => {
 
       <footer className="vl-footer">
         <div className="vl-socials">
-          <a
-            href="https://www.facebook.com/nyx.vostok/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Vøstok Facebook"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.413c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
-            </svg>
-          </a>
-          <a
-            href="https://www.instagram.com/vostok.guide/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Vøstok Instagram"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-            </svg>
-          </a>
           <a href="https://x.com/Nyxvostok" target="_blank" rel="noopener noreferrer" aria-label="Vøstok Twitter">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
-            </svg>
-          </a>
-          <a href="https://discord.gg/JbPTFwJB" target="_blank" rel="noopener noreferrer" aria-label="Vøstok Discord">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.01.04.027.078.056.1a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
-            </svg>
-          </a>
-          <a href={SUBSTACK_URL} target="_blank" rel="noopener noreferrer" aria-label="Vøstok Substack">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z" />
             </svg>
           </a>
         </div>
