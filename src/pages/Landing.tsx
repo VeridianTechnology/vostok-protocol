@@ -355,6 +355,7 @@ const nyxVideos = [
   {
     src: "/videos/nyx-profile.mp4",
     caption: "NYX Side Profile #2",
+    thumbnail: "/videos/nyx-profile.jpg",
   },
 ];
 
@@ -413,7 +414,30 @@ const journeyStages: {
     zoom:
       "The other side of one hundred hours. Trained, symmetrical, restructured — and permanent. This is what the protocol builds.",
   },
+  {
+    title: "2 Months After",
+    hours: "The result holds",
+    img: "/landing/journey/two-months-after.jpg",
+    zoom:
+      "Two months after the final milestone. The progress remains visible and the result continues to hold.",
+  },
+  {
+    title: "2 Months After",
+    hours: "The result holds",
+    img: "/landing/journey/two-months-after-02.jpg",
+    zoom:
+      "Two months after the final milestone. The progress remains visible and the result continues to hold.",
+  },
+  {
+    title: "2 Months After",
+    hours: "The result holds",
+    img: "/landing/journey/two-months-after-03.jpg",
+    zoom:
+      "Two months after the final milestone. The progress remains visible and the result continues to hold.",
+  },
 ];
+
+const JOURNEY_AFTER_INDEX = journeyStages.findIndex((stage) => stage.title === "After");
 
 const journeyZoomSrc = (img: JourneyImage) => (typeof img === "string" ? img : img.desktop);
 
@@ -448,12 +472,13 @@ const Landing = () => {
   const [heroStatementPhase, setHeroStatementPhase] = useState<HeroStatementPhase>("enter");
   const [chapterIndex, setChapterIndex] = useState(0);
   const [beliefIndex, setBeliefIndex] = useState(0);
-  // default to "After" — lead with the destination
-  const [journeyIndex, setJourneyIndex] = useState(journeyStages.length - 1);
+  // Lead with "After"; later updates sit just beyond the visible thumbnail strip.
+  const [journeyIndex, setJourneyIndex] = useState(JOURNEY_AFTER_INDEX);
   // FAQ: one open question at a time. The selected row exits to the right
   // before its larger answer panel is revealed above the remaining questions.
   const [faqIndex, setFaqIndex] = useState<number | null>(null);
   const [faqExitingIndex, setFaqExitingIndex] = useState<number | null>(null);
+  const [faqIntroDismissed, setFaqIntroDismissed] = useState(false);
   const faqTimer = useRef<number | null>(null);
 
   useEffect(() => {
@@ -471,6 +496,7 @@ const Landing = () => {
     if (faqTimer.current) window.clearTimeout(faqTimer.current);
     setFaqExitingIndex(index);
     faqTimer.current = window.setTimeout(() => {
+      setFaqIntroDismissed(true);
       setFaqIndex(index);
       setFaqExitingIndex(null);
     }, 360);
@@ -513,6 +539,7 @@ const Landing = () => {
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
   const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
   const pagesStripRef = useRef<HTMLDivElement | null>(null);
+  const journeyThumbsRef = useRef<HTMLDivElement | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [barShown, setBarShown] = useState(false);
   const heroRef = useRef<HTMLElement | null>(null);
@@ -688,6 +715,34 @@ const Landing = () => {
     pagesStripRef.current?.scrollTo({ left: 0, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    const strip = journeyThumbsRef.current;
+    if (!strip) return;
+
+    if (journeyIndex <= JOURNEY_AFTER_INDEX) {
+      strip.scrollTo({ left: 0, behavior: "smooth" });
+      return;
+    }
+
+    const activeThumb = strip.querySelector<HTMLElement>(`[data-journey-index="${journeyIndex}"]`);
+    if (!activeThumb) return;
+
+    const stripRect = strip.getBoundingClientRect();
+    const thumbRect = activeThumb.getBoundingClientRect();
+    let nextLeft = strip.scrollLeft;
+
+    if (thumbRect.right > stripRect.right) {
+      nextLeft += thumbRect.right - stripRect.right;
+    } else if (thumbRect.left < stripRect.left) {
+      nextLeft -= stripRect.left - thumbRect.left;
+    }
+
+    strip.scrollTo({
+      left: nextLeft,
+      behavior: "smooth",
+    });
+  }, [journeyIndex]);
+
   const fireBuyTracking = (location: string) => {
     markBuyClicked();
     try {
@@ -715,20 +770,23 @@ const Landing = () => {
     trackSafe(`buy_click_${entrySource}`, { location });
   };
 
-  const journeyThumb = (i: number) => {
+  const journeyThumb = (i: number, showLabel = true) => {
     const stage = journeyStages[i];
     return (
       <button
-        key={stage.title}
+        key={`${stage.title}-${i}`}
         className={`vl-journey-thumb${i === journeyIndex ? " vl-journey-thumb--active" : ""}`}
+        data-journey-index={i}
         onClick={() => setJourneyIndex(i)}
         aria-label={`${stage.title} — ${stage.hours}`}
       >
         <span className="vl-journey-thumb-img">{journeyImg(stage.img, `${stage.title} — ${stage.hours}`)}</span>
-        <span className="vl-journey-thumb-label">
-          {stage.color && <span className="vl-belt-dot" style={{ background: stage.color }} />}
-          {stage.title}
-        </span>
+        {showLabel && (
+          <span className="vl-journey-thumb-label">
+            {stage.color && <span className="vl-belt-dot" style={{ background: stage.color }} />}
+            {stage.title}
+          </span>
+        )}
       </button>
     );
   };
@@ -781,7 +839,7 @@ const Landing = () => {
         <h1 className="vl-hero-title">
           <img className="vl-hero-logo" src="/logo/logo-runner.webp" alt="" aria-hidden="true" />
           <span className="vl-hero-wordmark">VØSTOK</span>
-          <div className="vl-hero-subtitle">To Raise the Spirit of Man</div>
+          <div className="vl-hero-subtitle">Raise the Spirit of Man</div>
         </h1>
 
         <div className="vl-hero-stack">
@@ -1106,7 +1164,23 @@ const Landing = () => {
             <h2 className="vl-h2">
               My Progress
             </h2>
-            {sectionArrow("journey")}
+            <div className="vl-tab-vitals">
+              <span className="vl-tab-heartbeat" aria-hidden="true">
+                <svg viewBox="0 0 120 28" preserveAspectRatio="none">
+                  <path
+                    className="vl-tab-heartbeat-base"
+                    d="M2 14h24l4 0 5-7 6 15 6-19 7 11h18l5 0 4-5 5 9 5-4h27"
+                    pathLength="1"
+                  />
+                  <path
+                    className="vl-tab-heartbeat-trace"
+                    d="M2 14h24l4 0 5-7 6 15 6-19 7 11h18l5 0 4-5 5 9 5-4h27"
+                    pathLength="1"
+                  />
+                </svg>
+              </span>
+              {sectionArrow("journey")}
+            </div>
           </div>
         </div>
         <div className={collapseClass("journey")}>
@@ -1144,16 +1218,28 @@ const Landing = () => {
             >
               ‹
             </button>
-            <div className="vl-journey-thumbs">
-              {[0, null, 5].map((slot) =>
-                slot === null ? (
-                  <div key="belts" className="vl-journey-belt-group">
-                    {[1, 2, 3, 4].map((i) => journeyThumb(i))}
+            <div className="vl-journey-thumbs" ref={journeyThumbsRef}>
+              <div className="vl-journey-thumb-track">
+                <div className="vl-journey-primary">
+                  {[0, null, JOURNEY_AFTER_INDEX].map((slot) =>
+                    slot === null ? (
+                      <div key="belts" className="vl-journey-belt-group">
+                        {[1, 2, 3, 4].map((i) => journeyThumb(i))}
+                      </div>
+                    ) : (
+                      journeyThumb(slot)
+                    )
+                  )}
+                </div>
+                <div className="vl-journey-continuation-group">
+                  <div className="vl-journey-continuation">
+                    {journeyStages
+                      .slice(JOURNEY_AFTER_INDEX + 1)
+                      .map((_, index) => journeyThumb(JOURNEY_AFTER_INDEX + 1 + index, false))}
                   </div>
-                ) : (
-                  journeyThumb(slot)
-                )
-              )}
+                  <span className="vl-journey-group-label">2 Months After</span>
+                </div>
+              </div>
             </div>
             <button
               className="vl-journey-arrow"
@@ -1220,7 +1306,7 @@ const Landing = () => {
         </div>
         <div className={collapseClass("faq")}>
         <div className="vl-faq-layout">
-          {faqIndex === null && (
+          {faqIndex === null && !faqIntroDismissed && (
             <div
               className={`vl-faq-intro vl-reveal${
                 faqExitingIndex !== null ? " vl-faq-intro--exiting" : ""
