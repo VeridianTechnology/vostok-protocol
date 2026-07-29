@@ -1,24 +1,25 @@
 /* ============================================================
-   Vostok landing — obsidian architecture theme, marble accents
-   Palette: marble #e8ecf4 · steel #8fa3c2 · obsidian #060910
-   Accent: path-glow blue #4da9ff · cyan beacon #46e0e6
+   Vostok landing — obsidian architecture theme, electric repaint
+   Palette: marble #ecf2fc · steel #90a9d6 · void #04060d
+   Accent: signal cyan #4ff0ff · ion violet #8f7bff
    ============================================================ */
 
 body:has(.vl) {
-  background: #060910;
-  color: #e8ecf4;
+  background: #04060d;
+  color: #ecf2fc;
 }
 
 .vl {
-  --ink: #e8ecf4;
-  --ink-soft: rgba(232, 236, 244, 0.72);
-  --slate: #8fa3c2;
-  --paper: #060910;
-  --hairline: rgba(232, 236, 244, 0.14);
-  --glow: #4da9ff;
-  --cyan: #46e0e6;
-  --panel: rgba(255, 255, 255, 0.04);
-  --obsidian: #0b101c;
+  --ink: #ecf2fc;
+  --ink-soft: rgba(236, 242, 252, 0.74);
+  --slate: #90a9d6;
+  --paper: #04060d;
+  --hairline: rgba(126, 184, 255, 0.17);
+  --glow: #4dc8ff;
+  --cyan: #4ff0ff;
+  --violet: #8f7bff;
+  --panel: linear-gradient(135deg, rgba(96, 150, 255, 0.07), rgba(79, 240, 255, 0.035) 55%, rgba(143, 123, 255, 0.05));
+  --obsidian: #091022;
   --serif: "Cormorant Garamond", Georgia, serif;
   font-family: var(--serif);
   color: var(--ink);
@@ -33,8 +34,8 @@ body:has(.vl) {
 }
 
 .vl ::selection {
-  background: var(--ink);
-  color: #060910;
+  background: var(--cyan);
+  color: #04060d;
 }
 
 .vl-sr-only {
@@ -133,67 +134,6 @@ body:has(.vl) {
   border-color: var(--slate);
 }
 
-.vl-tab-vitals {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-left: auto;
-}
-
-.vl-tab-heartbeat {
-  width: clamp(88px, 8vw, 118px);
-  height: 34px;
-  display: grid;
-  place-items: center;
-  padding: 5px 8px;
-  overflow: hidden;
-  border: 1px solid rgba(77, 169, 255, 0.24);
-  background-color: rgba(6, 9, 16, 0.5);
-  background-image:
-    linear-gradient(rgba(77, 169, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(77, 169, 255, 0.07) 1px, transparent 1px);
-  background-size: 8px 8px;
-  box-shadow: inset 0 0 16px rgba(77, 169, 255, 0.08), 0 0 14px rgba(77, 169, 255, 0.06);
-  pointer-events: none;
-}
-
-.vl-tab-heartbeat svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.vl-tab-heartbeat path {
-  fill: none;
-  vector-effect: non-scaling-stroke;
-}
-
-.vl-tab-heartbeat-base {
-  stroke: rgba(143, 163, 194, 0.34);
-  stroke-width: 1;
-}
-
-.vl-tab-heartbeat-trace {
-  stroke: var(--cyan);
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 0.16 0.84;
-  filter: drop-shadow(0 0 4px rgba(70, 224, 230, 0.9));
-  animation: vl-heartbeat-scan 2.6s linear infinite;
-}
-
-@keyframes vl-heartbeat-scan {
-  from {
-    stroke-dashoffset: 1;
-  }
-
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 .vl-sec-toggle--closed {
   transform: rotate(-90deg);
 }
@@ -211,16 +151,6 @@ body:has(.vl) {
   .vl-sec-toggle svg {
     width: 16px;
     height: 16px;
-  }
-
-  .vl-tab-vitals {
-    gap: 8px;
-  }
-
-  .vl-tab-heartbeat {
-    width: 64px;
-    height: 28px;
-    padding: 4px 5px;
   }
 }
 
@@ -244,12 +174,6 @@ body:has(.vl) {
     transform: none;
     transition: none;
   }
-
-  .vl-tab-heartbeat-trace {
-    animation: none;
-    stroke-dasharray: none;
-    opacity: 0.72;
-  }
 }
 
 /* ---------- sticky bar ---------- */
@@ -264,7 +188,7 @@ body:has(.vl) {
   align-items: center;
   justify-content: space-between;
   padding: 12px clamp(20px, 4vw, 44px);
-  background: rgba(6, 9, 16, 0.78);
+  background: rgba(4, 6, 13, 0.78);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--hairline);
@@ -322,7 +246,8 @@ a.vl-topnav-tab:hover {
 
 .vl-topnav-tab--active {
   color: var(--ink);
-  border-bottom-color: var(--ink);
+  border-bottom-color: var(--cyan);
+  text-shadow: 0 0 18px rgba(79, 240, 255, 0.45);
 }
 
 .vl-bar-mark {
@@ -340,7 +265,7 @@ a.vl-topnav-tab:hover {
   font-weight: 500;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #060910;
+  color: #04060d;
   background: var(--ink);
   border: 1px solid var(--ink);
   padding: 10px 26px;
@@ -515,7 +440,7 @@ a.vl-topnav-tab:hover {
   cursor: zoom-in;
   background: var(--obsidian);
   border: 1px solid var(--hairline);
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), 0 0 44px rgba(79, 200, 255, 0.12);
 }
 
 .vl-carousel-track {
@@ -617,7 +542,8 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-thumb.vl-thumb--active {
-  border-color: var(--ink);
+  border-color: var(--glow);
+  box-shadow: 0 0 12px rgba(77, 200, 255, 0.45);
   opacity: 1;
 }
 
@@ -638,17 +564,19 @@ a.vl-topnav-tab:hover {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #060910;
+  color: #04060d;
   background: var(--ink);
   border: 1px solid var(--ink);
   padding: 15px 44px;
-  box-shadow: 0 0 34px rgba(120, 180, 255, 0.22);
-  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 38px rgba(79, 200, 255, 0.34), 0 0 90px rgba(143, 123, 255, 0.16);
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .vl-buy:hover {
   background: transparent;
   color: var(--ink);
+  border-color: var(--cyan);
+  box-shadow: 0 0 30px rgba(79, 240, 255, 0.3), inset 0 0 18px rgba(79, 240, 255, 0.08);
 }
 
 .vl-price-note {
@@ -675,8 +603,8 @@ a.vl-topnav-tab:hover {
   left: clamp(24px, 6vw, 72px);
   right: clamp(24px, 6vw, 72px);
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(77, 169, 255, 0.55), transparent);
-  box-shadow: 0 0 14px rgba(77, 169, 255, 0.35);
+  background: linear-gradient(to right, transparent, rgba(79, 240, 255, 0.55) 38%, rgba(143, 123, 255, 0.55) 62%, transparent);
+  box-shadow: 0 0 18px rgba(79, 200, 255, 0.4);
 }
 
 /* ---------- dark interludes ---------- */
@@ -766,7 +694,7 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-buy--light {
-  color: #060910;
+  color: #04060d;
   background: #f0efec;
   border-color: #f0efec;
 }
@@ -1262,6 +1190,8 @@ a.vl-topnav-tab:hover {
 .vl-belief--active::before {
   opacity: 1;
   transform: scaleY(1);
+  background: var(--cyan);
+  box-shadow: 0 0 10px rgba(79, 240, 255, 0.65);
 }
 
 .vl-belief-title {
@@ -1519,9 +1449,10 @@ a.vl-topnav-tab:hover {
 .vl-chapter--active,
 .vl-chapter--active:hover {
   background: var(--ink);
-  border-color: var(--ink);
-  color: #060910;
-  -webkit-text-fill-color: #060910;
+  border-color: var(--cyan);
+  color: #04060d;
+  -webkit-text-fill-color: #04060d;
+  box-shadow: 0 0 16px rgba(79, 240, 255, 0.28);
 }
 
 /* ---------- signal coherence ---------- */
@@ -1702,8 +1633,9 @@ a.vl-topnav-tab:hover {
   width: 100%;
   min-height: clamp(260px, 30vw, 400px);
   padding: clamp(28px, 3.5vw, 52px);
-  border: 1px solid var(--hairline);
-  background: #0d1320;
+  border: 1px solid rgba(126, 184, 255, 0.28);
+  background: linear-gradient(150deg, #0b1226, #070b18 60%, #0a0f24);
+  box-shadow: inset 0 0 60px rgba(77, 200, 255, 0.05);
   animation: vl-faq-answer-in 0.4s ease both;
 }
 
@@ -2082,7 +2014,7 @@ a.vl-topnav-tab:hover {
 
 .vl-substack-link:hover {
   background: var(--ink);
-  color: #060910;
+  color: #04060d;
 }
 
 /* ---------- footer ---------- */

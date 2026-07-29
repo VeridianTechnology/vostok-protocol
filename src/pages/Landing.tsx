@@ -1164,23 +1164,7 @@ const Landing = () => {
             <h2 className="vl-h2">
               My Progress
             </h2>
-            <div className="vl-tab-vitals">
-              <span className="vl-tab-heartbeat" aria-hidden="true">
-                <svg viewBox="0 0 120 28" preserveAspectRatio="none">
-                  <path
-                    className="vl-tab-heartbeat-base"
-                    d="M2 14h24l4 0 5-7 6 15 6-19 7 11h18l5 0 4-5 5 9 5-4h27"
-                    pathLength="1"
-                  />
-                  <path
-                    className="vl-tab-heartbeat-trace"
-                    d="M2 14h24l4 0 5-7 6 15 6-19 7 11h18l5 0 4-5 5 9 5-4h27"
-                    pathLength="1"
-                  />
-                </svg>
-              </span>
-              {sectionArrow("journey")}
-            </div>
+            {sectionArrow("journey")}
           </div>
         </div>
         <div className={collapseClass("journey")}>
