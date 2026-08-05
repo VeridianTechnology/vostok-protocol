@@ -1264,7 +1264,7 @@ const FeatureThumbnails = ({
                 className="group relative inline-flex items-center justify-center overflow-hidden rounded-[10px] border-2 border-[#a8a8a8] bg-[rgba(8,9,11,0.82)] px-8 py-4 shadow-[0_4px_14px_rgba(0,0,0,0.3)] backdrop-blur-[8px] transition-[border-color,background-color] duration-300 ease-in hover:border-[#d0d0d0] md:px-14 md:py-5"
               >
                 <span className="relative z-[1] font-sans text-[0.88rem] font-semibold uppercase tracking-[0.18em] text-white/90 transition-colors duration-300 ease-in group-hover:text-white md:text-[1.12rem]">
-                  Vøstok — $1
+                  Vøstok — $6.99
                 </span>
               </button>
               {/* Mini trust badges */}

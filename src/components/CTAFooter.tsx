@@ -50,7 +50,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
   const [isDesktop, setIsDesktop] = useState(false);
   const [isFacebookLoading, setIsFacebookLoading] = useState(false);
   const facebookLoadTimeoutRef = useRef<number | null>(null);
-  const [buttonLabel, setButtonLabel] = useState<string>("Vøstok — $1");
+  const [buttonLabel, setButtonLabel] = useState<string>("Vøstok — $6.99");
   const [isTypingLabel, setIsTypingLabel] = useState(false);
   const gumroadUrl = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
   const instagramProfileUrl = "https://www.instagram.com/nyx.vostok/";
@@ -181,7 +181,7 @@ const CTAFooter = ({ onRequestBuy, entrySource = "direct" }: CTAFooterProps) => 
       const ttq = (window as Record<string, unknown>).ttq as { track?: (event: string, props: unknown) => void } | undefined;
       ttq?.track?.("InitiateCheckout", {
         contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
-        value: 30,
+        value: 6.99,
         currency: "USD",
       });
     } catch {

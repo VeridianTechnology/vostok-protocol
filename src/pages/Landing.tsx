@@ -751,7 +751,7 @@ const Landing = () => {
         | undefined;
       ttq?.track?.("InitiateCheckout", {
         contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
-        value: 30,
+        value: 6.99,
         currency: "USD",
       });
     } catch {
@@ -819,7 +819,7 @@ const Landing = () => {
             rel="noopener noreferrer"
             onClick={() => fireBuyTracking("sticky_bar")}
           >
-            Get the Method — $30
+            Get the Method — $6.99
           </a>
         </div>
       </div>
@@ -1348,7 +1348,7 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* The Offer — what $30 actually buys */}
+      {/* The Offer — what $6.99 actually buys */}
       <section className="vl-section vl-offer" id="offer">
         <div className="vl-reveal">
           <p className="vl-kicker">THE WAY TO CHANGE YOUR LIFE</p>
@@ -1386,13 +1386,13 @@ const Landing = () => {
               </li>
               <li>
                 <strong>If you actually want to change your life, this is it.</strong> This is the
-                train that leaves the station, this is your exit. It's only $30 and some face oil
+                train that leaves the station, this is your exit. It's only $6.99 and some face oil
                 and practice. The results, are incredible to say the least.
               </li>
             </ul>
           </div>
           <aside className="vl-offer-buy">
-            <span className="vl-offer-price">$30</span>
+            <span className="vl-offer-price">$6.99</span>
             <span className="vl-offer-price-note">One-time. No subscription. Instant digital access.</span>
             <a
               className="vl-buy"
