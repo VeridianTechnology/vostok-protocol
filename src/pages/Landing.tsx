@@ -41,6 +41,8 @@ const heroStatements = [
 type HeroStatementPhase = "enter" | "hold" | "exit" | "fade";
 
 const HERO_STATEMENT_DURATION = 3000;
+const MOBILE_BAR_INACTIVITY_DELAY = 5000;
+const COMPANY_CARD_DURATION = 20000;
 // Kept for easy restoration if the explanation video returns later.
 const SHOW_EXPLANATION_VIDEO = false;
 
@@ -91,38 +93,53 @@ const beliefs = [
   {
     title: "Your face is not fate",
     summary: "Facial muscles respond to deliberate, consistent training.",
+    figure: {
+      src: "/Differences2/02.webp",
+      alt: "Side-by-side views showing visible facial change",
+    },
     body: [
       "Genetics are a starting point, not a final verdict. Like the rest of the body, the face contains muscles that respond to consistent use. Targeted facial exercises, massage, and better resting patterns can build tone, balance movement, and change how the face is held over time.",
-      "The goal is not to become someone else. It is to train what is already yours so your natural structure looks more defined, balanced, and alive.",
     ],
-    tagline: "Inherited features. Trainable expression.",
+    tagline: "Create an Elite Face",
   },
   {
     title: "Structure follows tension",
     summary: "Balanced work helps uneven muscular patterns return to harmony.",
+    figure: {
+      src: "/landing/anatomy/structure-follows-tension.jpg",
+      alt: "Side-by-side portraits showing changes in facial structure and tension",
+    },
     body: [
       "The face is a connected system of muscles, and those muscles do not always pull evenly. Habit, posture, expression, and favoring one side can create competing lines of tension that make the face rest out of alignment and appear less harmonious.",
       "Training both sides deliberately helps rebalance those patterns. As the muscles learn to work together, the face can settle into a cleaner, more symmetrical expression of its natural structure.",
     ],
-    tagline: "Balance the pull. Restore the line.",
+    tagline: "Asymmetry is the enemy",
   },
   {
     title: "Signal Coherence",
     summary: "When expression aligns, the face broadcasts presence—and people respond.",
+    figure: {
+      src: "/landing/anatomy/signal-coherence.jpg",
+      alt: "Side-by-side portraits showing a more coherent facial expression",
+    },
     body: [
-      "How you feel and how you look are not separate systems. When the jaw, neck, eyes, posture, and resting expression work together, the face becomes easier to read: it broadcasts one coherent signal instead of a collection of competing tensions. Vostok calls this Signal Coherence.",
-      "That outward signal shapes the social loop. When you look present and self-possessed, people respond more positively; their response reinforces how you feel, and that inner state returns to the face. Appearance, reaction, and confidence begin to support one another.",
+      "Signal Coherence is compliance—the ability to gain compliance from people. What is the difference between someone making a fool of themselves and impressing an entire room? It is how they look.",
+      "By helping more people rise in society through their looks, we can improve society itself—but that is a story for another time. The point of Vostok is to ascend the spirit. Everyone else will call it crazy, and that is fine. Leave them behind. We are here to ascend spiritually.",
     ],
-    tagline: "Look aligned. Feel aligned. Be read clearly.",
+    tagline: "Look aligned",
   },
   {
     title: "Refinement is a system",
     summary: "The right routine turns small changes into visible progress.",
+    figure: {
+      src: "/landing/anatomy/refinement-system.jpg",
+      alt: "Side-by-side portraits showing progressive facial refinement",
+    },
     body: [
-      "Refinement does not come from one magic movement. It comes from a proper routine: the right exercises, performed with the right form, in a sequence that develops the whole face instead of chasing isolated features.",
-      "Small improvements compound through consistent practice. With structure, progression, and enough time, the face naturally becomes stronger, more balanced, and more refined.",
+      "The beautiful thing about this workout routine is that you can simply trust the process. The skull is made of multiple bones; it is not one solid piece, and the face is filled with cartilage, fat, nerves, and small muscles.",
+      "What we offer here is the full service: building the muscles, refining the various plates, and modifying the face in a very real way—to the point that it can look as though you have had surgery.",
     ],
-    tagline: "Routine creates refinement.",
+    tagline: "Routine creates refinement",
   },
 ];
 
@@ -475,9 +492,10 @@ const Landing = () => {
   // Lead with "After"; later updates sit just beyond the visible thumbnail strip.
   const [journeyIndex, setJourneyIndex] = useState(JOURNEY_AFTER_INDEX);
   // FAQ: one open question at a time. The selected row exits to the right
-  // before its larger answer panel is revealed above the remaining questions.
+  // before its larger answer panel is revealed, then remains consumed.
   const [faqIndex, setFaqIndex] = useState<number | null>(null);
   const [faqExitingIndex, setFaqExitingIndex] = useState<number | null>(null);
+  const [consumedFaqs, setConsumedFaqs] = useState<Set<number>>(() => new Set());
   const [faqIntroDismissed, setFaqIntroDismissed] = useState(false);
   const faqTimer = useRef<number | null>(null);
 
@@ -497,6 +515,11 @@ const Landing = () => {
     setFaqExitingIndex(index);
     faqTimer.current = window.setTimeout(() => {
       setFaqIntroDismissed(true);
+      setConsumedFaqs((previous) => {
+        const next = new Set(previous);
+        next.add(index);
+        return next;
+      });
       setFaqIndex(index);
       setFaqExitingIndex(null);
     }, 360);
@@ -542,7 +565,10 @@ const Landing = () => {
   const journeyThumbsRef = useRef<HTMLDivElement | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [barShown, setBarShown] = useState(false);
+  const [barDismissed, setBarDismissed] = useState(false);
+  const [companyCard, setCompanyCard] = useState<"manifesto" | "method">("manifesto");
   const heroRef = useRef<HTMLElement | null>(null);
+  const companyCardRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     checkAndSetOwnerParam();
@@ -655,6 +681,70 @@ const Landing = () => {
     observer.observe(hero);
     return () => observer.disconnect();
   }, []);
+
+  // Give the visitor the full opening card, then advance once after the card
+  // has remained in view for twenty seconds.
+  useEffect(() => {
+    const card = companyCardRef.current;
+    if (!card) return undefined;
+
+    let cardTimer = 0;
+    let observer: IntersectionObserver | undefined;
+    const startCardTimer = () => {
+      if (cardTimer) return;
+      cardTimer = window.setTimeout(() => setCompanyCard("method"), COMPANY_CARD_DURATION);
+      observer?.disconnect();
+    };
+
+    if ("IntersectionObserver" in window) {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) startCardTimer();
+        },
+        { threshold: 0.25 }
+      );
+      observer.observe(card);
+    } else {
+      startCardTimer();
+    }
+
+    return () => {
+      observer?.disconnect();
+      window.clearTimeout(cardTimer);
+    };
+  }, []);
+
+  // On mobile the purchase bar gets out of the reader's way after five
+  // inactive seconds. Once dismissed, it stays dismissed for this page view.
+  useEffect(() => {
+    if (!barShown || barDismissed || !window.matchMedia("(max-width: 768px)").matches) {
+      return undefined;
+    }
+
+    let inactivityTimer = 0;
+    const dismissBar = () => {
+      setBarDismissed(true);
+      setBarShown(false);
+    };
+    const restartInactivityTimer = () => {
+      window.clearTimeout(inactivityTimer);
+      inactivityTimer = window.setTimeout(dismissBar, MOBILE_BAR_INACTIVITY_DELAY);
+    };
+
+    restartInactivityTimer();
+    window.addEventListener("scroll", restartInactivityTimer, { passive: true });
+    window.addEventListener("touchstart", restartInactivityTimer, { passive: true });
+    window.addEventListener("pointerdown", restartInactivityTimer, { passive: true });
+    window.addEventListener("keydown", restartInactivityTimer);
+
+    return () => {
+      window.clearTimeout(inactivityTimer);
+      window.removeEventListener("scroll", restartInactivityTimer);
+      window.removeEventListener("touchstart", restartInactivityTimer);
+      window.removeEventListener("pointerdown", restartInactivityTimer);
+      window.removeEventListener("keydown", restartInactivityTimer);
+    };
+  }, [barDismissed, barShown]);
 
   // Scroll-reveal for sections
   useEffect(() => {
@@ -794,7 +884,7 @@ const Landing = () => {
   return (
     <div className="vl">
       {/* Sticky buy bar */}
-      <div className={`vl-bar${barShown ? " vl-bar--shown" : ""}`}>
+      <div className={`vl-bar${barShown && !barDismissed ? " vl-bar--shown" : ""}`}>
         <a
           className="vl-bar-mark"
           href="#top"
@@ -864,14 +954,16 @@ const Landing = () => {
         />
         <div className="vl-dark-inner">
           <h2 className="vl-dark-quote vl-reveal">
-            We are the angels <em>mixed with apes.</em>
+            Vostok <em>Method</em>
           </h2>
           <p className="vl-dark-text vl-reveal">
-            Before language could promise trust, the face already did.
+            Vostok is a facial training system designed to improve the musculature of your face. It is
+            about strengthening the face as we would strengthen the body at the gym, using varied
+            exercises to rebuild it toward supermodel proportions.
           </p>
           <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            The face communicates more than language ever could. So why is your face unworked. Why is it
-            like a fat lazy guy. Start the journey, to have the face of an angel.
+            We believe beauty should be democratized—it should be free, not reserved for an elite class
+            of models.
           </p>
         </div>
       </section>
@@ -938,7 +1030,7 @@ const Landing = () => {
       {/* The Method */}
       <section className="vl-section" id="method">
         <div className="vl-reveal">
-          <p className="vl-kicker">The Method</p>
+          <p className="vl-kicker">THE PROOF</p>
           <div className="vl-h2-row" onClick={() => toggleSection("method")}>
             <h2 className="vl-h2">
               You Can Change the <em>Face</em>
@@ -963,23 +1055,10 @@ const Landing = () => {
           <figure className="vl-method-figure vl-reveal">
             <img
               key={beliefIndex}
-              src={
-                beliefIndex === 0
-                  ? "/Differences2/02.webp"
-                  : "/landing/anatomy/muscle-plate.jpg"
-              }
-              alt={
-                beliefIndex === 0
-                  ? "Side-by-side views showing visible facial change"
-                  : "Anatomical plate of the facial and neck muscles"
-              }
+              src={beliefs[beliefIndex].figure.src}
+              alt={beliefs[beliefIndex].figure.alt}
               loading="lazy"
             />
-            <figcaption>
-              {beliefIndex === 0
-                ? "You can change the face — visible progress, side by side."
-                : "The trainable system — every muscle in the book."}
-            </figcaption>
           </figure>
           <div className="vl-beliefs vl-reveal">
             {beliefs.map((belief, index) => (
@@ -992,8 +1071,11 @@ const Landing = () => {
               >
                 <span className="vl-belief-title">{belief.title}</span>
                 <span className="vl-belief-summary">{belief.summary}</span>
-                <span className="vl-belief-cue" aria-hidden="true">
-                  {index === beliefIndex ? "Reading" : "Read"}
+                <span
+                  className={`vl-belief-cue${index === beliefIndex ? " vl-belief-cue--active" : ""}`}
+                  aria-hidden="true"
+                >
+                  {index === beliefIndex ? "" : "Read"}
                 </span>
               </button>
             ))}
@@ -1005,7 +1087,7 @@ const Landing = () => {
       {/* Results */}
       <section className="vl-section" id="results">
         <div className="vl-reveal">
-          <p className="vl-kicker">What It Gives You</p>
+          <p className="vl-kicker">LOOKS ARE EVERYTHING</p>
           <div className="vl-h2-row" onClick={() => toggleSection("results")}>
             <h2 className="vl-h2">
               Vostok is the <em>Way</em>
@@ -1049,34 +1131,61 @@ const Landing = () => {
         </div>
 
         {/* Vostok — the company behind the method */}
-        <div className="vl-signal vl-reveal">
-          <div className="vl-signal-lead">
-            <p className="vl-kicker">The Company</p>
-            <div className="vl-h2-row" onClick={() => toggleSection("vostok")}>
-              <h3>
-                What is <em>VØSTOK?</em>
-              </h3>
-              {sectionArrow("vostok")}
-            </div>
-          </div>
-          <div className={collapseClass("vostok")}>
-          <div className="vl-signal-body">
-            <p>
-              <strong>VOSTOK is a human-evolution company</strong> founded on a single belief: human
-              beings were meant to evolve. Its purpose extends beyond profit, technology or any one
-              product category—to create physical, spiritual and technological systems that help
-              people become more capable, conscious and complete.
-            </p>
-            <p>
-              VOSTOK begins with the face because appearance shapes daily perception, confidence and
-              human interaction; its first product is a practical guide to developing that signal
-              through discipline and intentional practice. From there, VOSTOK will expand into
-              enduring personal and household technologies—from self-restoring footwear to adaptive
-              silverware and furniture—designed to replace disposable consumption with intelligent
-              objects that continuously reform around human needs. <strong>The face is simply the
-              first frontier.</strong>
-            </p>
-          </div>
+        <div className="vl-signal vl-reveal" ref={companyCardRef}>
+          <div className="vl-signal-body" key={companyCard} aria-live="polite">
+            {companyCard === "manifesto" ? (
+              <>
+                <p>
+                  <strong>There is indeed a science to getting hot.</strong>
+                </p>
+                <p><em>And I have figured it out.</em></p>
+                <p>
+                  Every workout feels like a mini surgery, quickly correcting imbalances and adjusting
+                  the face.
+                </p>
+                <p>
+                  <strong>Bryan Johnson&apos;s methods</strong> require enormous amounts of money and can
+                  make you look like a masculine lesbian—but they do work. They are simply inefficient
+                  for the average person.
+                </p>
+                <p>
+                  <strong>Clavicular&apos;s course</strong> is all about surgery, which can leave you worse
+                  off and keep you looking worse in your later years—essentially sacrificing those years
+                  for trivial looksmaxxing that may make you look somewhat like a monkey and still leave
+                  you getting mogged by others.
+                </p>
+                <p>
+                  There are other, somewhat similar programs, but none actually targets the face,
+                  explains how to focus on it, or is led by an experienced practitioner. <em>I practice
+                  everything I preach: I test and perform the exercises myself and train each area of my
+                  face individually.</em> I have been doing this for years and can speak from experience
+                  about what works and what does not.
+                </p>
+              </>
+            ) : (
+              <>
+                <h3>The Method</h3>
+                <p>Vostok is not a collection of tips. It is a structured approach to facial optimization.</p>
+                <p>It focuses on three things:</p>
+                <ul>
+                  <li>
+                    <strong>Structure:</strong> The underlying form of the face—jaw, cheekbones,
+                    alignment, and posture.
+                  </li>
+                  <li>
+                    <strong>Function:</strong> The habits that shape that structure over time—tongue
+                    position, breathing, chewing, and muscular engagement.
+                  </li>
+                  <li>
+                    <strong>Signal:</strong> How that structure is interpreted—symmetry, tension,
+                    clarity, and presence.
+                  </li>
+                </ul>
+                <p>
+                  The goal is not artificial change. <em>The goal is precision.</em>
+                </p>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -1087,7 +1196,7 @@ const Landing = () => {
           <p className="vl-kicker">Inside the Book</p>
           <div className="vl-h2-row" onClick={() => toggleSection("book")}>
             <h2 className="vl-h2">
-              Test Before You <em>Buy</em>
+              Take a Free Sneak <em>Peek</em>
             </h2>
             {sectionArrow("book")}
           </div>
@@ -1128,11 +1237,7 @@ const Landing = () => {
         />
         <div className="vl-dark-inner vl-nyx-grid">
           <div>
-            <h2 className="vl-dark-quote vl-reveal">Nothing to Lose</h2>
-            <p className="vl-dark-text vl-reveal">
-              You're ugly. It's society's fault. But my job is to fix it — and fix it, I will.
-            </p>
-            <p className="vl-dark-sig vl-reveal">-NYX</p>
+            <h2 className="vl-dark-quote vl-reveal">The Best Decision You&apos;ll Ever Make</h2>
           </div>
           <div className="vl-nyx-video-launchers vl-reveal">
             {nyxVideos.map((video) => (
@@ -1162,7 +1267,7 @@ const Landing = () => {
           <p className="vl-kicker">100 HOURS+</p>
           <div className="vl-h2-row" onClick={() => toggleSection("journey")}>
             <h2 className="vl-h2">
-              My Progress
+              Watch the Change
             </h2>
             {sectionArrow("journey")}
           </div>
@@ -1327,7 +1432,7 @@ const Landing = () => {
           )}
           <div className="vl-faq vl-reveal">
             {faqs.map((faq, i) =>
-              i === faqIndex ? null : (
+              consumedFaqs.has(i) ? null : (
                 <button
                   key={faq.q}
                   className={`vl-faq-item${i === faqExitingIndex ? " vl-faq-item--exiting" : ""}`}
