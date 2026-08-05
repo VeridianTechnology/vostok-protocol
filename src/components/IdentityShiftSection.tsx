@@ -7,7 +7,7 @@ const WHAT_IT_IS = [
   "Vostok is a facial training system designed to improve the musculature of your face. It's about strengthening the face as we would at the gym — with progressive variations and structured rebuilding — to achieve supermodel proportions.",
   "We believe beauty should be democratised. It should be free, and not belong to just an elite class of models.",
   "The beautiful thing about this workout routine is you can simply trust the process. The skull is a combination of interconnected pieces — it is not solid bone — and the face is filled with cartilage, fat, nerves, and small muscles. What we offer here is the full service: building up the muscles, refining the various plates, modifying the face in a very real way — to the point where it will look like you've had surgery.",
-  "All of this for the low price of $6.99. About the price of a drink.",
+  "All of this for the low price of $4.99. About the price of a drink.",
   "Most people never control this layer. Vostok exists to change that.",
 ];
 

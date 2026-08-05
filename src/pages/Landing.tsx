@@ -43,8 +43,6 @@ type HeroStatementPhase = "enter" | "hold" | "exit" | "fade";
 const HERO_STATEMENT_DURATION = 3000;
 const MOBILE_BAR_INACTIVITY_DELAY = 5000;
 const COMPANY_CARD_DURATION = 20000;
-// Kept for easy restoration if the explanation video returns later.
-const SHOW_EXPLANATION_VIDEO = false;
 
 const page = (n: number) => `/landing/pages/page-${String(n).padStart(2, "0")}.jpg`;
 
@@ -140,86 +138,6 @@ const beliefs = [
       "What we offer here is the full service: building the muscles, refining the various plates, and modifying the face in a very real way—to the point that it can look as though you have had surgery.",
     ],
     tagline: "Routine creates refinement",
-  },
-];
-
-const results = [
-  {
-    title: "Sharpened jawline",
-    text: "Forward projection and a defined mandible.",
-    img: "/landing/technique/jaw-guasha.jpg",
-  },
-  {
-    title: "Hoisted cheeks",
-    text: "Lifted, fuller, more youthful midface.",
-    img: "/landing/technique/cheek-lift.jpg",
-  },
-  {
-    title: "Tightened skin",
-    text: "Pulled back from the scalp, lifting the eyes and brow.",
-    img: "/landing/technique/scalp-lift.jpg",
-  },
-  {
-    title: "Corrected posture",
-    text: "Neck realignment and an improved silhouette.",
-    img: "/landing/technique/neck-rotation.jpg",
-  },
-  {
-    title: "Reduced asymmetry",
-    text: "Ninety percent of the battle. The mirror lies — the camera doesn't.",
-    img: "/landing/technique/before-after.jpg",
-  },
-  {
-    title: "Permanent, natural results",
-    text: "No surgery, no filler, no risk. Built from the bone up.",
-    img: "/landing/anatomy/skull-pair.jpg",
-  },
-];
-
-// The reading list beside the results grid — external evidence that the
-// premise (attractiveness matters, faces respond to training) holds up.
-const evidenceArticles = [
-  {
-    title: "Do facial exercises actually work?",
-    source: "Quora",
-    note: "The eternal thread — skeptics and the converted, arguing it out.",
-    href: "https://www.quora.com/search?q=do%20facial%20exercises%20actually%20work",
-  },
-  {
-    title: "Why are some faces more symmetrical?",
-    source: "Quora",
-    note: "Genetics deals the hand; the answers argue how it's played.",
-    href: "https://www.quora.com/search?q=why%20are%20some%20faces%20more%20symmetrical",
-  },
-  {
-    title: "Koinophilia",
-    source: "Wikipedia",
-    note: "Why average faces read as beautiful — the mechanism.",
-    href: "https://en.wikipedia.org/wiki/Koinophilia",
-  },
-  {
-    title: "Neoteny",
-    source: "Wikipedia",
-    note: "Youthful features, and why keeping them wins.",
-    href: "https://en.wikipedia.org/wiki/Neoteny",
-  },
-  {
-    title: "Facial symmetry",
-    source: "Wikipedia",
-    note: "Symmetry as an honest signal of health and fitness.",
-    href: "https://en.wikipedia.org/wiki/Facial_symmetry",
-  },
-  {
-    title: "Halo effect",
-    source: "Wikipedia",
-    note: "Attractive is assumed good, smart, and trustworthy.",
-    href: "https://en.wikipedia.org/wiki/Halo_effect",
-  },
-  {
-    title: "Physical attractiveness stereotype",
-    source: "Wikipedia",
-    note: "What beauty is worth socially — measured, repeatedly.",
-    href: "https://en.wikipedia.org/wiki/Physical_attractiveness_stereotype",
   },
 ];
 
@@ -363,17 +281,38 @@ const faqs: { q: string; sub?: string; a: string }[] = [
   },
 ];
 
-const nyxVideos = [
-  {
-    src: "/videos/le_mogge-muted.mp4",
-    caption: "NYX Side Profile #1",
-    thumbnail: "/videos/03.jpg",
-  },
-  {
-    src: "/videos/nyx-profile.mp4",
-    caption: "NYX Side Profile #2",
-    thumbnail: "/videos/nyx-profile.jpg",
-  },
+const nyxVideoRows = [
+  [
+    {
+      src: "/videos/timelapse-web.mp4",
+      caption: "Timelapse",
+      thumbnail: "/videos/timelapse-poster.jpg",
+    },
+  ],
+  [
+    {
+      src: "/videos/side_profile_2.mp4",
+      caption: "Side Profile — 140 Hours #1",
+      thumbnail: "/videos/side-profile-140-poster.jpg",
+    },
+    {
+      src: "/videos/side_profile_1.mp4",
+      caption: "Side Profile — 130 Hours #2",
+      thumbnail: "/videos/side-profile-130-poster.jpg",
+    },
+  ],
+  [
+    {
+      src: "/videos/le_mogge.mp4",
+      caption: "Side Profile — 120 Hours #3",
+      thumbnail: "/videos/03.jpg",
+    },
+    {
+      src: "/videos/nyx-profile.mp4",
+      caption: "Side Profile — 100 Hours #4",
+      thumbnail: "/videos/nyx-profile.jpg",
+    },
+  ],
 ];
 
 type JourneyImage = string | { mobile: string; desktop: string };
@@ -528,7 +467,6 @@ const Landing = () => {
   const [closedSections, setClosedSections] = useState<Record<string, boolean>>({
     diagnosis: true,
     method: true,
-    results: true,
     book: true,
     journey: true,
     dispatches: true,
@@ -558,6 +496,7 @@ const Landing = () => {
   );
 
   const [explainMuted, setExplainMuted] = useState(true);
+  const [explanationOpen, setExplanationOpen] = useState(false);
   const explainRef = useRef<HTMLVideoElement | null>(null);
   const [videoZoom, setVideoZoom] = useState<string | null>(null);
   const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
@@ -566,7 +505,7 @@ const Landing = () => {
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [barShown, setBarShown] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
-  const [companyCard, setCompanyCard] = useState<"manifesto" | "method">("manifesto");
+  const [companyCard, setCompanyCard] = useState<"manifesto" | "method">("method");
   const heroRef = useRef<HTMLElement | null>(null);
   const companyCardRef = useRef<HTMLDivElement | null>(null);
 
@@ -767,26 +706,28 @@ const Landing = () => {
 
   // Escape closes the lightboxes
   useEffect(() => {
-    if (!lightboxSrc && !videoZoom && !infoZoom) return undefined;
+    if (!lightboxSrc && !videoZoom && !infoZoom && !explanationOpen) return undefined;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setLightboxSrc(null);
         setVideoZoom(null);
         setInfoZoom(null);
+        setExplanationOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxSrc, videoZoom, infoZoom]);
+  }, [explanationOpen, lightboxSrc, videoZoom, infoZoom]);
 
   // The explanation video always starts muted — the big audio button (or the
   // native controls) unmutes it on demand.
   useEffect(() => {
     const video = explainRef.current;
-    if (!video) return;
+    if (!video || !explanationOpen) return;
+    setExplainMuted(true);
     video.muted = true;
     video.play().catch(() => {});
-  }, []);
+  }, [explanationOpen]);
 
   const toggleExplainAudio = () => {
     const video = explainRef.current;
@@ -841,7 +782,7 @@ const Landing = () => {
         | undefined;
       ttq?.track?.("InitiateCheckout", {
         contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
-        value: 6.99,
+        value: 4.99,
         currency: "USD",
       });
     } catch {
@@ -899,9 +840,13 @@ const Landing = () => {
           <Link className="vl-bar-link" to="/radio">
             Radio
           </Link>
-          <Link className="vl-bar-link" to="/agora">
+          <span className="vl-bar-link vl-nav-locked" aria-disabled="true">
             Agora
-          </Link>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5.5" y="10.5" width="13" height="10" rx="2" />
+              <path d="M8.5 10.5V7.8a3.5 3.5 0 017 0v2.7" />
+            </svg>
+          </span>
           <a
             className="vl-bar-buy"
             href={BUY_URL}
@@ -909,7 +854,7 @@ const Landing = () => {
             rel="noopener noreferrer"
             onClick={() => fireBuyTracking("sticky_bar")}
           >
-            Get the Method — $6.99
+            $4.99
           </a>
         </div>
       </div>
@@ -922,9 +867,13 @@ const Landing = () => {
           <Link className="vl-topnav-tab" to="/radio">
             Radio
           </Link>
-          <Link className="vl-topnav-tab" to="/agora">
+          <span className="vl-topnav-tab vl-nav-locked" aria-disabled="true">
             Agora
-          </Link>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="5.5" y="10.5" width="13" height="10" rx="2" />
+              <path d="M8.5 10.5V7.8a3.5 3.5 0 017 0v2.7" />
+            </svg>
+          </span>
         </nav>
         <h1 className="vl-hero-title">
           <img className="vl-hero-logo" src="/logo/logo-runner.webp" alt="" aria-hidden="true" />
@@ -941,88 +890,6 @@ const Landing = () => {
               {heroStatements[heroStatementIndex]}
             </p>
             <p className="vl-sr-only">{heroStatements.join(" ")}</p>
-          </div>
-        </div>
-      </section>
-
-      {/* Dark interlude — the origin myth */}
-      <section className="vl-dark" id="origin">
-        <div
-          className="vl-dark-bg"
-          style={{ backgroundImage: "url(/obsidian/origin-stairway.webp)" }}
-          aria-hidden="true"
-        />
-        <div className="vl-dark-inner">
-          <h2 className="vl-dark-quote vl-reveal">
-            Vostok <em>Method</em>
-          </h2>
-          <p className="vl-dark-text vl-reveal">
-            Vostok is a facial training system designed to improve the musculature of your face. It is
-            about strengthening the face as we would strengthen the body at the gym, using varied
-            exercises to rebuild it toward supermodel proportions.
-          </p>
-          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            We believe beauty should be democratized—it should be free, not reserved for an elite class
-            of models.
-          </p>
-        </div>
-      </section>
-
-      {/* The Diagnosis */}
-      <section className="vl-section" id="diagnosis">
-        {/* Disabled for now. Change SHOW_EXPLANATION_VIDEO to true to restore this video. */}
-        {SHOW_EXPLANATION_VIDEO && (
-          <div className="vl-video-band vl-video-band--plain">
-          <video
-            ref={explainRef}
-            src={
-              typeof window !== "undefined" && window.innerWidth >= 900
-                ? "/website_video_compress.mp4"
-                : "/website_video_compress_mobile.mp4"
-            }
-            autoPlay
-            muted
-            controls
-            playsInline
-          />
-          <button
-            className={`vl-band-audio${explainMuted ? " vl-band-audio--muted" : ""}`}
-            aria-label={explainMuted ? "Unmute video" : "Mute video"}
-            onClick={toggleExplainAudio}
-          >
-            {explainMuted ? (
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M3 9v6h4l5 5V4L7 9H3z" />
-                <path d="M16.6 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4z" />
-              </svg>
-            ) : (
-              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M3 9v6h4l5 5V4L7 9H3z" />
-                <path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z" />
-                <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-              </svg>
-            )}
-          </button>
-            <span className="vl-band-label">Why use the Vostok Method</span>
-          </div>
-        )}
-        <div className="vl-reveal">
-          <p className="vl-kicker">The Diagnosis</p>
-          <div className="vl-h2-row" onClick={() => toggleSection("diagnosis")}>
-            <h2 className="vl-h2">
-              Society Keeps You <em>Ugly.</em>
-            </h2>
-            {sectionArrow("diagnosis")}
-          </div>
-        </div>
-        <div className={collapseClass("diagnosis")}>
-          <div className="vl-decay-grid">
-            {decay.map((item) => (
-              <div key={item.title} className="vl-decay vl-reveal">
-                <h3>{item.title}</h3>
-                <p>{item.text}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -1084,60 +951,65 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Results */}
-      <section className="vl-section" id="results">
+      {/* The Diagnosis */}
+      <section className="vl-section" id="diagnosis">
         <div className="vl-reveal">
-          <p className="vl-kicker">LOOKS ARE EVERYTHING</p>
-          <div className="vl-h2-row" onClick={() => toggleSection("results")}>
+          <p className="vl-kicker">The Diagnosis</p>
+          <div className="vl-h2-row" onClick={() => toggleSection("diagnosis")}>
             <h2 className="vl-h2">
-              Vostok is the <em>Way</em>
+              Society Keeps You <em>Ugly.</em>
             </h2>
-            {sectionArrow("results")}
+            {sectionArrow("diagnosis")}
           </div>
+          {!closedSections.diagnosis && (
+            <figure className="vl-explain-launcher">
+              <button
+                type="button"
+                className="vl-explain-open"
+                aria-label="Play: Why use the Vostok Method"
+                onClick={() => setExplanationOpen(true)}
+              >
+                <img src="/screen.webp" alt="" aria-hidden="true" />
+                <span className="vl-explain-play" aria-hidden="true">
+                  <svg viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="29" />
+                    <path d="M26 20l20 12-20 12z" />
+                  </svg>
+                </span>
+              </button>
+              <figcaption>Why use the Vostok Method</figcaption>
+            </figure>
+          )}
         </div>
-        <div className={collapseClass("results")}>
-        <div className="vl-results-layout">
-          <div className="vl-results-grid">
-            {results.map((result, i) => (
-              <div key={result.title} className="vl-result vl-reveal">
-                <div className="vl-result-img">
-                  <img src={result.img} alt={result.title} loading="lazy" />
-                </div>
-                <span className="vl-result-num">{String(i + 1).padStart(2, "0")}</span>
-                <h3>{result.title}</h3>
-                <p>{result.text}</p>
+        <div className={collapseClass("diagnosis")}>
+          <div className="vl-decay-grid">
+            {decay.map((item) => (
+              <div key={item.title} className="vl-decay vl-reveal">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
               </div>
             ))}
           </div>
-          <aside className="vl-evidence vl-reveal">
-            <p className="vl-evidence-kicker">The Evidence</p>
-            <h3>Articles that prove attractiveness matters.</h3>
-            <p className="vl-evidence-sub">
-              Don't take our word for it — the literature has been saying this for decades.
-            </p>
-            <ul>
-              {evidenceArticles.map((article) => (
-                <li key={article.title}>
-                  <a href={article.href} target="_blank" rel="noopener noreferrer">
-                    <span className="vl-evidence-source">{article.source}</span>
-                    <span className="vl-evidence-title">{article.title}</span>
-                    <span className="vl-evidence-note">{article.note}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </aside>
         </div>
-        </div>
+      </section>
 
-        {/* Vostok — the company behind the method */}
-        <div className="vl-signal vl-reveal" ref={companyCardRef}>
+      {/* Method card */}
+      <section className="vl-section vl-company-section" id="company">
+        <div className="vl-signal vl-signal--standalone vl-company-card vl-reveal" ref={companyCardRef}>
+          <button
+            type="button"
+            className="vl-company-arrow vl-company-arrow--left"
+            aria-label="Show previous company card"
+            onClick={() => setCompanyCard((current) => current === "manifesto" ? "method" : "manifesto")}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15 5l-7 7 7 7" />
+            </svg>
+          </button>
           <div className="vl-signal-body" key={companyCard} aria-live="polite">
             {companyCard === "manifesto" ? (
               <>
-                <p>
-                  <strong>There is indeed a science to getting hot.</strong>
-                </p>
+                <p><strong>There is indeed a science to getting hot.</strong></p>
                 <p><em>And I have figured it out.</em></p>
                 <p>
                   Every workout feels like a mini surgery, quickly correcting imbalances and adjusting
@@ -1187,6 +1059,16 @@ const Landing = () => {
               </>
             )}
           </div>
+          <button
+            type="button"
+            className="vl-company-arrow vl-company-arrow--right"
+            aria-label="Show next company card"
+            onClick={() => setCompanyCard((current) => current === "manifesto" ? "method" : "manifesto")}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
         </div>
       </section>
 
@@ -1228,6 +1110,29 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Dark interlude — the origin myth */}
+      <section className="vl-dark" id="origin">
+        <div
+          className="vl-dark-bg"
+          style={{ backgroundImage: "url(/obsidian/origin-stairway.webp)" }}
+          aria-hidden="true"
+        />
+        <div className="vl-dark-inner">
+          <h2 className="vl-dark-quote vl-reveal">
+            Vostok <em>Method</em>
+          </h2>
+          <p className="vl-dark-text vl-reveal">
+            Vostok is a facial training system designed to improve the musculature of your face. It is
+            about strengthening the face as we would strengthen the body at the gym, using varied
+            exercises to rebuild it toward supermodel proportions.
+          </p>
+          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
+            We believe beauty should be democratized—it should be free, not reserved for an elite class
+            of models.
+          </p>
+        </div>
+      </section>
+
       {/* Dark interlude — Nyx's challenge */}
       <section className="vl-dark" id="nyx">
         <div
@@ -1236,30 +1141,48 @@ const Landing = () => {
           aria-hidden="true"
         />
         <div className="vl-dark-inner vl-nyx-grid">
-          <div>
+          <div className="vl-nyx-intro">
             <h2 className="vl-dark-quote vl-reveal">The Best Decision You&apos;ll Ever Make</h2>
+            <img
+              className="vl-nyx-statue vl-reveal"
+              src="/statue/vostok-warrior.webp"
+              alt="Black marble Vostok warrior bust illuminated with blue seams"
+              loading="lazy"
+            />
           </div>
           <div className="vl-nyx-video-launchers vl-reveal">
-            {nyxVideos.map((video) => (
-              <figure className="vl-nyx-video-launcher" key={video.src}>
-                <button
-                  type="button"
-                  className={`vl-nyx-play${video.thumbnail ? " vl-nyx-play--thumb" : ""}`}
-                  aria-label={`Play ${video.caption}`}
-                  onClick={() => setVideoZoom(video.src)}
-                >
-                  {video.thumbnail && <img src={video.thumbnail} alt="" aria-hidden="true" />}
-                  <svg viewBox="0 0 64 64" aria-hidden="true">
-                    <circle cx="32" cy="32" r="29" />
-                    <path d="M26 20l20 12-20 12z" />
-                  </svg>
-                </button>
-                <figcaption>{video.caption}</figcaption>
-              </figure>
+            {nyxVideoRows.map((row, rowIndex) => (
+              <div className="vl-nyx-video-row" key={rowIndex}>
+                {row.map((video) => (
+                  <figure className="vl-nyx-video-launcher" key={video.src}>
+                    <button
+                      type="button"
+                      className="vl-nyx-play vl-nyx-play--thumb"
+                      aria-label={`Play ${video.caption}`}
+                      onClick={() => setVideoZoom(video.src)}
+                    >
+                      <img src={video.thumbnail} alt="" aria-hidden="true" />
+                      <svg viewBox="0 0 64 64" aria-hidden="true">
+                        <circle cx="32" cy="32" r="29" />
+                        <path d="M26 20l20 12-20 12z" />
+                      </svg>
+                    </button>
+                    <figcaption>{video.caption}</figcaption>
+                  </figure>
+                ))}
+              </div>
             ))}
           </div>
         </div>
       </section>
+
+      <div className="vl-obelisk-sections">
+      <img
+        className="vl-obelisk-art"
+        src="/obsidian/obelisk-cutout.png"
+        alt=""
+        aria-hidden="true"
+      />
 
       {/* The Journey */}
       <section className="vl-section" id="journey">
@@ -1453,7 +1376,9 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* The Offer — what $6.99 actually buys */}
+      </div>
+
+      {/* The Offer — what $4.99 actually buys */}
       <section className="vl-section vl-offer" id="offer">
         <div className="vl-reveal">
           <p className="vl-kicker">THE WAY TO CHANGE YOUR LIFE</p>
@@ -1491,13 +1416,13 @@ const Landing = () => {
               </li>
               <li>
                 <strong>If you actually want to change your life, this is it.</strong> This is the
-                train that leaves the station, this is your exit. It's only $6.99 and some face oil
+                train that leaves the station, this is your exit. It's only $4.99 and some face oil
                 and practice. The results, are incredible to say the least.
               </li>
             </ul>
           </div>
           <aside className="vl-offer-buy">
-            <span className="vl-offer-price">$6.99</span>
+            <span className="vl-offer-price">$4.99</span>
             <span className="vl-offer-price-note">One-time. No subscription. Instant digital access.</span>
             <a
               className="vl-buy"
@@ -1574,10 +1499,57 @@ const Landing = () => {
       {/* Video zoom lightbox */}
       {videoZoom && (
         <div className="vl-lightbox" onClick={() => setVideoZoom(null)}>
-          <button className="vl-lightbox-close" onClick={() => setVideoZoom(null)} aria-label="Close">
-            ×
-          </button>
-          <video src={videoZoom} controls autoPlay playsInline onClick={(e) => e.stopPropagation()} />
+          <div className="vl-video-frame" onClick={(event) => event.stopPropagation()}>
+            <button className="vl-lightbox-close" onClick={() => setVideoZoom(null)} aria-label="Close">
+              ×
+            </button>
+            <video src={videoZoom} controls autoPlay playsInline />
+          </div>
+        </div>
+      )}
+
+      {/* Explanation video lightbox */}
+      {explanationOpen && (
+        <div
+          className="vl-lightbox vl-explain-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Why use the Vostok Method"
+          onClick={() => setExplanationOpen(false)}
+        >
+          <div className="vl-explain-modal vl-video-frame" onClick={(event) => event.stopPropagation()}>
+            <button
+              type="button"
+              className="vl-lightbox-close"
+              onClick={() => setExplanationOpen(false)}
+              aria-label="Close video"
+            >
+              ×
+            </button>
+            <video ref={explainRef} controls autoPlay muted={explainMuted} playsInline preload="metadata">
+              <source media="(max-width: 899px)" src="/website_video_compress_mobile.mp4" type="video/mp4" />
+              <source src="/website_video_compress.mp4" type="video/mp4" />
+            </video>
+            <button
+              type="button"
+              className={`vl-explain-audio${explainMuted ? " vl-explain-audio--muted" : ""}`}
+              aria-label={explainMuted ? "Turn video sound on" : "Mute video"}
+              onClick={toggleExplainAudio}
+            >
+              {explainMuted ? (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                  <path d="M16.6 8.2l-1.4 1.4 2.4 2.4-2.4 2.4 1.4 1.4 2.4-2.4 2.4 2.4 1.4-1.4-2.4-2.4 2.4-2.4-1.4-1.4-2.4 2.4-2.4-2.4z" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3z" />
+                  <path d="M16.5 12a4.5 4.5 0 0 0-2.5-4.03v8.05A4.5 4.5 0 0 0 16.5 12z" />
+                  <path d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       )}
     </div>
