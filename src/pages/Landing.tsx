@@ -46,6 +46,12 @@ const COMPANY_CARD_DURATION = 20000;
 
 const page = (n: number) => `/landing/pages/page-${String(n).padStart(2, "0")}.jpg`;
 
+const bookThumbnail = (src: string) =>
+  src
+    .replace("/landing/pages/", "/landing/pages/thumbs/")
+    .replace("/landing/technique/", "/landing/technique/thumbs/")
+    .replace(/\.jpg$/, ".webp");
+
 // Each chapter maps to real pages/renders from the book. Tags without
 // material were removed rather than left as dead buttons.
 const chapterFilters: { name: string; items: string[] }[] = [
@@ -92,7 +98,9 @@ const beliefs = [
     title: "Your face is not fate",
     summary: "Facial muscles respond to deliberate, consistent training.",
     figure: {
-      src: "/Differences2/02.webp",
+      src: "/landing/proof/face-not-fate-800.webp",
+      srcSet:
+        "/landing/proof/face-not-fate-800.webp 800w, /landing/proof/face-not-fate-1600.webp 1600w",
       alt: "Side-by-side views showing visible facial change",
     },
     body: [
@@ -104,7 +112,9 @@ const beliefs = [
     title: "Structure follows tension",
     summary: "Balanced work helps uneven muscular patterns return to harmony.",
     figure: {
-      src: "/landing/anatomy/structure-follows-tension.jpg",
+      src: "/landing/proof/structure-follows-tension-800.webp",
+      srcSet:
+        "/landing/proof/structure-follows-tension-800.webp 800w, /landing/proof/structure-follows-tension-1350.webp 1350w",
       alt: "Side-by-side portraits showing changes in facial structure and tension",
     },
     body: [
@@ -117,7 +127,9 @@ const beliefs = [
     title: "Signal Coherence",
     summary: "When expression aligns, the face broadcasts presence—and people respond.",
     figure: {
-      src: "/landing/anatomy/signal-coherence.jpg",
+      src: "/landing/proof/signal-coherence-800.webp",
+      srcSet:
+        "/landing/proof/signal-coherence-800.webp 800w, /landing/proof/signal-coherence-1350.webp 1350w",
       alt: "Side-by-side portraits showing a more coherent facial expression",
     },
     body: [
@@ -130,7 +142,9 @@ const beliefs = [
     title: "Refinement is a system",
     summary: "The right routine turns small changes into visible progress.",
     figure: {
-      src: "/landing/anatomy/refinement-system.jpg",
+      src: "/landing/proof/refinement-system-800.webp",
+      srcSet:
+        "/landing/proof/refinement-system-800.webp 800w, /landing/proof/refinement-system-1350.webp 1350w",
       alt: "Side-by-side portraits showing progressive facial refinement",
     },
     body: [
@@ -480,6 +494,19 @@ const Landing = () => {
   const collapseClass = (id: string) =>
     `vl-collapse${closedSections[id] ? " vl-collapse--closed" : ""}`;
 
+  // Once the proof is opened, warm the responsive variants so switching
+  // principles never leaves an empty frame while the next image downloads.
+  useEffect(() => {
+    if (closedSections.method) return;
+
+    beliefs.forEach((belief) => {
+      const image = new Image();
+      image.sizes = "(max-width: 900px) calc(100vw - 48px), 700px";
+      image.srcset = belief.figure.srcSet;
+      image.src = belief.figure.src;
+    });
+  }, [closedSections.method]);
+
   // The arrow carries the a11y state; clicks bubble to the heading row, which
   // owns the single onClick, so the button itself doesn't toggle twice.
   const sectionArrow = (id: string) => (
@@ -732,13 +759,13 @@ const Landing = () => {
   const toggleExplainAudio = () => {
     const video = explainRef.current;
     if (!video) return;
-    const nextMuted = !video.muted;
+    const nextMuted = !(video.muted || video.volume === 0);
     video.muted = nextMuted;
     if (!nextMuted) {
-      video.volume = 1;
+      if (video.volume === 0) video.volume = 1;
       if (video.paused) video.play().catch(() => {});
     }
-    setExplainMuted(nextMuted);
+    setExplainMuted(video.muted || video.volume === 0);
   };
 
   const selectChapter = (index: number) => {
@@ -923,8 +950,11 @@ const Landing = () => {
             <img
               key={beliefIndex}
               src={beliefs[beliefIndex].figure.src}
+              srcSet={beliefs[beliefIndex].figure.srcSet}
+              sizes="(max-width: 900px) calc(100vw - 48px), 700px"
               alt={beliefs[beliefIndex].figure.alt}
-              loading="lazy"
+              loading="eager"
+              decoding="async"
             />
           </figure>
           <div className="vl-beliefs vl-reveal">
@@ -1100,9 +1130,10 @@ const Landing = () => {
           {chapterFilters[chapterIndex].items.map((item, i) => (
             <button key={item} className="vl-page-card" onClick={() => setLightboxSrc(item)} aria-label={`Book page ${i + 1}`}>
               <img
-                src={item}
+                src={bookThumbnail(item)}
                 alt={`From The Vostok Method — ${chapterFilters[chapterIndex].name}`}
                 loading="lazy"
+                decoding="async"
               />
             </button>
           ))}
@@ -1327,7 +1358,14 @@ const Landing = () => {
               <p className="vl-lead">Thirty questions, zero diplomacy. Nyx answers everything.</p>
               <div className="vl-faq-frame">
                 <figure className="vl-faq-portrait">
-                  <img src="/NYX/01.jpg" alt="Nyx — author of the Vostok Method" loading="lazy" />
+                  <img
+                    src="/landing/qa/nyx-800.webp"
+                    srcSet="/landing/qa/nyx-800.webp 800w, /landing/qa/nyx-1600.webp 1600w"
+                    sizes="(max-width: 900px) calc(100vw - 48px), 620px"
+                    alt="Nyx — author of the Vostok Method"
+                    loading="lazy"
+                    decoding="async"
+                  />
                   <figcaption>Nyx — the one answering. Unedited.</figcaption>
                 </figure>
               </div>
@@ -1526,7 +1564,17 @@ const Landing = () => {
             >
               ×
             </button>
-            <video ref={explainRef} controls autoPlay muted={explainMuted} playsInline preload="metadata">
+            <video
+              ref={explainRef}
+              controls
+              autoPlay
+              muted={explainMuted}
+              playsInline
+              preload="metadata"
+              onVolumeChange={(event) =>
+                setExplainMuted(event.currentTarget.muted || event.currentTarget.volume === 0)
+              }
+            >
               <source media="(max-width: 899px)" src="/website_video_compress_mobile.mp4" type="video/mp4" />
               <source src="/website_video_compress.mp4" type="video/mp4" />
             </video>
@@ -1534,6 +1582,8 @@ const Landing = () => {
               type="button"
               className={`vl-explain-audio${explainMuted ? " vl-explain-audio--muted" : ""}`}
               aria-label={explainMuted ? "Turn video sound on" : "Mute video"}
+              title={explainMuted ? "Audio off — turn sound on" : "Audio on — mute sound"}
+              aria-pressed={!explainMuted}
               onClick={toggleExplainAudio}
             >
               {explainMuted ? (
