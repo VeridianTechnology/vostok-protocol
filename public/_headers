@@ -1,0 +1,44 @@
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/landing/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/obsidian/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/section_wallpaper/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/videos/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/audio/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/logo/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/statue/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.mp4
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.webm
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.webp
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.jpg
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/og-vostok.jpg
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate

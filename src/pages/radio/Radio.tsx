@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import SiteNav from "@/components/SiteNav";
+import { usePageMetadata } from "@/lib/pageMetadata";
 import { radioTracks, trackSrc } from "./tracks";
 import "../landing.css";
 import "./radio.css";
@@ -13,6 +14,11 @@ const formatTime = (seconds: number) => {
 };
 
 const Radio = () => {
+  usePageMetadata({
+    title: "Radio Vostok — 181 Tracks Curated by Nyx",
+    description: "Radio Vostok is a numbered collection of 181 tracks curated by Nyx.",
+    path: "/radio",
+  });
   const [trackIndex, setTrackIndex] = useState(0);
   const [shuffle, setShuffle] = useState(false);
   const [playing, setPlaying] = useState(false);
@@ -199,7 +205,7 @@ const Radio = () => {
       <section className="vl-section vr-head">
         <p className="vl-kicker vr-kicker">
           Radio Vostok
-          <img className="vr-kicker-logo" src="/logo/logo-radio.png" alt="" aria-hidden="true" />
+          <img className="vr-kicker-logo" src="/logo/logo-radio-160.webp" alt="" aria-hidden="true" />
         </p>
         <h1 className="vl-h2">
           The station of the <em>restructured.</em>

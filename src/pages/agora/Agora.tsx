@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import SiteNav from "@/components/SiteNav";
+import { usePageMetadata } from "@/lib/pageMetadata";
 import { agoraCategories } from "./links";
 import "../landing.css";
 import "../radio/radio.css";
 import "./agora.css";
 
 const Agora = () => {
+  usePageMetadata({
+    title: "Vostok Agora — The Digital Meeting Place",
+    description: "A living collection of accounts, articles, answers, and faces gathered by Nyx.",
+    path: "/agora",
+  });
   const [categoryIndex, setCategoryIndex] = useState(0);
   const category = agoraCategories[categoryIndex];
 
@@ -17,7 +23,7 @@ const Agora = () => {
       <section className="vl-section va-head">
         <p className="vl-kicker vr-kicker">
           Agora
-          <img className="vr-kicker-logo" src="/logo/logo-agora.png" alt="" aria-hidden="true" />
+          <img className="vr-kicker-logo" src="/logo/logo-agora-160.webp" alt="" aria-hidden="true" />
         </p>
         <h1 className="vl-h2">
           The digital <em>meeting place.</em>

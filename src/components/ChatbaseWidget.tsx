@@ -43,7 +43,10 @@ const ChatbaseWidget = () => {
       });
     }
 
-    const onLoad = () => {
+    let timer = 0;
+    let idleId = 0;
+
+    const injectWidget = () => {
       if (document.getElementById(chatbotId)) {
         return;
       }
@@ -54,14 +57,25 @@ const ChatbaseWidget = () => {
       document.body.appendChild(script);
     };
 
-    if (document.readyState === "complete") {
-      onLoad();
-    } else {
-      window.addEventListener("load", onLoad);
-    }
+    const scheduleWidget = () => {
+      // The assistant is useful, but it should not compete with the hero,
+      // fonts, or primary imagery on the initial connection.
+      timer = window.setTimeout(() => {
+        if ("requestIdleCallback" in window) {
+          idleId = window.requestIdleCallback(injectWidget, { timeout: 4000 });
+        } else {
+          injectWidget();
+        }
+      }, 8000);
+    };
+
+    if (document.readyState === "complete") scheduleWidget();
+    else window.addEventListener("load", scheduleWidget, { once: true });
 
     return () => {
-      window.removeEventListener("load", onLoad);
+      window.removeEventListener("load", scheduleWidget);
+      window.clearTimeout(timer);
+      if (idleId && "cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
     };
   }, []);
 

@@ -4,6 +4,22 @@
    Accent: signal cyan #4ff0ff · ion violet #8f7bff
    ============================================================ */
 
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-garamond-latin-normal.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 300 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  src: url("/fonts/cormorant-garamond-latin-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 300 500;
+  font-display: swap;
+}
+
 body:has(.vl) {
   background: #04060d;
   color: #ecf2fc;
@@ -426,6 +442,59 @@ a.vl-topnav-tab:hover {
   width: min(92vw, 1000px);
 }
 
+.vl-hero-value {
+  width: min(92vw, 820px);
+  text-align: center;
+  text-shadow: 0 3px 30px rgba(0, 0, 0, 0.94);
+}
+
+.vl-hero-value p {
+  max-width: 32ch;
+  margin: 0 auto 22px;
+  color: var(--ink);
+  font-size: clamp(22px, 2.35vw, 34px);
+  font-weight: 400;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+.vl-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.vl-hero-action {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border: 1px solid rgba(126, 184, 255, 0.38);
+  color: var(--ink);
+  background: rgba(4, 6, 13, 0.68);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vl-hero-action:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 0 24px rgba(79, 240, 255, 0.18);
+}
+
+.vl-hero-action--primary {
+  color: #04060d;
+  border-color: rgba(236, 242, 252, 0.9);
+  background: rgba(236, 242, 252, 0.93);
+  text-shadow: none;
+}
+
 @media (min-width: 769px) {
   .vl-hero-stack {
     position: absolute;
@@ -438,7 +507,7 @@ a.vl-topnav-tab:hover {
 .vl-hero-manifesto {
   position: relative;
   width: 100%;
-  min-height: clamp(220px, 38svh, 360px);
+  min-height: clamp(140px, 24svh, 240px);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -448,8 +517,8 @@ a.vl-topnav-tab:hover {
 
 @media (min-width: 769px) {
   .vl-hero-manifesto {
-    min-height: clamp(140px, 20svh, 210px);
-    padding: clamp(24px, 4vw, 48px);
+    min-height: clamp(76px, 11svh, 116px);
+    padding: clamp(16px, 2vw, 26px);
   }
 }
 
@@ -459,7 +528,7 @@ a.vl-topnav-tab:hover {
   margin: 0;
   color: var(--ink);
   font-family: var(--serif);
-  font-size: clamp(24px, 3.3vw, 50px);
+  font-size: clamp(18px, 2vw, 28px);
   font-weight: 300;
   letter-spacing: 0.05em;
   line-height: 1.13;
@@ -2081,9 +2150,10 @@ a.vl-topnav-tab:hover {
 
 .vl-articles-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(20px, 3vw, 40px);
-  margin-top: 8px;
+  width: min(100%, 900px);
+  margin: 8px auto 0;
 }
 
 .vl-article {

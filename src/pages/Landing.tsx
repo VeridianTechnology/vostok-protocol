@@ -10,6 +10,7 @@ import {
   CAT_KEY,
   BOUGHT_KEY,
 } from "@/lib/analytics";
+import { usePageMetadata } from "@/lib/pageMetadata";
 import "./landing.css";
 
 const BUY_URL = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
@@ -148,8 +149,8 @@ const beliefs = [
       alt: "Side-by-side portraits showing progressive facial refinement",
     },
     body: [
-      "The beautiful thing about this workout routine is that you can simply trust the process. The skull is made of multiple bones; it is not one solid piece, and the face is filled with cartilage, fat, nerves, and small muscles.",
-      "What we offer here is the full service: building the muscles, refining the various plates, and modifying the face in a very real way—to the point that it can look as though you have had surgery.",
+      "The beautiful thing about this workout routine is that you can simply trust the process. The face is a connected system of bone, cartilage, fat, nerves, fascia, skin, and small muscles.",
+      "What we offer here is the full service: building the muscles, balancing patterns of tension, and refining how the face rests and moves over time.",
     ],
     tagline: "Routine creates refinement",
   },
@@ -423,20 +424,51 @@ const journeyImg = (img: JourneyImage, alt: string) =>
 
 const articles = [
   {
-    src: "/section_wallpaper/articles/1.jpeg",
-    title: "The Perfect Female Face",
-    text: "Rating, critiquing, and explaining the prettiest face alive.",
-    href: "https://nyxvostok.substack.com/p/the-perfect-female-face",
-  },
-  {
-    src: "/section_wallpaper/articles/2.jpeg",
-    title: "Looksmaxxing Will Usher In the End Times",
-    text: "On beauty, timelines, and where this is all heading.",
-    href: "https://nyxvostok.substack.com/p/looksmaxxing-will-usher-in-the-end",
+    src: "/articles/youre-not-ugly-your-face-is-just-untrained.webp",
+    title: "You’re Not Ugly, Your Face Is Just Untrained",
+    text: "Chapter 1 — The Vostok Method",
+    href: "https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just",
   },
 ];
 
+// Begin fetching heavier section media shortly before it can enter view. The
+// generous margin keeps fast scrolling seamless without paying for the entire
+// page on the initial connection.
+const useNearViewport = <T extends Element,>(rootMargin = "1400px 0px") => {
+  const ref = useRef<T | null>(null);
+  const [nearViewport, setNearViewport] = useState(false);
+
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || nearViewport) return undefined;
+    if (!("IntersectionObserver" in window)) {
+      setNearViewport(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNearViewport(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin, threshold: 0.01 }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [nearViewport, rootMargin]);
+
+  return [ref, nearViewport] as const;
+};
+
 const Landing = () => {
+  usePageMetadata({
+    title: "Vostok Method — Facial Exercise & Massage Guide",
+    description:
+      "The Vostok Method is a structured guide to facial exercise, massage, posture, and better resting patterns. Get 11 illustrated chapters for a one-time $4.99.",
+    path: "/",
+  });
   const [entrySource, setEntrySource] = useState("direct");
   const [heroStatementIndex, setHeroStatementIndex] = useState(0);
   const [heroStatementPhase, setHeroStatementPhase] = useState<HeroStatementPhase>("enter");
@@ -535,6 +567,11 @@ const Landing = () => {
   const [companyCard, setCompanyCard] = useState<"manifesto" | "method">("method");
   const heroRef = useRef<HTMLElement | null>(null);
   const companyCardRef = useRef<HTMLDivElement | null>(null);
+  const [methodMediaRef, methodMediaNear] = useNearViewport<HTMLElement>();
+  const [originMediaRef, originMediaNear] = useNearViewport<HTMLElement>();
+  const [nyxMediaRef, nyxMediaNear] = useNearViewport<HTMLElement>();
+  const [obeliskMediaRef, obeliskMediaNear] = useNearViewport<HTMLDivElement>();
+  const [purchaseMediaRef, purchaseMediaNear] = useNearViewport<HTMLElement>();
 
   useEffect(() => {
     checkAndSetOwnerParam();
@@ -903,12 +940,36 @@ const Landing = () => {
           </span>
         </nav>
         <h1 className="vl-hero-title">
-          <img className="vl-hero-logo" src="/logo/logo-runner.webp" alt="" aria-hidden="true" />
+          <img
+            className="vl-hero-logo"
+            src="/logo/logo-runner.webp"
+            alt=""
+            aria-hidden="true"
+            fetchPriority="high"
+            decoding="async"
+          />
           <span className="vl-hero-wordmark">VØSTOK</span>
-          <div className="vl-hero-subtitle">Raise the Spirit of Man</div>
+          <span className="vl-hero-subtitle">Raise the Spirit of Man</span>
         </h1>
 
         <div className="vl-hero-stack">
+          <div className="vl-hero-value">
+            <p>A structured method for facial exercise, massage, posture, and better resting patterns.</p>
+            <div className="vl-hero-actions">
+              <a className="vl-hero-action vl-hero-action--secondary" href="#method">
+                Explore the Method
+              </a>
+              <a
+                className="vl-hero-action vl-hero-action--primary"
+                href={BUY_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => fireBuyTracking("hero")}
+              >
+                Get Instant Access · $4.99
+              </a>
+            </div>
+          </div>
           <div className="vl-hero-manifesto">
             <p
               className={`vl-hero-message vl-hero-message--${heroStatementPhase}`}
@@ -922,7 +983,7 @@ const Landing = () => {
       </section>
 
       {/* The Method */}
-      <section className="vl-section" id="method">
+      <section className="vl-section" id="method" ref={methodMediaRef}>
         <div className="vl-reveal">
           <p className="vl-kicker">THE PROOF</p>
           <div className="vl-h2-row" onClick={() => toggleSection("method")}>
@@ -949,11 +1010,11 @@ const Landing = () => {
           <figure className="vl-method-figure vl-reveal">
             <img
               key={beliefIndex}
-              src={beliefs[beliefIndex].figure.src}
-              srcSet={beliefs[beliefIndex].figure.srcSet}
+              src={methodMediaNear ? beliefs[beliefIndex].figure.src : undefined}
+              srcSet={methodMediaNear ? beliefs[beliefIndex].figure.srcSet : undefined}
               sizes="(max-width: 900px) calc(100vw - 48px), 700px"
               alt={beliefs[beliefIndex].figure.alt}
-              loading="eager"
+              loading="lazy"
               decoding="async"
             />
           </figure>
@@ -999,7 +1060,7 @@ const Landing = () => {
                 aria-label="Play: Why use the Vostok Method"
                 onClick={() => setExplanationOpen(true)}
               >
-                <img src="/screen.webp" alt="" aria-hidden="true" />
+                <img src="/screen.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" />
                 <span className="vl-explain-play" aria-hidden="true">
                   <svg viewBox="0 0 64 64">
                     <circle cx="32" cy="32" r="29" />
@@ -1142,10 +1203,10 @@ const Landing = () => {
       </section>
 
       {/* Dark interlude — the origin myth */}
-      <section className="vl-dark" id="origin">
+      <section className="vl-dark" id="origin" ref={originMediaRef}>
         <div
           className="vl-dark-bg"
-          style={{ backgroundImage: "url(/obsidian/origin-stairway.webp)" }}
+          style={{ backgroundImage: originMediaNear ? "url(/obsidian/origin-stairway.webp)" : "none" }}
           aria-hidden="true"
         />
         <div className="vl-dark-inner">
@@ -1165,10 +1226,10 @@ const Landing = () => {
       </section>
 
       {/* Dark interlude — Nyx's challenge */}
-      <section className="vl-dark" id="nyx">
+      <section className="vl-dark" id="nyx" ref={nyxMediaRef}>
         <div
           className="vl-dark-bg"
-          style={{ backgroundImage: "url(/obsidian/nyx-challenge.webp)" }}
+          style={{ backgroundImage: nyxMediaNear ? "url(/obsidian/nyx-challenge.webp)" : "none" }}
           aria-hidden="true"
         />
         <div className="vl-dark-inner vl-nyx-grid">
@@ -1192,7 +1253,7 @@ const Landing = () => {
                       aria-label={`Play ${video.caption}`}
                       onClick={() => setVideoZoom(video.src)}
                     >
-                      <img src={video.thumbnail} alt="" aria-hidden="true" />
+                      <img src={video.thumbnail} alt="" aria-hidden="true" loading="lazy" decoding="async" />
                       <svg viewBox="0 0 64 64" aria-hidden="true">
                         <circle cx="32" cy="32" r="29" />
                         <path d="M26 20l20 12-20 12z" />
@@ -1207,12 +1268,14 @@ const Landing = () => {
         </div>
       </section>
 
-      <div className="vl-obelisk-sections">
+      <div className="vl-obelisk-sections" ref={obeliskMediaRef}>
       <img
         className="vl-obelisk-art"
-        src="/obsidian/obelisk-cutout.png"
+        src={obeliskMediaNear ? "/obsidian/obelisk-cutout-lossless.webp" : undefined}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
       />
 
       {/* The Journey */}
@@ -1433,29 +1496,24 @@ const Landing = () => {
             <h3>The Vostok Method — complete</h3>
             <ul>
               <li>
-                <strong>11 Chapters with every part of the face.</strong> Back of the head, jaw,
-                lips, eyes, cheeks, nose, tongue, ears, scalp and neck — something to radically
-                improve every part of the face.
+                <strong>11 illustrated chapters covering the full face.</strong> Jaw, chin, lips,
+                eyes, cheeks, nose, tongue, ears, scalp, the back of the head, and neck.
               </li>
               <li>
-                <strong>People have become professional models.</strong> I've seen the same thing
-                over and over; first doubt, then feeling triumphant then too much ego, before
-                finding one's true self.
+                <strong>A structured progression.</strong> Follow the method area by area instead of
+                piecing together disconnected tips.
               </li>
               <li>
-                <strong>This is tried and true.</strong> I've seen it work with countless people,
-                young and old, male and female. If you put in the work, you'll become beautiful in
-                ways you've understood till now.
+                <strong>Exercises, massage, posture, and resting patterns.</strong> The core practices
+                are organized into one system you can return to.
               </li>
               <li>
-                <strong>I've personally used it.</strong> It has changed every aspect on how I deal
-                with humanity. The results are shocking, but well worth it. It's tiring, it takes
-                work but the results speak for themselves.
+                <strong>Detailed visual instruction.</strong> Book pages and illustrations show what
+                to work, where to place your hands, and how each technique is performed.
               </li>
               <li>
-                <strong>If you actually want to change your life, this is it.</strong> This is the
-                train that leaves the station, this is your exit. It's only $4.99 and some face oil
-                and practice. The results, are incredible to say the least.
+                <strong>One-time $4.99 digital access.</strong> No subscription—get the complete guide
+                immediately and keep it.
               </li>
             </ul>
           </div>
@@ -1477,17 +1535,19 @@ const Landing = () => {
       </section>
 
       {/* Closing statement — dark */}
-      <section className="vl-dark vl-dark--center" id="purchase">
+      <section className="vl-dark vl-dark--center" id="purchase" ref={purchaseMediaRef}>
         <div className="vl-dark-bg vl-dark-bg--video" aria-hidden="true">
-          <video
-            src="/landing/video/evolution-portal-loop.mp4"
-            poster="/obsidian/evolution-portal.webp"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          />
+          {purchaseMediaNear && (
+            <video
+              src="/landing/video/evolution-portal-loop.mp4"
+              poster="/obsidian/evolution-portal.webp"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          )}
         </div>
         <div className="vl-dark-inner">
           <p className="vl-kicker vl-purchase-kicker vl-reveal">The Vostok Method</p>

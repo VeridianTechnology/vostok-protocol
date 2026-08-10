@@ -61,14 +61,9 @@ const RATINGS: RatingEntry[] = [
 
 const ARTICLES = [
   {
-    src: "/section_wallpaper/articles/1.jpeg",
-    alt: "The Perfect Female Face",
-    href: "https://nyxvostok.substack.com/p/the-perfect-female-face",
-  },
-  {
-    src: "/section_wallpaper/articles/2.jpeg",
-    alt: "Looksmaxxing will usher in the end times",
-    href: "https://nyxvostok.substack.com/p/looksmaxxing-will-usher-in-the-end",
+    src: "/articles/youre-not-ugly-your-face-is-just-untrained.webp",
+    alt: "You’re Not Ugly, Your Face Is Just Untrained",
+    href: "https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just",
   },
 ];
 
