@@ -918,7 +918,7 @@ const Landing = () => {
             rel="noopener noreferrer"
             onClick={() => fireBuyTracking("sticky_bar")}
           >
-            $4.99
+            Vostok Method - $4.99
           </a>
         </div>
       </div>
@@ -953,23 +953,6 @@ const Landing = () => {
         </h1>
 
         <div className="vl-hero-stack">
-          <div className="vl-hero-value">
-            <p>A structured method for facial exercise, massage, posture, and better resting patterns.</p>
-            <div className="vl-hero-actions">
-              <a className="vl-hero-action vl-hero-action--secondary" href="#method">
-                Explore the Method
-              </a>
-              <a
-                className="vl-hero-action vl-hero-action--primary"
-                href={BUY_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => fireBuyTracking("hero")}
-              >
-                Get Instant Access · $4.99
-              </a>
-            </div>
-          </div>
           <div className="vl-hero-manifesto">
             <p
               className={`vl-hero-message vl-hero-message--${heroStatementPhase}`}
