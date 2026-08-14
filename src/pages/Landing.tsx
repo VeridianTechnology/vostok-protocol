@@ -174,12 +174,34 @@ const Landing = () => {
   const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
   const [barShown, setBarShown] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
+  const [nyxVideoPaused, setNyxVideoPaused] = useState(true);
+  const [nyxVideoReady, setNyxVideoReady] = useState(false);
   const heroRef = useRef<HTMLElement | null>(null);
+  const nyxVideoRef = useRef<HTMLVideoElement | null>(null);
   const [methodMediaRef, methodMediaNear] = useNearViewport<HTMLElement>();
   const [originMediaRef, originMediaNear] = useNearViewport<HTMLElement>();
   const [nyxMediaRef, nyxMediaNear] = useNearViewport<HTMLElement>();
   const [obeliskMediaRef, obeliskMediaNear] = useNearViewport<HTMLDivElement>();
   const [purchaseMediaRef, purchaseMediaNear] = useNearViewport<HTMLElement>();
+
+  useEffect(() => {
+    const video = nyxVideoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.play().catch(() => setNyxVideoPaused(true));
+  }, []);
+
+  const toggleNyxVideo = () => {
+    const video = nyxVideoRef.current;
+    if (!video) return;
+
+    if (video.paused) {
+      video.play().catch(() => setNyxVideoPaused(true));
+    } else {
+      video.pause();
+    }
+  };
 
   useEffect(() => {
     checkAndSetOwnerParam();
@@ -421,6 +443,15 @@ const Landing = () => {
               <path d="M8.5 10.5V7.8a3.5 3.5 0 017 0v2.7" />
             </svg>
           </span>
+          <a
+            className="vl-bar-buy vl-topnav-buy"
+            href={BUY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => fireBuyTracking("hero_nav")}
+          >
+            $4.99
+          </a>
         </nav>
         <h1 className="vl-hero-title">
           <span className="vl-hero-brand">
@@ -554,6 +585,7 @@ const Landing = () => {
           </div>
           <div className="vl-nyx-video-showcase vl-reveal">
             <video
+              ref={nyxVideoRef}
               src="/videos/side_profile_2.mp4"
               aria-label="Mogging — side profile after 140 hours"
               autoPlay
@@ -561,7 +593,35 @@ const Landing = () => {
               loop
               playsInline
               preload="metadata"
+              onCanPlay={() => setNyxVideoReady(true)}
+              onPlaying={() => {
+                setNyxVideoReady(true);
+                setNyxVideoPaused(false);
+              }}
+              onWaiting={() => setNyxVideoReady(false)}
+              onPlay={() => setNyxVideoPaused(false)}
+              onPause={() => setNyxVideoPaused(true)}
             />
+            {!nyxVideoReady && <span className="vl-nyx-video-loading" aria-live="polite">loading</span>}
+            {nyxVideoReady && (
+              <button
+                className="vl-nyx-video-toggle"
+                type="button"
+                onClick={toggleNyxVideo}
+                aria-label={nyxVideoPaused ? "Play video" : "Pause video"}
+              >
+                {nyxVideoPaused ? (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="7" y="5" width="4" height="14" rx="1" />
+                    <rect x="13" y="5" width="4" height="14" rx="1" />
+                  </svg>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </section>
@@ -578,10 +638,6 @@ const Landing = () => {
 
       {/* The Journey */}
       <section className="vl-section" id="journey">
-        <div className="vl-reveal">
-          <p className="vl-kicker">100 HOURS+</p>
-          <h2 className="vl-h2">Watch the Change</h2>
-        </div>
         <div className="vl-journey-slide vl-reveal">
           <button
             className="vl-journey-main"
@@ -678,7 +734,7 @@ const Landing = () => {
         </div>
         <div className="vl-dark-inner">
           <h2 className="vl-dark-quote vl-reveal">
-            Walking towards <em>ascension</em>
+            Walking towards <em>Ascension</em>
           </h2>
         </div>
       </section>

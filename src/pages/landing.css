@@ -208,7 +208,13 @@ body:has(.vl) {
   right: clamp(20px, 4vw, 44px);
   z-index: 5;
   display: flex;
+  align-items: center;
   gap: clamp(14px, 2.5vw, 28px);
+}
+
+.vl-topnav-buy {
+  padding: 8px 18px;
+  font-size: 11px;
 }
 
 .vl-topnav-tab {
@@ -781,6 +787,7 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-nyx-video-showcase {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -803,6 +810,44 @@ a.vl-topnav-tab:hover {
   object-fit: cover;
   object-position: center 68%;
   transform: scale(1.12);
+}
+
+.vl-nyx-video-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  text-transform: lowercase;
+  color: rgba(240, 239, 236, 0.88);
+  background: rgba(4, 6, 13, 0.72);
+}
+
+.vl-nyx-video-loading::after {
+  content: ".";
+  width: 3ch;
+  animation: vl-loading-dots 1.2s steps(1, end) infinite;
+}
+
+@keyframes vl-loading-dots {
+  0%, 32% {
+    content: ".";
+  }
+
+  33%, 65% {
+    content: "..";
+  }
+
+  66%, 100% {
+    content: "...";
+  }
+}
+
+.vl-nyx-video-toggle {
+  display: none;
 }
 
 /* centered dark CTA variant */
@@ -1790,9 +1835,13 @@ a.vl-topnav-tab:hover {
   }
 
   .vl-nyx-statue {
-    bottom: -58px;
-    left: calc(50% - 225px);
-    width: 440px;
+    bottom: -104px;
+    left: calc(50% - 157px);
+    width: auto;
+    height: 120%;
+    max-height: none;
+    clip-path: none;
+    object-position: center bottom;
   }
 
   .vl-nyx-video-showcase {
@@ -1801,6 +1850,31 @@ a.vl-topnav-tab:hover {
     justify-self: end;
     width: min(40vw, 210px);
     transform: translateX(8px);
+  }
+
+  .vl-nyx-video-toggle {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    z-index: 3;
+    display: grid;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    padding: 0;
+    border: 1px solid rgba(240, 239, 236, 0.78);
+    border-radius: 50%;
+    color: #f0efec;
+    background: rgba(4, 6, 13, 0.68);
+    box-shadow: 0 0 18px rgba(79, 240, 255, 0.3);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .vl-nyx-video-toggle svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
   }
 
   #offer {
