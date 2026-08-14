@@ -203,13 +203,7 @@ const Radio = () => {
       <SiteNav suffix="RADIO" active="Radio" />
 
       <section className="vl-section vr-head">
-        <p className="vl-kicker vr-kicker">
-          Radio Vostok
-          <img className="vr-kicker-logo" src="/logo/logo-radio-160.webp" alt="" aria-hidden="true" />
-        </p>
-        <h1 className="vl-h2">
-          The station of the <em>restructured.</em>
-        </h1>
+        <h1 className="vl-h2">NYX Playlist 25'</h1>
         <p className="vl-lead">
           {radioTracks.length} tracks, numbered and curated by Nyx — the music the protocol is built
           to. Pick a number, press play.
