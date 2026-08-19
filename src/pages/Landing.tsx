@@ -16,119 +16,29 @@ import "./landing.css";
 const BUY_URL = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
 
 const MOBILE_BAR_INACTIVITY_DELAY = 5000;
+const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
 
 const decay = [
-  {
-    title: "Do not talk about Vostok",
-    text: "You're maturing. You lost weight. You're dieting healthier. Do not mention face exercises. Do not mention Vostok.",
-  },
-  {
-    title: "You will praise Nyx",
-    text: "They hated Jesus too. You will give praise to Nyx. He showed you the way. He let you ascend. Through him you will stop Jestermaxxing forever.",
-  },
-  {
-    title: "You will Listen",
-    text: "To non-descript music. A little rap. A little country. A little classic, but general beats. Your consciousness is now formed. Head over to NYX's playlist to find what's hot.",
-  },
-  {
-    title: "You will Practice",
-    text: "Two hours a week, minimum. If you truly want to ascend, five hours a week. If you want to get hot, next month, 10 hours a week. No excuses.",
-  },
-  {
-    title: "You will not chase Hos",
-    text: "You can double text. You can send money. You can simp. But you will always put yourself first. You will facemaxx, at all times. Gym unnecessary.",
-  },
-  {
-    title: "You will talk to the Hos",
-    text: "Once you reach a blue belt, you will go up to hos, ask for their number. That's four weeks, or one month if you work hard. Keep working till you hit black belt.",
-  },
+  "You do not talk about VOSTOK.",
+  "You will keep quiet.",
+  "Meditate.",
+  "You will practice.",
+  "You will not chase external validation.",
+  "You will engage with the world.",
 ];
 
 const proof = {
   title: "Face > Everything",
-  figure: {
-    src: "/landing/proof/structure-follows-tension-800.webp",
-    srcSet:
-      "/landing/proof/structure-follows-tension-800.webp 800w, /landing/proof/structure-follows-tension-1350.webp 1350w",
-    alt: "Side-by-side portraits showing changes in facial structure and tension",
-  },
   body: [
-    "Face is all that matters. Not your style. Not your wallet. Not how tall you are. As long as you're above 5'3\" and have $700 in your bank account and shave and shower.",
-    "Also as long as you're not Indian. You'll ascend. The shorter and poorer you are, the better your face better be. Game matters too. Personality. But face above all.",
+    "In the economy of first impressions, the face is the strongest signal. It can overpower style, money and height, shaping what others permit, forgive and expect from you. Before you speak, it can cast you as a leader or a follower—as though some faces were favored by the gods themselves.",
   ],
   tagline: "Asymmetry is the enemy",
 };
 
-type JourneyImage = string | { mobile: string; desktop: string };
-
-const journeyStages: {
-  title: string;
-  hours: string;
-  color?: string;
-  img: JourneyImage;
-  zoom: string;
-}[] = [
-  {
-    title: "Jestergoon",
-    hours: "Hour zero",
-    img: { mobile: "/landing/journey/before-mobile.webp", desktop: "/landing/journey/before-desktop.webp" },
-    zoom:
-      "Hour zero. Untrained muscles, a forward neck, asymmetry left to run for years. This is the raw material every face in the program starts from.",
-  },
-  {
-    title: "Initate",
-    hours: "20 hours",
-    color: "#d4b04a",
-    img: "/landing/journey/belt-yellow.jpg",
-    zoom:
-      "Yellow belt — the first twenty hours. Pure construction: 90% exercises, 10% massage. The muscles of the face wake up and begin pulling the structure taut.",
-  },
-  {
-    title: "Depressive",
-    hours: "40 hours",
-    color: "#3d5a99",
-    img: "/landing/journey/belt-blue.jpg",
-    zoom:
-      "Blue belt — forty hours in, roughly one full point gained on the scale. Exercises still lead, massage grows to 30%, and the first refinement work begins.",
-  },
-  {
-    title: "Vostok Human",
-    hours: "70 hours",
-    color: "#4a7a5a",
-    img: "/landing/journey/belt-green.jpg",
-    zoom:
-      "Green belt — seventy hours. Precision work: the split moves to 50/40/10 as massage and targeted refinement take over from raw building.",
-  },
-  {
-    title: "Ascended",
-    hours: "100+ hours",
-    color: "#1b1b1f",
-    img: "/landing/journey/belt-black.jpg",
-    zoom:
-      "Black belt — one hundred hours and beyond. Mastery: 20% exercises, 40% massage, 40% refinement. The structure now holds itself.",
-  },
-  {
-    title: "NYX",
-    hours: "The other side",
-    img: "/landing/journey/two-months-after-03.jpg",
-    zoom:
-      "The other side of one hundred hours. Trained, symmetrical, restructured — and permanent. This is what the protocol builds.",
-  },
-];
-
-const JOURNEY_NYX_INDEX = journeyStages.findIndex((stage) => stage.title === "NYX");
-
-const journeyZoomSrc = (img: JourneyImage) => (typeof img === "string" ? img : img.desktop);
-
-const journeyImg = (img: JourneyImage, alt: string) =>
-  typeof img === "string" ? (
-    <img src={img} alt={alt} loading="lazy" />
-  ) : (
-    <picture>
-      <source media="(min-width: 768px)" srcSet={img.desktop} />
-      <img src={img.mobile} alt={alt} loading="lazy" />
-    </picture>
-  );
+const methodPortraits = ["00", "01", "02", "03"].map((image, index) => ({
+  src: `/nyx/${image}.png`,
+  alt: `Nyx facial progress portrait ${index + 1}`,
+}));
 
 // Begin fetching heavier section media shortly before it can enter view. The
 // generous margin keeps fast scrolling seamless without paying for the entire
@@ -169,9 +79,7 @@ const Landing = () => {
     path: "/",
   });
   const [entrySource, setEntrySource] = useState("direct");
-  // Lead with the final NYX stage.
-  const [journeyIndex, setJourneyIndex] = useState(JOURNEY_NYX_INDEX);
-  const [infoZoom, setInfoZoom] = useState<{ src: string; title: string; text: string } | null>(null);
+  const [portraitZoom, setPortraitZoom] = useState<(typeof methodPortraits)[number] | null>(null);
   const [barShown, setBarShown] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
   const [nyxVideoPaused, setNyxVideoPaused] = useState(true);
@@ -181,8 +89,6 @@ const Landing = () => {
   const [methodMediaRef, methodMediaNear] = useNearViewport<HTMLElement>();
   const [originMediaRef, originMediaNear] = useNearViewport<HTMLElement>();
   const [nyxMediaRef, nyxMediaNear] = useNearViewport<HTMLElement>();
-  const [obeliskMediaRef, obeliskMediaNear] = useNearViewport<HTMLDivElement>();
-  const [purchaseMediaRef, purchaseMediaNear] = useNearViewport<HTMLElement>();
 
   useEffect(() => {
     const video = nyxVideoRef.current;
@@ -335,15 +241,23 @@ const Landing = () => {
 
   // Escape closes the lightboxes
   useEffect(() => {
-    if (!infoZoom) return undefined;
+    if (!portraitZoom) return undefined;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setInfoZoom(null);
+        setPortraitZoom(null);
+      } else if (portraitZoom && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+        const currentIndex = methodPortraits.findIndex(
+          (portrait) => portrait.src === portraitZoom.src
+        );
+        const direction = event.key === "ArrowLeft" ? -1 : 1;
+        const nextIndex =
+          (currentIndex + direction + methodPortraits.length) % methodPortraits.length;
+        setPortraitZoom(methodPortraits[nextIndex]);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [infoZoom]);
+  }, [portraitZoom]);
 
   const fireBuyTracking = (location: string) => {
     markBuyClicked();
@@ -372,25 +286,6 @@ const Landing = () => {
     trackSafe(`buy_click_${entrySource}`, { location });
   };
 
-  const journeyThumb = (i: number) => {
-    const stage = journeyStages[i];
-    return (
-      <button
-        key={`${stage.title}-${i}`}
-        className={`vl-journey-thumb${i === journeyIndex ? " vl-journey-thumb--active" : ""}`}
-        data-journey-index={i}
-        onClick={() => setJourneyIndex(i)}
-        aria-label={`${stage.title} — ${stage.hours}`}
-      >
-        <span className="vl-journey-thumb-img">{journeyImg(stage.img, `${stage.title} — ${stage.hours}`)}</span>
-        <span className="vl-journey-thumb-label">
-          {stage.color && <span className="vl-belt-dot" style={{ background: stage.color }} />}
-          {stage.title}
-        </span>
-      </button>
-    );
-  };
-
   return (
     <div className="vl">
       {/* Sticky buy bar */}
@@ -409,13 +304,9 @@ const Landing = () => {
           <Link className="vl-bar-link" to="/radio">
             Radio
           </Link>
-          <span className="vl-bar-link vl-nav-locked" aria-disabled="true">
-            Agora
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5.5" y="10.5" width="13" height="10" rx="2" />
-              <path d="M8.5 10.5V7.8a3.5 3.5 0 017 0v2.7" />
-            </svg>
-          </span>
+          <Link className="vl-bar-link" to="/agora">
+            Polaris
+          </Link>
           <a
             className="vl-bar-buy"
             href={BUY_URL}
@@ -436,13 +327,9 @@ const Landing = () => {
           <Link className="vl-topnav-tab" to="/radio">
             Radio
           </Link>
-          <span className="vl-topnav-tab vl-nav-locked" aria-disabled="true">
-            Agora
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="5.5" y="10.5" width="13" height="10" rx="2" />
-              <path d="M8.5 10.5V7.8a3.5 3.5 0 017 0v2.7" />
-            </svg>
-          </span>
+          <Link className="vl-topnav-tab" to="/agora">
+            Polaris
+          </Link>
           <a
             className="vl-bar-buy vl-topnav-buy"
             href={BUY_URL}
@@ -455,23 +342,13 @@ const Landing = () => {
         </nav>
         <h1 className="vl-hero-title">
           <span className="vl-hero-brand">
-            <img
-              className="vl-hero-logo"
-              src="/logo/logo-runner.webp"
-              alt=""
-              aria-hidden="true"
-              fetchPriority="high"
-              decoding="async"
-            />
             <span className="vl-hero-wordmark">VØSTOK</span>
           </span>
-          <span className="vl-hero-subtitle">NEVER JESTERMAXX</span>
         </h1>
 
         <div className="vl-hero-stack">
           <div className="vl-hero-manifesto">
-            <p className="vl-hero-message">Hypergamy is defeated here</p>
-            <p className="vl-hero-message-subtitle">Here is where we ascend</p>
+            <p className="vl-hero-message">Elite Facial Performance</p>
           </div>
         </div>
       </section>
@@ -480,7 +357,7 @@ const Landing = () => {
       <section className="vl-section" id="method" ref={methodMediaRef}>
         <div className="vl-reveal">
           <h2 className="vl-h2">
-            Jesetermaxxing is a <em>Sin</em>
+            The Face is meant to be <em>Designed.</em>
           </h2>
         </div>
         <div className="vl-method-grid">
@@ -494,14 +371,22 @@ const Landing = () => {
             </div>
           </div>
           <figure className="vl-method-figure vl-reveal">
-            <img
-              src={methodMediaNear ? proof.figure.src : undefined}
-              srcSet={methodMediaNear ? proof.figure.srcSet : undefined}
-              sizes="(max-width: 900px) calc(100vw - 48px), 700px"
-              alt={proof.figure.alt}
-              loading="lazy"
-              decoding="async"
-            />
+            {methodPortraits.map((portrait, index) => (
+              <button
+                key={portrait.src}
+                type="button"
+                className="vl-method-portrait"
+                aria-label={`Enlarge facial progress portrait ${index + 1}`}
+                onClick={() => setPortraitZoom(portrait)}
+              >
+                <img
+                  src={methodMediaNear ? portrait.src : undefined}
+                  alt={portrait.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </button>
+            ))}
           </figure>
         </div>
       </section>
@@ -509,16 +394,12 @@ const Landing = () => {
       {/* The Diagnosis */}
       <section className="vl-section" id="diagnosis">
         <div className="vl-reveal">
-          <p className="vl-kicker">The first rule of Vostok...</p>
-          <h2 className="vl-h2">
-            Don't talk about <em>Vostok.</em>
-          </h2>
+          <h2 className="vl-h2">The Rules of VOSTOK</h2>
         </div>
         <div className="vl-decay-grid">
-          {decay.map((item, index) => (
-            <div key={item.title} className="vl-decay vl-reveal">
-              <h3>{index + 1}. {item.title}</h3>
-              <p>{item.text}</p>
+          {decay.map((rule, index) => (
+            <div key={rule} className="vl-decay vl-reveal">
+              <h3>{ROMAN_NUMERALS[index]}. {rule}</h3>
             </div>
           ))}
         </div>
@@ -528,41 +409,49 @@ const Landing = () => {
       <section className="vl-section vl-company-section" id="company">
         <div className="vl-signal vl-signal--standalone vl-company-card vl-reveal">
           <div className="vl-signal-body">
-            <h3>Jestermaxxing is a sin</h3>
+            <h3>The Ultimate Guide</h3>
             <p>
-              You can goon.<br />
-              You can simp.<br />
-              You can be a foid-worshipper.
+              230 pages of dedicated exercises, massages and tips;<br />
+              To radically improve and level your face, balance off asymmetry and deage your face.<br />
+              You won't need anything but some face oil, a mirror and time to practice.
             </p>
-            <p>But you will not jestermax.</p>
             <p>
-              You will not entertain. You will not condone. You will simply work on your face and
-              ascend.
+              This is not a short term commitment, it will takes months and years but the rewards are
+              amazing.
             </p>
+            </div>
+            <a
+              className="vl-company-buy"
+              href={BUY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fireBuyTracking("company")}
+            >
+              $4.99
+            </a>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Dark interlude — the origin myth */}
       <section className="vl-dark" id="origin" ref={originMediaRef}>
         <div
           className="vl-dark-bg"
-          style={{ backgroundImage: originMediaNear ? "url(/obsidian/origin-stairway.webp)" : "none" }}
+          style={{ backgroundImage: originMediaNear ? "url(/landing/origin-ascension.webp)" : "none" }}
           aria-hidden="true"
         />
         <div className="vl-dark-inner">
-          <h2 className="vl-dark-quote vl-reveal">Not for Pussies</h2>
+          <h2 className="vl-dark-quote vl-reveal">Not for the Soft</h2>
           <p className="vl-dark-text vl-reveal">
-            Don't care if you're broke. Stupid. Black or brown (which you are).
+            VOSTOK doesn't care if you're broke.<br />
+            Doesn't care if you're starting from nothing.<br />
+            Doesn't care what color, class, or background you come from.
           </p>
           <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            Vostok is to help you ascend. Sub-3 need not apply. Everyone else, buy the guide, do the work.
+            VOSTOK exists for one purpose: to help you ascend.
           </p>
           <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            Do not annoy me. Do not patronize me. Do not doubt. Just do it. And ascend.
-          </p>
-          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            Then fuck off.
+            If you're a 3 and you've accepted it, don't bother.<br />
+            If you're a 3 and you're ready to work, get the guide, follow the method, and do the work.
           </p>
         </div>
       </section>
@@ -571,15 +460,15 @@ const Landing = () => {
       <section className="vl-dark" id="nyx" ref={nyxMediaRef}>
         <div
           className="vl-dark-bg"
-          style={{ backgroundImage: nyxMediaNear ? "url(/obsidian/nyx-challenge.webp)" : "none" }}
+          style={{ backgroundImage: nyxMediaNear ? "url(/landing/nyx-pyramid.webp)" : "none" }}
           aria-hidden="true"
         />
         <div className="vl-dark-inner vl-nyx-grid">
           <div className="vl-nyx-intro">
             <img
               className="vl-nyx-statue vl-reveal"
-              src="/statue/vostok-warrior.webp"
-              alt="Black marble Vostok warrior bust illuminated with blue seams"
+              src="/landing/nyx-warrior.webp"
+              alt="Split white marble Vostok warrior bust"
               loading="lazy"
             />
           </div>
@@ -626,119 +515,6 @@ const Landing = () => {
         </div>
       </section>
 
-      <div className="vl-obelisk-sections" ref={obeliskMediaRef}>
-      <img
-        className="vl-obelisk-art"
-        src={obeliskMediaNear ? "/obsidian/obelisk-cutout-lossless.webp" : undefined}
-        alt=""
-        aria-hidden="true"
-        loading="lazy"
-        decoding="async"
-      />
-
-      {/* The Journey */}
-      <section className="vl-section" id="journey">
-        <div className="vl-journey-slide vl-reveal">
-          <button
-            className="vl-journey-main"
-            onClick={() =>
-              setInfoZoom({
-                src: journeyZoomSrc(journeyStages[journeyIndex].img),
-                title: `${journeyStages[journeyIndex].title} — ${journeyStages[journeyIndex].hours}`,
-                text: journeyStages[journeyIndex].zoom,
-              })
-            }
-            aria-label={`Enlarge: ${journeyStages[journeyIndex].title}, ${journeyStages[journeyIndex].hours}`}
-          >
-            {journeyImg(
-              journeyStages[journeyIndex].img,
-              `${journeyStages[journeyIndex].title} — ${journeyStages[journeyIndex].hours}`
-            )}
-          </button>
-          <div className="vl-journey-caption">
-            <h3>
-              {journeyStages[journeyIndex].color && (
-                <span className="vl-belt-dot" style={{ background: journeyStages[journeyIndex].color }} />
-              )}
-              {journeyStages[journeyIndex].title}
-            </h3>
-            <span className="vl-belt-hours">{journeyStages[journeyIndex].hours}</span>
-          </div>
-          <div className="vl-journey-strip">
-            <button
-              className="vl-journey-arrow"
-              aria-label="Previous stage"
-              onClick={() => setJourneyIndex((journeyIndex + journeyStages.length - 1) % journeyStages.length)}
-            >
-              ‹
-            </button>
-            <div className="vl-journey-thumbs">
-              <div className="vl-journey-thumb-track">
-                <div className="vl-journey-primary">
-                  {[0, null, JOURNEY_NYX_INDEX].map((slot) =>
-                    slot === null ? (
-                      <div key="belts" className="vl-journey-belt-group">
-                        {[1, 2, 3, 4].map((i) => journeyThumb(i))}
-                      </div>
-                    ) : (
-                      journeyThumb(slot)
-                    )
-                  )}
-                </div>
-              </div>
-            </div>
-            <button
-              className="vl-journey-arrow"
-              aria-label="Next stage"
-              onClick={() => setJourneyIndex((journeyIndex + 1) % journeyStages.length)}
-            >
-              ›
-            </button>
-          </div>
-        </div>
-      </section>
-
-      </div>
-
-      {/* The Offer — what $4.99 actually buys */}
-      <section className="vl-section vl-offer" id="offer">
-        <div className="vl-offer-card vl-reveal">
-          <div className="vl-offer-buy">
-            <a
-              className="vl-buy"
-              href={BUY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fireBuyTracking("offer")}
-            >
-              $4.99
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Closing statement — dark */}
-      <section className="vl-dark vl-dark--center" id="purchase" ref={purchaseMediaRef}>
-        <div className="vl-dark-bg vl-dark-bg--video" aria-hidden="true">
-          {purchaseMediaNear && (
-            <video
-              src="/landing/video/evolution-portal-loop.mp4"
-              poster="/obsidian/evolution-portal.webp"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-            />
-          )}
-        </div>
-        <div className="vl-dark-inner">
-          <h2 className="vl-dark-quote vl-reveal">
-            Walking towards <em>Ascension</em>
-          </h2>
-        </div>
-      </section>
-
       <footer className="vl-footer">
         <div className="vl-socials">
           <a href="https://x.com/Nyxvostok" target="_blank" rel="noopener noreferrer" aria-label="Vøstok Twitter">
@@ -750,19 +526,61 @@ const Landing = () => {
         <p className="vl-fineprint">The Vostok Method</p>
       </footer>
 
-      {/* Journey stage lightbox: photo + title + explanation */}
-      {infoZoom && (
-        <div className="vl-lightbox" onClick={() => setInfoZoom(null)}>
-          <button className="vl-lightbox-close" onClick={() => setInfoZoom(null)} aria-label="Close">
+      {portraitZoom && (
+        <div
+          className="vl-lightbox vl-portrait-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Enlarged facial progress portrait"
+          onClick={() => setPortraitZoom(null)}
+        >
+          <button
+            className="vl-lightbox-close"
+            type="button"
+            onClick={() => setPortraitZoom(null)}
+            aria-label="Close enlarged portrait"
+          >
             ×
           </button>
-          <div className="vl-info-card" onClick={(e) => e.stopPropagation()}>
-            <img src={infoZoom.src} alt={infoZoom.title} />
-            <div>
-              <h3>{infoZoom.title}</h3>
-              <p>{infoZoom.text}</p>
-            </div>
-          </div>
+          <button
+            className="vl-lightbox-arrow vl-lightbox-arrow--prev"
+            type="button"
+            aria-label="Previous portrait"
+            onClick={(event) => {
+              event.stopPropagation();
+              const currentIndex = methodPortraits.findIndex(
+                (portrait) => portrait.src === portraitZoom.src
+              );
+              setPortraitZoom(
+                methodPortraits[
+                  (currentIndex - 1 + methodPortraits.length) % methodPortraits.length
+                ]
+              );
+            }}
+          >
+            ‹
+          </button>
+          <img
+            src={portraitZoom.src}
+            alt={portraitZoom.alt}
+            onClick={(event) => event.stopPropagation()}
+          />
+          <button
+            className="vl-lightbox-arrow vl-lightbox-arrow--next"
+            type="button"
+            aria-label="Next portrait"
+            onClick={(event) => {
+              event.stopPropagation();
+              const currentIndex = methodPortraits.findIndex(
+                (portrait) => portrait.src === portraitZoom.src
+              );
+              setPortraitZoom(
+                methodPortraits[(currentIndex + 1) % methodPortraits.length]
+              );
+            }}
+          >
+            ›
+          </button>
         </div>
       )}
 

@@ -318,28 +318,6 @@ const Radio = () => {
         </div>
       </section>
 
-      {/* The business to be */}
-      <section className="vl-dark vl-dark--center vr-soon">
-        <div className="vl-dark-bg" style={{ backgroundImage: "url(/obsidian/beacon.webp)" }} aria-hidden="true" />
-        <div className="vl-dark-inner">
-          <p className="vl-kicker">Coming — Radio Vostok Live</p>
-          <h2 className="vl-dark-quote">
-            One station. One <em>consciousness.</em>
-          </h2>
-          <p className="vl-dark-text">
-            Radio Vostok will be a subscription radio station — <strong>$1.99 a month</strong> — broadcasting
-            around the clock from a select group of songs, chosen the way everything here is chosen:
-            ruthlessly. And once a day, the music will stop for the{" "}
-            <em>Global Consciousness Hour</em> — a full hour of guided meditation in which everyone
-            listening, everywhere on Earth, must meditate together at the same moment.
-          </p>
-          <p className="vl-dark-text vr-soon-note">
-            It doesn't exist yet. This page is the antenna going up. Until the frequency opens, the
-            {" " + String(radioTracks.length)} tracks above are free air.
-          </p>
-        </div>
-      </section>
-
       <footer className="vl-footer vr-footer">
         <Link to="/" className="vr-footer-link">
           ← Back to the Method

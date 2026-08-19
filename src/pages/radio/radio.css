@@ -368,22 +368,6 @@ a.vr-nav-tab:hover {
   -webkit-box-orient: vertical;
 }
 
-/* ---------- coming soon ---------- */
-
-.vr-soon {
-  margin-top: clamp(40px, 7vh, 80px);
-}
-
-.vr-soon .vl-dark-text strong {
-  color: #fff;
-}
-
-.vr-soon-note {
-  margin-top: 18px;
-  font-style: italic;
-  opacity: 0.82;
-}
-
 /* ---------- footer ---------- */
 
 .vr-footer {
