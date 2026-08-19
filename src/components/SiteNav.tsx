@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const tabs = [
   { label: "The Method", to: "/" },
   { label: "Radio", to: "/radio" },
-  { label: "Agora", to: "/agora" },
+  { label: "Polaris", to: "/polaris" },
 ];
 
 const SiteNav = ({ suffix, active }: { suffix: string; active: string }) => (

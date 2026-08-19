@@ -304,7 +304,7 @@ const Landing = () => {
           <Link className="vl-bar-link" to="/radio">
             Radio
           </Link>
-          <Link className="vl-bar-link" to="/agora">
+          <Link className="vl-bar-link" to="/polaris">
             Polaris
           </Link>
           <a
@@ -327,7 +327,7 @@ const Landing = () => {
           <Link className="vl-topnav-tab" to="/radio">
             Radio
           </Link>
-          <Link className="vl-topnav-tab" to="/agora">
+          <Link className="vl-topnav-tab" to="/polaris">
             Polaris
           </Link>
           <a

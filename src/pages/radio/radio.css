@@ -1,13 +1,38 @@
 /* ============================================================
-   Radio Vostok — obsidian architecture theme shared with the landing page.
+   Radio Vostok — white editorial theme shared with Polaris.
    Builds on the .vl tokens from landing.css; page-specific
    classes are prefixed vr-.
    ============================================================ */
+
+.vr,
+.va {
+  --ink: #202326;
+  --ink-soft: rgba(32, 35, 38, 0.7);
+  --slate: #687078;
+  --paper: #ffffff;
+  --hairline: rgba(32, 35, 38, 0.2);
+  --glow: #202326;
+  --cyan: #202326;
+  --violet: #777b80;
+  --panel: #f6f6f3;
+  --obsidian: #ffffff;
+  color: var(--ink);
+  background: #ffffff;
+}
 
 .vr {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+html:has(.vr),
+html:has(.va),
+body:has(.vr),
+body:has(.va) {
+  background: #ffffff;
+  color: #202326;
+  scrollbar-color: #888d91 #ffffff;
 }
 
 /* ---------- top nav ---------- */
@@ -20,7 +45,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 14px clamp(20px, 4vw, 44px);
-  background: rgba(6, 9, 16, 0.78);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--hairline);
@@ -82,9 +107,8 @@ a.vr-nav-tab:hover {
   height: 40px;
   width: auto;
   opacity: 0.92;
-  /* engraved medallions — inverted to white-line art, screen melts the dark ground into obsidian */
-  filter: invert(1);
-  mix-blend-mode: screen;
+  filter: none;
+  mix-blend-mode: multiply;
 }
 
 .vr-head .vl-h2 {
@@ -106,7 +130,7 @@ a.vr-nav-tab:hover {
 
 .vr-player {
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.04);
+  background: #f7f7f4;
   padding: clamp(28px, 4vw, 48px);
   display: flex;
   flex-direction: column;
@@ -206,7 +230,7 @@ a.vr-nav-tab:hover {
 }
 
 .vr-skip:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(32, 35, 38, 0.07);
 }
 
 .vr-play {
@@ -218,7 +242,7 @@ a.vr-nav-tab:hover {
   border: none;
   border-radius: 50%;
   background: var(--ink);
-  color: #060910;
+  color: #ffffff;
   cursor: pointer;
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -294,7 +318,7 @@ a.vr-nav-tab:hover {
   border-radius: 50%;
   background: var(--ink);
   border: 1px solid var(--ink);
-  box-shadow: 0 0 8px rgba(77, 169, 255, 0.6);
+  box-shadow: 0 1px 6px rgba(32, 35, 38, 0.22);
   cursor: grab;
 }
 
@@ -322,7 +346,7 @@ a.vr-nav-tab:hover {
   width: 100%;
   padding: 13px 18px;
   border: 1px solid var(--hairline);
-  background: rgba(255, 255, 255, 0.04);
+  background: #ffffff;
   color: var(--ink);
   text-align: left;
   cursor: pointer;
@@ -331,14 +355,14 @@ a.vr-nav-tab:hover {
 }
 
 .vr-tile:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(32, 35, 38, 0.055);
   border-color: var(--slate);
 }
 
 .vr-tile--active {
   background: var(--ink);
   border-color: var(--ink);
-  color: #060910;
+  color: #ffffff;
 }
 
 .vr-tile-num {
@@ -463,14 +487,14 @@ a.vr-nav-tab:hover {
 }
 
 .vr-shuffle:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(32, 35, 38, 0.07);
   color: var(--ink);
 }
 
 .vr-shuffle--on,
 .vr-shuffle--on:hover {
   background: var(--ink);
-  color: #060910;
+  color: #ffffff;
   border-color: var(--ink);
 }
 
@@ -490,4 +514,20 @@ a.vr-nav-tab:hover {
 .vr-player-yt:hover {
   color: var(--ink);
   border-bottom-color: var(--ink);
+}
+
+.vr .vl-section + .vl-section::before,
+.va .vl-section + .vl-section::before {
+  background: linear-gradient(to right, transparent, rgba(32, 35, 38, 0.24), transparent);
+  box-shadow: none;
+}
+
+.vr-footer {
+  border-top-color: rgba(32, 35, 38, 0.16);
+  color: var(--ink);
+  background: #ffffff;
+}
+
+.vr-footer .vl-fineprint {
+  color: var(--slate);
 }

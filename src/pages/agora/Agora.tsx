@@ -6,11 +6,11 @@ import "../landing.css";
 import "../radio/radio.css";
 import "./agora.css";
 
-const Agora = () => {
+const Polaris = () => {
   usePageMetadata({
-    title: "Agora — August 2026 Edition",
-    description: "Agora, the modern playboy magazine. The August 2026 edition.",
-    path: "/agora",
+    title: "Polaris — August 2026 Edition",
+    description: "Polaris, the modern playboy magazine. The August 2026 edition.",
+    path: "/polaris",
   });
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
@@ -33,12 +33,12 @@ const Agora = () => {
 
   return (
     <div className="vl va">
-      <SiteNav suffix="AGORA" active="Agora" />
+      <SiteNav suffix="POLARIS" active="Polaris" />
 
       <section className="vl-section va-head">
         <p className="vl-kicker va-edition">August 2026 Edition</p>
         <div className="va-masthead">
-          <h1 className="va-title">Agora</h1>
+          <h1 className="va-title">Polaris</h1>
         </div>
         <p className="va-subtitle">The modern playboy magazine</p>
       </section>
@@ -114,7 +114,7 @@ const Agora = () => {
         <Link to="/" className="vr-footer-link">
           ← Back to the Method
         </Link>
-        <p className="vl-fineprint">Agora — by Vostok</p>
+        <p className="vl-fineprint">Polaris — by Vostok</p>
       </footer>
 
       {isVideoOpen && (
@@ -129,7 +129,7 @@ const Agora = () => {
         >
           <div className="va-video-modal-inner">
             <div className="va-video-modal-head">
-              <p id="va-video-modal-title">Agora · August 2026</p>
+              <p id="va-video-modal-title">Polaris · August 2026</p>
               <button type="button" onClick={() => setIsVideoOpen(false)} aria-label="Close video">
                 Close <span aria-hidden="true">×</span>
               </button>
@@ -150,4 +150,4 @@ const Agora = () => {
   );
 };
 
-export default Agora;
+export default Polaris;
