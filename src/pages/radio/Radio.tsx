@@ -203,10 +203,11 @@ const Radio = () => {
       <SiteNav suffix="RADIO" active="Radio" />
 
       <section className="vl-section vr-head">
-        <h1 className="vl-h2">NYX Playlist 25'</h1>
+        <p className="vl-kicker">The training soundtrack</p>
+        <h1 className="vl-h2">NYX Playlist ’25</h1>
         <p className="vl-lead">
-          {radioTracks.length} tracks, numbered and curated by Nyx — the music the protocol is built
-          to. Pick a number, press play.
+          {radioTracks.length} tracks, numbered and curated by Nyx. Built for long sessions, late
+          nights, and the discipline of repetition. Choose a number and press play.
         </p>
       </section>
 
@@ -322,7 +323,7 @@ const Radio = () => {
         <Link to="/" className="vr-footer-link">
           ← Back to the Method
         </Link>
-        <p className="vl-fineprint">Radio Vostok</p>
+        <p className="vl-fineprint">Radio VØSTOK</p>
       </footer>
     </div>
   );

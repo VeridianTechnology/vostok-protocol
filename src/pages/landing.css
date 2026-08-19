@@ -21,25 +21,28 @@
 }
 
 body:has(.vl) {
-  background: #04060d;
+  background: #03050b;
   color: #ecf2fc;
 }
 
 .vl {
-  --ink: #ecf2fc;
-  --ink-soft: rgba(236, 242, 252, 0.74);
-  --slate: #90a9d6;
-  --paper: #04060d;
-  --hairline: rgba(126, 184, 255, 0.17);
-  --glow: #4dc8ff;
-  --cyan: #4ff0ff;
-  --violet: #8f7bff;
-  --panel: linear-gradient(135deg, rgba(96, 150, 255, 0.07), rgba(79, 240, 255, 0.035) 55%, rgba(143, 123, 255, 0.05));
-  --obsidian: #091022;
+  --ink: #eef3fb;
+  --ink-soft: rgba(238, 243, 251, 0.74);
+  --slate: #9cb3da;
+  --paper: #03050b;
+  --hairline: rgba(126, 184, 255, 0.2);
+  --glow: #63d9ff;
+  --cyan: #6be7ff;
+  --violet: #9184e8;
+  --panel: linear-gradient(135deg, rgba(92, 139, 220, 0.12), rgba(12, 19, 34, 0.72) 52%, rgba(112, 94, 184, 0.1));
+  --obsidian: #080d19;
   --serif: "Cormorant Garamond", Georgia, serif;
   font-family: var(--serif);
   color: var(--ink);
-  background: var(--paper);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(75, 115, 190, 0.11), transparent 28rem),
+    radial-gradient(circle at 10% 42%, rgba(112, 94, 184, 0.08), transparent 34rem),
+    var(--paper);
   overflow-x: hidden;
 }
 
@@ -72,6 +75,7 @@ body:has(.vl) {
 .vl h3,
 .vl h4 {
   font-family: var(--serif);
+  text-rendering: optimizeLegibility;
 }
 
 /* ---------- shared type ---------- */
@@ -92,6 +96,8 @@ body:has(.vl) {
   letter-spacing: 0.01em;
   line-height: 1.08;
   margin: 0 0 26px;
+  text-shadow: 0 3px 32px rgba(0, 0, 0, 0.7);
+  text-wrap: balance;
 }
 
 .vl-h2 em {
@@ -146,11 +152,11 @@ body:has(.vl) {
   align-items: center;
   justify-content: space-between;
   padding: 12px clamp(20px, 4vw, 44px);
-  background: rgba(91, 94, 96, 0.9);
+  background: rgba(3, 6, 14, 0.88);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(246, 244, 239, 0.2);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  border-bottom: 1px solid rgba(126, 184, 255, 0.2);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.38), 0 0 24px rgba(79, 200, 255, 0.05);
   transform: translateY(-110%);
   visibility: hidden;
   pointer-events: none;
@@ -200,10 +206,10 @@ body:has(.vl) {
 }
 
 .vl-bar .vl-bar-buy:hover {
-  color: #f6f4ef;
-  background: rgba(66, 68, 70, 0.96);
-  border-color: rgba(246, 244, 239, 0.72);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  color: var(--ink);
+  background: rgba(8, 13, 25, 0.98);
+  border-color: var(--cyan);
+  box-shadow: 0 0 28px rgba(107, 231, 255, 0.22);
 }
 
 .vl-nav-locked {
@@ -276,10 +282,10 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-topnav .vl-bar-buy:hover {
-  color: #f6f4ef;
-  background: rgba(66, 68, 70, 0.94);
-  border-color: rgba(246, 244, 239, 0.72);
-  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  color: var(--ink);
+  background: rgba(8, 13, 25, 0.96);
+  border-color: var(--cyan);
+  box-shadow: 0 0 30px rgba(107, 231, 255, 0.24);
 }
 
 .vl-bar-mark {
@@ -372,22 +378,24 @@ a.vl-topnav-tab:hover {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: saturate(0.74) brightness(0.58);
+  filter: saturate(0.7) brightness(0.48) contrast(1.04);
   transition: filter 420ms ease;
 }
 
 @media (hover: hover) {
   .vl-hero:hover .vl-hero-bg {
-    filter: saturate(0.94) brightness(0.86);
+    filter: saturate(0.78) brightness(0.54) contrast(1.04);
   }
 }
 
 .vl-hero-bg::after {
-  /* darken the plaza so the slideshow reads on top */
+  /* Layer the same midnight-blue atmosphere used throughout the site. */
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(6, 9, 16, 0.55), rgba(6, 9, 16, 0.12) 45%, rgba(6, 9, 16, 0.72));
+  background:
+    radial-gradient(circle at 74% 48%, rgba(85, 124, 189, 0.11), transparent 34%),
+    linear-gradient(to bottom, rgba(3, 6, 14, 0.64), rgba(3, 6, 14, 0.22) 42%, rgba(3, 6, 14, 0.86));
 }
 
 .vl-hero-title {
@@ -404,6 +412,7 @@ a.vl-topnav-tab:hover {
   letter-spacing: 0.05em;
   line-height: 1;
   color: var(--ink);
+  text-shadow: 0 4px 28px rgba(0, 0, 0, 0.94), 0 0 42px rgba(92, 139, 220, 0.14);
 }
 
 .vl-hero-brand {
@@ -454,7 +463,7 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-hero-message {
-  max-width: 28ch;
+  max-width: 20ch;
   margin: 0;
   color: var(--ink);
   font-family: var(--serif);
@@ -463,7 +472,7 @@ a.vl-topnav-tab:hover {
   letter-spacing: 0.035em;
   line-height: 1.08;
   text-wrap: balance;
-  text-shadow: 0 3px 34px rgba(0, 0, 0, 0.92);
+  text-shadow: 0 3px 8px rgba(0, 0, 0, 0.98), 0 12px 42px rgba(0, 0, 0, 0.86);
 }
 
 .vl-hero-eyebrow {
@@ -668,7 +677,7 @@ a.vl-topnav-tab:hover {
   width: 100vw;
   transform: translateX(-50%);
   background:
-    linear-gradient(rgba(4, 6, 13, 0.64), rgba(4, 6, 13, 0.74)),
+    linear-gradient(rgba(3, 6, 14, 0.76), rgba(3, 6, 14, 0.86)),
     url("/section_wallpaper/02.png") center / cover no-repeat;
 }
 
@@ -783,6 +792,10 @@ a.vl-topnav-tab:hover {
     gap: 28px;
   }
 
+  .vl-dark-inner.vl-spirituality {
+    grid-template-columns: 1fr;
+  }
+
   .vl-spirituality .vl-dark-quote {
     margin-top: 0;
   }
@@ -813,7 +826,9 @@ a.vl-topnav-tab:hover {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(4, 5, 9, 0.55), rgba(4, 5, 9, 0.25) 40%, rgba(4, 5, 9, 0.62));
+  background:
+    radial-gradient(circle at 50% 44%, rgba(33, 46, 73, 0.05), transparent 34%),
+    linear-gradient(to bottom, rgba(3, 5, 11, 0.66), rgba(3, 5, 11, 0.4) 40%, rgba(3, 5, 11, 0.74));
 }
 
 .vl-dark-inner {
@@ -1097,7 +1112,9 @@ a.vl-topnav-tab:hover {
   z-index: 0;
   width: 100vw;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, #66686a 0%, #55585a 100%);
+  background:
+    radial-gradient(circle at 76% 35%, rgba(91, 126, 190, 0.14), transparent 30%),
+    linear-gradient(150deg, #0a101d 0%, #050811 56%, #0b0d18 100%);
 }
 
 #diagnosis > * {
@@ -1107,8 +1124,8 @@ a.vl-topnav-tab:hover {
 
 #diagnosis .vl-h2,
 #diagnosis .vl-decay h3 {
-  color: #f6f4ef;
-  text-shadow: 0 3px 28px rgba(0, 0, 0, 0.36);
+  color: var(--ink);
+  text-shadow: 0 3px 28px rgba(0, 0, 0, 0.72);
 }
 
 #diagnosis .vl-h2 {
@@ -1117,7 +1134,7 @@ a.vl-topnav-tab:hover {
 }
 
 #diagnosis .vl-decay {
-  border-color: rgba(246, 244, 239, 0.22);
+  border-color: rgba(126, 184, 255, 0.2);
 }
 
 #diagnosis .vl-decay p {
@@ -1311,13 +1328,15 @@ a.vl-topnav-tab:hover {
   z-index: 0;
   width: 100vw;
   transform: translateX(-50%);
-  background: linear-gradient(180deg, #d8d7d4 0%, #bec0bf 100%);
+  background:
+    radial-gradient(circle at 18% 28%, rgba(107, 231, 255, 0.08), transparent 28%),
+    linear-gradient(180deg, #060a13 0%, #03050b 100%);
 }
 
 .vl-company-section::before {
   z-index: 1;
-  background: linear-gradient(to right, transparent, rgba(51, 54, 56, 0.24), transparent);
-  box-shadow: none;
+  background: linear-gradient(to right, transparent, rgba(107, 231, 255, 0.38), rgba(145, 132, 232, 0.32), transparent);
+  box-shadow: 0 0 18px rgba(107, 231, 255, 0.12);
 }
 
 .vl-company-section > * {
@@ -1332,9 +1351,10 @@ a.vl-topnav-tab:hover {
   min-height: clamp(420px, 55vh, 600px);
   padding: clamp(62px, 7vw, 108px) clamp(92px, 9vw, 150px);
   gap: clamp(44px, 7vw, 112px);
-  border-color: rgba(62, 64, 65, 0.3);
-  background: linear-gradient(135deg, rgba(239, 236, 229, 0.99), rgba(198, 198, 192, 0.99));
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.22);
+  border-color: rgba(126, 184, 255, 0.22);
+  background:
+    linear-gradient(135deg, rgba(24, 35, 58, 0.88), rgba(7, 11, 21, 0.96) 58%, rgba(25, 20, 48, 0.9));
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.42), inset 0 1px rgba(255, 255, 255, 0.035);
 }
 
 .vl-company-card .vl-signal-body {
@@ -1345,15 +1365,15 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-company-card .vl-signal-body h3 {
-  color: #2d3032;
-  text-shadow: none;
+  color: var(--ink);
+  text-shadow: 0 3px 30px rgba(0, 0, 0, 0.72);
 }
 
 .vl-company-card .vl-signal-body p,
 .vl-company-card .vl-signal-body li {
   font-size: clamp(19px, 1.35vw, 23px);
   line-height: 1.75;
-  color: rgba(45, 48, 50, 0.76);
+  color: var(--ink-soft);
 }
 
 .vl-company-card .vl-signal-body p {
@@ -1363,10 +1383,10 @@ a.vl-topnav-tab:hover {
 .vl-company-buy {
   flex: 0 0 auto;
   padding: 18px 36px;
-  border: 1px solid rgba(42, 44, 46, 0.7);
-  color: #f6f4ef;
-  background: rgba(47, 49, 50, 0.94);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(238, 243, 251, 0.76);
+  color: #03050b;
+  background: rgba(238, 243, 251, 0.96);
+  box-shadow: 0 0 34px rgba(107, 231, 255, 0.18), 0 16px 40px rgba(0, 0, 0, 0.32);
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.24em;
@@ -1375,9 +1395,10 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-company-buy:hover {
-  color: #292b2d;
-  background: rgba(246, 244, 239, 0.94);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+  color: var(--ink);
+  border-color: var(--cyan);
+  background: rgba(8, 13, 25, 0.96);
+  box-shadow: 0 0 30px rgba(107, 231, 255, 0.3), 0 16px 40px rgba(0, 0, 0, 0.4);
 }
 
 .vl-signal-body {
@@ -1643,9 +1664,11 @@ a.vl-topnav-tab:hover {
   align-items: center;
   gap: 18px;
   padding: 44px 24px 46px;
-  border-top: 1px solid rgba(246, 244, 239, 0.18);
-  color: #f6f4ef;
-  background: #5b5e60;
+  border-top: 1px solid rgba(126, 184, 255, 0.18);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(85, 124, 189, 0.12), transparent 18rem),
+    #03050b;
 }
 
 .vl-socials {
@@ -1666,8 +1689,9 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-socials a:hover {
-  color: var(--ink);
-  border-color: var(--ink);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px rgba(107, 231, 255, 0.2);
 }
 
 .vl-socials svg {
@@ -1729,7 +1753,7 @@ a.vl-topnav-tab:hover {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid rgba(246, 244, 239, 0.38);
-  background: #f0eee8;
+  background: #080d19;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
   cursor: default;
 }
@@ -1743,15 +1767,15 @@ a.vl-topnav-tab:hover {
 
 .vl-portrait-lightbox-caption {
   padding: 15px 22px 18px;
-  border-top: 1px solid rgba(45, 48, 50, 0.2);
-  color: #2d3032;
-  background: #f0eee8;
+  border-top: 1px solid rgba(126, 184, 255, 0.2);
+  color: var(--ink);
+  background: #080d19;
 }
 
 .vl-portrait-lightbox-caption span {
   display: block;
   margin-bottom: 5px;
-  color: #6d7173;
+  color: var(--slate);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.24em;

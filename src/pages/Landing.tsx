@@ -19,30 +19,30 @@ const MOBILE_BAR_INACTIVITY_DELAY = 5000;
 const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
 
 const decay = [
-  "You do not talk about VOSTOK.",
-  "You will keep quiet.",
-  "Meditate.",
-  "You will practice.",
-  "You will not chase external validation.",
-  "You will engage with the world.",
+  "Respect the process.",
+  "Protect the practice.",
+  "Train with intention.",
+  "Choose consistency over intensity.",
+  "Stop chasing external validation.",
+  "Return to the world with presence.",
 ];
 
 const proof = {
-  title: "Face > Everything",
+  title: "Your face is the first signal.",
   body: [
-    "In the economy of first impressions, the face is the strongest signal. It can overpower style, money and height, shaping what others permit, forgive and expect from you. Before you speak, it can cast you as a leader or a follower—as though some faces were favored by the gods themselves.",
+    "Before style, status, or words, the face shapes a first impression. Structure, symmetry, posture, and expression all influence how you are read. VØSTOK treats the face as something trainable: studied with precision, practiced with discipline, and refined over time.",
   ],
-  tagline: "Asymmetry is the enemy",
+  tagline: "Symmetry is trained, not wished for.",
 };
 
 const methodPortraits = [
-  { image: "00", assessment: "Nose and chin need work" },
-  { image: "02", assessment: "Level eyebrows, looks better." },
+  { image: "00", assessment: "Nose and chin require more balance." },
+  { image: "02", assessment: "More level brows; stronger overall balance." },
   {
     image: "01",
-    assessment: "Better structure, longer nose, eyebrows look better, eyes are mis-aligned",
+    assessment: "Stronger structure and a longer nose; the eyes remain slightly misaligned.",
   },
-  { image: "03", assessment: "Well-structured but lacks friendliness" },
+  { image: "03", assessment: "Well-structured, though the expression reads less approachable." },
 ].map((portrait, index) => ({
   src: `/nyx/${portrait.image}.png`,
   alt: `Nyx facial progress portrait ${index + 1}`,
@@ -357,7 +357,7 @@ const Landing = () => {
 
         <div className="vl-hero-stack">
           <div className="vl-hero-manifesto">
-            <p className="vl-hero-message">Elite Facial Performance</p>
+            <p className="vl-hero-message">The Architecture of Facial Performance</p>
           </div>
         </div>
       </section>
@@ -366,7 +366,7 @@ const Landing = () => {
       <section className="vl-section" id="method" ref={methodMediaRef}>
         <div className="vl-reveal">
           <h2 className="vl-h2">
-            The Face is meant to be <em>Designed.</em>
+            The face is meant to be <em>designed.</em>
           </h2>
         </div>
         <div className="vl-method-grid">
@@ -403,7 +403,7 @@ const Landing = () => {
       {/* The Diagnosis */}
       <section className="vl-section" id="diagnosis">
         <div className="vl-reveal">
-          <h2 className="vl-h2">The Rules of VOSTOK</h2>
+          <h2 className="vl-h2">The VØSTOK Code</h2>
         </div>
         <div className="vl-decay-grid">
           {decay.map((rule, index) => (
@@ -418,15 +418,14 @@ const Landing = () => {
       <section className="vl-section vl-company-section" id="company">
         <div className="vl-signal vl-signal--standalone vl-company-card vl-reveal">
           <div className="vl-signal-body">
-            <h3>The Ultimate Guide</h3>
+            <h3>The Complete Method</h3>
             <p>
-              230 pages of dedicated exercises, massages and tips;<br />
-              To radically improve and level your face, balance off asymmetry and deage your face.<br />
-              You won't need anything but some face oil, a mirror and time to practice.
+              A 230-page illustrated guide to facial exercise, massage, posture, and better resting
+              patterns—built to develop balance, definition, and control.
             </p>
             <p>
-              This is not a short term commitment, it will takes months and years but the rewards are
-              amazing.
+              No elaborate equipment. Just facial oil, a mirror, and the patience to practice. This is
+              a long-term discipline; the results come from consistency.
             </p>
             </div>
             <a
@@ -449,7 +448,7 @@ const Landing = () => {
           aria-hidden="true"
         />
         <div className="vl-dark-inner vl-spirituality">
-          <h2 className="vl-dark-quote vl-reveal">Vostok Spirituality</h2>
+          <h2 className="vl-dark-quote vl-reveal">The VØSTOK Philosophy</h2>
           <a
             className="vl-spirituality-article vl-reveal"
             href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
@@ -534,7 +533,7 @@ const Landing = () => {
             </svg>
           </a>
         </div>
-        <p className="vl-fineprint">The Vostok Method</p>
+        <p className="vl-fineprint">The VØSTOK Method</p>
       </footer>
 
       {portraitZoom && (

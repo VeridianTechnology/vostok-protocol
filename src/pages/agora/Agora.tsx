@@ -40,7 +40,7 @@ const Polaris = () => {
         <div className="va-masthead">
           <h1 className="va-title">Polaris</h1>
         </div>
-        <p className="va-subtitle">The modern playboy magazine</p>
+        <p className="va-subtitle">A field journal for culture, taste &amp; signal</p>
       </section>
 
       <section className="vl-section va-feature" aria-labelledby="va-feature-title">
@@ -48,7 +48,7 @@ const Polaris = () => {
           className="va-video-launcher"
           type="button"
           onClick={() => setIsVideoOpen(true)}
-          aria-label="Play the chronically online will become a new underclass"
+          aria-label="Play The chronically online are becoming a new underclass"
         >
           <img
             src="/agora/chronically-online-youtube.jpg"
@@ -64,11 +64,11 @@ const Polaris = () => {
         </button>
 
         <div className="va-feature-copy">
-          <p className="vl-kicker">Cool Youtube Videos</p>
-          <h2 id="va-feature-title">The chronically online will become a new underclass</h2>
+          <p className="vl-kicker">Watchlist / 01</p>
+          <h2 id="va-feature-title">The chronically online are becoming a new underclass</h2>
           <p>
-            Very much listen a black woman is talking... but nonethless a few excellent talking
-            points. You can watch about halfway.
+            A sharp look at how algorithmic life can erode attention, agency, and social fluency.
+            The strongest argument lands in the first half.
           </p>
           <button className="va-watch-button" type="button" onClick={() => setIsVideoOpen(true)}>
             Watch video <span aria-hidden="true">→</span>
@@ -78,11 +78,11 @@ const Polaris = () => {
 
       <section className="vl-section va-shop-feature" aria-labelledby="va-shop-title">
         <div className="va-shop-copy">
-          <p className="vl-kicker">Shit to Buy</p>
+          <p className="vl-kicker">Independent Design / 01</p>
           <h2 id="va-shop-title">Bags by Uma</h2>
           <p>
-            Need to buy your girl some shit that's unique? This african artist actually makes
-            half--decent bags, with some flair.
+            For a gift that does not feel mass-produced: sculptural, pattern-rich bags with real
+            personality and a distinct point of view.
           </p>
           <a
             className="va-watch-button"
@@ -114,7 +114,7 @@ const Polaris = () => {
         <Link to="/" className="vr-footer-link">
           ← Back to the Method
         </Link>
-        <p className="vl-fineprint">Polaris — by Vostok</p>
+        <p className="vl-fineprint">Polaris — by VØSTOK</p>
       </footer>
 
       {isVideoOpen && (
@@ -137,7 +137,7 @@ const Polaris = () => {
             <div className="va-video-frame">
               <iframe
                 src="https://www.youtube-nocookie.com/embed/Bm2Q9HkbLsQ?autoplay=1&rel=0"
-                title="The chronically online will become a new underclass"
+                title="The chronically online are becoming a new underclass"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 referrerPolicy="strict-origin-when-cross-origin"
                 allowFullScreen
