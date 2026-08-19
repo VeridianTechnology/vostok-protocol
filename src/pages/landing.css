@@ -727,7 +727,70 @@ a.vl-topnav-tab:hover {
 }
 
 #origin {
-  padding-top: clamp(64px, 10vh, 104px);
+  display: flex;
+  min-height: clamp(1050px, 145vh, 1500px);
+  align-items: center;
+  padding-top: clamp(76px, 10vh, 110px);
+  padding-bottom: clamp(76px, 10vh, 110px);
+}
+
+.vl-dark-inner.vl-spirituality {
+  display: grid;
+  width: min(100%, 1180px);
+  max-width: 1180px;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(380px, 0.88fr);
+  gap: clamp(44px, 8vw, 120px);
+  align-items: start;
+}
+
+.vl-spirituality .vl-dark-quote {
+  margin-top: clamp(44px, 10vh, 110px);
+  font-size: clamp(44px, 5.5vw, 72px);
+}
+
+.vl-spirituality-article {
+  display: block;
+  width: min(100%, 430px);
+  justify-self: end;
+  overflow: hidden;
+  border: 1px solid rgba(246, 244, 239, 0.42);
+  background: #242424;
+  box-shadow: 0 32px 90px rgba(0, 0, 0, 0.42);
+  transition: transform 320ms ease, box-shadow 320ms ease, border-color 320ms ease;
+}
+
+.vl-spirituality-article img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.vl-spirituality-article:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 42px 110px rgba(0, 0, 0, 0.54);
+}
+
+@media (max-width: 768px) {
+  #origin {
+    min-height: 0;
+    padding-top: 64px;
+    padding-bottom: 80px;
+  }
+
+  .vl-spirituality {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+
+  .vl-spirituality .vl-dark-quote {
+    margin-top: 0;
+  }
+
+  .vl-spirituality-article {
+    width: min(100%, 360px);
+    justify-self: center;
+  }
 }
 
 .vl-dark-bg {
@@ -1236,7 +1299,30 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-company-section {
+  isolation: isolate;
   max-width: 1500px;
+}
+
+.vl-company-section::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  z-index: 0;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #d8d7d4 0%, #bec0bf 100%);
+}
+
+.vl-company-section::before {
+  z-index: 1;
+  background: linear-gradient(to right, transparent, rgba(51, 54, 56, 0.24), transparent);
+  box-shadow: none;
+}
+
+.vl-company-section > * {
+  position: relative;
+  z-index: 2;
 }
 
 .vl-company-card {
@@ -1633,6 +1719,49 @@ a.vl-topnav-tab:hover {
 .vl-portrait-lightbox img {
   max-width: min(90vw, 900px);
   max-height: 88vh;
+}
+
+.vl-portrait-lightbox-card {
+  display: flex;
+  width: max-content;
+  max-width: min(90vw, 900px);
+  max-height: 88vh;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(246, 244, 239, 0.38);
+  background: #f0eee8;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  cursor: default;
+}
+
+.vl-portrait-lightbox-card img {
+  width: auto;
+  max-width: 100%;
+  max-height: calc(88vh - 96px);
+  box-shadow: none;
+}
+
+.vl-portrait-lightbox-caption {
+  padding: 15px 22px 18px;
+  border-top: 1px solid rgba(45, 48, 50, 0.2);
+  color: #2d3032;
+  background: #f0eee8;
+}
+
+.vl-portrait-lightbox-caption span {
+  display: block;
+  margin-bottom: 5px;
+  color: #6d7173;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.vl-portrait-lightbox-caption p {
+  margin: 0;
+  font-size: clamp(17px, 1.6vw, 22px);
+  line-height: 1.35;
 }
 
 .vl-lightbox-arrow {

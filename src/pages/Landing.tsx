@@ -35,9 +35,18 @@ const proof = {
   tagline: "Asymmetry is the enemy",
 };
 
-const methodPortraits = ["00", "01", "02", "03"].map((image, index) => ({
-  src: `/nyx/${image}.png`,
+const methodPortraits = [
+  { image: "00", assessment: "Nose and chin need work" },
+  { image: "02", assessment: "Level eyebrows, looks better." },
+  {
+    image: "01",
+    assessment: "Better structure, longer nose, eyebrows look better, eyes are mis-aligned",
+  },
+  { image: "03", assessment: "Well-structured but lacks friendliness" },
+].map((portrait, index) => ({
+  src: `/nyx/${portrait.image}.png`,
   alt: `Nyx facial progress portrait ${index + 1}`,
+  assessment: portrait.assessment,
 }));
 
 // Begin fetching heavier section media shortly before it can enter view. The
@@ -439,20 +448,22 @@ const Landing = () => {
           style={{ backgroundImage: originMediaNear ? "url(/landing/origin-ascension.webp)" : "none" }}
           aria-hidden="true"
         />
-        <div className="vl-dark-inner">
-          <h2 className="vl-dark-quote vl-reveal">Not for the Soft</h2>
-          <p className="vl-dark-text vl-reveal">
-            VOSTOK doesn't care if you're broke.<br />
-            Doesn't care if you're starting from nothing.<br />
-            Doesn't care what color, class, or background you come from.
-          </p>
-          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            VOSTOK exists for one purpose: to help you ascend.
-          </p>
-          <p className="vl-dark-text vl-dark-text--continued vl-reveal">
-            If you're a 3 and you've accepted it, don't bother.<br />
-            If you're a 3 and you're ready to work, get the guide, follow the method, and do the work.
-          </p>
+        <div className="vl-dark-inner vl-spirituality">
+          <h2 className="vl-dark-quote vl-reveal">Vostok Spirituality</h2>
+          <a
+            className="vl-spirituality-article vl-reveal"
+            href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Read You're not ugly, your face is just untrained on Substack"
+          >
+            <img
+              src="/articles/youre-not-ugly.webp"
+              alt="You're not ugly, your face is just untrained — Chapter 1 of The Vostok Method by Nyx"
+              loading="lazy"
+              decoding="async"
+            />
+          </a>
         </div>
       </section>
 
@@ -560,11 +571,22 @@ const Landing = () => {
           >
             ‹
           </button>
-          <img
-            src={portraitZoom.src}
-            alt={portraitZoom.alt}
+          <div
+            className="vl-portrait-lightbox-card"
             onClick={(event) => event.stopPropagation()}
-          />
+          >
+            <img src={portraitZoom.src} alt={portraitZoom.alt} />
+            <div className="vl-portrait-lightbox-caption">
+              <span>
+                {methodPortraits.findIndex((portrait) => portrait.src === portraitZoom.src) === 0
+                  ? "Most recent"
+                  : `Earlier image ${methodPortraits.findIndex(
+                      (portrait) => portrait.src === portraitZoom.src
+                    ) + 1}`}
+              </span>
+              <p>{portraitZoom.assessment}</p>
+            </div>
+          </div>
           <button
             className="vl-lightbox-arrow vl-lightbox-arrow--next"
             type="button"
