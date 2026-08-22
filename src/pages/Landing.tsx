@@ -449,20 +449,40 @@ const Landing = () => {
         />
         <div className="vl-dark-inner vl-spirituality">
           <h2 className="vl-dark-quote vl-reveal">The VØSTOK Philosophy</h2>
-          <a
-            className="vl-spirituality-article vl-reveal"
-            href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Read You're not ugly, your face is just untrained on Substack"
-          >
-            <img
-              src="/articles/youre-not-ugly.webp"
-              alt="You're not ugly, your face is just untrained — Chapter 1 of The Vostok Method by Nyx"
-              loading="lazy"
-              decoding="async"
-            />
-          </a>
+          <div className="vl-spirituality-articles vl-reveal">
+            <a
+              className="vl-spirituality-article"
+              href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read You're not ugly, your face is just untrained on Substack"
+            >
+              <img
+                src="/articles/youre-not-ugly.webp"
+                alt="You're not ugly, your face is just untrained — Chapter 1 of The Vostok Method by Nyx"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="vl-spirituality-caption">Ch. 1 - The Fountain of Youth</span>
+            </a>
+            <a
+              className="vl-spirituality-article"
+              href="https://nyxvostok.substack.com/p/demand-side-economics-is-how-the?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read Demand Side Economics — Is how the U.S. beats China on Substack"
+            >
+              <img
+                src="/articles/demand-side-economics.webp"
+                alt="Demand Side Economics — Is how the U.S. beats China by Nyx"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="vl-spirituality-caption">
+                Ch. 2 - How to make the world beautiful
+              </span>
+            </a>
+          </div>
         </div>
       </section>
 
