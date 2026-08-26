@@ -84,7 +84,7 @@ const Landing = () => {
   usePageMetadata({
     title: "VØSTOK",
     description:
-      "The Vostok Method is a structured guide to facial exercise, massage, posture, and better resting patterns. Get 11 illustrated chapters for a one-time $4.99.",
+      "The Vostok Method is a structured guide to facial exercise, massage, posture, and better resting patterns. Get 11 illustrated chapters for a one-time $44.99.",
     path: "/",
   });
   const [entrySource, setEntrySource] = useState("direct");
@@ -276,7 +276,7 @@ const Landing = () => {
         | undefined;
       ttq?.track?.("InitiateCheckout", {
         contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
-        value: 4.99,
+        value: 44.99,
         currency: "USD",
       });
     } catch {
@@ -323,7 +323,7 @@ const Landing = () => {
             rel="noopener noreferrer"
             onClick={() => fireBuyTracking("sticky_bar")}
           >
-            $4.99
+            $44.99
           </a>
         </div>
       </div>
@@ -346,7 +346,7 @@ const Landing = () => {
             rel="noopener noreferrer"
             onClick={() => fireBuyTracking("hero_nav")}
           >
-            $4.99
+            $44.99
           </a>
         </nav>
         <h1 className="vl-hero-title">
@@ -435,7 +435,7 @@ const Landing = () => {
               rel="noopener noreferrer"
               onClick={() => fireBuyTracking("company")}
             >
-              $4.99
+              $44.99
             </a>
           </div>
         </section>
