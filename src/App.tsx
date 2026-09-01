@@ -4,7 +4,6 @@ import ChatbaseWidget from "@/components/ChatbaseWidget";
 import Landing from "./pages/Landing";
 
 const Radio = lazy(() => import("./pages/radio/Radio"));
-const Polaris = lazy(() => import("./pages/agora/Agora"));
 
 const RouteFallback = () => (
   <div className="route-loader" role="status" aria-live="polite">
@@ -16,10 +15,9 @@ const App = () => (
   <BrowserRouter>
     <Suspense fallback={<RouteFallback />}>
       <Routes>
+        <Route path="/" element={<Landing />} />
         <Route path="/radio" element={<Radio />} />
-        <Route path="/polaris" element={<Polaris />} />
-        <Route path="/agora" element={<Navigate to="/polaris" replace />} />
-        <Route path="*" element={<Landing />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
     <ChatbaseWidget />

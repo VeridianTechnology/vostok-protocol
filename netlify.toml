@@ -2,7 +2,7 @@
   command = "npm run build"
   publish = "dist"
 
-# SPA fallback — client-routed pages (/radio, /agora) must serve index.html
+# SPA fallback — client-routed pages such as /radio must serve index.html
 # on direct loads and refreshes. Static assets still match first.
 [[redirects]]
   from = "/*"

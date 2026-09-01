@@ -14,40 +14,30 @@ import { usePageMetadata } from "@/lib/pageMetadata";
 import "./landing.css";
 
 const BUY_URL = "https://nyxvostok.gumroad.com/l/vostokmethod?wanted=true";
+const COACHING_URL = "https://nyxvostok.gumroad.com/l/wdjpwh?wanted=true";
 
 const MOBILE_BAR_INACTIVITY_DELAY = 5000;
-const ROMAN_NUMERALS = ["I", "II", "III", "IV", "V", "VI"];
-
-const decay = [
-  "Respect the process.",
-  "Protect the practice.",
-  "Train with intention.",
-  "Choose consistency over intensity.",
-  "Stop chasing external validation.",
-  "Return to the world with presence.",
-];
 
 const proof = {
-  title: "Your face is the first signal.",
+  title: "I Changed Mine.",
   body: [
-    "Before style, status, or words, the face shapes a first impression. Structure, symmetry, posture, and expression all influence how you are read. VØSTOK treats the face as something trainable: studied with precision, practiced with discipline, and refined over time.",
+    "It’s really not that complicated—the face is a series of 42 muscles that combine to create expressions. They are much thinner and of a different type than the muscles of the body, so they require more precision and more repetitions. As long as you take a scientific approach, you should see results. It takes time, but the rewards are great.",
   ],
-  tagline: "Symmetry is trained, not wished for.",
+  tagline: "The Face is like the Body, it needs Gym Time",
 };
 
-const methodPortraits = [
-  { image: "00", assessment: "Nose and chin require more balance." },
-  { image: "02", assessment: "More level brows; stronger overall balance." },
+const transformationPortraits = [
   {
-    image: "01",
-    assessment: "Stronger structure and a longer nose; the eyes remain slightly misaligned.",
+    src: "/landing/method-before.webp",
+    alt: "Nyx before beginning the Vostok Method",
+    label: "Before",
   },
-  { image: "03", assessment: "Well-structured, though the expression reads less approachable." },
-].map((portrait, index) => ({
-  src: `/nyx/${portrait.image}.png`,
-  alt: `Nyx facial progress portrait ${index + 1}`,
-  assessment: portrait.assessment,
-}));
+  {
+    src: "/landing/method-after.webp",
+    alt: "Nyx after practicing the Vostok Method",
+    label: "After",
+  },
+] as const;
 
 // Begin fetching heavier section media shortly before it can enter view. The
 // generous margin keeps fast scrolling seamless without paying for the entire
@@ -88,7 +78,8 @@ const Landing = () => {
     path: "/",
   });
   const [entrySource, setEntrySource] = useState("direct");
-  const [portraitZoom, setPortraitZoom] = useState<(typeof methodPortraits)[number] | null>(null);
+  const [transformationIndex, setTransformationIndex] = useState(0);
+  const [zoomedTransformationIndex, setZoomedTransformationIndex] = useState<number | null>(null);
   const [barShown, setBarShown] = useState(false);
   const [barDismissed, setBarDismissed] = useState(false);
   const [nyxVideoPaused, setNyxVideoPaused] = useState(true);
@@ -106,6 +97,33 @@ const Landing = () => {
     video.muted = true;
     video.play().catch(() => setNyxVideoPaused(true));
   }, []);
+
+  useEffect(() => {
+    if (zoomedTransformationIndex !== null) return undefined;
+
+    const rotation = window.setInterval(() => {
+      setTransformationIndex((current) => (current + 1) % transformationPortraits.length);
+    }, 5000);
+
+    return () => window.clearInterval(rotation);
+  }, [zoomedTransformationIndex]);
+
+  useEffect(() => {
+    if (zoomedTransformationIndex === null) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeZoom = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setZoomedTransformationIndex(null);
+    };
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeZoom);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeZoom);
+    };
+  }, [zoomedTransformationIndex]);
 
   const toggleNyxVideo = () => {
     const video = nyxVideoRef.current;
@@ -248,35 +266,20 @@ const Landing = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Escape closes the lightboxes
-  useEffect(() => {
-    if (!portraitZoom) return undefined;
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setPortraitZoom(null);
-      } else if (portraitZoom && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
-        const currentIndex = methodPortraits.findIndex(
-          (portrait) => portrait.src === portraitZoom.src
-        );
-        const direction = event.key === "ArrowLeft" ? -1 : 1;
-        const nextIndex =
-          (currentIndex + direction + methodPortraits.length) % methodPortraits.length;
-        setPortraitZoom(methodPortraits[nextIndex]);
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [portraitZoom]);
-
-  const fireBuyTracking = (location: string) => {
+  const fireBuyTracking = (location: string, offer: "method" | "coaching" = "method") => {
+    const isCoaching = offer === "coaching";
     markBuyClicked();
     try {
       const ttq = (window as unknown as Record<string, unknown>).ttq as
         | { track?: (event: string, props: unknown) => void }
         | undefined;
       ttq?.track?.("InitiateCheckout", {
-        contents: [{ content_id: "vostokmethod", content_type: "product", content_name: "Vostok Method" }],
-        value: 44.99,
+        contents: [{
+          content_id: isCoaching ? "five-coaching-sessions" : "vostokmethod",
+          content_type: "product",
+          content_name: isCoaching ? "Five Coaching Sessions" : "Vostok Method",
+        }],
+        value: isCoaching ? 1000 : 44.99,
         currency: "USD",
       });
     } catch {
@@ -291,8 +294,8 @@ const Landing = () => {
     } catch {
       // ignore
     }
-    trackSafe("buy_click", { location, source: entrySource });
-    trackSafe(`buy_click_${entrySource}`, { location });
+    trackSafe("buy_click", { location, source: entrySource, offer });
+    trackSafe(`buy_click_${entrySource}`, { location, offer });
   };
 
   return (
@@ -313,9 +316,6 @@ const Landing = () => {
           <Link className="vl-bar-link" to="/radio">
             Radio
           </Link>
-          <Link className="vl-bar-link" to="/polaris">
-            Polaris
-          </Link>
           <a
             className="vl-bar-buy"
             href={BUY_URL}
@@ -332,12 +332,9 @@ const Landing = () => {
       <section className="vl-hero" id="top" ref={heroRef}>
         <div className="vl-hero-bg" aria-hidden="true" />
         <nav className="vl-topnav">
-          <span className="vl-topnav-tab vl-topnav-tab--active">The Method</span>
+          <span className="vl-topnav-tab vl-topnav-tab--active">Vostok Method</span>
           <Link className="vl-topnav-tab" to="/radio">
             Radio
-          </Link>
-          <Link className="vl-topnav-tab" to="/polaris">
-            Polaris
           </Link>
           <a
             className="vl-bar-buy vl-topnav-buy"
@@ -380,113 +377,34 @@ const Landing = () => {
             </div>
           </div>
           <figure className="vl-method-figure vl-reveal">
-            {methodPortraits.map((portrait, index) => (
-              <button
-                key={portrait.src}
-                type="button"
-                className="vl-method-portrait"
-                aria-label={`Enlarge facial progress portrait ${index + 1}`}
-                onClick={() => setPortraitZoom(portrait)}
-              >
+            <button
+              className="vl-method-image-button"
+              type="button"
+              aria-label={`Enlarge ${transformationPortraits[transformationIndex].label.toLowerCase()} portrait`}
+              onClick={() => setZoomedTransformationIndex(transformationIndex)}
+            >
+              {transformationPortraits.map((portrait, index) => (
                 <img
+                  key={portrait.src}
+                  className={`vl-method-portrait vl-method-portrait--${portrait.label.toLowerCase()}${
+                    transformationIndex === index ? " vl-method-portrait--active" : ""
+                  }`}
                   src={methodMediaNear ? portrait.src : undefined}
-                  alt={portrait.alt}
+                  alt={transformationIndex === index ? portrait.alt : ""}
+                  aria-hidden={transformationIndex !== index}
                   loading="lazy"
                   decoding="async"
                 />
-              </button>
-            ))}
+              ))}
+            </button>
+            <figcaption key={transformationPortraits[transformationIndex].label}>
+              {transformationPortraits[transformationIndex].label}
+            </figcaption>
           </figure>
         </div>
       </section>
 
-      {/* The Diagnosis */}
-      <section className="vl-section" id="diagnosis">
-        <div className="vl-reveal">
-          <h2 className="vl-h2">The VØSTOK Code</h2>
-        </div>
-        <div className="vl-decay-grid">
-          {decay.map((rule, index) => (
-            <div key={rule} className="vl-decay vl-reveal">
-              <h3>{ROMAN_NUMERALS[index]}. {rule}</h3>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Method card */}
-      <section className="vl-section vl-company-section" id="company">
-        <div className="vl-signal vl-signal--standalone vl-company-card vl-reveal">
-          <div className="vl-signal-body">
-            <h3>The Complete Method</h3>
-            <p>
-              A 230-page illustrated guide to facial exercise, massage, posture, and better resting
-              patterns—built to develop balance, definition, and control.
-            </p>
-            <p>
-              No elaborate equipment. Just facial oil, a mirror, and the patience to practice. This is
-              a long-term discipline; the results come from consistency.
-            </p>
-            </div>
-            <a
-              className="vl-company-buy"
-              href={BUY_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => fireBuyTracking("company")}
-            >
-              $44.99
-            </a>
-          </div>
-        </section>
-
-      {/* Dark interlude — the origin myth */}
-      <section className="vl-dark" id="origin" ref={originMediaRef}>
-        <div
-          className="vl-dark-bg"
-          style={{ backgroundImage: originMediaNear ? "url(/landing/origin-ascension.webp)" : "none" }}
-          aria-hidden="true"
-        />
-        <div className="vl-dark-inner vl-spirituality">
-          <h2 className="vl-dark-quote vl-reveal">The VØSTOK Philosophy</h2>
-          <div className="vl-spirituality-articles vl-reveal">
-            <a
-              className="vl-spirituality-article"
-              href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Read You're not ugly, your face is just untrained on Substack"
-            >
-              <img
-                src="/articles/youre-not-ugly.webp"
-                alt="You're not ugly, your face is just untrained — Chapter 1 of The Vostok Method by Nyx"
-                loading="lazy"
-                decoding="async"
-              />
-              <span className="vl-spirituality-caption">Ch. 1 - The Fountain of Youth</span>
-            </a>
-            <a
-              className="vl-spirituality-article"
-              href="https://nyxvostok.substack.com/p/demand-side-economics-is-how-the?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Read Demand Side Economics — Is how the U.S. beats China on Substack"
-            >
-              <img
-                src="/articles/demand-side-economics.webp"
-                alt="Demand Side Economics — Is how the U.S. beats China by Nyx"
-                loading="lazy"
-                decoding="async"
-              />
-              <span className="vl-spirituality-caption">
-                Ch. 2 - How to make the world beautiful
-              </span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      {/* Dark interlude — Nyx's challenge */}
+      {/* Nyx's challenge video */}
       <section className="vl-dark" id="nyx" ref={nyxMediaRef}>
         <div
           className="vl-dark-bg"
@@ -545,83 +463,135 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* Method card */}
+      <section className="vl-section vl-company-section" id="company">
+        <div className="vl-signal vl-signal--standalone vl-company-card vl-reveal">
+          <div className="vl-signal-body">
+            <h3>The Best Looksmaxxing Method of All Time</h3>
+            <p>
+              A 230-page illustrated guide used by dozens of people to achieve amazing results. I
+              pioneered facial exercises, working muscle by muscle across the face, with diagrams,
+              full explanations, before-and-after examples, and massages designed to reshape the face.
+            </p>
+            <p>
+              I’ve worked with people of all ages and genders and seen consistent improvement,
+              systematically helping people become more beautiful. Results can come quickly—with
+              life-changing changes most people wouldn’t believe.
+            </p>
+          </div>
+          <div className="vl-company-actions" aria-label="Purchase options">
+            <a
+              className="vl-company-buy"
+              href={BUY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fireBuyTracking("company")}
+            >
+              <span>Vostok Method</span>
+              <strong>$44.99</strong>
+            </a>
+            <span className="vl-company-or">or</span>
+            <a
+              className="vl-company-buy"
+              href={COACHING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => fireBuyTracking("company_coaching", "coaching")}
+            >
+              <span>Five Coaching Sessions</span>
+              <strong>$1,000</strong>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Dark interlude — the origin myth */}
+      <section className="vl-dark" id="origin" ref={originMediaRef}>
+        <div
+          className="vl-dark-bg"
+          style={{ backgroundImage: originMediaNear ? "url(/landing/origin-ascension.webp)" : "none" }}
+          aria-hidden="true"
+        />
+        <div className="vl-dark-inner vl-spirituality">
+          <h2 className="vl-dark-quote vl-reveal">The VØSTOK Philosophy</h2>
+          <div className="vl-spirituality-articles vl-reveal">
+            <a
+              className="vl-spirituality-article"
+              href="https://nyxvostok.substack.com/p/youre-not-ugly-your-face-is-just?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read You're not ugly, your face is just untrained on Substack"
+            >
+              <img
+                src="/articles/youre-not-ugly.webp"
+                alt="You're not ugly, your face is just untrained — Chapter 1 of The Vostok Method by Nyx"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="vl-spirituality-caption">Ch. 1 - The Fountain of Youth</span>
+            </a>
+            <a
+              className="vl-spirituality-article"
+              href="https://nyxvostok.substack.com/p/demand-side-economics-is-how-the?r=3isgrj&utm_campaign=post&utm_medium=web&showWelcomeOnShare=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Read Demand Side Economics — Is how the U.S. beats China on Substack"
+            >
+              <img
+                src="/articles/demand-side-economics.webp"
+                alt="Demand Side Economics — Is how the U.S. beats China by Nyx"
+                loading="lazy"
+                decoding="async"
+              />
+              <span className="vl-spirituality-caption">
+                Ch. 2 - How to make the world beautiful
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <footer className="vl-footer">
         <div className="vl-socials">
-          <a href="https://x.com/Nyxvostok" target="_blank" rel="noopener noreferrer" aria-label="Vøstok Twitter">
+          <a href="https://www.instagram.com/nyx_vostok/" target="_blank" rel="noopener noreferrer" aria-label="Nyx Vostok on Instagram">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z" />
+              <rect x="3" y="3" width="18" height="18" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle className="vl-instagram-dot" cx="17.5" cy="6.5" r="1" />
             </svg>
           </a>
         </div>
         <p className="vl-fineprint">The VØSTOK Method</p>
       </footer>
 
-      {portraitZoom && (
+      {zoomedTransformationIndex !== null && (
         <div
-          className="vl-lightbox vl-portrait-lightbox"
+          className="vl-lightbox vl-portrait-lightbox vl-transformation-lightbox"
           role="dialog"
           aria-modal="true"
-          aria-label="Enlarged facial progress portrait"
-          onClick={() => setPortraitZoom(null)}
+          aria-label={`${transformationPortraits[zoomedTransformationIndex].label} portrait`}
+          onClick={() => setZoomedTransformationIndex(null)}
         >
           <button
             className="vl-lightbox-close"
             type="button"
-            onClick={() => setPortraitZoom(null)}
+            onClick={() => setZoomedTransformationIndex(null)}
             aria-label="Close enlarged portrait"
           >
             ×
-          </button>
-          <button
-            className="vl-lightbox-arrow vl-lightbox-arrow--prev"
-            type="button"
-            aria-label="Previous portrait"
-            onClick={(event) => {
-              event.stopPropagation();
-              const currentIndex = methodPortraits.findIndex(
-                (portrait) => portrait.src === portraitZoom.src
-              );
-              setPortraitZoom(
-                methodPortraits[
-                  (currentIndex - 1 + methodPortraits.length) % methodPortraits.length
-                ]
-              );
-            }}
-          >
-            ‹
           </button>
           <div
             className="vl-portrait-lightbox-card"
             onClick={(event) => event.stopPropagation()}
           >
-            <img src={portraitZoom.src} alt={portraitZoom.alt} />
+            <img
+              src={transformationPortraits[zoomedTransformationIndex].src}
+              alt={transformationPortraits[zoomedTransformationIndex].alt}
+            />
             <div className="vl-portrait-lightbox-caption">
-              <span>
-                {methodPortraits.findIndex((portrait) => portrait.src === portraitZoom.src) === 0
-                  ? "Most recent"
-                  : `Earlier image ${methodPortraits.findIndex(
-                      (portrait) => portrait.src === portraitZoom.src
-                    ) + 1}`}
-              </span>
-              <p>{portraitZoom.assessment}</p>
+              <span>{transformationPortraits[zoomedTransformationIndex].label}</span>
             </div>
           </div>
-          <button
-            className="vl-lightbox-arrow vl-lightbox-arrow--next"
-            type="button"
-            aria-label="Next portrait"
-            onClick={(event) => {
-              event.stopPropagation();
-              const currentIndex = methodPortraits.findIndex(
-                (portrait) => portrait.src === portraitZoom.src
-              );
-              setPortraitZoom(
-                methodPortraits[(currentIndex + 1) % methodPortraits.length]
-              );
-            }}
-          >
-            ›
-          </button>
         </div>
       )}
 

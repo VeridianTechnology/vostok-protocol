@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 // Styles for vr-nav-* live in src/pages/radio/radio.css, which every page
 // using this nav imports alongside landing.css.
 const tabs = [
-  { label: "The Method", to: "/" },
+  { label: "Vostok Method", to: "/" },
   { label: "Radio", to: "/radio" },
-  { label: "Polaris", to: "/polaris" },
 ];
 
 const SiteNav = ({ suffix, active }: { suffix: string; active: string }) => (

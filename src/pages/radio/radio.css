@@ -1,5 +1,5 @@
 /* ============================================================
-   Radio VØSTOK — obsidian editorial theme shared with Polaris.
+   Radio VØSTOK — obsidian editorial theme.
    Builds on the .vl tokens from landing.css; page-specific
    classes are prefixed vr-.
    ============================================================ */
@@ -548,8 +548,7 @@ a.vr-nav-tab:hover {
   border-bottom-color: var(--ink);
 }
 
-.vr .vl-section + .vl-section::before,
-.va .vl-section + .vl-section::before {
+.vr .vl-section + .vl-section::before {
   background: linear-gradient(to right, transparent, rgba(107, 231, 255, 0.42), rgba(145, 132, 232, 0.34), transparent);
   box-shadow: 0 0 18px rgba(107, 231, 255, 0.12);
 }

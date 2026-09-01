@@ -321,7 +321,7 @@ const Radio = () => {
 
       <footer className="vl-footer vr-footer">
         <Link to="/" className="vr-footer-link">
-          ← Back to the Method
+          ← Back to Vostok Method
         </Link>
         <p className="vl-fineprint">Radio VØSTOK</p>
       </footer>

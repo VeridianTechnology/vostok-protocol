@@ -1265,78 +1265,100 @@ a.vl-topnav-tab:hover {
 }
 
 .vl-method-figure {
+  position: relative;
   grid-area: figure;
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
   aspect-ratio: 800 / 504;
   margin: 0;
   overflow: hidden;
   border: 1px solid var(--hairline);
   background: #04060d;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.38);
 }
 
-.vl-method-portrait {
-  position: relative;
+.vl-method-image-button {
+  position: absolute;
+  inset: 0;
   display: block;
-  min-width: 0;
+  width: 100%;
   height: 100%;
   padding: 0;
   overflow: hidden;
   border: 0;
-  border-right: 1px solid rgba(236, 242, 252, 0.42);
   background: #04060d;
   cursor: zoom-in;
-  opacity: 0.72;
-  filter: saturate(0.72) brightness(0.68);
-  transition:
-    opacity 240ms ease,
-    filter 240ms ease,
-    transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 240ms ease;
 }
 
-.vl-method-portrait:last-child {
-  border-right: 0;
+.vl-method-image-button:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: -3px;
 }
 
-.vl-method-portrait img {
+.vl-method-portrait {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  min-width: 0;
   object-fit: cover;
-  object-position: center;
-  animation: vl-method-copy-in 0.38s ease both;
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 0;
+  filter: saturate(0.86) brightness(0.8);
+  transform: scale(1.018);
+  transition: opacity 700ms ease, transform 1.2s ease;
 }
 
-.vl-method-portrait:focus-visible {
-  z-index: 3;
+.vl-method-portrait--before {
+  object-position: center 40%;
+}
+
+.vl-method-portrait--after {
+  object-position: center 43%;
+}
+
+.vl-method-portrait--active {
+  z-index: 1;
   opacity: 1;
-  filter: none;
-  outline: 2px solid var(--cyan);
-  outline-offset: -2px;
-  box-shadow: inset 0 0 28px rgba(79, 240, 255, 0.2);
+  transform: scale(1);
 }
 
-@media (hover: hover) {
-  .vl-method-figure:hover .vl-method-portrait {
-    opacity: 0.3;
-    filter: saturate(0.44) brightness(0.5);
+.vl-method-figure::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 58%, rgba(3, 5, 11, 0.54));
+}
+
+.vl-method-figure figcaption {
+  position: absolute;
+  bottom: clamp(16px, 2.2vw, 24px);
+  left: clamp(16px, 2.2vw, 24px);
+  z-index: 3;
+  padding: 8px 13px 7px;
+  border: 1px solid rgba(238, 243, 251, 0.68);
+  color: #f6f4ef;
+  background: rgba(3, 5, 11, 0.5);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
+  pointer-events: none;
+  animation: vl-method-label-in 420ms ease both;
+}
+
+@keyframes vl-method-label-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
 
-  .vl-method-figure:hover .vl-method-portrait:hover {
-    z-index: 2;
+  to {
     opacity: 1;
-    filter: none;
-    transform: scale(1.055);
-    box-shadow:
-      inset 0 0 0 1px rgba(236, 242, 252, 0.72),
-      inset 0 0 34px rgba(79, 240, 255, 0.2);
-  }
-
-  .vl-method-portrait:hover img {
-    transform: scale(1.06);
+    transform: none;
   }
 }
 
@@ -1418,8 +1440,19 @@ a.vl-topnav-tab:hover {
   margin-bottom: clamp(20px, 2.2vh, 28px);
 }
 
+.vl-company-actions {
+  flex: 0 0 clamp(230px, 20vw, 280px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
 .vl-company-buy {
-  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 92px;
   padding: 18px 36px;
   border: 1px solid rgba(238, 243, 251, 0.76);
   color: #03050b;
@@ -1428,8 +1461,31 @@ a.vl-topnav-tab:hover {
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.24em;
+  line-height: 1.25;
+  text-align: center;
+  text-transform: uppercase;
   text-decoration: none;
   transition: color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+}
+
+.vl-company-buy span {
+  font-size: 12px;
+}
+
+.vl-company-buy strong {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.vl-company-or {
+  padding: 12px 0;
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .vl-company-buy:hover {
@@ -1735,7 +1791,16 @@ a.vl-topnav-tab:hover {
 .vl-socials svg {
   width: 16px;
   height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.vl-socials .vl-instagram-dot {
   fill: currentColor;
+  stroke: none;
 }
 
 .vl-fineprint {
@@ -1824,6 +1889,10 @@ a.vl-topnav-tab:hover {
   margin: 0;
   font-size: clamp(17px, 1.6vw, 22px);
   line-height: 1.35;
+}
+
+.vl-transformation-lightbox .vl-portrait-lightbox-caption span {
+  margin-bottom: 0;
 }
 
 .vl-lightbox-arrow {
@@ -2010,8 +2079,9 @@ a.vl-topnav-tab:hover {
     gap: 34px;
   }
 
-  .vl-company-buy {
-    align-self: flex-start;
+  .vl-company-actions {
+    flex: 0 0 auto;
+    width: min(100%, 340px);
   }
 
   .vl-decay-grid {
@@ -2137,21 +2207,7 @@ a.vl-topnav-tab:hover {
 
 @media (max-width: 560px) {
   .vl-method-figure {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    aspect-ratio: 1;
-  }
-
-  .vl-method-portrait {
-    border-right: 0;
-    border-bottom: 0;
-  }
-
-  .vl-method-portrait:nth-child(odd) {
-    border-right: 1px solid rgba(236, 242, 252, 0.42);
-  }
-
-  .vl-method-portrait:nth-child(-n + 2) {
-    border-bottom: 1px solid rgba(236, 242, 252, 0.42);
+    aspect-ratio: 6 / 5;
   }
 
   .vl-decay-grid {
