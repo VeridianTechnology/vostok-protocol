@@ -28,7 +28,7 @@ const proof = {
 
 const transformationPortraits = [
   {
-    src: "/landing/method-before.webp",
+    src: "/landing/method-before-upright.webp",
     alt: "Nyx before beginning the Vostok Method",
     label: "Before",
   },
