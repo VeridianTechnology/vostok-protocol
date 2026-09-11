@@ -1,0 +1,15 @@
+[mcp_servers.higgsfield]
+url = "https://mcp.higgsfield.ai/mcp"
+
+[mcp_servers.x-api]
+command = "npx"
+args = [
+    "-y",
+    "@xdevplatform/xurl",
+    "mcp",
+    "https://api.x.com/mcp",
+]
+
+[mcp_servers.x-api.env]
+CLIENT_ID = "2076129880564027393Nyxvostok"
+CLIENT_SECRET = "t4f3ODToYIAJ6tKn09uSe9CiuPEsXK1XInUjU9gK0oKcG"

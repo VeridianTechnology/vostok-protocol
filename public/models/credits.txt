@@ -1,0 +1,15 @@
+VOSTOK — interactive marble face study
+
+Base geometry: Infinite, 3D Head Scan by Lee Perry-Smith / Infinite-Realities.
+Source: https://github.com/mrdoob/three.js/tree/dev/examples/models/gltf/LeePerrySmith
+Based on a work at www.triplegangers.com.
+License: Creative Commons Attribution 3.0 Unported.
+https://creativecommons.org/licenses/by/3.0/
+
+Adaptations for this study: softened surface, white marble material, seven
+independent regional morph targets, sculpted eye details, and green region masks.
+The eyelid relief uses the pre-existing MaleHead project asset recovered from
+public/head/malehead.glb in project commit c8970fd (March 2026), baked to a small
+depth field. Only the eye area is transferred to the base scan.
+This is an artistic visualization, not a scan of the people in the reference
+photographs, a clinical simulation, or evidence of a treatment outcome.

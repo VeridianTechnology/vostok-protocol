@@ -1,26 +1,13 @@
-import { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import ChatbaseWidget from "@/components/ChatbaseWidget";
-import Landing from "./pages/Landing";
-
-const Radio = lazy(() => import("./pages/radio/Radio"));
-
-const RouteFallback = () => (
-  <div className="route-loader" role="status" aria-live="polite">
-    Loading Vostok…
-  </div>
-);
+import FaceStudy from "./pages/FaceStudy";
 
 const App = () => (
   <BrowserRouter>
-    <Suspense fallback={<RouteFallback />}>
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/radio" element={<Radio />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
-    <ChatbaseWidget />
+    <Routes>
+      <Route path="/" element={<FaceStudy />} />
+      <Route path="/radio" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   </BrowserRouter>
 );
 
