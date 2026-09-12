@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
-  ArrowRight,
   ArrowUpRight,
+  ExternalLink,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -106,13 +106,7 @@ export default function FaceStudy() {
           <span className="edition-year">VOLUME I</span>
         </div>
         <nav aria-label="Main navigation">
-          <a className="header-method" href="#experience">
-            THE METHOD
-          </a>
-          <a href="#philosophy">
-            PHILOSOPHY <ArrowUpRight size={12} />
-          </a>
-          <a className="header-free" href="#experience">
+          <a className="header-free" href="#free-access">
             FREE <ArrowDown size={13} />
           </a>
         </nav>
@@ -342,13 +336,29 @@ export default function FaceStudy() {
             </p>
           </div>
         </section>
-        <div className="study-interlude">
-          <span className="interlude-rule" />
-          <p>Not set in stone.</p>
-          <a href="#philosophy" aria-label="Explore the Vostok philosophy">
-            <ArrowDown size={18} />
-          </a>
-          <span className="interlude-rule" />
+        <div className="study-interlude" id="free-access">
+          <div className="interlude-center">
+            <nav className="interlude-tabs" aria-label="Free Vostok collection">
+              <a
+                href="/downloads/vostok-introduction.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>01</span>
+                <strong>Vostok Introduction</strong>
+                <ExternalLink size={20} />
+              </a>
+              <a
+                href="/downloads/vostok-method.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <span>02</span>
+                <strong>Vostok Method</strong>
+                <ExternalLink size={20} />
+              </a>
+            </nav>
+          </div>
         </div>
       </main>
       <footer className="study-footer" id="philosophy">
@@ -419,9 +429,6 @@ export default function FaceStudy() {
             rel="noopener noreferrer"
           >
             SCULPTURE CREDITS <ArrowUpRight size={11} />
-          </a>
-          <a href="#experience">
-            BACK TO THE STUDY <ArrowRight size={12} />
           </a>
         </div>
       </footer>

@@ -20,9 +20,9 @@ sculpture stays visible while the controls scroll.
 Before/After transitions and camera moves take two seconds, with reduced-motion
 support. Overall highlights are off by default and can be enabled explicitly.
 
-Radio attempts playback at 30% volume. If the browser blocks audible autoplay,
-playback starts on the first interaction or the Play button. A manual pause is
-preserved. Failed tracks are skipped up to three times before playback stops.
+Radio starts paused at 30% volume and plays only after the Play button is pressed.
+A manual pause is preserved. Failed tracks are skipped up to three times before
+playback stops.
 
 Build and browser checks:
 

@@ -50,6 +50,51 @@ try {
     ),
     0,
   );
+  assert.equal(
+    await page.$$eval(
+      ".footer-bottom a",
+      (links) =>
+        links.filter((link) =>
+          /back to the study/i.test(link.textContent ?? ""),
+        ).length,
+    ),
+    0,
+  );
+  assert.equal(
+    await page.$$eval(".study-header nav a", (links) => links.length),
+    1,
+  );
+  assert.equal(
+    await page.$eval(".header-free", (link) => link.getAttribute("href")),
+    "#free-access",
+  );
+  assert.deepEqual(
+    await page.$$eval(".interlude-tabs strong", (labels) =>
+      labels.map((label) => label.textContent?.trim()),
+    ),
+    ["Vostok Introduction", "Vostok Method"],
+  );
+  assert.deepEqual(
+    await page.$$eval(".interlude-tabs a", (links) =>
+      links.map((link) => ({
+        href: link.getAttribute("href"),
+        target: link.getAttribute("target"),
+        rel: link.getAttribute("rel"),
+      })),
+    ),
+    [
+      {
+        href: "/downloads/vostok-introduction.pdf",
+        target: "_blank",
+        rel: "noopener noreferrer",
+      },
+      {
+        href: "/downloads/vostok-method.pdf",
+        target: "_blank",
+        rel: "noopener noreferrer",
+      },
+    ],
+  );
   assert.equal(await page.$eval("audio", (audio) => audio.volume), 0.3);
   assert.equal(await page.$eval("audio", (audio) => audio.paused), true);
   await page.screenshot({
@@ -57,11 +102,16 @@ try {
     fullPage: true,
   });
   check(
-    "Page, ten views, FREE header, removed links, and autoplay-blocked 30% volume",
+    "Page, ten views, single FREE header action, art tabs, and silent 30% radio",
   );
 
-  // Trusted browser interaction unlocks the radio, not a synthetic DOM click.
+  // Unrelated interactions must not start the radio.
   await page.click('.feature-button[aria-pressed="true"]');
+  assert.equal(await page.$eval("audio", (audio) => audio.paused), true);
+  check("The radio stays silent during ordinary page interaction");
+
+  // Playback begins only from the explicit player control.
+  await page.click('[aria-label="Play radio"]');
   await page.waitForFunction(() => !document.querySelector("audio").paused, {
     timeout: 12000,
   });
@@ -69,7 +119,7 @@ try {
     () => document.querySelector("audio").currentTime > 0,
     { timeout: 12000 },
   );
-  check("First interaction starts audio");
+  check("Play starts audio explicitly");
   await page.click('[aria-label="Pause radio"]');
   assert.equal(
     await page.$eval('[role="switch"]', (button) =>

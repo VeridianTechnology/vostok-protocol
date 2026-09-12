@@ -16,7 +16,7 @@ const formatTime = (time: number) =>
 
 export default function MiniRadio() {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const wantsPlayback = useRef(true);
+  const wantsPlayback = useRef(false);
   const failures = useRef(0);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -27,7 +27,7 @@ export default function MiniRadio() {
   const [collapsed, setCollapsed] = useState(
     () => window.matchMedia("(max-width: 800px)").matches,
   );
-  const [message, setMessage] = useState("CURATED BY NYX");
+  const [message, setMessage] = useState("PRESS PLAY TO LISTEN");
   const track = radioTracks[index];
 
   const play = useCallback(() => {
@@ -45,22 +45,10 @@ export default function MiniRadio() {
     const audio = audioRef.current;
     if (!audio) return;
     audio.volume = 0.3;
-    const startOnGesture = (event: Event) => {
-      if ((event.target as Element)?.closest?.(".mini-radio")) return;
-      if (wantsPlayback.current && audio.paused) play();
-      if (!audio.paused) removeGestureListeners();
-    };
-    const removeGestureListeners = () => {
-      document.removeEventListener("pointerdown", startOnGesture);
-      document.removeEventListener("keydown", startOnGesture);
-    };
-    document.addEventListener("pointerdown", startOnGesture);
-    document.addEventListener("keydown", startOnGesture);
     return () => {
-      removeGestureListeners();
       audio.pause();
     };
-  }, [play]);
+  }, []);
 
   useEffect(() => {
     const audio = audioRef.current;

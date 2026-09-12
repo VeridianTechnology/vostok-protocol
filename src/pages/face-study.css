@@ -721,28 +721,51 @@ body:has(.vostok-study) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  padding: 32px 10% 48px;
+  padding: 58px 7% 72px;
+  scroll-margin-top: 22px;
 }
-.interlude-rule {
-  height: 1px;
-  max-width: 210px;
-  flex: 1;
-  background: var(--line);
+.interlude-center {
+  width: min(720px, 100%);
 }
-.study-interlude p {
-  font-size: 24px;
-  font-style: italic;
-  color: #acb29f;
+.interlude-tabs {
+  border: 1px solid rgba(225, 228, 214, 0.3);
+  background: #c9cec0;
+  box-shadow: 0 24px 80px rgba(10, 14, 10, 0.24);
 }
-.study-interlude > a {
+.interlude-tabs a {
+  min-height: 104px;
   display: grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  height: 38px;
-  width: 38px;
-  border-radius: 50%;
-  color: #acb79c;
+  grid-template-columns: 38px 1fr auto;
+  align-items: center;
+  gap: 22px;
+  padding: 0 36px;
+  color: #272d27;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    padding 0.25s;
+}
+.interlude-tabs a + a {
+  border-top: 1px solid rgba(39, 45, 39, 0.18);
+}
+.interlude-tabs a:hover,
+.interlude-tabs a:focus-visible {
+  color: #111611;
+  background: #e5e7dc;
+  padding-inline: 42px 30px;
+}
+.interlude-tabs span {
+  font: 9px var(--sans);
+  letter-spacing: 0.18em;
+  color: #687064;
+}
+.interlude-tabs strong {
+  font-size: 29px;
+  font-weight: 400;
+  letter-spacing: 0.005em;
+}
+.interlude-tabs svg {
+  color: #4e5e4a;
 }
 .study-footer {
   position: relative;
@@ -835,7 +858,7 @@ body:has(.vostok-study) {
   letter-spacing: 0.05em;
   color: #d5d9c8;
 }
-.footer-bottom > a:nth-last-child(2) {
+.footer-bottom > a:last-child {
   margin-left: auto;
 }
 .footer-bottom > a {
@@ -1258,11 +1281,23 @@ body:has(.vostok-study) {
     font-size: 9px;
   }
   .study-interlude {
-    padding: 38px 7% 45px;
-    gap: 18px;
+    padding: 46px 7% 55px;
   }
-  .study-interlude p {
-    font-size: 23px;
+  .interlude-tabs {
+    width: 100%;
+  }
+  .interlude-tabs a {
+    min-height: 82px;
+    grid-template-columns: 26px 1fr auto;
+    gap: 12px;
+    padding: 0 20px;
+  }
+  .interlude-tabs a:hover,
+  .interlude-tabs a:focus-visible {
+    padding-inline: 24px 16px;
+  }
+  .interlude-tabs strong {
+    font-size: 22px;
   }
   .study-footer {
     grid-template-columns: 1fr 1fr;
@@ -1301,7 +1336,7 @@ body:has(.vostok-study) {
     font-size: 6px;
     gap: 20px;
   }
-  .footer-bottom > a:nth-last-child(2) {
+  .footer-bottom > a:last-child {
     margin-left: 0;
   }
   .mini-radio {
