@@ -37,7 +37,7 @@ try {
   assert.match(await page.title(), /How the Vostok Method Improves Me/);
   assert.equal(
     await page.$$eval(".feature-button", (buttons) => buttons.length),
-    8,
+    10,
   );
   assert.equal(
     await page.$eval(".header-free", (element) => element.textContent.trim()),
@@ -50,14 +50,14 @@ try {
     ),
     0,
   );
-  assert.equal(await page.$eval("audio", (audio) => audio.volume), 0.5);
+  assert.equal(await page.$eval("audio", (audio) => audio.volume), 0.3);
   assert.equal(await page.$eval("audio", (audio) => audio.paused), true);
   await page.screenshot({
     path: path.join(output, "desktop.png"),
     fullPage: true,
   });
   check(
-    "Page, eight regions, FREE header, removed links, and autoplay-blocked 50% volume",
+    "Page, ten views, FREE header, removed links, and autoplay-blocked 30% volume",
   );
 
   // Trusted browser interaction unlocks the radio, not a synthetic DOM click.
@@ -71,13 +71,27 @@ try {
   );
   check("First interaction starts audio");
   await page.click('[aria-label="Pause radio"]');
-  await page.click('[role="switch"]');
   assert.equal(
     await page.$eval('[role="switch"]', (button) =>
       button.getAttribute("aria-checked"),
     ),
     "false",
   );
+  await page.click('[role="switch"]');
+  assert.equal(
+    await page.$eval('[role="switch"]', (button) =>
+      button.getAttribute("aria-checked"),
+    ),
+    "true",
+  );
+  await page.$$eval(".feature-button", (buttons) => buttons[0].click());
+  assert.equal(
+    await page.$eval('[role="switch"]', (button) =>
+      button.getAttribute("aria-checked"),
+    ),
+    "false",
+  );
+  check("Overall highlights are opt-in and reset when returning to Overall");
   const regionIds = [
     "overall",
     "cheeks",
@@ -87,6 +101,8 @@ try {
     "nose",
     "lips",
     "ears",
+    "back",
+    "neck",
   ];
   for (let index = 0; index < regionIds.length; index++) {
     await page.$$eval(
@@ -98,7 +114,7 @@ try {
     await page.$$eval(".compare-buttons button", (buttons) =>
       buttons[0].click(),
     );
-    await wait(1600);
+    await wait(2300);
     const before = await page.$eval(
       ".sculpture-stage",
       (element) => element.dataset.transformation,
@@ -119,7 +135,26 @@ try {
     await page.$$eval(".compare-buttons button", (buttons) =>
       buttons[1].click(),
     );
-    await wait(1600);
+    if (index === 0) {
+      await wait(900);
+      const midway = await page.$eval(".sculpture-stage", (element) =>
+        Number(element.dataset.transformation),
+      );
+      assert.ok(
+        midway > 0.2 && midway < 0.75,
+        "The two-second morph is still visibly progressing halfway through",
+      );
+      await wait(1400);
+    } else {
+      await wait(2300);
+    }
+    assert.equal(
+      await page.$eval(
+        ".sculpture-stage",
+        (element) => element.dataset.transformation,
+      ),
+      "1",
+    );
     const afterImage = await page.screenshot({ clip: crop });
     assert.notEqual(
       hash(beforeImage),
@@ -139,7 +174,7 @@ try {
   }
   assert.equal(await page.$eval("audio", (audio) => audio.paused), true);
   check(
-    "Every region zooms and morphs with highlights off; manual pause persists",
+    "Every region zooms and completes its two-second morph with highlights off; manual pause persists",
   );
 
   await page.$eval('[aria-label="Face transformation"]', (input) => {
@@ -157,11 +192,12 @@ try {
     "0.42",
   );
   await page.$$eval(".feature-button", (buttons) => buttons[0].click());
-  await wait(2000);
+  await page.$$eval(".compare-buttons button", (buttons) => buttons[0].click());
+  await wait(2300);
   const canvas = await page.$("canvas");
   const beforeRotation = hash(await canvas.screenshot());
   await page.click('[aria-label="Rotate face right"]');
-  await wait(1200);
+  await wait(2300);
   assert.notEqual(hash(await canvas.screenshot()), beforeRotation);
   await canvas.focus();
   await page.keyboard.press("ArrowLeft");
@@ -279,7 +315,7 @@ try {
     element.scrollIntoView({ block: "end", behavior: "instant" }),
   );
   await page.$$eval(".compare-buttons button", (buttons) => buttons[0].click());
-  await wait(900);
+  await wait(2300);
   await page.screenshot({ path: path.join(output, "mobile-compare.png") });
   await page.setViewport({
     width: 320,

@@ -15,6 +15,10 @@ import { usePageMetadata } from "@/lib/pageMetadata";
 import { features, type FeatureId } from "@/components/face-study/features";
 import FeatureIcon from "@/components/face-study/FeatureIcon";
 import MiniRadio from "@/components/face-study/MiniRadio";
+import {
+  STUDY_TRANSITION_MS,
+  studyEase,
+} from "@/components/face-study/animation";
 import "./face-study.css";
 
 const FaceSculpture = lazy(
@@ -25,32 +29,66 @@ export default function FaceStudy() {
   usePageMetadata({
     title: "How the Vostok Method Improves Me — VØSTOK",
     description:
-      "An interactive study in facial form. Rotate the marble sculpture, explore seven features, and compare the illustrated before and after. Free to explore.",
+      "An interactive study in facial form. Rotate the marble sculpture, explore nine areas, and compare the illustrated before and after. Free to explore.",
     path: "/",
   });
   const [feature, setFeature] = useState<FeatureId>("overall");
   const [amount, setAmount] = useState(1);
-  const [highlights, setHighlights] = useState(true);
+  const [highlights, setHighlights] = useState(false);
   const [view, setView] = useState(0);
   const [reset, setReset] = useState(0);
   const [ready, setReady] = useState(false);
   const transitionTimer = useRef<ReturnType<typeof setTimeout>>();
+  const animationFrame = useRef(0);
+  const amountRef = useRef(1);
   const selected = features.find((item) => item.id === feature)!;
   const improved = amount >= 0.99;
 
-  useEffect(() => () => clearTimeout(transitionTimer.current), []);
+  useEffect(
+    () => () => {
+      clearTimeout(transitionTimer.current);
+      cancelAnimationFrame(animationFrame.current);
+    },
+    [],
+  );
 
   const changeAmount = (value: number) => {
     clearTimeout(transitionTimer.current);
+    cancelAnimationFrame(animationFrame.current);
+    amountRef.current = value;
     setAmount(value);
   };
-  const selectFeature = (id: FeatureId) => {
+  const animateAmount = (value: number) => {
     clearTimeout(transitionTimer.current);
+    cancelAnimationFrame(animationFrame.current);
+    const from = amountRef.current;
+    if (
+      from === value ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      changeAmount(value);
+      return;
+    }
+    const start = performance.now();
+    const step = (time: number) => {
+      const next = from + (value - from) * studyEase(time - start);
+      amountRef.current = next;
+      setAmount(next);
+      if (time - start < STUDY_TRANSITION_MS)
+        animationFrame.current = requestAnimationFrame(step);
+    };
+    animationFrame.current = requestAnimationFrame(step);
+  };
+  const selectFeature = (id: FeatureId) => {
+    changeAmount(0);
     setFeature(id);
+    if (id === "overall") setHighlights(false);
     setView(0);
     setReset((value) => value + 1);
-    setAmount(0);
-    transitionTimer.current = setTimeout(() => setAmount(1), 1100);
+    transitionTimer.current = setTimeout(
+      () => animateAmount(1),
+      STUDY_TRANSITION_MS + 100,
+    );
   };
 
   return (
@@ -185,7 +223,7 @@ export default function FaceStudy() {
           <div className="study-panel">
             <div className="study-eyebrow">
               <span>THE VØSTOK METHOD</span>
-              <span>01 — 08</span>
+              <span>01 — 10</span>
             </div>
             <h1 id="study-title">
               How the Vostok
@@ -249,14 +287,14 @@ export default function FaceStudy() {
                 <button
                   className={amount === 0 ? "active" : ""}
                   aria-pressed={amount === 0}
-                  onClick={() => changeAmount(0)}
+                  onClick={() => animateAmount(0)}
                 >
                   Before
                 </button>
                 <button
                   className={improved ? "active" : ""}
                   aria-pressed={improved}
-                  onClick={() => changeAmount(1)}
+                  onClick={() => animateAmount(1)}
                 >
                   <Sparkles size={13} /> After
                 </button>

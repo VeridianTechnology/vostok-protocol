@@ -17,10 +17,18 @@ export function eyeRelief(
   const left = x < -0.03;
   const dx = x - (left ? -0.342 : 0.257),
     dy = y - 0.8;
-  const weight = fade(dx, 0.15, 0.255) * fade(dy, 0.115, 0.225);
+  // The donor supplies eyelids, not a second eyebrow shelf. Feather it out
+  // gradually above the upper lid, well before the forehead patch boundary.
+  const verticalWeight =
+    dy > 0 ? fade(dy, 0.015, 0.155) : fade(dy, 0.115, 0.225);
+  const weight = fade(dx, 0.15, 0.255) * verticalWeight;
   if (weight <= 0) return z;
-  const u = Math.max(0, Math.min(79.999, (dx / 0.27 + 1) * 40));
-  const v = Math.max(0, Math.min(79.999, (dy / 0.25 + 1) * 40));
+  // Scale the actual socket aperture uniformly around the eyeball centre,
+  // rather than making only the After expression look like a squint.
+  const sampleX = dx / 0.88;
+  const sampleY = (y - 0.738) / 0.88 - 0.062;
+  const u = Math.max(0, Math.min(79.999, (sampleX / 0.27 + 1) * 40));
+  const v = Math.max(0, Math.min(79.999, (sampleY / 0.25 + 1) * 40));
   const col = Math.floor(u),
     row = Math.floor(v),
     tx = u - col,

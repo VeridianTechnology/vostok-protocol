@@ -47,6 +47,16 @@ const paths: Record<FeatureId, React.ReactNode> = {
       <path d="M8 21C5 20 7 17 4 13-2 5 10-2 13 5c2 5-4 7-3 11 1 4-1 6-2 5ZM7 14c-7-7 3-11 3-6 0 3-5 2-3 6M17 3v19m3-16 2 2-2 2m0 6 2 2-2 2" />
     </>
   ),
+  back: (
+    <>
+      <path d="M6 17c-2-3-2-7-1-10 2-6 12-6 14 0 1 3 1 7-1 10l-2 3v4M8 24v-4l-2-3M5 12l-2-1v4l3 3m13-6 2-1v4l-3 3M12 8v10m-3-6 3-3 3 3" />
+    </>
+  ),
+  neck: (
+    <>
+      <path d="M7 2c0 4 1 5 5 6 4-1 5-2 5-6M8 7v10L2 21m14-14v10l6 4M8 12c2 1 6 1 8 0M8 15c2 1 6 1 8 0M5 23l7-2 7 2" />
+    </>
+  ),
 };
 
 export default function FeatureIcon({ feature }: { feature: FeatureId }) {

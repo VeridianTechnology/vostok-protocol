@@ -1,8 +1,8 @@
 # Vostok — The Living Sculpture
 
-An interactive marble face study with eight feature views, continuous before/after
+An interactive marble face study with ten feature views, continuous before/after
 morphing, regional highlights, and the existing Radio Vostok library. Each feature
-changes only its own region; Overall Face combines all seven. The original
+changes only its own region; Overall Face combines all nine. The original
 hero background and two Substack essays are retained; `/radio` redirects home.
 
 Local development:
@@ -17,7 +17,10 @@ or use the Before/After buttons and transformation slider. The focused canvas
 also supports arrow keys, `+` / `-` to zoom, and `Home` to reset. On mobile the
 sculpture stays visible while the controls scroll.
 
-Radio attempts playback at 50% volume. If the browser blocks audible autoplay,
+Before/After transitions and camera moves take two seconds, with reduced-motion
+support. Overall highlights are off by default and can be enabled explicitly.
+
+Radio attempts playback at 30% volume. If the browser blocks audible autoplay,
 playback starts on the first interaction or the Play button. A manual pause is
 preserved. Failed tracks are skipped up to three times before playback stops.
 

@@ -6,7 +6,9 @@ export type FeatureId =
   | "forehead"
   | "nose"
   | "lips"
-  | "ears";
+  | "ears"
+  | "back"
+  | "neck";
 
 export const features: {
   id: FeatureId;
@@ -25,7 +27,7 @@ export const features: {
     label: "Overall Face",
     heading: "A study in harmony.",
     description:
-      "Seven details. One connected form. Explore the fuller contours, lifted features, and clearer definition I see in my own comparisons.",
+      "Nine details. One connected form. Explore the fuller contours, lifted features, and clearer definition I see in my own comparisons.",
     tags: ["Balance", "Definition", "Proportion"],
     target: [0, 0.25, 0.1],
     distance: 7.5,
@@ -35,10 +37,10 @@ export const features: {
     id: "cheeks",
     number: "02",
     label: "Cheeks",
-    heading: "Fullness, lifted.",
+    heading: "Definition, brought forward.",
     description:
-      "A fuller upper cheek with a higher, more angled contour. Move between the two forms to follow the upward sweep.",
-    tags: ["Fuller contour", "Upward lift"],
+      "A subtle convex point beneath the outer eye flows smoothly toward the nose and temple. The resting cheek projects gently forward, without widening the face or creating a raised smile ridge.",
+    tags: ["Gentle forward contour", "Smooth transition"],
     target: [0, 0.43, 0.72],
     distance: 4.3,
     angle: 0.28,
@@ -49,8 +51,8 @@ export const features: {
     label: "Eyes",
     heading: "A sharper expression.",
     description:
-      "A natural, open gaze with a gently lifted outer corner and subtly refined pupils. Compare the eye area while the rest of the face stays in its original form.",
-    tags: ["Lifted corners", "Refined gaze"],
+      "A more defined upper-eyelid fold and a gentle upward lift beneath the brow, with only slight narrowing. The rest of the face stays in its original form.",
+    tags: ["Upper-lid fold", "Gentle lift"],
     target: [0, 0.79, 0.82],
     distance: 3.5,
     angle: 0,
@@ -114,5 +116,29 @@ export const features: {
     target: [0.55, 0.6, 0.04],
     distance: 3.7,
     angle: 1.12,
+  },
+  {
+    id: "back",
+    number: "09",
+    label: "Back of Head",
+    heading: "A firmer, lifted contour.",
+    description:
+      "Turn the sculpture around. A lower, relaxed contour lifts into a firmer shape at the back of the head, with a subtle sense of muscular definition.",
+    tags: ["Upward lift", "Firmer contour"],
+    target: [0, 0.6, -0.3],
+    distance: 5,
+    angle: Math.PI - 0.12,
+  },
+  {
+    id: "neck",
+    number: "10",
+    label: "Neck",
+    heading: "A smoother continuation.",
+    description:
+      "Gentle neck creases soften in the refined form. Some natural surface detail remains, while the face and jaw keep their original shape.",
+    tags: ["Softer creases", "Smoother surface"],
+    target: [0, -0.83, 0.15],
+    distance: 4.1,
+    angle: 0.35,
   },
 ];

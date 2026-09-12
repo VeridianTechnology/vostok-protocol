@@ -6,7 +6,7 @@ Based on a work at www.triplegangers.com.
 License: Creative Commons Attribution 3.0 Unported.
 https://creativecommons.org/licenses/by/3.0/
 
-Adaptations for this study: softened surface, white marble material, seven
+Adaptations for this study: softened surface, white marble material, nine
 independent regional morph targets, sculpted eye details, and green region masks.
 The eyelid relief uses the pre-existing MaleHead project asset recovered from
 public/head/malehead.glb in project commit c8970fd (March 2026), baked to a small

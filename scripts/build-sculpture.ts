@@ -2,6 +2,7 @@ import fs from "node:fs";
 import { BufferGeometry, BufferAttribute } from "three";
 import { smoothGeometry } from "../src/components/face-study/smoothGeometry";
 import { openEyeSurface } from "../src/components/face-study/eyeSurface";
+import { repairSurfaceSeams } from "./repair-surface-seams";
 
 // Run after build-eye-relief.mjs with: npx tsx scripts/build-sculpture.ts
 // Remeshing is baked once, never performed on a visitor's main thread.
@@ -41,7 +42,7 @@ const field = new Float32Array(
   relief.byteLength / 4,
 );
 const smooth = smoothGeometry(source);
-const geometry = openEyeSurface(smooth, field);
+const geometry = repairSurfaceSeams(openEyeSurface(smooth, field));
 geometry.computeBoundingBox();
 const position = geometry.getAttribute("position"),
   index = geometry.getIndex()!;

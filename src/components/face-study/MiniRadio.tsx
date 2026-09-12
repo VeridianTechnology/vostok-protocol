@@ -20,8 +20,8 @@ export default function MiniRadio() {
   const failures = useRef(0);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [volume, setVolume] = useState(0.5);
-  const [lastVolume, setLastVolume] = useState(0.5);
+  const [volume, setVolume] = useState(0.3);
+  const [lastVolume, setLastVolume] = useState(0.3);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [collapsed, setCollapsed] = useState(
@@ -44,7 +44,7 @@ export default function MiniRadio() {
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.volume = 0.5;
+    audio.volume = 0.3;
     const startOnGesture = (event: Event) => {
       if ((event.target as Element)?.closest?.(".mini-radio")) return;
       if (wantsPlayback.current && audio.paused) play();
@@ -208,7 +208,7 @@ export default function MiniRadio() {
               if (volume > 0) {
                 setLastVolume(volume);
                 setVolume(0);
-              } else setVolume(lastVolume || 0.5);
+              } else setVolume(lastVolume || 0.3);
             }}
           >
             {volume === 0 ? <VolumeX size={13} /> : <Volume2 size={13} />}

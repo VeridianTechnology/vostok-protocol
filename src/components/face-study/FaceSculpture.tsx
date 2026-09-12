@@ -9,6 +9,7 @@ import {
   MeshPhysicalMaterial,
   PerspectiveCamera,
   Scene,
+  Spherical,
   Vector3,
   WebGLRenderer,
 } from "three";
@@ -16,6 +17,7 @@ import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { features, type FeatureId } from "./features";
 import { prepareSculpture } from "./sculptureGeometry";
+import { STUDY_TRANSITION_MS, studyEase } from "./animation";
 
 type Props = {
   feature: FeatureId;
@@ -89,6 +91,7 @@ export default function FaceSculpture(props: Props) {
       uStudyAmount: { value: 1 },
       uStudyGreen: { value: new Color("#739d81") },
       uStudyLipGreen: { value: new Color("#78977e") },
+      uStudyBackGreen: { value: new Color("#5e7d63") },
     };
     const material = new MeshPhysicalMaterial({
       color: "#dfd9cb",
@@ -104,10 +107,13 @@ export default function FaceSculpture(props: Props) {
           "#include <common>",
           `#include <common>
         attribute vec4 studyWeightsA;
-        attribute vec3 studyWeightsB;
+        attribute vec4 studyWeightsB;
+        attribute float studyNeckWeight;
         varying vec4 vStudyWeightsA;
-        varying vec3 vStudyWeightsB;
+        varying vec4 vStudyWeightsB;
+        varying float vStudyNeckWeight;
         varying vec3 vStonePosition;
+        varying vec3 vEyePosition;
       `,
         )
         .replace(
@@ -115,7 +121,14 @@ export default function FaceSculpture(props: Props) {
           `#include <begin_vertex>
         vStudyWeightsA = studyWeightsA;
         vStudyWeightsB = studyWeightsB;
+        vStudyNeckWeight = studyNeckWeight;
         vStonePosition = position;
+      `,
+        )
+        .replace(
+          "#include <morphtarget_vertex>",
+          `#include <morphtarget_vertex>
+        vEyePosition = transformed;
       `,
         );
       shader.fragmentShader = shader.fragmentShader
@@ -127,23 +140,28 @@ export default function FaceSculpture(props: Props) {
         uniform float uStudyAmount;
         uniform vec3 uStudyGreen;
         uniform vec3 uStudyLipGreen;
+        uniform vec3 uStudyBackGreen;
         varying vec4 vStudyWeightsA;
-        varying vec3 vStudyWeightsB;
+        varying vec4 vStudyWeightsB;
+        varying float vStudyNeckWeight;
         varying vec3 vStonePosition;
+        varying vec3 vEyePosition;
       `,
         )
         .replace(
           "#include <color_fragment>",
           `#include <color_fragment>
         float area = 0.0;
-        if (uStudyRegion < 0.5) area = max(max(max(vStudyWeightsA.x, vStudyWeightsA.y), max(vStudyWeightsA.z, vStudyWeightsA.w)), max(max(vStudyWeightsB.x, vStudyWeightsB.y), vStudyWeightsB.z));
+        if (uStudyRegion < 0.5) area = max(max(max(max(vStudyWeightsA.x, vStudyWeightsA.y), max(vStudyWeightsA.z, vStudyWeightsA.w)), max(max(vStudyWeightsB.x, vStudyWeightsB.y), max(vStudyWeightsB.z, vStudyWeightsB.w))), vStudyNeckWeight);
         else if (uStudyRegion < 1.5) area = vStudyWeightsA.x;
         else if (uStudyRegion < 2.5) area = vStudyWeightsA.y;
         else if (uStudyRegion < 3.5) area = vStudyWeightsA.z;
         else if (uStudyRegion < 4.5) area = vStudyWeightsA.w;
         else if (uStudyRegion < 5.5) area = vStudyWeightsB.x;
         else if (uStudyRegion < 6.5) area = vStudyWeightsB.y;
-        else area = vStudyWeightsB.z;
+        else if (uStudyRegion < 7.5) area = vStudyWeightsB.z;
+        else if (uStudyRegion < 8.5) area = vStudyWeightsB.w;
+        else area = vStudyNeckWeight;
         float vein = sin(vStonePosition.x * 18.0 + vStonePosition.y * 9.0 + sin(vStonePosition.z * 11.0 + vStonePosition.y * 5.0) * 1.6);
         float grain = sin(vStonePosition.x * 183.0) * sin(vStonePosition.y * 171.0) * sin(vStonePosition.z * 157.0);
         diffuseColor.rgb *= 1.0 - pow(abs(vein), 24.0) * 0.04 + grain * 0.012;
@@ -151,14 +169,17 @@ export default function FaceSculpture(props: Props) {
         if (uStudyRegion < 0.5 || (uStudyRegion > 5.5 && uStudyRegion < 6.5)) {
           diffuseColor.rgb = mix(diffuseColor.rgb, uStudyLipGreen, smoothstep(0.1, 0.7, vStudyWeightsB.y) * uStudyHighlight * 0.4);
         }
+        if (uStudyRegion < 0.5 || (uStudyRegion > 7.5 && uStudyRegion < 8.5)) {
+          diffuseColor.rgb = mix(diffuseColor.rgb, uStudyBackGreen, smoothstep(0.1, 0.8, vStudyWeightsB.w) * uStudyHighlight * 0.6);
+        }
         // The eyelids are real surface relief. Only a faint carved iris and
         // pupil accent is added, in the same marble as the rest of the bust.
         if (vStonePosition.z > 0.65) {
           float eyeX = vStonePosition.x < -0.03 ? -0.342 : 0.257;
-          vec2 eye = vStonePosition.xy - vec2(eyeX, 0.738);
+          vec2 eye = vEyePosition.xy - vec2(eyeX, 0.738 + uStudyAmount * 0.01);
           float radius = length(eye);
-          float irisRim = exp(-pow((radius - 0.043) / 0.005, 2.0));
-          float pupilSize = mix(0.021, 0.016, uStudyAmount);
+          float irisRim = exp(-pow((radius - 0.038) / 0.0045, 2.0));
+          float pupilSize = mix(0.019, 0.0145, uStudyAmount);
           float pupil = 1.0 - smoothstep(pupilSize - 0.004, pupilSize, radius);
           diffuseColor.rgb *= 1.0 - irisRim * 0.2 - pupil * 0.42;
         }
@@ -171,13 +192,14 @@ export default function FaceSculpture(props: Props) {
     let moving = true;
     let inView = true;
     let frame = 0;
-    let lastTime = 0;
     let currentAmount = propsRef.current.amount;
-    const currentInfluences = Array.from({ length: 7 }, (_, i) =>
-      propsRef.current.feature === "overall" ||
-      features[i + 1].id === propsRef.current.feature
-        ? currentAmount
-        : 0,
+    const currentInfluences = Array.from(
+      { length: features.length - 1 },
+      (_, i) =>
+        propsRef.current.feature === "overall" ||
+        features[i + 1].id === propsRef.current.feature
+          ? currentAmount
+          : 0,
     );
     let currentFeature = "";
     let currentView = NaN;
@@ -185,6 +207,10 @@ export default function FaceSculpture(props: Props) {
     let currentAspect = 0;
     const desiredTarget = new Vector3();
     const desiredPosition = new Vector3();
+    const cameraFrom = new Spherical();
+    const cameraTo = new Spherical();
+    const targetFrom = new Vector3();
+    let cameraStartedAt = 0;
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -200,10 +226,21 @@ export default function FaceSculpture(props: Props) {
         feature.target[1] + distance * 0.035,
         feature.target[2] + Math.cos(angle) * distance,
       );
+      targetFrom.copy(controls.target);
+      cameraFrom.setFromVector3(camera.position.clone().sub(controls.target));
+      cameraTo.setFromVector3(desiredPosition.clone().sub(desiredTarget));
+      cameraTo.theta =
+        cameraFrom.theta +
+        Math.atan2(
+          Math.sin(cameraTo.theta - cameraFrom.theta),
+          Math.cos(cameraTo.theta - cameraFrom.theta),
+        );
+      cameraStartedAt = performance.now();
       moving = true;
       if (currentFeature === "" || reducedMotion) {
         camera.position.copy(desiredPosition);
         controls.target.copy(desiredTarget);
+        moving = false;
       }
       currentFeature = state.feature;
       currentView = state.view;
@@ -302,11 +339,8 @@ export default function FaceSculpture(props: Props) {
     const render = (time: number) => {
       frame = requestAnimationFrame(render);
       if (!inView || document.hidden) {
-        lastTime = time;
         return;
       }
-      const delta = Math.min((time - lastTime) / 1000, 0.05);
-      lastTime = time;
       const state = propsRef.current;
       if (
         currentFeature !== state.feature ||
@@ -316,23 +350,27 @@ export default function FaceSculpture(props: Props) {
       )
         fitCamera();
       if (moving) {
-        const speed = reducedMotion ? 1 : 1 - Math.exp(-delta * 5);
-        controls.target.lerp(desiredTarget, speed);
-        camera.position.lerp(desiredPosition, speed);
-        if (camera.position.distanceTo(desiredPosition) < 0.002) moving = false;
+        const progress = reducedMotion ? 1 : studyEase(time - cameraStartedAt);
+        controls.target.lerpVectors(targetFrom, desiredTarget, progress);
+        camera.position
+          .setFromSphericalCoords(
+            cameraFrom.radius +
+              (cameraTo.radius - cameraFrom.radius) * progress,
+            cameraFrom.phi + (cameraTo.phi - cameraFrom.phi) * progress,
+            cameraFrom.theta + (cameraTo.theta - cameraFrom.theta) * progress,
+          )
+          .add(controls.target);
+        if (time - cameraStartedAt >= STUDY_TRANSITION_MS) moving = false;
       }
-      currentAmount +=
-        (state.amount - currentAmount) *
-        (reducedMotion ? 1 : 1 - Math.exp(-delta * 5));
+      currentAmount = state.amount;
       const selectedRegion =
         features.findIndex((item) => item.id === state.feature) - 1;
-      currentInfluences.forEach((value, i) => {
+      currentInfluences.forEach((_value, i) => {
         const target =
           state.feature === "overall" || i === selectedRegion
             ? state.amount
             : 0;
-        currentInfluences[i] +=
-          (target - value) * (reducedMotion ? 1 : 1 - Math.exp(-delta * 7));
+        currentInfluences[i] = target;
       });
       meshes.forEach((mesh) => {
         currentInfluences.forEach((value, i) => {
@@ -344,9 +382,7 @@ export default function FaceSculpture(props: Props) {
       );
       uniforms.uStudyAmount.value = currentInfluences[1];
       const targetHighlight = state.highlights ? currentAmount : 0;
-      uniforms.uStudyHighlight.value +=
-        (targetHighlight - uniforms.uStudyHighlight.value) *
-        (reducedMotion ? 1 : 0.07);
+      uniforms.uStudyHighlight.value = targetHighlight;
       controls.update();
       renderer.render(scene, camera);
     };
